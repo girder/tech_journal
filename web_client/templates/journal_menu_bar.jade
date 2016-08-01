@@ -1,0 +1,81 @@
+div#announcement-banner(class="alertHeader")
+div(class="TopDynamicBar" style="display:none;")
+  div(class="dumbBoxOverlay")
+  div( class="vertical-offset")
+    div(class="dumbBox")
+      div(class="TopDynamicClose")
+        a(class="closeButton" onclick="$('.TopDynamicBar').hide();" href="#")
+          span
+            img( alt="" src="/journal/core/public/images/icons/close.png")
+      div(class="TopDynamicContent")
+      div(class="TopDynamicLoading")
+        img( alt="" src="/journal/core/public/images/icons/loading.gif")
+      input( type="hidden" class="DynamicContentPage")
+  div(class="MainDialog" style="display:none;")
+    div( class="MainDialogContent")
+    div( class="MainDialogLoading")
+      img(alt="" src="/journal/core/public/images/icons/loading.gif")
+    input(type="hidden" class="DialogContentPage")
+
+  div (class="Header")
+    div( class="HeaderTopContent panelsBackground")
+      div#menu
+        div#topmenu
+          a( style='border:none;' href="/journal")
+            img( style='border:none;' src="http://osehra.org/profiles/drupal_commons/themes/commons_osehra_earth/images/logo.png" alt="logo" height="50")
+        div#title
+          OSEHRA Technical Journal
+        div#toplogin                  
+          form#loginForm( action="/journal/user/login" method="POST")
+            | Email:
+            input( name="email" type="text")
+            | Password:
+            input( name="password" type="password")
+            input( name="submit"  class="login" type="image" src="/journal/privateModules/journal/public/images/login.png" alt="login")
+        br/
+        div( style="position:absolute;right:0px;")
+          div( style="position:relative;top:7px;left:-8px;font-size:11px;color:white;")
+            a( href="/journal/journal/help/about")
+              | About
+           a#forgotPasswordLink(style="margin-left: 7px;padding-left: 7px;border-left: 1px solid grey;")
+              | Forgot your password
+           a(style="margin-left: 7px;padding-left: 7px;border-left: 1px solid grey;" href="/journal/register/register" class="register")
+              | Register
+           a(style="margin-left: 7px;padding-left: 7px;border-left: 1px solid grey;"  href='/journal/googleoauth/user/login')
+             | Sign in with your Google Account
+             img(style="top:-2px;border:none;position:relative;" src="/journal/privateModules/journal/public/images/google_icon.png")
+
+          div#topbar
+            ul#Nav(class="nav navbar-nav")
+              li#browseLink
+                a(href="/journal/journal")
+                  | Home
+              li
+                a(  href="/journal/journal/view/journals")
+                  | Journal
+              li
+                a(href="/journal/journal/submit/selectissue")
+                  | New Publication
+              li
+                a(href="/journal/journal/help")
+                  | Help
+                ul
+                  li
+                    a( class="submm"  style="width:160px;"  href="/journal/journal/help")
+                      | Submission and Review
+                  li
+                    a( class="submm" style="width:160px;" href="/journal/journal/help/faq")
+                      | F.A.Q.
+                  li
+                    a( class="submm"  style="width:160px;" href="/journal/journal/help/feedback")
+                      | Feedback
+          div(class="HeaderSearch nav navbar-nav navbar-right")
+
+            input#live_search(type="text" class="panelsBackground" value="Search..." autocomplete="off" autocorrect="off" autocapitalize="off")
+            input#live_search_value( type="hidden" value="init")
+            div#searchloading( style="display:none")
+            input#search_button(type="button" class="" value="Search")
+            input#clear_button(type="button" class="" value="Clear")
+    div( class="HeaderAction")
+      div (class="viewNoticeWrapper")
+        div( class="viewNotice")
