@@ -54,6 +54,6 @@ girder.views.journal_index = girder.View.extend({
 });
 
 girder.router.route('plugins/journal/journal', 'journalIndex', function() {
-    girder.events.trigger('g:navigateTo', girder.views.journal_index);
+    girder.events.trigger('g:navigateTo', girder.views.journal_index,{},{layout: girder.Layout.EMPTY});
 });
 
