@@ -1,0 +1,24 @@
+div(class="Wrapper")
+  div(class="Content")
+    div(class="ContentWithRightPanel")
+      div(class="Panel")
+        h4 Resources
+          ul
+            li
+              a(href="") Download
+        h4 Export citation:
+        h4 Statistics:
+        h4 Information
+        h4 Share
+      div(class="MainContent")
+        div#publication
+          br
+          div(class="title").
+            #{info.name}
+          div(class="authors").
+            #{info.creatorId}
+          div(class="institution").
+          div(class="journal").
+          div(class="submittedby").
+          div(class="abstract").
+            #{info.description}
