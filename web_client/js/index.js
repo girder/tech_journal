@@ -1,46 +1,59 @@
 girder.views.journal_index = girder.View.extend({
     initialize: function () {
-      /*  girder.restRequest({
+        girder.restRequest({
             type: 'GET',
             path: 'system/setting',
             data: {
                 list: JSON.stringify([
-                    'worker.broker',
-                    'worker.backend'
+                    'technical_journal.default_journal',
                 ])
             }
         }).done(_.bind(function (resp) {
-            this.render();
-        }, this));*/
-           this.render(); 
+            console.log(resp)
+            console.log(resp['technical_journal.default_journal'])
+            girder.restRequest({
+                type: 'GET',
+                path: 'collection',
+                params: {
+                    id: resp['technical_journal.default_journal']
+                    }
+
+            }).done(_.bind(function (issueResp) {
+               for (issue in issueResp) {
+                  girder.restRequest({
+                      type: 'GET',
+                      path: 'folder',
+                      data: {
+                          parentType: "collection",
+                          parentId: issueResp[issue]['_id']
+                          }
+                  }).done(_.bind(function (subList) {
+                       for (sub in subList) {
+                          girder.restRequest({
+                              type: 'GET',
+                              path: 'folder',
+                              data: {
+                                  parentType: "folder",
+                                  parentId: subList[sub]['_id']
+                                  }
+                          }).done(_.bind(function (subData) {
+                              console.log(subData);
+                              console.log(subData[0]);
+                              this.render(subData);
+                          }, this));
+                       }  // End individual submission data query
+                  }, this));
+               }  //End getting submissions within issues
+            }, this));// End getting issues within collections
+        }, this));  // End getting of OTJ Collection value setting
     },
-    render: function () {
-        this.$el.html(girder.templates.journal_index());
+    render: function (subData) {
+        this.$el.html(girder.templates.journal_index({info:subData}));
         return this;
-    },
-    _saveSettings: function (settings) {
-        girder.restRequest({
-            type: 'PUT',
-            path: 'system/setting',
-            data: {
-                list: JSON.stringify(settings)
-            },
-            error: null
-        }).done(_.bind(function (resp) {
-            girder.events.trigger('g:alert', {
-                icon: 'ok',
-                text: 'Settings saved.',
-                type: 'success',
-                timeout: 4000
-            });
-        }, this)).error(_.bind(function (resp) {
-            this.$('#g-journal-settings-error-message').text(
-                resp.responseJSON.message);
-        }, this));
     }
 });
 
-girder.router.route('plugins/journal/journal', 'journalIndex', function () {
+girder.router.route('plugins/journal/journal', 'journalIndex', function() {
     girder.events.trigger('g:navigateTo', girder.views.journal_index);
 });
 

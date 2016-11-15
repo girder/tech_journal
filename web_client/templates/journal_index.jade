@@ -3,23 +3,23 @@ mixin searchEntry(info)
     table(style="width:99%;")
       tr
         td(style="width:100px;height:98px;vertical-align: middle;text-align: center;")
-          img(class="ResultLogo" src="/journal/journal/view/logo/?revisionId=id&size=64")
-          img(class="ResultLogo" src="/journal/privateModules/journal/public/images/journal.gif")
+          //img(class="ResultLogo" src="/journal/journal/view/logo/?revisionId=id&size=64")
+          //img(class="ResultLogo" src="/journal/privateModules/journal/public/images/journal.gif")
           div( class="CertifiedWrapper")
-            img(style='border:none;' src="/journal/privateModules/journal/public/images/check.gif")
+            //img(style='border:none;' src="/journal/privateModules/journal/public/images/check.gif")
             Certified
             span(class="CertifiedLevel" style="color:green")
         td( style="vertical-align: top;")
           div(class="ResultSubDescription")
                 statistics
           div( class="ResultTop")
-            a(class="resourceLink" href="/journal/journal/view/{id}")
-            span(class="ResultTitle")
-              title
-          div(class="ResultAuthors")
-            authors
-          div( class="ResultDescription")
-            description
+            a(class="resourceLink" href="/journal/journal/view/")
+            span(class="ResultTitle").
+              #{info.name}
+          div(class="ResultAuthors").
+            #{info.creatorId}
+          div( class="ResultDescription").
+            #{info.description}
 
 div(class="Wrapper")
   div(class="Content")
@@ -42,6 +42,8 @@ div(class="Wrapper")
           div(class="hidable")
         div(class="SearchResultsHeader")
         div(class="searchResults")
+          each item in info
+            +searchEntry(item)
         div#showMoreResults
           a
             Show more results
