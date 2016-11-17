@@ -1,0 +1,153 @@
+include journal_menu_bar
+
+div(class="Wrapper")
+  div(class="Content")
+    div(class="viewMain")
+      h3 Manage Submission
+      div#submission
+        form#submitForm(class="genericForm" data-validate="parsley" method="POST" action="")
+            table(width="100%")
+              tbody
+               tr
+                 td
+                   div(class="submission")
+                     div(class="title") Title
+                       span(style="color:#A60000;").
+                         *
+                     div(class="caption").
+                       Main title of your submission
+               tr
+                 td
+                   textarea#titleEntry(class="smallInput parsley-validated" name="title" data-rangelength="[1-200]" data-reqired="true")
+               tr
+                 td
+                   div(class="submission")
+                     div(class="title") Authors
+                       span(style="color:#A60000;").
+                         *
+               tr
+                 td
+                   div#authors
+                     div(class="list-item")
+                       input(class="parsley-validated" data-reqired="true" value=""
+                             placeholder="Firstname" style="width:150px;" name="firstname[0].a") 
+                       input(class="parsley-validated" data-reqired="true" value=""
+                             placeholder="Lastname" style="width:150px;" name="lastname[0].b")
+                       a(class="list-remove" href="#" style="display:none;") Remove
+                     a(class="list-item" href="#") Add an author
+               tr
+                 td
+                   div(class="submission")
+                     div(class="title") Institution
+                       span(style="color:#A60000;").
+                         *
+                     div(class="caption").
+                       Institution of the principal author
+               tr
+                 td
+                   textarea(class="smallInput parsley-validated" name="institution" data-reqired="true")
+               tr
+                 td
+                   div(class="submission")
+                     div(class="title") Abstract
+                       span(style="color:#A60000;").
+                         *
+               tr
+                 td
+                   textarea#abstractEntry(class="bigInput parsley-validated" name="description" data-reqired="true")
+               tr
+                 td
+                   div(class="submission")
+                     div(class="title") Related Work
+                     div(class="caption").
+                       Describe if your article has some references to previously published papers
+               tr
+                 td
+                   textarea(class="bigInput" name="related")
+               tr
+                 td
+                   div(class="submission")
+                     div(class="title") Type of submission
+                       span(style="color:#A60000;").
+                         *
+               tr
+                 td
+                   select(class="parsely-validated" data-required="true" name="type")
+                     option(value="0") General
+                     option(value="1") Publication
+                     option(value="2") Tutorial
+                     option(value="3") Software
+                     option(value="4") Plugin
+                     option(value="5") Dataset
+               tr
+                 td
+                   div(class="submission")
+                     div(class="title") Category
+                       span(style="color:#A60000;").
+                         *
+                     div(class="caption").
+                       Please select one or multiple categories
+               tr
+                 td
+
+               tr
+                 td
+                   div(class="submission")
+                     div(class="title") Tags
+                       span(style="color:#A60000;").
+                         *
+               tr
+                 td
+                   div#tags(class="ui-autocomplete-input")
+                     div(class="list-item")
+                       input(class="parsley-validated" data-reqired="true" value=""
+                             placeholder="Tag" style="width:150px;" name="tag[0].tag")
+                       a(class="list-remove" href="#" style="display:none;") Remove
+                     a(class="list-item" href="#") Add a tag
+               tr
+                 td
+                   div(class="submission")
+                     div(class="title") Copyright and Disclaimer
+               tr
+                 td#copyrightWrapper
+                   span Do you have the permission to submit the content of this article?
+                   span(style="color:#A60000;").
+                         *
+                   input#PubPermissionsYes(class="parsley-validated" type="radio" value="yes"
+                                        name="permission" data-required="true")
+                   label(for="PubPermissionsYes") Yes
+                   input#PubPermissionsNo(class="parsley-validated" type="radio" value="No"
+                                        name="permission" data-required="true")
+                   label(for="PubPermissionsYes") No
+                   br
+                   span If submitting on behalf of a corporation, Do you accept the
+                   a(href="") Corporate Contributor Licensing Agreement
+                   | ?
+                   span(style="color:#A60000;").
+                         *
+                   input#PubClaYes(class="parsley-validated" type="radio" value="yes"
+                                        name="cla" data-required="true")
+                   label(for="PubClaYes") Yes
+                   input#PubClaNo(class="parsley-validated" type="radio" value="No"
+                                        name="cla" data-required="true")
+                   label(for="PubClaNo") No
+                   input#PubClaInd(class="parsley-validated" type="radio" value="No"
+                                        name="cla" data-required="true")
+                   label(for="PubClaInd") Submit as Individual
+                   br
+                   span Copyright holder:
+                   textarea(class="smallInput" name="copyright" style="width:400px;")
+                   br
+                   span Grant/Tracking number:
+                   textarea(class="smallInput" name="grant" style="width:400px;")
+                   br
+                   span Select a disclaimer:
+                   select(name="disclaimer")
+                     //+addDisclaimer()
+               tr
+                 td
+                   br
+                   input(type="submit" value="Next >" style="width:150px;")
+    div#licenseWrapper(style="display:none")
+    div(class="clear")
+    div(class="Footer")

@@ -1,0 +1,31 @@
+include journal_menu_bar
+
+div(class="Wrapper")
+  div(class="Content")
+    div(class="viewMain")
+      h3 Manage Files
+      p.
+        This article will be assigned the following handle:
+        Note that the handle will only be activated when the article is accepted for publication
+        The purpose of this page is to upload the documents and datasets related to your article
+        You can also upload a logo which will be shown on the article's page
+      select#typeFile
+        option
+        option(value=1) Thumbnail (Logo)
+        option(value=2) Source Code
+        option(value=3) Paper
+        option(value=4) Data
+        option(value=5) Other
+        option(value=6) Github Repository
+        option(value=7) Major Technique paper for reference
+        option(value=8) Testing Code
+      br
+      br
+      div#uploadContentBlock
+      div#githubContentBlock
+      input#hiddenSourceLicense(type="hidden" value="0" name="source-license")
+      input#hiddenSourceLicenseText(type="hidden" value="No License Specified" name="source-license-text")
+      input#hiddenAttributionPolicy(type="hidden" value="0" name="attribution-policy")
+      input#hiddenSendNotificationEmail(type="hidden" value="0" name="send-email")
+    div(class="clear")
+    div(class="Footer")
