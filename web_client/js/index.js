@@ -1,5 +1,6 @@
 girder.views.journal_index = girder.View.extend({
     initialize: function () {
+        var totalData=[]
         girder.restRequest({
             type: 'GET',
             path: 'system/setting',
@@ -37,9 +38,10 @@ girder.views.journal_index = girder.View.extend({
                                   parentId: subList[sub]['_id']
                                   }
                           }).done(_.bind(function (subData) {
-                              console.log(subData);
-                              console.log(subData[0]);
-                              this.render(subData);
+                               for(entry in subData) {
+                                   totalData.push(subData[entry]);
+                               }
+                               this.render(totalData);
                           }, this));
                        }  // End individual submission data query
                   }, this));
