@@ -6,6 +6,20 @@ girder.views.journal_submit = girder.View.extend({
                 "subName":this.$('#titleEntry').val().trim(),
                 "subDescription": this.$('#abstractEntry').val().trim()
                 })
+        },
+        'click #authorAdd': function (event) {
+            event.preventDefault();
+            this.$("#authors").append(girder.templates.journal_author_entry({info: "1"}))
+        },
+        'click #removeAuthor': function(event){
+            this.$(event.currentTarget.parentElement).remove();
+        },
+        'click #tagAdd': function (event) {
+            event.preventDefault();
+            this.$("#tags").append(girder.templates.journal_tag_entry({info: "1"}))
+        },
+        'click #removeTag': function(event){
+            this.$(event.currentTarget.parentElement).remove();
         }
     },
     initialize: function (subId) {
