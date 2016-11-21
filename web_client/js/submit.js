@@ -5,7 +5,7 @@ girder.views.journal_submit = girder.View.extend({
             this._createSubmission({
                 "subName":this.$('#titleEntry').val().trim(),
                 "subDescription": this.$('#abstractEntry').val().trim()
-                })
+            })
         },
         'click #authorAdd': function (event) {
             event.preventDefault();
@@ -28,7 +28,6 @@ girder.views.journal_submit = girder.View.extend({
             type: 'GET',
             path: 'folder/'+ this.parentId
         }).done(_.bind(function (resp) {
-            console.log(resp)
             this.render(resp)
         }, this));  // End getting of OTJ Collection value setting
     },
@@ -36,20 +35,33 @@ girder.views.journal_submit = girder.View.extend({
         this.$el.html(girder.templates.journal_submit({info:subResp}));
         return this;
     },
-    _createSubmission: function (data) {
+    _createSubmission: function (inData) {
+            var subData = {
+                'institution': this.$('#institutionEntry').val().trim(),
+                'related': this.$('#relatedEntry').val().trim(),
+                'type': this.$('#typeEntry').val().trim()
+            };
         girder.restRequest({
             type: 'POST',
             path: 'folder',
             data: {
                 parentId: this.parentId,
                 parentType: "folder",
-                name: data.subName,
-                description: data.description
+                name: inData.subName,
+                description: inData.subDescription
             },
             error: null
         }).done(_.bind(function (resp) {
-           console.log(resp);
-           girder.events.trigger('g:navigateTo', girder.views.journal_upload,{id:resp},{layout: girder.Layout.EMPTY});
+           girder.restRequest({
+               type: 'PUT',
+               path: 'folder/'+resp._id+'/metadata',
+               contentType: 'application/json',
+               data: JSON.stringify(subData),
+               error:null
+           }).done(_.bind(function (respMD) {
+               girder.router.navigate('plugins/journal/journal/upload?id='+respMD._id,
+                                      {trigger: true});
+             }, this));
         }, this));
     }
 });

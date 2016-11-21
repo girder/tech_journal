@@ -5,7 +5,7 @@ girder.views.journal_upload = girder.View.extend({
         }
     },
     initialize: function (subId) {
-        this.parentId= subId.id._id;
+        this.parentId= subId.id.id;
         girder.restRequest({
             type: 'GET',
             path: 'folder/'+ this.parentId

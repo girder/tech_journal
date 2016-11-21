@@ -44,7 +44,7 @@ div(class="Wrapper")
                        Institution of the principal author
                tr
                  td
-                   textarea(class="smallInput parsley-validated" name="institution" data-reqired="true")
+                   textarea#institutionEntry(class="smallInput parsley-validated" name="institution" data-reqired="true")
                tr
                  td
                    div(class="submission")
@@ -62,7 +62,7 @@ div(class="Wrapper")
                        Describe if your article has some references to previously published papers
                tr
                  td
-                   textarea(class="bigInput" name="related")
+                   textarea#relatedEntry(class="bigInput" name="related")
                tr
                  td
                    div(class="submission")
@@ -71,7 +71,7 @@ div(class="Wrapper")
                          *
                tr
                  td
-                   select(class="parsely-validated" data-required="true" name="type")
+                   select#typeEntry(class="parsely-validated" data-required="true" name="type")
                      option(value="0") General
                      option(value="1") Publication
                      option(value="2") Tutorial
