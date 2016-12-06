@@ -1,5 +1,13 @@
 girder.views.journal_view = girder.View.extend({
+
+    events: {
+       'click #downloadLink': function(event) {
+           girder.router.navigate('plugins/journal/journal/download?id='+this.parentId,
+                                      {trigger: true});
+       }
+    },
     initialize: function (subId) {
+        this.parentId= subId.id.id;
         girder.restRequest({
             type: 'GET',
             path: 'folder/'+ subId.id.id

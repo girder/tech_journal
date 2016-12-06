@@ -1,0 +1,14 @@
+include journal_menu_bar
+div(class="Wrapper")
+  div(class="Content")
+    div#downloadContent
+      h3 Download
+      a(href="#plugins/journal/journal/view?id="+parent) Back to article
+      br
+      br
+      ul
+        if paperDownloadUrl
+          li
+            a#paperDownload(href=paperDownloadUrl) Download Paper
+        li
+          a#fullDownload(href=parentDownloadUrl) Download All
