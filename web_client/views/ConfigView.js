@@ -1,4 +1,13 @@
-girder.views.journal_configView = girder.View.extend({
+import _ from 'underscore';
+
+import PluginConfigBreadcrumbWidget from 'girder/views/widgets/PluginConfigBreadcrumbWidget';
+import View from 'girder/views/View';
+import events from 'girder/events';
+import { restRequest } from 'girder/rest';
+
+import ConfigViewTemplate from '../templates/journal_configView.jade';
+
+var configView = View.extend({
     events: {
         'submit #configForm': function (event) {
             event.preventDefault();
@@ -13,7 +22,7 @@ girder.views.journal_configView = girder.View.extend({
             },{
                 key: 'technical_journal.default_layout',
                 value: this.$('#default_layout').val().trim()
-            },            
+            },
             {
                 key: 'technical_journal.base_handle',
                 value: this.$('#base_handle').val().trim()
@@ -26,7 +35,8 @@ girder.views.journal_configView = girder.View.extend({
     },
 
     initialize: function () {
-        girder.restRequest({
+        console.log("IN INIT");
+        restRequest({
             type: 'GET',
             path: 'system/setting',
             data: {
@@ -50,27 +60,24 @@ girder.views.journal_configView = girder.View.extend({
                 resp['technical_journal.base_handle']);
             this.$('#old_url').val(
                 resp['technical_journal.old_url']);
-            this.render();
-        }, this)); 
+        }, this));
     },
     render: function () {
-        this.$el.html(girder.templates.journal_configView());
+        this.$el.html(ConfigViewTemplate());
 
         if (!this.breadcrumb) {
-            this.breadcrumb = new girder.views.PluginConfigBreadcrumbWidget({
+            this.breadcrumb = new PluginConfigBreadcrumbWidget({
                 pluginName: 'Technical Journal',
                 el: this.$('.g-config-breadcrumb-container'),
                 parentView: this
-            });
+            }).render();
         }
-
-        this.breadcrumb.render();
 
         return this;
     },
     _saveSettings: function (settings) {
         console.log(settings)
-        girder.restRequest({
+        restRequest({
             type: 'PUT',
             path: 'system/setting',
             data: {
@@ -78,7 +85,7 @@ girder.views.journal_configView = girder.View.extend({
             },
             error: null
         }).done(_.bind(function (resp) {
-            girder.events.trigger('g:alert', {
+            events.trigger('g:alert', {
                 icon: 'ok',
                 text: 'Settings saved.',
                 type: 'success',
@@ -91,8 +98,4 @@ girder.views.journal_configView = girder.View.extend({
     }
 });
 
-girder.router.route('plugins/journal/config', 'journalConfig', function () {
-    girder.events.trigger('g:navigateTo', girder.views.journal_configView);
-});
-
-girder.exposePluginConfig('technical_journal', 'plugins/journal/config');
+export default configView;

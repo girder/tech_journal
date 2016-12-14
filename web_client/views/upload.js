@@ -1,13 +1,20 @@
-
-function submitCheck()
-  {
-  this.$('input[type=submit]').attr('disabled',!this.$('#acceptRights').is(':checked') || !this.$('#acceptLicense').is(':checked') ||
-  ( this.$('#acceptAttributionPolicy').is(":visible") && !this.$('#acceptAttributionPolicy').is(':checked')) ||
-   (this.$("#otherLicenseInput").is(":visible") && !this.$("#otherLicenseInput").val() ));
-  }
-
 var fileTypes = ['','Thumbnail','Source','Paper','Data','Other','Github','Reference','Testing']
-girder.views.journal_upload = girder.View.extend({
+import _ from 'underscore';
+
+import PluginConfigBreadcrumbWidget from 'girder/views/widgets/PluginConfigBreadcrumbWidget';
+import View from 'girder/views/View';
+import events from 'girder/events';
+import router from 'girder/router';
+import FolderModel from 'girder/models/FolderModel';
+import UploadWidget from 'girder/views/widgets/UploadWidget';
+import { handleClose, handleOpen } from 'girder/dialog';
+import { restRequest } from 'girder/rest';
+
+import UploadViewTemplate from '../templates/journal_upload.jade';
+import UploadEntryTemplate from '../templates/journal_upload_entry.jade';
+
+
+var uploadView = View.extend({
     events: {
         'submit #uploadForm': function (event) {
             event.preventDefault();
@@ -33,11 +40,11 @@ girder.views.journal_upload = girder.View.extend({
         'change #acceptAttributionPolicy': function(event) {
             var acceptAttributionPolicyIsSelected = this.$("#acceptAttributionPolicy").is(":visible") &&  this.$("#acceptAttributionPolicy").is(':checked');
             this.$('#hiddenAttributionPolicy').attr('value', acceptAttributionPolicyIsSelected ? 1 : 0);
-            submitCheck();
+            this.submitCheck();
         },
         // Change function for updating the "Right to distribute" and submit status
         'change #acceptRights': function(event) {
-            submitCheck();
+            this.submitCheck();
         },
         // Change function for updating the submissions licensing and submit status
         'change #acceptLicense': function(event) {
@@ -66,7 +73,7 @@ girder.views.journal_upload = girder.View.extend({
               }
             var acceptAttributionPolicyIsSelected = $('#acceptAttributionPolicy').is(":visible") && $('#acceptAttributionPolicy').is(':checked');
             this.$('#hiddenAttributionPolicy').attr('value', acceptAttributionPolicyIsSelected ? 1 : 0);
-            submitCheck();
+            this.submitCheck();
         },
 
         'change #licenseChoice': function(event) {
@@ -96,7 +103,7 @@ girder.views.journal_upload = girder.View.extend({
               }
             var acceptAttributionPolicyIsSelected = this.$('#acceptAttributionPolicy').is(":visible") && this.$('#acceptAttributionPolicy').is(':checked');
       this.$('#hiddenAttributionPolicy').attr('value', acceptAttributionPolicyIsSelected ? 1 : 0);
-      submitCheck()
+      this.submitCheck()
         },
 
         'change #sendNotificationEmail': function(event) {
@@ -107,67 +114,80 @@ girder.views.journal_upload = girder.View.extend({
         'change #otherLicenseInput': function(event) {
             var otherLicenseIsFilled = this.$("#otherLicenseInput").is(":visible") && this.$("#otherLicenseInput").val();
             this.$('#hiddenSourceLicenseText').attr('value', otherLicenseIsFilled ? this.$("#otherLicenseInput").val() : "Other");
-            submitCheck();
+            this.submitCheck();
         },
     },
     initialize: function (subId) {
         this.parentId= subId.id.id;
-        girder.restRequest({
+        restRequest({
             type: 'GET',
             path: 'folder/'+ this.parentId
         }).done(_.bind(function (resp) {
             this.parent = resp;
-            girder.restRequest({
+            this.render();
+            /*restRequest({
                 type: 'GET',
                 path: 'item?folderId='+ this.parentId
             }).done(_.bind(function (itemResp) {
-                this.render();
-                for(index in itemResp) {
-                  this.$('#uploadTable').append(girder.templates.journal_upload_entry({info: itemResp[index]}));
+                for(var index in itemResp) {
+                  this.$('#uploadTable').append(UploadEntryTemplate({info: itemResp[index]}));
                 }
-            }, this));
+            }, this));*/
         }, this));
     },
     render: function () {
-        this.$el.html(girder.templates.journal_upload());
+        this.$el.html(UploadViewTemplate());
+        console.log($("#uploadTable"));
         return this;
+    },
+
+    submitCheck: function () {
+      this.$('input[type=submit]').attr('disabled',!
+          this.$('#acceptRights').is(':checked') ||
+          !this.$('#acceptLicense').is(':checked') ||
+          (this.$('#acceptAttributionPolicy').is(":visible") &&
+          !this.$('#acceptAttributionPolicy').is(':checked')) ||
+          (this.$("#otherLicenseInput").is(":visible") &&
+          !this.$("#otherLicenseInput").val() )
+      );
     },
     _uploadFiles: function (data) {
         //taken from HierarchyWidget.js
         var container = $('#g-dialog-container');
-        var model = new girder.models.FolderModel()
+        var model = new FolderModel()
          model.set({ _id: this.parentId})
 
-        new girder.views.UploadWidget({
+        new UploadWidget({
             el: container,
             parent: model,
             parentType: this.parentType,
             parentView: this
         }).on('g:uploadFinished', function (retInfo) {
-            girder.dialogs.handleClose('upload');
+            handleClose('upload');
             //upload the information to the submission value
             // show the information in the table
             var subData = {
                 'type': fileTypes[this.$('#typeFile').val().trim()]
             };
-            girder.restRequest({
+           restRequest({
                 type: 'GET',
                 path: 'item?folderId='+ this.parentId +"&name=" +retInfo.files[0].name
             }).done(_.bind(function(resp) {
-                girder.restRequest({
+                restRequest({
                     type: 'PUT',
                     path: 'item/'+resp[0]._id+'/metadata',
                     contentType: 'application/json',
                     data: JSON.stringify(subData),
                     error:null
                 }).done(_.bind(function (respMD) {
-                      this.$('#uploadTable').append(girder.templates.journal_upload_entry({info: respMD}));
+                      this.$('#uploadTable').append(UploadEntryTemplate({info: respMD}));
+                      this.$('#uploadQuestions').show();
                }, this));
            }, this));
         }, this).render();
     },
     _deleteFile: function(itemEntry) {
-        girder.restRequest({
+        restRequest({
             type: 'DELETE',
             path: 'item/'+itemEntry.attributes.getNamedItem("key").nodeValue,
             error:null
@@ -177,18 +197,17 @@ girder.views.journal_upload = girder.View.extend({
     },
 
     _appendData: function(subData) {
-        girder.restRequest({
+        restRequest({
                type: 'PUT',
                path: 'folder/'+this.parentId+'/metadata',
                contentType: 'application/json',
                data: JSON.stringify(subData),
                error:null
            }).done(_.bind(function (respMD) {
-               girder.router.navigate('plugins/journal/journal/view?id='+respMD._id,
+               router.navigate('plugins/journal/journal/view?id='+respMD._id,
                                       {trigger: true});
              }, this));
     }
 });
-girder.router.route('plugins/journal/journal/upload', 'journalUpload', function(id) {
-    girder.events.trigger('g:navigateTo', girder.views.journal_upload,{id: id},{layout: girder.Layout.EMPTY});
-});
+
+export default uploadView;

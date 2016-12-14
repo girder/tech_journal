@@ -1,6 +1,6 @@
 {
-  "name": "Technical Journal plugin", 
-  "description": "An attempt to generate a plug in for the OTJ",
-  "version": "0.0.1",
-  "dependencies":[]
+    "name": "Technical Journal plugin",
+    "description": "An attempt to generate a plug in for the OTJ",
+    "version": "0.0.1",
+    "dependencies":[]
 }

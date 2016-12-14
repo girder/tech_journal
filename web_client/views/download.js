@@ -1,19 +1,30 @@
-girder.views.journal_download = girder.View.extend({
+import _ from 'underscore';
+
+import PluginConfigBreadcrumbWidget from 'girder/views/widgets/PluginConfigBreadcrumbWidget';
+import View from 'girder/views/View';
+import events from 'girder/events';
+import { restRequest } from 'girder/rest';
+import { apiRoot } from 'girder/rest';
+
+import DownloadViewTemplate from '../templates/journal_download.jade';
+
+
+var downloadView = View.extend({
     events: {
     },
 
     initialize: function (subId) {
         this.parentId= subId.id.id;
-        girder.restRequest({
+        restRequest({
             type: 'GET',
             path: 'folder/'+ this.parentId
         }).done(_.bind(function (resp) {
             this.parent = resp;
-            girder.restRequest({
+            restRequest({
                 type: 'GET',
                 path: 'item?folderId='+ this.parentId
             }).done(_.bind(function (itemResp) {
-                for(index in itemResp) {
+                for(var index in itemResp) {
                   console.log(itemResp[index]);
                   if(itemResp[index].meta.type=="Paper") {
                     this.paperItem = itemResp[index];
@@ -26,12 +37,12 @@ girder.views.journal_download = girder.View.extend({
     render: function (paperItem) {
         var paperDownloadUrl =
             paperItem && paperItem._id ?
-            girder.apiRoot + '/item/' + paperItem._id + '/download'
+            apiRoot + '/item/' + paperItem._id + '/download'
             : null;
         var parentDownloadUrl =
-            girder.apiRoot + '/folder/' +this.parentId+ '/download';
+            apiRoot + '/folder/' +this.parentId+ '/download';
 
-        this.$el.html(girder.templates.journal_download({
+        this.$el.html(DownloadViewTemplate({
             parent: this.parentId,
             parentDownloadUrl: parentDownloadUrl,
             paperDownloadUrl: paperDownloadUrl
@@ -40,6 +51,4 @@ girder.views.journal_download = girder.View.extend({
     },
 });
 
-girder.router.route('plugins/journal/journal/download', 'journalDownload', function(id) {
-    girder.events.trigger('g:navigateTo', girder.views.journal_download,{id: id},{layout: girder.Layout.EMPTY});
-});
+export default downloadView;

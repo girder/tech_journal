@@ -38,38 +38,39 @@ div(class="Wrapper")
             th Action
         tbody#uploadTable
       br
-      input#acceptRights(class="checkbox" type="checkbox" value=1)
-      label(for="acceptRights" style='display:inline;').
-        I certify that I have the right to distribute these files
-      br
-      input#acceptLicense(class="checkbox" type="checkbox" value=1)
-      label(for="acceptLicense" style='display:inline;')
-        | I certify that all source code files/repositories uploaded here are under
-        select#licenseChoice
-          option(value=1) Apache 2
-          option(value=2) Public Domain
-          option(value=4) GPL (Any Version)
-          option(value=5) LGPL (Any Version)
-          option(value=6) BSD
-          option(value=3) Other
-        | license
-      br
-      label#otherLicenseInputLabel(for="otherLicenseInput" style='display:none;')
-        | Enter 'Other' License:
-      input#otherLicenseInput(name="source-license-text" type="text" style="display:none;")
-      br
-      input#acceptAttributionPolicy(class="checkbox" type="checkbox" value=1
-                                    style='display:none;')
-      label#acceptAttributionPolicyLabel(for="acceptAttributionPolicy" style='display:none;')
-        | I certify that I have read and followed the
-        a(target="_blank" href="http://www.osehra.org/sites/default/files/TD-04-01_ContributedSoftwareAttributionPolicy.pdf") Contributed Software Attribution Policy
-      br
-      br
-      form#uploadForm(method="POST" action="")
-        input(type="submit" value='Publish >' name="finish" disabled="disabled")
-        input#hiddenSourceLicense(type="hidden" value="0" name="source-license")
-        input#hiddenSourceLicenseText(type="hidden" value="Other" name="source-license-text")
-        input#hiddenAttributionPolicy(type="hidden" value="0" name="attribution-policy")
-        input#hiddenSendNotificationEmail(type="hidden" value="0" name="send-email")
+      div#uploadQuestions(style="display:none;")
+          input#acceptRights(class="checkbox" type="checkbox" value=1)
+          label(for="acceptRights" style='display:inline;').
+            I certify that I have the right to distribute these files
+          br
+          input#acceptLicense(class="checkbox" type="checkbox" value=1)
+          label(for="acceptLicense" style='display:inline;')
+            | I certify that all source code files/repositories uploaded here are under
+            select#licenseChoice
+              option(value=1) Apache 2
+              option(value=2) Public Domain
+              option(value=4) GPL (Any Version)
+              option(value=5) LGPL (Any Version)
+              option(value=6) BSD
+              option(value=3) Other
+            | license
+          br
+          label#otherLicenseInputLabel(for="otherLicenseInput" style='display:none;')
+            | Enter 'Other' License:
+          input#otherLicenseInput(name="source-license-text" type="text" style="display:none;")
+          br
+          input#acceptAttributionPolicy(class="checkbox" type="checkbox" value=1
+                                        style='display:none;')
+          label#acceptAttributionPolicyLabel(for="acceptAttributionPolicy" style='display:none;')
+            | I certify that I have read and followed the
+            a(target="_blank" href="http://www.osehra.org/sites/default/files/TD-04-01_ContributedSoftwareAttributionPolicy.pdf") Contributed Software Attribution Policy
+          br
+          br
+          form#uploadForm(method="POST" action="")
+            input(type="submit" value='Publish >' name="finish" disabled="disabled")
+            input#hiddenSourceLicense(type="hidden" value="0" name="source-license")
+            input#hiddenSourceLicenseText(type="hidden" value="Other" name="source-license-text")
+            input#hiddenAttributionPolicy(type="hidden" value="0" name="attribution-policy")
+            input#hiddenSendNotificationEmail(type="hidden" value="0" name="send-email")
     div(class="clear")
     div(class="Footer")

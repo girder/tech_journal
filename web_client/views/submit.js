@@ -1,4 +1,15 @@
-girder.views.journal_submit = girder.View.extend({
+import _ from 'underscore';
+
+import PluginConfigBreadcrumbWidget from 'girder/views/widgets/PluginConfigBreadcrumbWidget';
+import View from 'girder/views/View';
+import events from 'girder/events';
+import router from 'girder/router';
+import { restRequest } from 'girder/rest';
+
+import SubmitViewTemplate from '../templates/journal_submit.jade';
+
+
+var SubmitView = View.extend({
     events: {
         'submit #submitForm': function (event) {
             event.preventDefault();
@@ -24,7 +35,7 @@ girder.views.journal_submit = girder.View.extend({
     },
     initialize: function (subId) {
         this.parentId= subId.id.id;
-        girder.restRequest({
+        restRequest({
             type: 'GET',
             path: 'folder/'+ this.parentId
         }).done(_.bind(function (resp) {
@@ -32,7 +43,7 @@ girder.views.journal_submit = girder.View.extend({
         }, this));  // End getting of OTJ Collection value setting
     },
     render: function (subResp) {
-        this.$el.html(girder.templates.journal_submit({info:subResp}));
+        this.$el.html(SubmitViewTemplate({info:subResp}));
         return this;
     },
     _createSubmission: function (inData) {
@@ -41,7 +52,7 @@ girder.views.journal_submit = girder.View.extend({
                 'related': this.$('#relatedEntry').val().trim(),
                 'type': this.$('#typeEntry').val().trim()
             };
-        girder.restRequest({
+       restRequest({
             type: 'POST',
             path: 'folder',
             data: {
@@ -52,21 +63,19 @@ girder.views.journal_submit = girder.View.extend({
             },
             error: null
         }).done(_.bind(function (resp) {
-           girder.restRequest({
+           restRequest({
                type: 'PUT',
                path: 'folder/'+resp._id+'/metadata',
                contentType: 'application/json',
                data: JSON.stringify(subData),
                error:null
            }).done(_.bind(function (respMD) {
-               girder.router.navigate('plugins/journal/journal/upload?id='+respMD._id,
+               router.navigate('plugins/journal/journal/upload?id='+respMD._id,
                                       {trigger: true});
              }, this));
         }, this));
     }
 });
 
-girder.router.route('plugins/journal/journal/submit', 'journalSubmit', function(id) {
-    girder.events.trigger('g:navigateTo', girder.views.journal_submit,{id: id},{layout: girder.Layout.EMPTY});
-});
+export default SubmitView;
 

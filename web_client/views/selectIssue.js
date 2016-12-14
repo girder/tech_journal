@@ -1,6 +1,17 @@
-girder.views.journal_selectIssue = girder.View.extend({
+import _ from 'underscore';
+
+import PluginConfigBreadcrumbWidget from 'girder/views/widgets/PluginConfigBreadcrumbWidget';
+import View from 'girder/views/View';
+import events from 'girder/events';
+import { restRequest } from 'girder/rest';
+
+import SelectIssueViewTemplate from '../templates/journal_select_issue.jade';
+
+
+
+var selectIssueView = View.extend({
     initialize: function (subId) {
-        girder.restRequest({
+        restRequest({
             type: 'GET',
             path: 'system/setting',
             data: {
@@ -9,17 +20,15 @@ girder.views.journal_selectIssue = girder.View.extend({
                 ])
             }
         }).done(_.bind(function (resp) {
-            console.log(resp)
-            console.log(resp['technical_journal.default_journal'])
-            girder.restRequest({
+            restRequest({
                 type: 'GET',
                 path: 'collection',
                 params: {
                     id: resp['technical_journal.default_journal']
                     }
             }).done(_.bind(function (issueResp) {
-                for (issue in issueResp) {
-                    girder.restRequest({
+                for (var issue in issueResp) {
+                    restRequest({
                         type: 'GET',
                         path: 'folder',
                         data: {
@@ -27,7 +36,6 @@ girder.views.journal_selectIssue = girder.View.extend({
                             parentId: issueResp[issue]['_id']
                         }
                     }).done(_.bind(function (subList) {
-                        console.log(subList);
                         this.render(subList);
                     }, this));
                 }
@@ -35,12 +43,10 @@ girder.views.journal_selectIssue = girder.View.extend({
          }, this));
     },
     render: function (subResp) {
-        this.$el.html(girder.templates.journal_select_issue({info:subResp}));
+        this.$el.html(SelectIssueViewTemplate({info:subResp}));
         return this;
     }
 });
 
-girder.router.route('plugins/journal/journal/selectIssue', 'journalSelect', function() {
-    girder.events.trigger('g:navigateTo', girder.views.journal_selectIssue,{},{layout: girder.Layout.EMPTY});
-});
+export default selectIssueView;
 

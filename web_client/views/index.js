@@ -1,7 +1,17 @@
-girder.views.journal_index = girder.View.extend({
+import _ from 'underscore';
+
+import PluginConfigBreadcrumbWidget from 'girder/views/widgets/PluginConfigBreadcrumbWidget';
+import View from 'girder/views/View';
+import events from 'girder/events';
+import { restRequest } from 'girder/rest';
+
+import IndexViewTemplate from '../templates/journal_index.jade';
+
+
+var indexView = View.extend({
     initialize: function () {
         var totalData=[]
-        girder.restRequest({
+        restRequest({
             type: 'GET',
             path: 'system/setting',
             data: {
@@ -10,9 +20,7 @@ girder.views.journal_index = girder.View.extend({
                 ])
             }
         }).done(_.bind(function (resp) {
-            console.log(resp)
-            console.log(resp['technical_journal.default_journal'])
-            girder.restRequest({
+            restRequest({
                 type: 'GET',
                 path: 'collection',
                 params: {
@@ -20,8 +28,8 @@ girder.views.journal_index = girder.View.extend({
                     }
 
             }).done(_.bind(function (issueResp) {
-               for (issue in issueResp) {
-                  girder.restRequest({
+               for (var issue in issueResp) {
+                  restRequest({
                       type: 'GET',
                       path: 'folder',
                       data: {
@@ -29,8 +37,8 @@ girder.views.journal_index = girder.View.extend({
                           parentId: issueResp[issue]['_id']
                           }
                   }).done(_.bind(function (subList) {
-                       for (sub in subList) {
-                          girder.restRequest({
+                       for (var sub in subList) {
+                          restRequest({
                               type: 'GET',
                               path: 'folder',
                               data: {
@@ -38,7 +46,7 @@ girder.views.journal_index = girder.View.extend({
                                   parentId: subList[sub]['_id']
                                   }
                           }).done(_.bind(function (subData) {
-                               for(entry in subData) {
+                               for(var entry in subData) {
                                    totalData.push(subData[entry]);
                                }
                                this.render(totalData);
@@ -50,12 +58,10 @@ girder.views.journal_index = girder.View.extend({
         }, this));  // End getting of OTJ Collection value setting
     },
     render: function (subData) {
-        this.$el.html(girder.templates.journal_index({info:subData}));
+        this.$el.html(IndexViewTemplate({info:subData}));
         return this;
     }
 });
 
-girder.router.route('plugins/journal/journal', 'journalIndex', function() {
-    girder.events.trigger('g:navigateTo', girder.views.journal_index,{},{layout: girder.Layout.EMPTY});
-});
+export default indexView;
 
