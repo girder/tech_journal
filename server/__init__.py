@@ -17,10 +17,19 @@
 #  limitations under the License.
 ###############################################################################
 import six
+import json
 
+from girder.api.describe import Description, describeRoute
+from girder.api.rest import boundHandler, Resource, RestException, filtermodel, loadmodel, \
+    setResponseHeader
+from girder.api import access
+from girder.constants import AccessType, TokenScope
+from girder.models.model_base import ValidationException, AccessException
+from girder.utility import ziputil
+from girder.utility.progress import ProgressContext
 from girder import events
-from girder.models.model_base import ValidationException
 from . import constants
+
 
 
 def validateSettings(event):
@@ -30,7 +39,7 @@ def validateSettings(event):
         if val:
             if not isinstance(val, six.string_types):
                 raise ValidationException(
-                    'Provenance Resources must be a string.', 'value')
+                    'Tech Journal Resources must be a string.', 'value')
             # accept comma or space separated lists
             resources = val.replace(",", " ").strip().split()
             # reformat to a comma-separated list
@@ -38,7 +47,51 @@ def validateSettings(event):
     event.preventDefault().stopPropagation()
 
 
+class TechJournal(Resource):
+
+    def __init__(self):
+        super(TechJournal,self).__init__()
+        self.resourceName = 'journal'
+        self.route('GET',(':id','submissions'), self.getAllSubmissions)
+        self.route('GET',(':id','issues'), self.getAllIssues)
+
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @loadmodel(model='collection', level=AccessType.READ)
+    @filtermodel(model='folder')
+    @describeRoute(
+      Description('Get all Issues from a given Journal')
+      .responseClass('Collection')
+      .param('id',"The ID of the Journal (collection) to pull from",paramType='path')
+      .errorResponse('Test error.')
+      .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def getAllIssues(self, collection, params):
+      issues = list(self.model('folder').childFolders(parentType='collection', parent=collection,\
+          user=self.getCurrentUser()))
+      return issues
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @loadmodel(model='collection', level=AccessType.READ)
+    @filtermodel(model='folder')
+    @describeRoute(
+      Description('Get all submissions from a given')
+      .responseClass('Collection')
+      .param('id',"The ID of the Journal (collection) to pull from",paramType='path')
+      .errorResponse('Test error.')
+      .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def getAllSubmissions(self, collection, params):
+      totalData =  list()
+      issues = list(self.model('folder').childFolders(parentType='collection', parent=collection,\
+          user=self.getCurrentUser()))
+      for issue in issues:
+        testInfo = list(self.model('folder').childFolders(parentType='folder', parent=issue,\
+          user=self.getCurrentUser()))
+        for submission in testInfo:
+          totalData.append(submission)
+      return totalData
 def load(info):
+  techJournal = TechJournal()
   events.bind('model.setting.validate', 'journalMain', validateSettings)
-  print "blah"
-  print "balh"
+  info['apiRoot'].journal = techJournal

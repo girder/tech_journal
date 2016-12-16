@@ -4,6 +4,7 @@ import PluginConfigBreadcrumbWidget from 'girder/views/widgets/PluginConfigBread
 import View from 'girder/views/View';
 import events from 'girder/events';
 import { restRequest } from 'girder/rest';
+import { apiRoot } from 'girder/rest';
 
 import IndexViewTemplate from '../templates/journal_index.jade';
 
@@ -22,39 +23,10 @@ var indexView = View.extend({
         }).done(_.bind(function (resp) {
             restRequest({
                 type: 'GET',
-                path: 'collection',
-                params: {
-                    id: resp['technical_journal.default_journal']
-                    }
-
-            }).done(_.bind(function (issueResp) {
-               for (var issue in issueResp) {
-                  restRequest({
-                      type: 'GET',
-                      path: 'folder',
-                      data: {
-                          parentType: "collection",
-                          parentId: issueResp[issue]['_id']
-                          }
-                  }).done(_.bind(function (subList) {
-                       for (var sub in subList) {
-                          restRequest({
-                              type: 'GET',
-                              path: 'folder',
-                              data: {
-                                  parentType: "folder",
-                                  parentId: subList[sub]['_id']
-                                  }
-                          }).done(_.bind(function (subData) {
-                               for(var entry in subData) {
-                                   totalData.push(subData[entry]);
-                               }
-                               this.render(totalData);
-                          }, this));
-                       }  // End individual submission data query
-                  }, this));
-               }  //End getting submissions within issues
-            }, this));// End getting issues within collections
+                path: 'journal/'+resp['technical_journal.default_journal']+'/submissions'
+            }).done(_.bind(function (jrnResp) {
+                this.render(jrnResp);
+            },this));
         }, this));  // End getting of OTJ Collection value setting
     },
     render: function (subData) {

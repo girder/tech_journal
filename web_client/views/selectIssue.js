@@ -10,7 +10,7 @@ import SelectIssueViewTemplate from '../templates/journal_select_issue.jade';
 
 
 var selectIssueView = View.extend({
-    initialize: function (subId) {
+    initialize: function () {
         restRequest({
             type: 'GET',
             path: 'system/setting',
@@ -22,25 +22,11 @@ var selectIssueView = View.extend({
         }).done(_.bind(function (resp) {
             restRequest({
                 type: 'GET',
-                path: 'collection',
-                params: {
-                    id: resp['technical_journal.default_journal']
-                    }
-            }).done(_.bind(function (issueResp) {
-                for (var issue in issueResp) {
-                    restRequest({
-                        type: 'GET',
-                        path: 'folder',
-                        data: {
-                            parentType: "collection",
-                            parentId: issueResp[issue]['_id']
-                        }
-                    }).done(_.bind(function (subList) {
-                        this.render(subList);
-                    }, this));
-                }
-             }, this));
-         }, this));
+                path: 'journal/'+resp['technical_journal.default_journal']+'/issues'
+            }).done(_.bind(function (jrnResp) {
+                this.render(jrnResp);
+            },this));
+        }, this));  // End getting of OTJ Collection value setting
     },
     render: function (subResp) {
         this.$el.html(SelectIssueViewTemplate({info:subResp}));
