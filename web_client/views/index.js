@@ -14,7 +14,7 @@ var indexView = View.extend({
         var totalData=[]
         restRequest({
             type: 'GET',
-            path: 'system/setting',
+            path: 'journal/setting',
             data: {
                 list: JSON.stringify([
                     'technical_journal.default_journal',

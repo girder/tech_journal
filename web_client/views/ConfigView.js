@@ -35,10 +35,9 @@ var configView = View.extend({
     },
 
     initialize: function () {
-        console.log("IN INIT");
         restRequest({
             type: 'GET',
-            path: 'system/setting',
+            path: 'journal/setting',
             data: {
                 list: JSON.stringify([
                     'technical_journal.admin_email',
@@ -79,7 +78,7 @@ var configView = View.extend({
         console.log(settings)
         restRequest({
             type: 'PUT',
-            path: 'system/setting',
+            path: 'journal/setting',
             data: {
                 list: JSON.stringify(settings)
             },

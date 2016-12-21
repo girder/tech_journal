@@ -26,6 +26,7 @@ from girder.api import access
 from girder.constants import AccessType, TokenScope
 from girder.models.model_base import ValidationException, AccessException
 from girder.utility import ziputil
+from girder.utility.model_importer import ModelImporter
 from girder.utility.progress import ProgressContext
 from girder import events
 from . import constants
@@ -54,6 +55,8 @@ class TechJournal(Resource):
         self.resourceName = 'journal'
         self.route('GET',(':id','submissions'), self.getAllSubmissions)
         self.route('GET',(':id','issues'), self.getAllIssues)
+        self.route('PUT',('setting',),self.setJournalSettings)
+        self.route('GET',('setting',),self.getJournalSettings)
 
 
     @access.public(scope=TokenScope.DATA_READ)
@@ -91,6 +94,55 @@ class TechJournal(Resource):
         for submission in testInfo:
           totalData.append(submission)
       return totalData
+
+    @access.admin(scope=TokenScope.DATA_READ)
+    @describeRoute(
+      Description('Set the journal Settings')
+      .param('list', 'A JSON list of objects with key and value representing '
+'a list of settings to set.', required=True)
+      .errorResponse()
+      .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def setJournalSettings(self, params):
+      settings = json.loads(params['list'])
+      for setting in settings:
+          if setting['value'] is None:
+              value = None
+          else:
+              try:
+                  if isinstance(setting['value'], six.string_types):
+                      value = json.loads(setting['value'])
+                  else:
+                      value = setting['value']
+              except ValueError:
+                  value = setting['value']
+
+          if value is None:
+              ModelImporter.model('journal', 'technical_journal').unset(key=setting['key'])
+          else:
+              ModelImporter.model('journal', 'technical_journal').set(key=setting['key'], value=value)
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @describeRoute(
+      Description('get the journal Settings')
+      .param('list', 'A JSON list of objects with key and value representing '
+'a list of settings to set.', required=True)
+      .errorResponse()
+      .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def getJournalSettings(self, params):
+      getFunc = getattr(ModelImporter.model('journal', 'technical_journal'), 'get')
+      funcParams = {}
+      if 'list' in params:
+        try:
+          keys = json.loads(params['list'])
+          if not isinstance(keys, list):
+                  raise ValueError()
+        except ValueError:
+              raise RestException('List was not a valid JSON list.')
+
+        return {k: getFunc(k, **funcParams) for k in keys}
+
 def load(info):
   techJournal = TechJournal()
   events.bind('model.setting.validate', 'journalMain', validateSettings)

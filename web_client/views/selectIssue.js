@@ -13,7 +13,7 @@ var selectIssueView = View.extend({
     initialize: function () {
         restRequest({
             type: 'GET',
-            path: 'system/setting',
+            path: 'journal/setting',
             data: {
                 list: JSON.stringify([
                     'technical_journal.default_journal',
