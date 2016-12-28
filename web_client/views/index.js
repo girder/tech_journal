@@ -6,6 +6,13 @@ import events from 'girder/events';
 import { restRequest } from 'girder/rest';
 import { apiRoot } from 'girder/rest';
 
+// Import all stylsheets
+import '../stylesheets/main.styl';
+import '../stylesheets/index.index.styl';
+import '../stylesheets/submit.index.styl';
+import '../stylesheets/submit.upload.styl';
+import '../stylesheets/view.index.styl';
+
 import IndexViewTemplate from '../templates/journal_index.jade';
 
 
