@@ -7,6 +7,8 @@ import router from 'girder/router';
 import { restRequest } from 'girder/rest';
 
 import SubmitViewTemplate from '../templates/journal_submit.jade';
+import SubmitAuthorEntryTemplate from '../templates/journal_author_entry.jade';
+import SubmitTagEntryTemplate from '../templates/journal_tag_entry.jade';
 
 
 var SubmitView = View.extend({
@@ -20,14 +22,14 @@ var SubmitView = View.extend({
         },
         'click #authorAdd': function (event) {
             event.preventDefault();
-            this.$("#authors").append(girder.templates.journal_author_entry({info: "1"}))
+            this.$("#authors").append(SubmitAuthorEntryTemplate({info: "1"}))
         },
         'click #removeAuthor': function(event){
             this.$(event.currentTarget.parentElement).remove();
         },
         'click #tagAdd': function (event) {
             event.preventDefault();
-            this.$("#tags").append(girder.templates.journal_tag_entry({info: "1"}))
+            this.$("#tags").append(SubmitTagEntryTemplate({info: "1"}))
         },
         'click #removeTag': function(event){
             this.$(event.currentTarget.parentElement).remove();
