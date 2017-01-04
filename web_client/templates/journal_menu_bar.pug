@@ -26,12 +26,12 @@ div(class="Header")
       div#title.
         OSEHRA Technical Journal
       div#toplogin
-        form#loginForm( action="/journal/user/login" method="POST")
-          | Email:
-          input( name="email" type="text")
-          | Password:
-          input( name="password" type="password")
-          input( name="submit"  class="login" type="image" src="/journal/privateModules/journal/public/images/login.png" alt="login")
+        div#loginForm
+          unless user
+              a(href='#plugins/journal/journal?dialog=login') Sign In
+          if user
+              |Welcome!
+              a#logout Log out
       br/
       div( style="position:absolute;right:0px;")
         div( style="position:relative;top:7px;left:-8px;font-size:11px;color:white;")
@@ -56,6 +56,34 @@ div(class="Header")
         li
           a(href="#plugins/journal/journal/selectIssue")
             | New Publication
+        if user
+          li
+            a#profileLink(href='') My Profile
+            div#userOptionsDiv
+              ul#userOptionsList
+                li
+                  a(class="submm" href='') My Publications
+                li
+                  a(class="submm" href='') Edit Profile
+          if user.attributes.admin
+            li
+              a#adminLink(href="") Admin
+              div#adminOptionsDiv
+                ul#adminOptionsList
+                  li
+                    a(class="submm" href='') Journals
+                  li
+                    a(class="submm" href='') Users
+                  li
+                    a(class="submm" href='') Categories
+                  li
+                    a(class="submm" href='') Disclaimers
+                  li
+                    a(class="submm" href='') Help & About
+                  li
+                    a(class="submm" href='') Config
+                  li
+                    a(class="submm" href='') Review Questions
         li
           a(href="/journal/journal/help")
             | Help

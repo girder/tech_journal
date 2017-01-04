@@ -3,6 +3,7 @@ import _ from 'underscore';
 import PluginConfigBreadcrumbWidget from 'girder/views/widgets/PluginConfigBreadcrumbWidget';
 import View from 'girder/views/View';
 import events from 'girder/events';
+import MenuBarView from './menuBar.js';
 import { restRequest } from 'girder/rest';
 import { apiRoot } from 'girder/rest';
 
@@ -47,6 +48,7 @@ var downloadView = View.extend({
             parentDownloadUrl: parentDownloadUrl,
             paperDownloadUrl: paperDownloadUrl
         }));
+        new MenuBarView({ el: this.$el, parentView: this });
         return this;
     },
 });

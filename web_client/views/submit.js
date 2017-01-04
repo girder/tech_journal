@@ -4,6 +4,7 @@ import PluginConfigBreadcrumbWidget from 'girder/views/widgets/PluginConfigBread
 import View from 'girder/views/View';
 import events from 'girder/events';
 import router from 'girder/router';
+import MenuBarView from './menuBar.js';
 import { restRequest } from 'girder/rest';
 
 import SubmitViewTemplate from '../templates/journal_submit.jade';
@@ -46,6 +47,7 @@ var SubmitView = View.extend({
     },
     render: function (subResp) {
         this.$el.html(SubmitViewTemplate({info:subResp}));
+        new MenuBarView({ el: this.$el, parentView: this });
         return this;
     },
     _createSubmission: function (inData) {

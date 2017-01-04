@@ -7,6 +7,7 @@ import events from 'girder/events';
 import router from 'girder/router';
 import FolderModel from 'girder/models/FolderModel';
 import UploadWidget from 'girder/views/widgets/UploadWidget';
+import MenuBarView from './menuBar.js';
 import { handleClose, handleOpen } from 'girder/dialog';
 import { restRequest } from 'girder/rest';
 
@@ -137,7 +138,7 @@ var uploadView = View.extend({
     },
     render: function () {
         this.$el.html(UploadViewTemplate());
-        console.log($("#uploadTable"));
+        new MenuBarView({ el: this.$el, parentView: this });
         return this;
     },
 

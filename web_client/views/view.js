@@ -4,6 +4,7 @@ import PluginConfigBreadcrumbWidget from 'girder/views/widgets/PluginConfigBread
 import View from 'girder/views/View';
 import events from 'girder/events';
 import router from 'girder/router';
+import MenuBarView from './menuBar.js';
 import { restRequest } from 'girder/rest';
 
 import SubmissionViewTemplate from '../templates/journal_view.jade';
@@ -23,12 +24,12 @@ var submissionView = View.extend({
             type: 'GET',
             path: 'folder/'+ subId.id.id
         }).done(_.bind(function (resp) {
-            console.log(resp)
             this.render(resp)
         }, this));  // End getting of OTJ Collection value setting
     },
     render: function (subResp) {
         this.$el.html(SubmissionViewTemplate({info:subResp}));
+        new MenuBarView({ el: this.$el, parentView: this });
         return this;
     }
 });

@@ -3,10 +3,11 @@ import _ from 'underscore';
 import PluginConfigBreadcrumbWidget from 'girder/views/widgets/PluginConfigBreadcrumbWidget';
 import View from 'girder/views/View';
 import events from 'girder/events';
+import MenuBarView from './menuBar.js';
 import { restRequest } from 'girder/rest';
 import { apiRoot } from 'girder/rest';
 
-// Import all stylsheets
+// Import all stylesheets
 import '../stylesheets/main.styl';
 import '../stylesheets/index.index.styl';
 import '../stylesheets/submit.index.styl';
@@ -38,6 +39,7 @@ var indexView = View.extend({
     },
     render: function (subData) {
         this.$el.html(IndexViewTemplate({info:subData}));
+        new MenuBarView({ el: this.$el, parentView: this });
         return this;
     }
 });
