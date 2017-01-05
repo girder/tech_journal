@@ -21,14 +21,14 @@ div(class="Header")
   div(class="HeaderTopContent panelsBackground")
     div#menu
       div#topmenu
-        a( style='border:none;' href="/journal")
+        a( style='border:none;' href="#plugins/journal")
           img( style='border:none;' src="http://osehra.org/profiles/drupal_commons/themes/commons_osehra_earth/images/logo.png" alt="logo" height="50")
       div#title.
         OSEHRA Technical Journal
       div#toplogin
         div#loginForm
           unless user
-              a(href='#plugins/journal/journal?dialog=login') Sign In
+              a(href='#plugins/journal?dialog=login') Sign In
           if user
               |Welcome!
               a#logout Log out
@@ -48,13 +48,13 @@ div(class="Header")
     div#topbar
       ul#Nav(class="nav navbar-nav")
         li#browseLink
-          a(href="#plugins/journal/journal")
+          a(href="#plugins/journal")
             | Home
         li
-          a(  href="/journal/journal/view/journals")
+          a(  href="")
             | Journal
         li
-          a(href="#plugins/journal/journal/selectIssue")
+          a(href='#plugins/journal/submission/new')
             | New Publication
         if user
           li
@@ -71,7 +71,7 @@ div(class="Header")
               div#adminOptionsDiv
                 ul#adminOptionsList
                   li
-                    a(class="submm" href='') Journals
+                    a(class="submm" href='#plugins/journal/admin') Journals
                   li
                     a(class="submm" href='') Users
                   li

@@ -18,7 +18,7 @@ var MenuBarView = View.extend({
             type: 'DELETE',
             path: 'user/authentication'
          }).done(_.bind(function (resp) {
-             router.navigate('#plugins/journal/journal', {trigger: true});
+             router.navigate('#/journal', {trigger: true});
          }))
        },
        'mouseleave #userOptionsList': function(event) {

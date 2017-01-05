@@ -119,7 +119,7 @@ var uploadView = View.extend({
         },
     },
     initialize: function (subId) {
-        this.parentId= subId.id.id;
+        this.parentId= subId.id;
         restRequest({
             type: 'GET',
             path: 'folder/'+ this.parentId
@@ -205,7 +205,7 @@ var uploadView = View.extend({
                data: JSON.stringify(subData),
                error:null
            }).done(_.bind(function (respMD) {
-               router.navigate('plugins/journal/journal/view?id='+respMD._id,
+               router.navigate('#plugins/journal/view/'+respMD._id,
                                       {trigger: true});
              }, this));
     }

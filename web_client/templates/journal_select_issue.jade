@@ -2,46 +2,47 @@ div#headerBar
 mixin issueEntry(info)
   tr
     td
-      #{info.name}
+      | #{info.name}
     td
-      #{info.name}
+      | #{info.description}
     td
     td
-      a(href="#plugins/journal/journal/submit?id="+info._id) Select Issue
+      a(class="issueGen" target=info._id) Select Issue
       |,
       a(href="") Show details
 
-div(class="Wrapper")
-  div(class="Content")
-    div(class="viewMain")
-      h3 Choose a journal where to submit
-      div#submission
-        br
-        | Don't know how to submit your paper? Visit the 
-        a(href="") help page
-        | or download an
-        a(href="") example
-        br
-        br
-        table(width="70%" border="0")
-          tbody
-            tr
-              td(width="15%")
-                div(align="left")
-                  strong Journal
-              td(width="50%")
-                div(align="left")
-                  strong Title
-              td(width="10%")
-                div(align="left")
-                  strong Days left
-              td(width="20%")
-                div(align="left")
-                  strong Actions
-            tr
-              td(height="1" colspan="4")
-                hr
-            each item in info
-              +issueEntry(item)
-      div(class="clear")
-      div(class="Footer")
+div#pageContent
+    div(class="Wrapper")
+      div(class="Content")
+        div(class="viewMain")
+          h3 Choose a journal where to submit
+          div#submission
+            br
+            | Don't know how to submit your paper? Visit the
+            a(href="") help page
+            | or download an
+            a(href="") example
+            br
+            br
+            table(width="70%" border="0")
+              tbody
+                tr
+                  td(width="15%")
+                    div(align="left")
+                      strong Journal
+                  td(width="50%")
+                    div(align="left")
+                      strong Title
+                  td(width="10%")
+                    div(align="left")
+                      strong Days left
+                  td(width="20%")
+                    div(align="left")
+                      strong Actions
+                tr
+                  td(height="1" colspan="4")
+                    hr
+                each item in info
+                  +issueEntry(item)
+          div(class="clear")
+          div(class="Footer")

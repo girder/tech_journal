@@ -14,15 +14,15 @@ var submissionView = View.extend({
 
     events: {
        'click #downloadLink': function(event) {
-           router.navigate('plugins/journal/journal/download?id='+this.parentId,
+           router.navigate('#plugins/journal/view/'+this.parentId+'/download',
                                       {trigger: true});
        }
     },
     initialize: function (subId) {
-        this.parentId= subId.id.id;
+        this.parentId= subId.id;
         restRequest({
             type: 'GET',
-            path: 'folder/'+ subId.id.id
+            path: 'folder/'+ this.parentId
         }).done(_.bind(function (resp) {
             this.render(resp)
         }, this));  // End getting of OTJ Collection value setting

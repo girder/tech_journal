@@ -8,12 +8,16 @@ import MenuBarView from './menuBar.js';
 import { restRequest } from 'girder/rest';
 
 import SubmitViewTemplate from '../templates/journal_submit.jade';
+import SelectIssueTemplate from '../templates/journal_select_issue.jade';
 import SubmitAuthorEntryTemplate from '../templates/journal_author_entry.jade';
 import SubmitTagEntryTemplate from '../templates/journal_tag_entry.jade';
 
 
 var SubmitView = View.extend({
     events: {
+        'click .issueGen': function (event) {
+           this.render(event.currentTarget.target,2)
+        },
         'submit #submitForm': function (event) {
             event.preventDefault();
             this._createSubmission({
@@ -36,19 +40,41 @@ var SubmitView = View.extend({
             this.$(event.currentTarget.parentElement).remove();
         }
     },
-    initialize: function (subId) {
-        this.parentId= subId.id.id;
-        restRequest({
-            type: 'GET',
-            path: 'folder/'+ this.parentId
-        }).done(_.bind(function (resp) {
-            this.render(resp)
-        }, this));  // End getting of OTJ Collection value setting
+    initialize: function () {
+            restRequest({
+                type: 'GET',
+                path: 'journal/setting',
+                data: {
+                    list: JSON.stringify([
+                        'technical_journal.default_journal',
+                    ])
+                }
+            }).done(_.bind(function (resp) {
+                restRequest({
+                    type: 'GET',
+                    path: 'journal/'+resp['technical_journal.default_journal']+'/issues'
+                }).done(_.bind(function (jrnResp) {
+                    this.render(jrnResp,1);
+                },this));
+            }, this));  // End getting of OTJ Collection value setting
+
     },
-    render: function (subResp) {
-        this.$el.html(SubmitViewTemplate({info:subResp}));
-        new MenuBarView({ el: this.$el, parentView: this });
-        return this;
+    render: function (subResp, state) {
+        if(state==1) {
+            this.$el.html(SelectIssueTemplate({info:subResp}));
+            new MenuBarView({ el: this.$el, parentView: this });
+            return this;
+        }
+        else {
+            this.parentId = subResp;
+            restRequest({
+                type: 'GET',
+                path: 'folder/'+ this.parentId
+            }).done(_.bind(function (resp) {
+                this.$("#pageContent").html(SubmitViewTemplate({info:resp}));
+                return this;
+            }, this));  // End getting of OTJ Collection value setting
+        }
     },
     _createSubmission: function (inData) {
             var subData = {
@@ -74,7 +100,7 @@ var SubmitView = View.extend({
                data: JSON.stringify(subData),
                error:null
            }).done(_.bind(function (respMD) {
-               router.navigate('plugins/journal/journal/upload?id='+respMD._id,
+               router.navigate('#plugins/journal/submission/'+respMD._id+"/upload",
                                       {trigger: true});
              }, this));
         }, this));

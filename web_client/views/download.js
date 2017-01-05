@@ -15,7 +15,7 @@ var downloadView = View.extend({
     },
 
     initialize: function (subId) {
-        this.parentId= subId.id.id;
+        this.parentId= subId.id;
         restRequest({
             type: 'GET',
             path: 'folder/'+ this.parentId

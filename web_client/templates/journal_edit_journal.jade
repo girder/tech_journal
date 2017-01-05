@@ -1,0 +1,24 @@
+div#headerBar
+div(class="Wrapper")
+  div(class="Content")
+    div
+      form#createJournalForm(class="genericForm" action="" method="POST")
+        div(class="createNameElement")
+          label(for="name") Name
+          input#name(type="text" name="name" value=info.name)
+        div(class="createNameElement")
+          label(for="description") Description
+          textarea#description(type="text" name="description")
+            | #{info.description}
+        div(class="radioElement")
+          h4 Privacy
+          br
+          label(for="privacy-1")
+            input(id="privacy-1" type="radio" value="1" name="privacy")
+            | Private, only members can see the journal
+          label(for="privacy-0")
+            input(id="privacy-0" type="radio" value="0" name="privacy")
+            | Public, everyone can see the journal
+          div#canJoinDiv(style="display: none;")
+        div
+          input#submit(type="submit" value="Create" name="submit")
