@@ -81,6 +81,7 @@ class TechJournal(Resource):
       Description('Get all submissions from a given')
       .responseClass('Collection')
       .param('id',"The ID of the Journal (collection) to pull from",paramType='path')
+      .param('filterID',"The ID of the Issue to limit the results from", required=False)
       .errorResponse('Test error.')
       .errorResponse('Read access was denied on the issue.', 403)
     )
@@ -89,10 +90,11 @@ class TechJournal(Resource):
       issues = list(self.model('folder').childFolders(parentType='collection', parent=collection,\
           user=self.getCurrentUser()))
       for issue in issues:
-        testInfo = list(self.model('folder').childFolders(parentType='folder', parent=issue,\
-          user=self.getCurrentUser()))
-        for submission in testInfo:
-          totalData.append(submission)
+        if ((str(issue["_id"]) == params["filterID"]) or (params["filterID"]=="*")):
+            testInfo = list(self.model('folder').childFolders(parentType='folder', parent=issue,\
+              user=self.getCurrentUser()))
+            for submission in testInfo:
+              totalData.append(submission)
       return totalData
 
     @access.admin(scope=TokenScope.DATA_READ)

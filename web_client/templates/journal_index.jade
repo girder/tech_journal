@@ -1,25 +1,11 @@
-mixin searchEntry(info)
-  div(class="SearchResultEntry box")
-    table(style="width:99%;")
-      tr
-        td(style="width:100px;height:98px;vertical-align: middle;text-align: center;")
-          //img(class="ResultLogo" src="/journal/journal/view/logo/?revisionId=id&size=64")
-          //img(class="ResultLogo" src="/journal/privateModules/journal/public/images/journal.gif")
-          div( class="CertifiedWrapper")
-            //img(style='border:none;' src="/journal/privateModules/journal/public/images/check.gif")
-            Certified
-            span(class="CertifiedLevel" style="color:green")
-        td( style="vertical-align: top;")
-          div(class="ResultSubDescription")
-                statistics
-          div( class="ResultTop")
-            a(class="resourceLink" href="#plugins/journal/view/"+ info._id)
-            span(class="ResultTitle").
-              #{info.name}
-          div(class="ResultAuthors").
-            #{info.creatorId}
-          div( class="ResultDescription").
-            #{info.description}
+mixin issueFilter(info)
+  div(class="issueButton" key=info._id)
+    div(class="issueTitle" qtipconditionnal="" style="word-wrap: break-word")
+        | #{info.name}
+    div(class="issueSubTitle")
+    div(class="issueDetails")
+      a(class="issuePage" href='') Show Details
+      a(href="") Submit a new article
 
 div#headerBar
 
@@ -27,6 +13,13 @@ div(class="Wrapper")
   div(class="Content")
     div(class="ContentWithLeftPanel")
       div(class="Panel box")
+        h2.FilterH3 Filters:
+        div.FiltersPanel
+          div(class="issueButton issueSelected" key="*")
+            div(class="issueTitle" qtipconditionnal="All" style="word-wrap: break-word")
+            | All Issues
+          for item in info.issues
+             +issueFilter(item)
       div(class="MainContent")
         div#noResultElement(style="display:none;")
           b
@@ -44,8 +37,6 @@ div(class="Wrapper")
           div(class="hidable")
         div(class="SearchResultsHeader")
         div(class="searchResults")
-          each item in info
-            +searchEntry(item)
         div#showMoreResults
           a
             Show more results
