@@ -34,14 +34,15 @@ var MenuBarView = View.extend({
        'mouseenter #adminLink': function(event) {
          this.$("#userOptionsList").attr('style','display: none;')
          this.$("#adminOptionsList").attr('style','display: block;')
-       },
-
+       }
     },
-    initialize: function() {
-            this.render(getCurrentUser())
+    initialize: function(options) {
+        this.options= options;
+        this.render(getCurrentUser())
     },
     render: function(curUser) {
-        this.$("#headerBar").html(MenuBarViewTemplate({user:curUser}));
+
+        this.$("#headerBar").html(MenuBarViewTemplate({user:curUser, searchVal:this.options.searchBoxVal }));
         return this;
     }
 });

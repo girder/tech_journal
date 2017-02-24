@@ -27,7 +27,6 @@ router.route('plugins/journal/submission/:id/upload', 'uploadFiles', function (i
 
 import submissionView from './views/view';
 router.route('plugins/journal/view/:id', 'submissionView', function (id) {
-    console.log(id);
     events.trigger('g:navigateTo', submissionView,{id:id},{layout: Layout.EMPTY});
 });
 

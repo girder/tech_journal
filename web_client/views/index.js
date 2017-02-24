@@ -18,6 +18,22 @@ import IndexViewTemplate from '../templates/journal_index.jade';
 
 
 var indexView = View.extend({
+    events: {
+        'click #search_button': function(event) {
+            //search the available submissions for the text entered in the box
+            var searchText = $('#live_search').val()
+            restRequest({
+                type: 'GET',
+                path: 'folder?text='+searchText+'&parentType=folder'
+            }).done(_.bind(function (resp) {
+                this.render(resp, searchText)
+            }, this));
+        },
+        'click #clear_button': function(event) {
+            //search the available submissions for the text entered in the box
+            this.initialize();
+        }
+    },
     initialize: function () {
         var totalData=[]
         restRequest({
@@ -33,13 +49,13 @@ var indexView = View.extend({
                 type: 'GET',
                 path: 'journal/'+resp['technical_journal.default_journal']+'/submissions'
             }).done(_.bind(function (jrnResp) {
-                this.render(jrnResp);
+                this.render(jrnResp,"Search...");
             },this));
         }, this));  // End getting of OTJ Collection value setting
     },
-    render: function (subData) {
+    render: function (subData, searchVal) {
         this.$el.html(IndexViewTemplate({info:subData}));
-        new MenuBarView({ el: this.$el, parentView: this });
+        new MenuBarView({ el: this.$el, parentView: this, searchBoxVal: searchVal});
         return this;
     }
 });
