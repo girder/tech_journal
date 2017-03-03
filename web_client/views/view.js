@@ -28,6 +28,7 @@ var submissionView = View.extend({
         }, this));  // End getting of OTJ Collection value setting
     },
     render: function (subResp) {
+        console.log(subResp);
         this.$el.html(SubmissionViewTemplate({info:subResp}));
         new MenuBarView({ el: this.$el, parentView: this });
         return this;

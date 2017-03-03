@@ -17,7 +17,7 @@ mixin searchEntry(info)
             span(class="ResultTitle").
               #{info.name}
           div(class="ResultAuthors").
-            #{info.creatorId}
+            #{info.meta.authors}
           div( class="ResultDescription").
             #{info.description}
 

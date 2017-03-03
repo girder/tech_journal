@@ -1,3 +1,6 @@
+mixin searchLink(value)
+  a(href="#") #{value}
+
 div#headerBar
 div(class="Wrapper")
   div(class="Content")
@@ -10,16 +13,32 @@ div(class="Wrapper")
         h4 Export citation:
         h4 Statistics:
         h4 Information
+          ul
+            li Type: #{info.meta.type}
+            li Categories:
+            li Keywords: 
+              each item in info.meta.tags
+                +searchLink(item)
+                |,
+            li Current revision:
+            li License: #{info.meta.source-license}
+            if info.meta.grant
+              li Grant: #{info.meta.grant}
         h4 Share
       div(class="MainContent")
         div#publication
           br
           div(class="title").
             #{info.name}
-          div(class="authors").
-            #{info.creatorId}
-          div(class="institution").
+          div(class="authors")
+            each item in info.meta.authors
+              +searchLink(item)
+              |,
+          div(class="institution")
+              +searchLink(info.meta.institution)
           div(class="journal").
+            Submitted to: #{info.baseParentId}
           div(class="submittedby").
+            Submitted by #{info.creatorId} on #{info.created}
           div(class="abstract").
             #{info.description}

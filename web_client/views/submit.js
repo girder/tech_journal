@@ -77,11 +77,28 @@ var SubmitView = View.extend({
         }
     },
     _createSubmission: function (inData) {
+            var authors = []
+            this.$("#authors .list-item").each(function(index,val) {
+              var authorName = ''
+              $(val).children('input').each(function(index2,val2) {
+                if (val2.value !='') authorName += " " +val2.value
+              })
+              if (authorName.length >0) authors.push(authorName)
+            })
+            var tags = []
+            this.$("#tags input").each(function(index,val) {
+              tags.push(val.value)
+            });
             var subData = {
                 'institution': this.$('#institutionEntry').val().trim(),
                 'related': this.$('#relatedEntry').val().trim(),
-                'type': this.$('#typeEntry').val().trim()
+                'type': this.$('#typeEntry').val().trim(),
+                'copyright': this.$('#copyrightEntry').val().trim(),
+                'grant': this.$('#grantEntry').val().trim(),
+                'authors': authors,
+                'tags':tags
             };
+            console.log(subData);
        restRequest({
             type: 'POST',
             path: 'folder',
