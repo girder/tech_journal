@@ -1,0 +1,34 @@
+
+div#headerBar
+div(class="Wrapper")
+  div(class="Content")
+    div(class="Content")
+      div(align="center")
+        font(size="+1")
+          strong Edit Help
+      <br/>
+      form#mainForm(data-validate="parsley" name="mainForm" method="POST" action="")
+        table(width="100%" border="1")
+          tbody
+            tr
+              td(valign="top" style="width: 100px;")
+                div(align="right")
+                  strong Help Main Page:
+              td
+                div#mainPage(class="tinymce textDiv" style="height:200px")
+            tr
+              td(valign="top")
+                div(align="right")
+                  strong FAQ Page:
+              td
+                div#faqPage(class="tinymce textDiv" style="height:200px")
+            tr
+              td(valign="top")
+                div(align="right")
+                  strong About Page:
+              td
+                div#aboutPage(class="tinymce textDiv" style="height:200px")
+            tr
+              td
+              td
+                input(type="submit" value="Save >>>")

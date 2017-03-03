@@ -34,7 +34,13 @@ var MenuBarView = View.extend({
        'mouseenter #adminLink': function(event) {
          this.$("#userOptionsList").attr('style','display: none;')
          this.$("#adminOptionsList").attr('style','display: block;')
-       }
+       },
+       'mouseenter #helpLink': function(event) {
+         this.$("#helpOptionsList").attr('style','display: block;')
+       },
+       'mouseleave #adminOptionsList': function(event) {
+         this.$("#helpOptionsList").attr('style','display: none;')
+       },
     },
     initialize: function(options) {
         this.options= options;

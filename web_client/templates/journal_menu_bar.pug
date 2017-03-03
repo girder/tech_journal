@@ -35,7 +35,7 @@ div(class="Header")
       br/
       div( style="position:absolute;right:0px;")
         div( style="position:relative;top:7px;left:-8px;font-size:11px;color:white;")
-          a( href="/journal/journal/help/about")
+          a( href="#plugins/journal/help/about")
             | About
           unless user
             a#forgotPasswordLink(style="margin-left: 7px;padding-left: 7px;border-left: 1px solid grey;" href='#plugins/journal?dialog=resetpassword')
@@ -80,24 +80,25 @@ div(class="Header")
                   li
                     a(class="submm" href='') Disclaimers
                   li
-                    a(class="submm" href='') Help & About
+                    a(class="submm" href='#plugins/journal/admin/help') Help & About
                   li
                     a(class="submm" href='') Config
                   li
                     a(class="submm" href='') Review Questions
         li
-          a(href="/journal/journal/help")
+          a#helpLink(href="#plugins/journal/help")
             | Help
-          ul
-            li
-              a( class="submm"  style="width:160px;"  href="/journal/journal/help")
-                | Submission and Review
-            li
-              a( class="submm" style="width:160px;" href="/journal/journal/help/faq")
-                | F.A.Q.
-            li
-              a( class="submm"  style="width:160px;" href="/journal/journal/help/feedback")
-                | Feedback
+          div#helpOptions
+            ul#helpOptionsList
+              li
+                a( class="submm"  style="width:160px;"  href="#plugins/journal/help")
+                  | Submission and Review
+              li
+                a( class="submm" style="width:160px;" href="#plugins/journal/help/faq")
+                  | F.A.Q.
+              li
+                a( class="submm"  style="width:160px;" href="#plugins/journal/help/feedback")
+                  | Feedback
       div(class="HeaderSearch nav navbar-nav navbar-right")
 
         input#live_search(type="text" class="panelsBackground" value=searchVal autocomplete="off" autocorrect="off" autocapitalize="off")

@@ -74,6 +74,39 @@ router.route('plugins/journal/admin/journal/:id', 'editJournal', function (id) {
 
 });
 
+import manageHelpView from './views/manageHelp';
+//Existing journal route
+router.route('plugins/journal/admin/help', 'editJournal', function () {
+    events.trigger('g:navigateTo', manageHelpView,{},{layout: Layout.EMPTY});
+
+});
+
+// Help pages
+import HelpView from './views/help_main';
+//Existing journal route
+router.route('plugins/journal/help', 'HelpView', function () {
+    events.trigger('g:navigateTo', HelpView,{},{layout: Layout.EMPTY});
+
+});
+import FAQView from './views/help_faq';
+//Existing journal route
+router.route('plugins/journal/help/faq', 'FAQView', function () {
+    events.trigger('g:navigateTo', FAQView,{},{layout: Layout.EMPTY});
+
+});
+import AboutView from './views/help_about';
+//Existing journal route
+router.route('plugins/journal/help/about', 'AboutView', function () {
+    events.trigger('g:navigateTo', AboutView,{},{layout: Layout.EMPTY});
+
+});
+import FeedBackView from './views/feedback';
+//Existing journal route
+router.route('plugins/journal/help/feedback', 'FeedBackView', function () {
+    events.trigger('g:navigateTo', FeedBackView,{},{layout: Layout.EMPTY});
+
+});
+
 function testUserAccess(view, args, needsUser, needsAdmin) {
     var userFlag  = true;
     var adminFlag = true;
@@ -93,3 +126,4 @@ function testUserAccess(view, args, needsUser, needsAdmin) {
         window.location.href='#plugins/journal?dialog=login'
     }
 }
+
