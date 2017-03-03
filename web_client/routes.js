@@ -1,52 +1,75 @@
 import router from 'girder/router';
 import events from 'girder/events';
+import LoginView from 'girder/views/layout/LoginView';
+import { getCurrentUser } from 'girder/auth'
 import { Layout } from 'girder/constants';
 import { exposePluginConfig } from 'girder/utilities/PluginUtils';
 
 exposePluginConfig('technical_journal', 'plugins/journal/config');
 
+
 import configView from './views/ConfigView';
 router.route('plugins/journal/config', 'journalConfig', function () {
-    events.trigger('g:navigateTo', configView);
+    testUserAccess(configView,{},true,true);
 });
 
 import indexView from './views/index';
 router.route('plugins/journal', 'mainView', function () {
-    events.trigger('g:navigateTo', indexView,{},{layout: Layout.EMPTY});
+    testUserAccess(indexView, {}, false, false)
 });
 
 import submitView from './views/submit';
 router.route('plugins/journal/submission/new', 'submissionInfo', function () {
-    events.trigger('g:navigateTo', submitView,{},{layout: Layout.EMPTY});
+        testUserAccess(submitView, {}, true, false)
 });
 
 import uploadView from './views/upload';
 router.route('plugins/journal/submission/:id/upload', 'uploadFiles', function (id) {
-    events.trigger('g:navigateTo', uploadView,{id:id},{layout: Layout.EMPTY});
+        testUserAccess(uploadView, {id:id}, true, false)
 });
 
 import submissionView from './views/view';
 router.route('plugins/journal/view/:id', 'submissionView', function (id) {
-    events.trigger('g:navigateTo', submissionView,{id:id},{layout: Layout.EMPTY});
+    testUserAccess(submissionView, {id:id}, false, false)
 });
 
 import downloadView from './views/download';
 router.route('plugins/journal/view/:id/download', 'submissionDownload', function (id) {
-    events.trigger('g:navigateTo', downloadView,{id:id},{layout: Layout.EMPTY});
+    testUserAccess(downloadView,{id:id}, false, false)
 });
 import manageJournalView from './views/manageJournal';
 router.route('plugins/journal/admin', 'manageJournalView', function () {
-    events.trigger('g:navigateTo', manageJournalView,{},{layout: Layout.EMPTY});
+        testUserAccess(manageJournalView,{},true,true);
 });
 
 import EditIssueView from './views/editIssue';
 router.route('plugins/journal/admin/issue/:id/:type', 'editIssue', function (id, type) {
-    events.trigger('g:navigateTo', EditIssueView,{id: id, type:type},{layout: Layout.EMPTY});
+    testUserAccess(EditIssueView,{id: id, type:type},true,true);
 });
 
 import EditJournalView from './views/editJournal';
 //Existing journal route
 router.route('plugins/journal/admin/journal/:id', 'editJournal', function (id) {
-    events.trigger('g:navigateTo', EditJournalView,{id:id},{layout: Layout.EMPTY});
+    testUserAccess(EditJournalView,{id:id},true,true);
 
 });
+
+function testUserAccess(view, args, needsUser, needsAdmin) {
+    var userFlag  = true;
+    var adminFlag = true;
+    if (needsUser || needsAdmin) {
+      var user = getCurrentUser();
+      if(needsUser && user==null){
+          userFlag=false;
+      }
+      if(needsAdmin && (user!=null) && !user.attributes.admin){
+          adminFlag=false
+      }
+    }
+    if (userFlag && adminFlag) {
+        events.trigger('g:navigateTo', view,args,{layout: Layout.EMPTY});
+    }
+    else {
+        window.location.href='#plugins/journal?dialog=login'
+    }
+}
