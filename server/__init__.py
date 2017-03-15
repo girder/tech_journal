@@ -48,6 +48,15 @@ def validateSettings(event):
     event.preventDefault().stopPropagation()
 
 
+def checkValue(infoList, filterParams, value):
+  if type(infoList[value]) == list:
+    if not (filterParams[value] in infoList[value]):
+      return True;
+  else:
+    if not (filterParams[value] == str(infoList[value])):
+      return True;
+  return False
+
 class TechJournal(Resource):
 
     def __init__(self):
@@ -55,6 +64,7 @@ class TechJournal(Resource):
         self.resourceName = 'journal'
         self.route('GET',(':id','submissions'), self.getAllSubmissions)
         self.route('GET',(':id','issues'), self.getAllIssues)
+        self.route('GET',(':id','search'), self.getFilteredIssues)
         self.route('PUT',('setting',),self.setJournalSettings)
         self.route('GET',('setting',),self.getJournalSettings)
 
@@ -95,6 +105,37 @@ class TechJournal(Resource):
               user=self.getCurrentUser()))
             for submission in testInfo:
               totalData.append(submission)
+      return totalData
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @loadmodel(model='collection', level=AccessType.READ)
+    @filtermodel(model='folder')
+    @describeRoute(
+      Description('Get submissions matching a certain set of parameters')
+      .responseClass('Collection')
+      .param('id',"The ID of the Journal (collection) to pull from",paramType='path')
+      .param('query',"A JSON object to filter the objects over")
+      .errorResponse('Test error.')
+      .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def getFilteredIssues(self, collection, params):
+      self.requireParams('query', params)
+      filterParams=json.loads(params["query"])
+      totalData =  list()
+      issues = list(self.model('folder').childFolders(parentType='collection', parent=collection,\
+          user=self.getCurrentUser()))
+      for issue in issues:
+        testInfo = list(self.model('folder').childFolders(parentType='folder', parent=issue,\
+          user=self.getCurrentUser()))
+        for submission in testInfo:
+          foundMismatch = False
+          for key in filterParams.keys():
+            if key in submission["meta"].keys():
+              foundMismatch= checkValue(submission["meta"],filterParams,key)
+            else:
+              foundMismatch= checkValue(submission,filterParams,key)
+          if not foundMismatch:
+            totalData.append(submission)
       return totalData
 
     @access.admin(scope=TokenScope.DATA_READ)

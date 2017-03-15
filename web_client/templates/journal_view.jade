@@ -1,5 +1,5 @@
-mixin searchLink(value)
-  a(href="#") #{value}
+mixin searchLink(value,type)
+  a(href='#plugins/journal?query="'+type+'":"'+ value+ '"') #{value}
 
 div#headerBar
 div(class="Wrapper")
@@ -18,7 +18,7 @@ div(class="Wrapper")
             li Categories:
             li Keywords: 
               each item in info.meta.tags
-                +searchLink(item)
+                +searchLink(item,'tags')
                 |,
             li Current revision:
             li License: #{info.meta.source-license}
@@ -32,10 +32,10 @@ div(class="Wrapper")
             #{info.name}
           div(class="authors")
             each item in info.meta.authors
-              +searchLink(item)
+              +searchLink(item,'authors')
               |,
           div(class="institution")
-              +searchLink(info.meta.institution)
+              +searchLink(info.meta.institution,"institution")
           div(class="journal").
             Submitted to: #{info.baseParentId}
           div(class="submittedby").

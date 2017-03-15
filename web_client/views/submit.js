@@ -83,11 +83,11 @@ var SubmitView = View.extend({
               $(val).children('input').each(function(index2,val2) {
                 if (val2.value !='') authorName += " " +val2.value
               })
-              if (authorName.length >0) authors.push(authorName)
+              if (authorName.length >0) authors.push(authorName.trim())
             })
             var tags = []
             this.$("#tags input").each(function(index,val) {
-              tags.push(val.value)
+              tags.push(val.value.trim())
             });
             var subData = {
                 'institution': this.$('#institutionEntry').val().trim(),

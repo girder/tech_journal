@@ -48,7 +48,7 @@ var indexView = View.extend({
             },this));
         },
     },
-    initialize: function () {
+    initialize: function (query) {
         var totalData=[]
         restRequest({
             type: 'GET',
@@ -60,15 +60,8 @@ var indexView = View.extend({
             }
         }).done(_.bind(function (resp) {
             this.defaultJournal = resp['technical_journal.default_journal']
-            restRequest({
-                type: 'GET',
-                path: 'journal/'+this.defaultJournal +'/submissions?filterID=*',
-                params: {
-                    issueFilter:"*"
-                }
-            }).done(_.bind(function (jrnResp) {
-                this.render(jrnResp,"Search...");
-            },this));
+            if(!$.isEmptyObject(query["query"])) this.querySubmissions(query["query"])
+            else this.getSubmissions("*")
         }, this));  // End getting of OTJ Collection value setting
     },
     render: function (subData, searchVal) {
@@ -82,6 +75,26 @@ var indexView = View.extend({
         },this));
 
         return this;
+    },
+
+    querySubmissions: function(queryString) {
+        restRequest({
+            type: 'GET',
+            path: 'journal/'+this.defaultJournal +'/search?query={'+queryString+'}'
+        }).done(_.bind(function (jrnResp) {
+            this.render(jrnResp,"Search...");
+        },this));
+    },
+    getSubmissions: function (queryString) {
+        restRequest({
+            type: 'GET',
+            path: 'journal/'+this.defaultJournal +'/submissions?filterID=*',
+            params: {
+              filterID:"*"
+            }
+        }).done(_.bind(function (jrnResp) {
+            this.render(jrnResp,"Search...");
+        },this));
     }
 });
 

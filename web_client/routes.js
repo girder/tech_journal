@@ -14,8 +14,8 @@ router.route('plugins/journal/config', 'journalConfig', function () {
 });
 
 import indexView from './views/index';
-router.route('plugins/journal', 'mainView', function () {
-    testUserAccess(indexView, {}, false, false)
+router.route('plugins/journal', 'mainView', function (query) {
+    testUserAccess(indexView, query, false, false)
 });
 
 import submitView from './views/submit';
