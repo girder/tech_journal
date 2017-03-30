@@ -23,6 +23,11 @@ router.route('plugins/journal/submission/new', 'submissionInfo', function () {
         testUserAccess(submitView, {}, true, false)
 });
 
+import listView from './views/listJournals';
+router.route('plugins/journal/list', 'listJournals', function () {
+        testUserAccess(listView, {}, true, true)
+});
+
 import uploadView from './views/upload';
 router.route('plugins/journal/submission/:id/upload', 'uploadFiles', function (id) {
         testUserAccess(uploadView, {id:id}, true, false)

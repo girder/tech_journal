@@ -63,6 +63,7 @@ class TechJournal(Resource):
         super(TechJournal,self).__init__()
         self.resourceName = 'journal'
         self.route('GET',(':id','submissions'), self.getAllSubmissions)
+        self.route('GET',(), self.getAllJournals)
         self.route('GET',(':id','issues'), self.getAllIssues)
         self.route('GET',(':id','search'), self.getFilteredIssues)
         self.route('PUT',('setting',),self.setJournalSettings)
@@ -106,6 +107,21 @@ class TechJournal(Resource):
             for submission in testInfo:
               totalData.append(submission)
       return totalData
+
+
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @filtermodel(model='collection')
+    @describeRoute(
+      Description('Get all collections that are marked as Journals')
+      .responseClass('Collection', array=True)
+      .errorResponse('Test error.')
+      .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def getAllJournals(self, params):
+        user = self.getCurrentUser()
+        return list(self.model('collection').textSearch("__journal__", user=user))
+
 
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)

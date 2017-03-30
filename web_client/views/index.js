@@ -60,14 +60,23 @@ var indexView = View.extend({
             }
         }).done(_.bind(function (resp) {
             this.defaultJournal = resp['technical_journal.default_journal']
-            if(!$.isEmptyObject(query["query"])) this.querySubmissions(query["query"])
-            else this.getSubmissions("*")
+            var collectionID = this.defaultJournal;
+            var querystring='*'
+            if(!$.isEmptyObject(query["collection"])) {
+                collectionID = query["collection"]
+            }
+            if(!$.isEmptyObject(query["query"])) {
+                querystring= query["query"];
+                this.querySubmissions(collectionID,querystring)
+            }
+
+            this.getSubmissions(collectionID,querystring)
         }, this));  // End getting of OTJ Collection value setting
     },
-    render: function (subData, searchVal) {
+    render: function (subData, searchVal,collection) {
         restRequest({
             type: 'GET',
-            path: 'journal/'+this.defaultJournal +'/issues'
+            path: 'journal/'+collection +'/issues'
         }).done(_.bind(function (jrnResp) {
             this.$el.html(IndexViewTemplate({info:{"issues":jrnResp   }}));
             this.$('.searchResults').html(IndexEntryViewTemplate({info:{"submissions":subData}}));
@@ -77,23 +86,23 @@ var indexView = View.extend({
         return this;
     },
 
-    querySubmissions: function(queryString) {
+    querySubmissions: function(collection, queryString) {
         restRequest({
             type: 'GET',
-            path: 'journal/'+this.defaultJournal +'/search?query={'+queryString+'}'
+            path: 'journal/'+collection+'/search?query={'+queryString+'}'
         }).done(_.bind(function (jrnResp) {
-            this.render(jrnResp,"Search...");
+            this.render(jrnResp,"Search...",collection);
         },this));
     },
-    getSubmissions: function (queryString) {
+    getSubmissions: function (collection, queryString) {
         restRequest({
             type: 'GET',
-            path: 'journal/'+this.defaultJournal +'/submissions?filterID=*',
+            path: 'journal/'+collection +'/submissions?filterID=*',
             params: {
               filterID:"*"
             }
         }).done(_.bind(function (jrnResp) {
-            this.render(jrnResp,"Search...");
+            this.render(jrnResp,"Search...",collection);
         },this));
     }
 });

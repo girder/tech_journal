@@ -1,0 +1,16 @@
+mixin journalItem(item)
+    h3(style='margin-bottom:3px')
+      a(href="#plugins/journal?collection="+item._id) #{item.name}
+
+div#headerBar
+
+div(class="Wrapper")
+  div(class="Content")
+    div
+      br
+      div(align="center")
+        font(size="+1")
+          strong Journals
+      for item in info.journals
+        +journalItem(item)
+      

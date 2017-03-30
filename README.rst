@@ -43,6 +43,12 @@ This can be accomplished by clicking on ``Collections`` in the left menu after
 siging into the Girder instance and then clicking on the ``Create Collection``
 button. Enter a name and a description, then click ``Create``.
 
+This creation of the collection can also be done by utilizing the
+``plugins/admin/journal`` page of the OTJ.
+
+**Note**  The description of the collection must contain the string
+ `` __journal__ `` to be picked up by certain OTJ pages.
+
 The "Unique ID" of this folder, which can be found by clicking on the blue
 button with  an ``i`` on it, will be used later to configure the Tech Journal
 plugin.

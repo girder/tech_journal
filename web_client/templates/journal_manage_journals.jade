@@ -1,9 +1,3 @@
-mixin issueEntry(item)
-    li
-      | Issue: #{item.name}
-      a(href="") Issue Editors
-      | ,
-      a(href="#plugins/journal/admin/issue/"+item._id+"/edit") Edit
 
 
 div#headerBar
@@ -17,11 +11,4 @@ div(class="Wrapper")
       br
       a(class="createCommunity" href="#plugins/journal/admin/journal/new") Create Journal
       h4 Journals (also called communities):
-      ul
-        li
-          a(href="") Journal Editors and Members
-          a(href="#plugins/journal/admin/journal/"+parentInfo) Manage Journal
-          a(href="#plugins/journal/admin/issue/"+ parentInfo+"/new") Create Issue
-          ul
-            each item in issueInfo
-              +issueEntry(item)
+      ul#journalListing

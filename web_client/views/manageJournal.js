@@ -9,6 +9,7 @@ import { getCurrentUser } from 'girder/auth'
 import { restRequest } from 'girder/rest';
 
 import ManageJournalsTemplate from '../templates/journal_manage_journals.jade';
+import ManageJournalsEntryTemplate from '../templates/journal_manage_journals_entry.jade';
 
 var manageJournalView = View.extend({
 
@@ -16,41 +17,27 @@ var manageJournalView = View.extend({
     },
     initialize: function (subId) {
         var user = getCurrentUser()
-        if (user.attributes.admin) {
-            restRequest({
-                type: 'GET',
-                path: 'journal/setting',
-                data: {
-                    list: JSON.stringify([
-                        'technical_journal.default_journal',
-                    ])
-                }
-            }).done(_.bind(function (resp) {
+        this.render();
+        restRequest({
+            type: 'GET',
+            path: 'journal',
+        }).done(_.bind(function (resp) {
+            for(var index in resp) {
                 restRequest({
                     type: 'GET',
-                    path: 'journal/'+resp['technical_journal.default_journal']+'/issues'
+                    path: 'journal/'+resp[index]._id+'/issues'
                 }).done(_.bind(function (jrnResp) {
-                    this.render(jrnResp, resp['technical_journal.default_journal']);
+                     var current =this.$("#journalListing").html()
+                     this.$("#journalListing").html( current +
+                         ManageJournalsEntryTemplate({issueInfo:jrnResp,parentInfo:resp[index]}))
                 },this));
-            }, this));  // End getting of OTJ Collection value setting
-        }
+            }
+        }, this));  // End getting of OTJ Collection value setting
     },
-    render: function (subResp, parentId) {
-        this.$el.html(ManageJournalsTemplate({issueInfo:subResp,parentInfo:parentId}));
+    render: function () {
+        this.$el.html(ManageJournalsTemplate());
         new MenuBarView({ el: this.$el, parentView: this });
         return this;
-    },
-    _createJournal: function(journalData) {
-        restRequest({
-          type: 'POST',
-          path: 'collection',
-          data: {
-              name: journalData.issueName,
-              description: journalData.issueDescription
-          },
-        }).done(_.bind(function (jrnResp) {
-
-        },this));
     },
 });
 
