@@ -5,12 +5,15 @@ mixin issueEntry(item)
       | ,
       a(href="#plugins/journal/admin/issue/"+item._id+"/edit") Edit
 
-
-li
-  h5 {JOURNAL NAME GOES HERE}
-  a(href="") Journal Editors and Members
-  a(href="#plugins/journal/admin/journal/"+parentInfo._id) Manage Journal
-  a(href="#plugins/journal/admin/issue/"+ parentInfo._id+"/new") Create Issue
-  ul
-    each item in issueInfo
-      +issueEntry(item)
+each journalItem in parentInfo
+  li
+    h5 #{journalItem.name}  
+     a() Journal Editors and Members
+     | ,  
+     a(href="#plugins/journal/admin/journal/"+journalItem._id) Manage Journal
+     | , 
+     a(href="#plugins/journal/admin/issue/"+ journalItem._id+"/new") Create Issue
+    ul
+      each issueItem in issueInfo
+        if issueItem.baseParentId == journalItem._id
+          +issueEntry(issueItem)

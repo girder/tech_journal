@@ -17,6 +17,7 @@ var manageJournalView = View.extend({
     },
     initialize: function (subId) {
         var user = getCurrentUser()
+        var allIssues=[]
         this.render();
         restRequest({
             type: 'GET',
@@ -27,9 +28,8 @@ var manageJournalView = View.extend({
                     type: 'GET',
                     path: 'journal/'+resp[index]._id+'/issues'
                 }).done(_.bind(function (jrnResp) {
-                     var current =this.$("#journalListing").html()
-                     this.$("#journalListing").html( current +
-                         ManageJournalsEntryTemplate({issueInfo:jrnResp,parentInfo:resp[index]}))
+                   allIssues = allIssues.concat(jrnResp);
+                   this.$("#journalListing").html(ManageJournalsEntryTemplate({issueInfo:allIssues,parentInfo:resp}))
                 },this));
             }
         }, this));  // End getting of OTJ Collection value setting
