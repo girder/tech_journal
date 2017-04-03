@@ -37,12 +37,23 @@ var EditJournalView = View.extend({
         return this;
     },
     _createJournal: function(journalData) {
+        var publicJournal = true;
+        // Privacy-1 radio button indicates that the Journal should be private
+        if ($("input[name=privacy]:checked").val()==1) {
+           publicJournal = false;
+        }
+        // Adds the string which the API looks for when capturing all
+        // collections that are also Journals
+        if (journalData.issueDescription.indexOf("__journal__") == -1) {
+          journalData.issueDescription = journalData.issueDescription + "\n\r__journal__"
+        }
         restRequest({
           type: 'POST',
           path: 'collection',
           data: {
               name: journalData.issueName,
-              description: journalData.issueDescription
+              description: journalData.issueDescription,
+              public : publicJournal
           },
         }).done(_.bind(function (jrnResp) {
         },this));
