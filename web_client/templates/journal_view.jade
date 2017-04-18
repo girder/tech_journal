@@ -1,6 +1,24 @@
 mixin searchLink(value,type)
   a(href='#plugins/journal?query="'+type+'":"'+ value+ '"') #{value}
 
+mixin existingComment(commentInfo)
+  div(class="aComment" style="")
+      img(class="commentThumbnail")
+      a(class="commentUserName")
+        | #{commentInfo.name}
+      span(class="commentDate")
+      a(class="deleteCommentLink" val=commentInfo.index)
+        | Remove Comment
+      div(class="commentTextDiv")
+        span(class="commentText")
+          | #{commentInfo.text}
+
+mixin deleteCommentConfirmation()
+  div#deleteCommentConfirmation
+    div(style="float:right; margin-top:20px")
+    input(class="globalButton deleteCommentYes" type="button" value="Yes")
+    input(class="globalButton deleteCommentNo" type="button" value="Cancel")
+
 div#headerBar
 div(class="Wrapper")
   div(class="Content")
@@ -42,3 +60,35 @@ div(class="Wrapper")
             Submitted by #{info.creatorId} on #{info.created}
           div(class="abstract").
             #{info.description}
+          h4 Comments
+          div#commentsContainer
+            div#commentsDiv
+              if user
+                  div(class="addCommentWrapper")
+                    div#addCommentDiv
+                      textarea#commentText(maxlength="1200" placeholder="Write a comment..." style="height:50px; width:595px")
+                      div(class="addCommentFooter" style="")
+                        div(class="commentLimit")
+                          div(class="commentLimitString")
+                            div(class="commentLengthRemaining")
+                              | 1200 characters remaining.
+                        div(class="commentAs")
+                          div(class="postingAsString")
+                            | posting as #{user.name()}
+                            span#postingAsUsername
+                        input#addCommentButton(class="globalButton" type="button" value="Post")
+              else
+                  div(class="loginToComment")
+                    span
+                      a#loginToComment(href='#plugins/journal?dialog=login') Login
+                      |  or
+                      a#registerToComment(href='#plugins/journal?dialog=register') register
+                      |  to add a comment
+              div#existingCommentsList
+                for comment in info.meta.comments
+                  if comment.name
+                    +existingComment(comment)
+                div(class="commentsBottomMessage")
+                  script.
+                    $(".commentsBottomMessage").text($(".aComment").length +" comments on this item")
+              div(class="commentPaginateWrapper")

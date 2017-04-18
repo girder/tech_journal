@@ -13,6 +13,7 @@ import '../stylesheets/index.index.styl';
 import '../stylesheets/submit.index.styl';
 import '../stylesheets/submit.upload.styl';
 import '../stylesheets/view.index.styl';
+import '../stylesheets/item.comments.styl';
 
 import IndexViewTemplate from '../templates/journal_index.jade';
 import IndexEntryViewTemplate from '../templates/journal_index_entry.jade';

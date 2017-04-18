@@ -78,6 +78,7 @@ var SubmitView = View.extend({
     },
     _createSubmission: function (inData) {
             var authors = []
+            var comments = []
             this.$("#authors .list-item").each(function(index,val) {
               var authorName = ''
               $(val).children('input').each(function(index2,val2) {
@@ -96,7 +97,8 @@ var SubmitView = View.extend({
                 'copyright': this.$('#copyrightEntry').val().trim(),
                 'grant': this.$('#grantEntry').val().trim(),
                 'authors': authors,
-                'tags':tags
+                'tags':tags,
+                'comments':comments
             };
             console.log(subData);
        restRequest({

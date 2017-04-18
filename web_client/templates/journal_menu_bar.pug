@@ -30,7 +30,7 @@ div(class="Header")
           unless user
               a(href='#plugins/journal?dialog=login') Sign In
           if user
-              |Welcome!
+              |Welcome #{user.name()}!
               a#logout Log out
       br/
       div( style="position:absolute;right:0px;")
