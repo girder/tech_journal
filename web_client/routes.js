@@ -19,8 +19,8 @@ router.route('plugins/journal', 'mainView', function (query) {
 });
 
 import submitView from './views/submit';
-router.route('plugins/journal/submission/new', 'submissionInfo', function () {
-        testUserAccess(submitView, {}, true, false)
+router.route('plugins/journal/submission/:id', 'submissionInfo', function (id) {
+        testUserAccess(submitView, {id:id}, true, false)
 });
 
 import listView from './views/listJournals';

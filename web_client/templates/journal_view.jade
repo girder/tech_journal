@@ -34,7 +34,7 @@ div(class="Wrapper")
           ul
             li Type: #{info.meta.type}
             li Categories:
-            li Keywords: 
+            li Keywords:
               each item in info.meta.tags
                 +searchLink(item,'tags')
                 |,
@@ -43,6 +43,21 @@ div(class="Wrapper")
             if info.meta.grant
               li Grant: #{info.meta.grant}
         h4 Share
+        if user.attributes.admin
+          h4 Manage
+          ul
+            li
+              a New Revision
+            li
+              a(href="#plugins/journal/submission/"+info._id) Edit Resource
+            li
+              a Delete Resource
+            if info.meta.prevRevis
+              li
+                 a Delete Current revision
+            li
+              a Manage Reviews
+
       div(class="MainContent")
         div#publication
           br

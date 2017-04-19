@@ -17,6 +17,8 @@ div(class="Wrapper")
                tr
                  td
                    textarea#titleEntry(class="smallInput parsley-validated" name="title" data-rangelength="[1-200]" data-reqired="true")
+                     if info.name
+                       | #{info.name}
                tr
                  td
                    div(class="submission")
@@ -27,11 +29,9 @@ div(class="Wrapper")
                  td
                    div#authors
                      div(class="list-item")
-                       input(class="parsley-validated" data-reqired="true" value=""
-                             placeholder="Firstname" style="width:150px;" name="firstname[0].a") 
-                       input(class="parsley-validated" data-reqired="true" value=""
-                             placeholder="Lastname" style="width:150px;" name="lastname[0].b")
+                       include journal_author_entry.jade
                    a#authorAdd(class="list-item") Add an author
+
                tr
                  td
                    div(class="submission")
@@ -43,6 +43,8 @@ div(class="Wrapper")
                tr
                  td
                    textarea#institutionEntry(class="smallInput parsley-validated" name="institution" data-reqired="true")
+                     if info.meta
+                         | #{info.meta.institution}
                tr
                  td
                    div(class="submission")
@@ -52,6 +54,8 @@ div(class="Wrapper")
                tr
                  td
                    textarea#abstractEntry(class="bigInput parsley-validated" name="description" data-reqired="true")
+                    if info.description
+                        | #{info.description}
                tr
                  td
                    div(class="submission")
@@ -96,9 +100,7 @@ div(class="Wrapper")
                tr
                  td
                    div#tags(class="ui-autocomplete-input")
-                     div(class="list-item")
-                       input(class="parsley-validated" data-reqired="true" value=""
-                             placeholder="Tag" style="width:150px;" name="tag[0].tag")
+                     include journal_tag_entry.jade
                    a#tagAdd(class="list-item") Add a tag
                tr
                  td

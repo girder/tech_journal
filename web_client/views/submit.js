@@ -16,14 +16,22 @@ import SubmitTagEntryTemplate from '../templates/journal_tag_entry.jade';
 var SubmitView = View.extend({
     events: {
         'click .issueGen': function (event) {
-           this.render(event.currentTarget.target,2)
+           this.render(event.currentTarget.target)
         },
         'submit #submitForm': function (event) {
             event.preventDefault();
-            this._createSubmission({
-                "subName":this.$('#titleEntry').val().trim(),
-                "subDescription": this.$('#abstractEntry').val().trim()
-            })
+            if(this.newSub) {
+                this._createSubmission({
+                    "subName":this.$('#titleEntry').val().trim(),
+                    "subDescription": this.$('#abstractEntry').val().trim()
+                })
+            }
+            else {
+                this._updateSubmission({
+                    "subName":this.$('#titleEntry').val().trim(),
+                    "subDescription": this.$('#abstractEntry').val().trim()
+                })
+            }
         },
         'click #authorAdd': function (event) {
             event.preventDefault();
@@ -40,7 +48,9 @@ var SubmitView = View.extend({
             this.$(event.currentTarget.parentElement).remove();
         }
     },
-    initialize: function () {
+    initialize: function (id) {
+        if(id.id == "new"){
+            this.newSub = true;
             restRequest({
                 type: 'GET',
                 path: 'journal/setting',
@@ -57,12 +67,17 @@ var SubmitView = View.extend({
                     this.render(jrnResp,1);
                 },this));
             }, this));  // End getting of OTJ Collection value setting
+        }
+        else {
+           this.newSub = false;
+           this.render(id.id,2);
+        }
 
     },
     render: function (subResp, state) {
+        this.$el.html(SelectIssueTemplate({info:subResp}));
+        new MenuBarView({ el: this.$el, parentView: this });
         if(state==1) {
-            this.$el.html(SelectIssueTemplate({info:subResp}));
-            new MenuBarView({ el: this.$el, parentView: this });
             return this;
         }
         else {
@@ -71,7 +86,13 @@ var SubmitView = View.extend({
                 type: 'GET',
                 path: 'folder/'+ this.parentId
             }).done(_.bind(function (resp) {
-                this.$("#pageContent").html(SubmitViewTemplate({info:resp}));
+                if(this.newSub) {
+                  var issueInfo={};
+                }
+                else {
+                  var issueInfo=resp;
+                }
+                this.$("#pageContent").html(SubmitViewTemplate({info:issueInfo}));
                 return this;
             }, this));  // End getting of OTJ Collection value setting
         }
@@ -100,12 +121,57 @@ var SubmitView = View.extend({
                 'tags':tags,
                 'comments':comments
             };
-            console.log(subData);
        restRequest({
             type: 'POST',
             path: 'folder',
             data: {
                 parentId: this.parentId,
+                parentType: "folder",
+                name: inData.subName,
+                description: inData.subDescription
+            },
+            error: null
+        }).done(_.bind(function (resp) {
+           restRequest({
+               type: 'PUT',
+               path: 'folder/'+resp._id+'/metadata',
+               contentType: 'application/json',
+               data: JSON.stringify(subData),
+               error:null
+           }).done(_.bind(function (respMD) {
+               router.navigate('#plugins/journal/submission/'+respMD._id+"/upload",
+                                      {trigger: true});
+             }, this));
+        }, this));
+    },
+    _updateSubmission: function (inData) {
+            var authors = []
+            var comments = []
+            this.$("#authors .list-item").each(function(index,val) {
+              var authorName = ''
+              $(val).children('input').each(function(index2,val2) {
+                if (val2.value !='') authorName += " " +val2.value
+              })
+              if (authorName.length >0) authors.push(authorName.trim())
+            })
+            var tags = []
+            this.$("#tags input").each(function(index,val) {
+              tags.push(val.value.trim())
+            });
+            var subData = {
+                'institution': this.$('#institutionEntry').val().trim(),
+                'related': this.$('#relatedEntry').val().trim(),
+                'type': this.$('#typeEntry').val().trim(),
+                'copyright': this.$('#copyrightEntry').val().trim(),
+                'grant': this.$('#grantEntry').val().trim(),
+                'authors': authors,
+                'tags':tags,
+                'comments':comments
+            };
+       restRequest({
+            type: 'PUT',
+            path: 'folder/'+this.parentId,
+            data: {
                 parentType: "folder",
                 name: inData.subName,
                 description: inData.subDescription

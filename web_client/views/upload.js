@@ -126,14 +126,15 @@ var uploadView = View.extend({
         }).done(_.bind(function (resp) {
             this.parent = resp;
             this.render();
-            /*restRequest({
+            restRequest({
                 type: 'GET',
                 path: 'item?folderId='+ this.parentId
             }).done(_.bind(function (itemResp) {
                 for(var index in itemResp) {
                   this.$('#uploadTable').append(UploadEntryTemplate({info: itemResp[index]}));
                 }
-            }, this));*/
+                this.$('#uploadQuestions').show();
+            }, this));
         }, this));
     },
     render: function () {
