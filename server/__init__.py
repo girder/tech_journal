@@ -65,14 +65,15 @@ class TechJournal(Resource):
         self.route('GET',(':id','submissions'), self.getAllSubmissions)
         self.route('GET',(), self.getAllJournals)
         self.route('GET',(':id','issues'), self.getAllIssues)
+        self.route('GET',(':id','details'), self.getSubmissionDetails)
         self.route('GET',(':id','search'), self.getFilteredIssues)
+        self.route('PUT',(':id','metadata'), self.setSubmissionMetadata)
         self.route('PUT',('setting',),self.setJournalSettings)
         self.route('GET',('setting',),self.getJournalSettings)
 
 
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)
-    @filtermodel(model='folder')
     @describeRoute(
       Description('Get all Issues from a given Journal')
       .responseClass('Collection')
@@ -86,8 +87,23 @@ class TechJournal(Resource):
       return issues
 
     @access.public(scope=TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+      Description('Get all details of a submission')
+      .param('id',"The ID of the submission",paramType='path')
+      .errorResponse('Test error.')
+      .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def getSubmissionDetails(self,folder,params):
+      parentInfo = self.model('folder').load(folder["parentId"],user=self.getCurrentUser())
+      currentInfo = self.model('folder').load(folder["_id"],user=self.getCurrentUser())
+      otherRevs = list(self.model('folder').childFolders(parentType='folder', parent=parentInfo,\
+          user=self.getCurrentUser()))
+      return (currentInfo, parentInfo,otherRevs)
+
+    @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)
-    @filtermodel(model='folder')
+    #@filtermodel(model='folder')
     @describeRoute(
       Description('Get all submissions from a given')
       .responseClass('Collection')
@@ -105,7 +121,10 @@ class TechJournal(Resource):
             testInfo = list(self.model('folder').childFolders(parentType='folder', parent=issue,\
               user=self.getCurrentUser()))
             for submission in testInfo:
-              totalData.append(submission)
+                # Find all folders under each submission to capture all revisions
+                submissionInfo = list(self.model('folder').childFolders(parentType='folder', parent=submission, user=self.getCurrentUser()))
+                submission['currentRevision']= submissionInfo[-1]
+                totalData.append(submission)
       return totalData
 
 
@@ -121,6 +140,39 @@ class TechJournal(Resource):
     def getAllJournals(self, params):
         user = self.getCurrentUser()
         return list(self.model('collection').textSearch("__journal__", user=user))
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.WRITE)
+    @describeRoute(
+      Description('Set metadata for a submission. Most stays on each revision, but others go to the parent folder')
+      .param('id', 'The ID of the folder.', paramType='path')
+      .param('body', 'A JSON object containing the metadata keys to add',
+        paramType='body')
+      .errorResponse('Test error.')
+      .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def setSubmissionMetadata(self, params, folder):
+        """ Submission metadata is split between the parent and revision folders:
+            revision:
+              type
+              authors
+              institution
+              tags
+            parent
+              related
+              copyright
+              grant
+              comments
+        """
+        metadata = self.getBodyJson()
+        parentMetaData={}
+        for key in ['related','copyright','grant','comments']:
+          if key in metadata.keys():
+            parentMetaData[key] = metadata.pop(key)
+        parentFolder = self.model('folder').load(folder["parentId"],user=self.getCurrentUser())
+        self.model('folder').setMetadata(parentFolder,parentMetaData)
+        self.model('folder').setMetadata(folder,metadata)
+        return "Success"
 
 
     @access.public(scope=TokenScope.DATA_READ)

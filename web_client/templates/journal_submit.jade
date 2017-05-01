@@ -1,11 +1,23 @@
+
+div#headerBar
 div(class="Wrapper")
   div(class="Content")
     div(class="viewMain")
       h3 Manage Submission
       div#submission
         form#submitForm(class="genericForm" data-validate="parsley" method="POST" action="")
-            table(width="100%")
-              tbody
+           table(width="100%")
+             tbody
+               if info.NR
+                 tr
+                   td
+                     div(class="submission")
+                       div(class="title") Revision Notes
+                         span(style="color:#A60000;").
+                            *
+                 tr
+                   td
+                     textarea#revisionEntry(class="bigInput parsley-validated" name="revNotes" data-reqired="true")
                tr
                  td
                    div(class="submission")
@@ -17,8 +29,8 @@ div(class="Wrapper")
                tr
                  td
                    textarea#titleEntry(class="smallInput parsley-validated" name="title" data-rangelength="[1-200]" data-reqired="true")
-                     if info.name
-                       | #{info.name}
+                     if info.parInfo.name
+                       | #{info.parInfo.name}
                tr
                  td
                    div(class="submission")
@@ -43,8 +55,8 @@ div(class="Wrapper")
                tr
                  td
                    textarea#institutionEntry(class="smallInput parsley-validated" name="institution" data-reqired="true")
-                     if info.meta
-                         | #{info.meta.institution}
+                     if info.info.meta
+                         | #{info.info.meta.institution}
                tr
                  td
                    div(class="submission")
@@ -54,8 +66,8 @@ div(class="Wrapper")
                tr
                  td
                    textarea#abstractEntry(class="bigInput parsley-validated" name="description" data-reqired="true")
-                    if info.description
-                        | #{info.description}
+                    if info.parInfo.description
+                        | #{info.parInfo.description}
                tr
                  td
                    div(class="submission")
@@ -65,6 +77,8 @@ div(class="Wrapper")
                tr
                  td
                    textarea#relatedEntry(class="bigInput" name="related")
+                     if info.parInfo.meta
+                       | #{info.parInfo.meta.related}
                tr
                  td
                    div(class="submission")

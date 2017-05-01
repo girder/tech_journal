@@ -1,3 +1,6 @@
+mixin revisionOption(value,selectedRev)
+  option(class="revisionOption" value=value._id) #{value.name}
+
 mixin searchLink(value,type)
   a(href='#plugins/journal?query="'+type+'":"'+ value+ '"') #{value}
 
@@ -32,27 +35,35 @@ div(class="Wrapper")
         h4 Statistics:
         h4 Information
           ul
-            li Type: #{info.meta.type}
+            li Type: #{info.revision.meta.type}
             li Categories:
             li Keywords:
-              each item in info.meta.tags
+              each item in info.revision.meta.tags
                 +searchLink(item,'tags')
                 |,
-            li Current revision:
-            li License: #{info.meta.source-license}
-            if info.meta.grant
-              li Grant: #{info.meta.grant}
+            if info.otherRevisions
+              li Current revision:
+                select#revisionSelector
+                    for value in info.otherRevisions
+                      selected=""
+                      if value == info.revision._id
+                        selected = "selected=''"
+                      +revisionOption(value,selected)
+
+            li License: #{info.parent.meta.source-license}
+            if info.parent.meta.grant
+              li Grant: #{info.parent.meta.grant}
         h4 Share
         if user.attributes.admin
           h4 Manage
           ul
             li
-              a New Revision
+              a(href="#plugins/journal/submission/"+info.revision._id+"/revision") New Revision
             li
-              a(href="#plugins/journal/submission/"+info._id) Edit Resource
+              a(href="#plugins/journal/submission/"+info.revision._id+"/edit") Edit Resource
             li
               a Delete Resource
-            if info.meta.prevRevis
+            if info.parent.meta.prevRevis
               li
                  a Delete Current revision
             li
@@ -62,19 +73,23 @@ div(class="Wrapper")
         div#publication
           br
           div(class="title").
-            #{info.name}
+            #{info.parent.name}
           div(class="authors")
-            each item in info.meta.authors
+            each item in info.revision.meta.authors
               +searchLink(item,'authors')
               |,
           div(class="institution")
-              +searchLink(info.meta.institution,"institution")
+              +searchLink(info.revision.meta.institution,"institution")
           div(class="journal").
-            Submitted to: #{info.baseParentId}
+            Submitted to: #{info.parent.baseParentId}
           div(class="submittedby").
-            Submitted by #{info.creatorId} on #{info.created}
+            Submitted by #{info.parent.creatorId} on #{info.parent.created}
+          if info.revision.description
+              h4 Revision Notes
+              div(class="abstract" style="text-align: justify")
+                | #{info.revision.description}
           div(class="abstract").
-            #{info.description}
+            #{info.parent.description}
           h4 Comments
           div#commentsContainer
             div#commentsDiv
@@ -100,7 +115,7 @@ div(class="Wrapper")
                       a#registerToComment(href='#plugins/journal?dialog=register') register
                       |  to add a comment
               div#existingCommentsList
-                for comment in info.meta.comments
+                for comment in info.parent.meta.comments
                   if comment.name
                     +existingComment(comment)
                 div(class="commentsBottomMessage")

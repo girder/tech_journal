@@ -4,8 +4,8 @@ mixin entryItem(tag)
              placeholder="Tag" style="width:150px;" name="tag[0].tag")
       a#removeTag(class="list-remove") Remove
 
-if info.meta
-    for tag in info.meta.tags
+if info.info.meta
+    for tag in info.info.meta.tags
       +entryItem(tag)
 else
     +entryItem("")

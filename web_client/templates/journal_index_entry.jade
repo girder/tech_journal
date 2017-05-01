@@ -13,7 +13,7 @@ mixin searchEntry(info)
           div(class="ResultSubDescription")
                 statistics
           div( class="ResultTop")
-            a(class="resourceLink" href="#plugins/journal/view/"+ info._id)
+            a(class="resourceLink" href="#plugins/journal/view/"+ info.currentRevision._id)
             span(class="ResultTitle").
               #{info.name}
           div(class="ResultAuthors").

@@ -6,8 +6,8 @@ mixin AuthorEntry(name)
           placeholder="Lastname" style="width:150px;" name="lastname[0].b")
     a#removeAuthor(class="list-remove") Remove
 
-if info.meta
-    for author in info.meta.authors
+if info.info.meta
+    for author in info.info.meta.authors
       +AuthorEntry(author.split(' '))
 else
     +AuthorEntry(["",""])

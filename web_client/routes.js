@@ -19,8 +19,20 @@ router.route('plugins/journal', 'mainView', function (query) {
 });
 
 import submitView from './views/submit';
-router.route('plugins/journal/submission/:id', 'submissionInfo', function (id) {
+import editView from './views/editSubmission'
+router.route('plugins/journal/submission/new', 'submissionInfo', function () {
+        testUserAccess(submitView, {id:"new"}, true, false)
+});
+
+router.route('plugins/journal/submission/:id/new', 'submissionInfo', function (id) {
         testUserAccess(submitView, {id:id}, true, false)
+});
+// Pass through the revision view to eliminate the need to pick an issue
+router.route('plugins/journal/submission/:id/edit', 'submissionInfo', function (id) {
+        testUserAccess(editView, {id:id,NR:false}, true, false)
+});
+router.route('plugins/journal/submission/:id/revision', 'submissionInfo', function (id) {
+        testUserAccess(editView, {id:id,NR:true}, true, false)
 });
 
 import listView from './views/listJournals';
@@ -29,8 +41,11 @@ router.route('plugins/journal/list', 'listJournals', function () {
 });
 
 import uploadView from './views/upload';
-router.route('plugins/journal/submission/:id/upload', 'uploadFiles', function (id) {
-        testUserAccess(uploadView, {id:id}, true, false)
+router.route('plugins/journal/submission/:id/upload/new', 'uploadFiles', function (id) {
+        testUserAccess(uploadView, {id:id, newSub:true}, true, false)
+});
+router.route('plugins/journal/submission/:id/upload/edit', 'uploadFiles', function (id) {
+        testUserAccess(uploadView, {id:id, newSub:false}, true, false)
 });
 
 import submissionView from './views/view';

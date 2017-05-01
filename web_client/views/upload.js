@@ -33,7 +33,7 @@ var uploadView = View.extend({
         },
         'click .deleteLink': function (event) {
             event.preventDefault();
-            itemEntry = event.currentTarget.parentElement.parentElement
+            var itemEntry = event.currentTarget.parentElement.parentElement
             this._deleteFile(itemEntry);
         },
 
@@ -132,8 +132,8 @@ var uploadView = View.extend({
             }).done(_.bind(function (itemResp) {
                 for(var index in itemResp) {
                   this.$('#uploadTable').append(UploadEntryTemplate({info: itemResp[index]}));
+                  this.$('#uploadQuestions').show();
                 }
-                this.$('#uploadQuestions').show();
             }, this));
         }, this));
     },

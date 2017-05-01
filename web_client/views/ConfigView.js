@@ -75,7 +75,6 @@ var configView = View.extend({
         return this;
     },
     _saveSettings: function (settings) {
-        console.log(settings)
         restRequest({
             type: 'PUT',
             path: 'journal/setting',
