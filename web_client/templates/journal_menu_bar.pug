@@ -58,8 +58,8 @@ div(class="Header")
           a(href='#plugins/journal/submission/new')
             | New Publication
         if user
-          li
-            a#profileLink(href='') My Profile
+          li#profileLink
+            a(href='') My Profile
             div#userOptionsDiv
               ul#userOptionsList
                 li
@@ -67,8 +67,8 @@ div(class="Header")
                 li
                   a(class="submm" href='') Edit Profile
           if user.attributes.admin
-            li
-              a#adminLink(href="") Admin
+            li#adminLink
+              a(href="") Admin
               div#adminOptionsDiv
                 ul#adminOptionsList
                   li
@@ -85,8 +85,8 @@ div(class="Header")
                     a(class="submm" href='') Config
                   li
                     a(class="submm" href='') Review Questions
-        li
-          a#helpLink(href="#plugins/journal/help")
+        li#helpLink
+          a(href="#plugins/journal/help")
             | Help
           div#helpOptions
             ul#helpOptionsList

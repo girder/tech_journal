@@ -21,24 +21,37 @@ var MenuBarView = View.extend({
             window.location.reload();
          }))
        },
-       'mouseleave #userOptionsList': function(event) {
-         this.$("#userOptionsList").attr('style','display: none;')
-       },
        'mouseenter #profileLink': function(event) {
          this.$("#adminOptionsList").attr('style','display: none;')
+         this.$("#helpOptionsList").attr('style','display: none;')
          this.$("#userOptionsList").attr('style','display: block;')
-       },
-       'mouseleave #adminOptionsList': function(event) {
-         this.$("#adminOptionsList").attr('style','display: none;')
-       },
-       'mouseenter #adminLink': function(event) {
-         this.$("#userOptionsList").attr('style','display: none;')
-         this.$("#adminOptionsList").attr('style','display: block;')
        },
        'mouseenter #helpLink': function(event) {
          this.$("#helpOptionsList").attr('style','display: block;')
+         this.$("#adminOptionsList").attr('style','display: none;')
+         this.$("#userOptionsList").attr('style','display: none;')
+       },
+       'mouseenter #adminLink': function(event) {
+         this.$("#userOptionsList").attr('style','display: none;')
+         this.$("#helpOptionsList").attr('style','display: none;')
+         this.$("#adminOptionsList").attr('style','display: block;')
        },
        'mouseleave #adminOptionsList': function(event) {
+         this.$("#adminOptionsList").attr('style','display: none;')
+       },
+       'mouseleave #userOptionsList': function(event) {
+         this.$("#userOptionsList").attr('style','display: none;')
+       },
+       'mouseleave #helpOptionsList': function(event) {
+         this.$("#helpOptionsList").attr('style','display: none;')
+       },
+       'mouseleave #adminLink': function(event) {
+         this.$("#adminOptionsList").attr('style','display: none;')
+       },
+       'mouseleave #profileLink': function(event) {
+         this.$("#userOptionsList").attr('style','display: none;')
+       },
+       'mouseleave #helpLink': function(event) {
          this.$("#helpOptionsList").attr('style','display: none;')
        },
     },
