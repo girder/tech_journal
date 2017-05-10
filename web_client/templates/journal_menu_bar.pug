@@ -59,7 +59,7 @@ div(class="Header")
             | New Publication
         if user
           li#profileLink
-            a(href='') My Profile
+            a(href='#user/'+user._id) My Profile
             div#userOptionsDiv
               ul#userOptionsList
                 li
@@ -74,17 +74,17 @@ div(class="Header")
                   li
                     a(class="submm" href='#plugins/journal/admin') Journals
                   li
-                    a(class="submm" href='') Users
+                    a(class="submm" href='#users') Users
                   li
-                    a(class="submm" href='') Categories
+                    a(class="submm") Categories
                   li
-                    a(class="submm" href='') Disclaimers
+                    a(class="submm") Disclaimers
                   li
                     a(class="submm" href='#plugins/journal/admin/help') Help & About
                   li
-                    a(class="submm" href='') Config
+                    a(class="submm" href='#plugins/journal/config') Config
                   li
-                    a(class="submm" href='') Review Questions
+                    a(class="submm") Review Questions
         li#helpLink
           a(href="#plugins/journal/help")
             | Help

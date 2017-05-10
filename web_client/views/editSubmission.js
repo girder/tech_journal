@@ -8,8 +8,8 @@ import MenuBarView from './menuBar.js';
 import { restRequest } from 'girder/rest';
 
 import SubmitViewTemplate from '../templates/journal_submit.jade';
-import SubmitAuthorEntryTemplate from '../templates/journal_author_entry.jade';
-import SubmitTagEntryTemplate from '../templates/journal_tag_entry.jade';
+import SubmitAuthorEntryTemplate from '../templates/journal_author_entry.pug';
+import SubmitTagEntryTemplate from '../templates/journal_tag_entry.pug';
 
 
 var editView = View.extend({

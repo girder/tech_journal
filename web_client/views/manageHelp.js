@@ -9,8 +9,7 @@ import { restRequest } from 'girder/rest';
 import manageHelpViewTemplate from '../templates/journal_admin_help.jade';
 
 import tinymce from 'tinymce/tinymce'
-import 'tinymce/themes/modern/theme'
-import 'tinymce/skins/lightgray/skin.min.css'
+require('tinymce/themes/modern/theme')
 
 var ManageHelpView = View.extend({
 

@@ -73,38 +73,34 @@ router.route('plugins/journal/admin/journal/:id', 'editJournal', function (id) {
     testUserAccess(EditJournalView,{id:id},true,true);
 
 });
-
+// Help pages
 import manageHelpView from './views/manageHelp';
 //Existing journal route
 router.route('plugins/journal/admin/help', 'editJournal', function () {
-    events.trigger('g:navigateTo', manageHelpView,{},{layout: Layout.EMPTY});
-
+    testUserAccess(manageHelpView,{},true,true);
 });
 
-// Help pages
 import HelpView from './views/help_main';
 //Existing journal route
 router.route('plugins/journal/help', 'HelpView', function () {
-    events.trigger('g:navigateTo', HelpView,{},{layout: Layout.EMPTY});
-
+    testUserAccess(HelpView,{},false,false);
 });
 import FAQView from './views/help_faq';
 //Existing journal route
 router.route('plugins/journal/help/faq', 'FAQView', function () {
-    events.trigger('g:navigateTo', FAQView,{},{layout: Layout.EMPTY});
+    testUserAccess(FAQView,{},false,false);
 
 });
 import AboutView from './views/help_about';
 //Existing journal route
 router.route('plugins/journal/help/about', 'AboutView', function () {
-    events.trigger('g:navigateTo', AboutView,{},{layout: Layout.EMPTY});
+    testUserAccess(AboutView,{},false,false);
 
 });
 import FeedBackView from './views/feedback';
 //Existing journal route
 router.route('plugins/journal/help/feedback', 'FeedBackView', function () {
-    events.trigger('g:navigateTo', FeedBackView,{},{layout: Layout.EMPTY});
-
+    testUserAccess(FeedBackView,{},false,false);
 });
 
 function testUserAccess(view, args, needsUser, needsAdmin) {
