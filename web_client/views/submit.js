@@ -5,6 +5,7 @@ import View from 'girder/views/View';
 import events from 'girder/events';
 import router from 'girder/router';
 import MenuBarView from './menuBar.js';
+import { getCurrentUser } from 'girder/auth'
 import { restRequest } from 'girder/rest';
 
 import SubmitViewTemplate from '../templates/journal_submit.jade';
@@ -27,6 +28,10 @@ var SubmitView = View.extend({
                     "subDescription": this.$('#abstractEntry').val().trim()
                 })
             }
+            else if (this.approval) {
+                   router.navigate(targetUrl + resp._id+"/upload/"+this.id,
+                                      {trigger: true});
+            }
         },
         'click #authorAdd': function (event) {
             event.preventDefault();
@@ -44,6 +49,7 @@ var SubmitView = View.extend({
         }
     },
     initialize: function (id) {
+        this.user = getCurrentUser()
         if(id.id == "new"){
             this.newSub = true;
             restRequest({
@@ -65,6 +71,8 @@ var SubmitView = View.extend({
         }
         else {
            this.newRevision=id.NR;
+           this.approval=id.approval;
+           this.id=id.id
            this.newSub = false;
            this.render(id.id,2);
         }
@@ -119,7 +127,8 @@ var SubmitView = View.extend({
                 'grant': this.$('#grantEntry').val().trim(),
                 'authors': authors,
                 'tags':tags,
-                'comments':comments
+                'comments':comments,
+                'targetIssue': this.itemId
             };
             if(this.newRevision) {
                subData["revisionNotes"] = this.$('#revisionEntry').val().trim();
@@ -129,8 +138,8 @@ var SubmitView = View.extend({
             type: 'POST',
             path: 'folder',
             data: {
-                parentId: this.parentID,
-                parentType: "folder",
+                parentId: this.user.id,
+                parentType: "user",
                 name: inData.subName,
                 description: inData.subDescription
             },

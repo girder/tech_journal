@@ -75,13 +75,19 @@ var indexView = View.extend({
         }, this));  // End getting of OTJ Collection value setting
     },
     render: function (subData, searchVal,collection) {
+        var pendingSubs = 0
+        subData.forEach(function(d) {
+           console.log(d);
+           if(d.curation.status == "REQUESTED") {pendingSubs++}
+        })
         restRequest({
             type: 'GET',
             path: 'journal/'+collection +'/issues'
         }).done(_.bind(function (jrnResp) {
             this.$el.html(IndexViewTemplate({info:{"issues":jrnResp   }}));
             this.$('.searchResults').html(IndexEntryViewTemplate({info:{"submissions":subData}}));
-            new MenuBarView({ el: this.$el, parentView: this, searchBoxVal: searchVal});
+            new MenuBarView({ el: this.$el, parentView: this, searchBoxVal: searchVal,
+                pendingSubNum:pendingSubs});
         },this));
 
         return this;

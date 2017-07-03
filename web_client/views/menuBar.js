@@ -61,7 +61,7 @@ var MenuBarView = View.extend({
     },
     render: function(curUser) {
 
-        this.$("#headerBar").html(MenuBarViewTemplate({user:curUser, searchVal:this.options.searchBoxVal }));
+        this.$("#headerBar").html(MenuBarViewTemplate({user:curUser, searchVal:this.options.searchBoxVal,approvalNum:this.options.pendingSubNum}));
         return this;
     }
 });

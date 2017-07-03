@@ -66,11 +66,19 @@ div(class="Wrapper")
             a(target="_blank" href="http://www.osehra.org/sites/default/files/TD-04-01_ContributedSoftwareAttributionPolicy.pdf") Contributed Software Attribution Policy
           br
           br
-          form#uploadForm(method="POST" action="")
-            input(type="submit" value='Publish >' name="finish" disabled="disabled")
-            input#hiddenSourceLicense(type="hidden" value="0" name="source-license")
-            input#hiddenSourceLicenseText(type="hidden" value="Other" name="source-license-text")
-            input#hiddenAttributionPolicy(type="hidden" value="0" name="attribution-policy")
-            input#hiddenSendNotificationEmail(type="hidden" value="0" name="send-email")
+          if user.attributes.admin
+            form#adminUploadForm(method="POST" action="")
+              input(type="submit" value='Publish >' name="finish" disabled="disabled")
+              input#hiddenSourceLicense(type="hidden" value="0" name="source-license")
+              input#hiddenSourceLicenseText(type="hidden" value="Other" name="source-license-text")
+              input#hiddenAttributionPolicy(type="hidden" value="0" name="attribution-policy")
+              input#hiddenSendNotificationEmail(type="hidden" value="0" name="send-email")
+          unless user.attributes.admin
+            form#uploadForm(method="POST" action="")
+              input(type="submit" value='Submit for Approval >' name="finish" disabled="disabled")
+              input#hiddenSourceLicense(type="hidden" value="0" name="source-license")
+              input#hiddenSourceLicenseText(type="hidden" value="Other" name="source-license-text")
+              input#hiddenAttributionPolicy(type="hidden" value="0" name="attribution-policy")
+              input#hiddenSendNotificationEmail(type="hidden" value="0" name="send-email")
     div(class="clear")
     div(class="Footer")

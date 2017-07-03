@@ -99,6 +99,13 @@ div(class="Header")
               li
                 a( class="submm"  style="width:160px;" href="#plugins/journal/help/feedback")
                   | Feedback
+        if user
+          if user.attributes.admin
+            if (approvalNum > 0)
+              li
+                a(href="#plugins/journal/approval" style="color:orange;")
+                  | Waiting Approval : #{approvalNum}
+
       div(class="HeaderSearch nav navbar-nav navbar-right")
 
         input#live_search(type="text" class="panelsBackground" value=searchVal autocomplete="off" autocorrect="off" autocapitalize="off")

@@ -54,20 +54,21 @@ div(class="Wrapper")
             if info.parent.meta.grant
               li Grant: #{info.parent.meta.grant}
         h4 Share
-        if user.attributes.admin
-          h4 Manage
-          ul
-            li
-              a(href="#plugins/journal/submission/"+info.revision._id+"/revision") New Revision
-            li
-              a(href="#plugins/journal/submission/"+info.revision._id+"/edit") Edit Resource
-            li
-              a Delete Resource
-            if info.parent.meta.prevRevis
+        if user
+          if user.attributes.admin
+            h4 Manage
+            ul
               li
-                 a Delete Current revision
-            li
-              a Manage Reviews
+                a(href="#plugins/journal/submission/"+info.revision._id+"/revision") New Revision
+              li
+                a(href="#plugins/journal/submission/"+info.revision._id+"/edit") Edit Resource
+              li
+                a Delete Resource
+              if info.parent.meta.prevRevis
+                li
+                   a Delete Current revision
+              li
+                a Manage Reviews
 
       div(class="MainContent")
         div#publication
@@ -80,6 +81,9 @@ div(class="Wrapper")
               |,
           div(class="institution")
               +searchLink(info.revision.meta.institution,"institution")
+          unless info.revision.curation.status == "APPROVED"
+            span(style="font-weight:bold;color:red;")
+              | This article is waiting for approval
           div(class="journal").
             Submitted to: #{info.parent.baseParentId}
           div(class="submittedby").

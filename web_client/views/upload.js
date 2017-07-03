@@ -8,6 +8,7 @@ import router from 'girder/router';
 import FolderModel from 'girder/models/FolderModel';
 import UploadWidget from 'girder/views/widgets/UploadWidget';
 import MenuBarView from './menuBar.js';
+import { getCurrentUser } from 'girder/auth'
 import { handleClose, handleOpen } from 'girder/dialog';
 import { restRequest } from 'girder/rest';
 
@@ -20,6 +21,15 @@ var uploadView = View.extend({
         'submit #uploadForm': function (event) {
             event.preventDefault();
             this._appendData({
+                "source-license":this.$('#hiddenSourceLicense').val().trim(),
+                "source-license-text":this.$('#hiddenSourceLicenseText').val().trim(),
+                "attribution-policy":this.$('#hiddenAttributionPolicy').val().trim(),
+                "notification-email":this.$('#hiddenSendNotificationEmail').val().trim()
+        })
+        },
+        'submit #adminUploadForm': function (event) {
+            event.preventDefault();
+            this._approveSubmission({
                 "source-license":this.$('#hiddenSourceLicense').val().trim(),
                 "source-license-text":this.$('#hiddenSourceLicenseText').val().trim(),
                 "attribution-policy":this.$('#hiddenAttributionPolicy').val().trim(),
@@ -138,7 +148,7 @@ var uploadView = View.extend({
         }, this));
     },
     render: function () {
-        this.$el.html(UploadViewTemplate());
+        this.$el.html(UploadViewTemplate({user:getCurrentUser()}));
         new MenuBarView({ el: this.$el, parentView: this });
         return this;
     },
@@ -198,15 +208,26 @@ var uploadView = View.extend({
         }, this));
     },
 
+
+    _approveSubmission: function(subData) {
+        restRequest({
+               type: 'PUT',
+               path: 'journal/'+this.parentId+'/approve',
+               contentType: 'application/json',
+               data: JSON.stringify(subData)
+           }).done(_.bind(function (respMD) {
+               router.navigate('#plugins/journal/view/'+this.parentId,
+                                      {trigger: true});
+             }, this));
+    },
     _appendData: function(subData) {
         restRequest({
                type: 'PUT',
-               path: 'folder/'+this.parentId+'/metadata',
+               path: 'journal/'+this.parentId+'/finalize',
                contentType: 'application/json',
-               data: JSON.stringify(subData),
-               error:null
+               data: JSON.stringify(subData)
            }).done(_.bind(function (respMD) {
-               router.navigate('#plugins/journal/view/'+respMD._id,
+               router.navigate('#plugins/journal/view/'+this.parentId,
                                       {trigger: true});
              }, this));
     }

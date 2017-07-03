@@ -35,6 +35,9 @@ router.route('plugins/journal/submission/:id/revision', 'submissionInfo', functi
         testUserAccess(editView, {id:id,NR:true}, true, false)
 });
 
+router.route('plugins/journal/submission/:id/approve', 'submissionInfo', function (id) {
+        testUserAccess(editView, {id:id,NR:false,approve:true}, true, true)
+});
 import listView from './views/listJournals';
 router.route('plugins/journal/list', 'listJournals', function () {
         testUserAccess(listView, {}, true, true)
@@ -51,6 +54,11 @@ router.route('plugins/journal/submission/:id/upload/edit', 'uploadFiles', functi
 import submissionView from './views/view';
 router.route('plugins/journal/view/:id', 'submissionView', function (id) {
     testUserAccess(submissionView, {id:id}, false, false)
+});
+
+import approvalView from './views/manageApproval';
+router.route('plugins/journal/approval', 'approvalView', function () {
+    testUserAccess(approvalView,{},true,true);
 });
 
 import downloadView from './views/download';

@@ -1,4 +1,4 @@
-mixin searchEntry(info)
+mixin searchEntry(info,approveLink)
   div(class="SearchResultEntry box")
     table(style="width:99%;")
       tr
@@ -13,7 +13,10 @@ mixin searchEntry(info)
           div(class="ResultSubDescription")
                 statistics
           div( class="ResultTop")
-            a(class="resourceLink" href="#plugins/journal/view/"+ info.currentRevision._id)
+            if approveLink
+              a(class="resourceLink" href="#plugins/journal/submission/"+ info.currentRevision._id+"/approve")
+            else
+              a(class="resourceLink" href="#plugins/journal/view/"+ info.currentRevision._id)
             span(class="ResultTitle").
               #{info.name}
           div(class="ResultAuthors").
@@ -22,4 +25,4 @@ mixin searchEntry(info)
             #{info.description}
 
 each item in info.submissions
-  +searchEntry(item)
+  +searchEntry(item,info.approveLink)
