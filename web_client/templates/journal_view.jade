@@ -55,20 +55,21 @@ div(class="Wrapper")
               li Grant: #{info.parent.meta.grant}
         h4 Share
         if user
-          if user.attributes.admin
+          if (user.attributes.admin) || (info.parent.creatorId==user.id)
             h4 Manage
             ul
               li
                 a(href="#plugins/journal/submission/"+info.revision._id+"/revision") New Revision
-              li
-                a(href="#plugins/journal/submission/"+info.revision._id+"/edit") Edit Resource
-              li
-                a Delete Resource
-              if info.parent.meta.prevRevis
+              if (user.attributes.admin)
                 li
-                   a Delete Current revision
-              li
-                a Manage Reviews
+                  a(href="#plugins/journal/submission/"+info.revision._id+"/edit") Edit Resource
+                li
+                  a Delete Resource
+                if info.parent.meta.prevRevis
+                  li
+                     a Delete Current revision
+                li
+                  a Manage Reviews
 
       div(class="MainContent")
         div#publication

@@ -45,10 +45,14 @@ router.route('plugins/journal/list', 'listJournals', function () {
 
 import uploadView from './views/upload';
 router.route('plugins/journal/submission/:id/upload/new', 'uploadFiles', function (id) {
-        testUserAccess(uploadView, {id:id, newSub:true}, true, false)
+        testUserAccess(uploadView, {id:id, newSub:true,NR:false}, true, false)
+});
+
+router.route('plugins/journal/submission/:id/upload/revision', 'uploadFiles', function (id) {
+        testUserAccess(uploadView, {id:id, newSub:true, NR:true}, true, false)
 });
 router.route('plugins/journal/submission/:id/upload/edit', 'uploadFiles', function (id) {
-        testUserAccess(uploadView, {id:id, newSub:false}, true, false)
+        testUserAccess(uploadView, {id:id, newSub:false,NR:false}, true, false)
 });
 
 import submissionView from './views/view';

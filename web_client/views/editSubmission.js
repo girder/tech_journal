@@ -115,7 +115,7 @@ var editView = View.extend({
                 error: null
             }).done(_.bind(function (resp) {
                        this._updateSubmission(resp._id)
-                       router.navigate(targetUrl + resp._id+"/upload/new",
+                       router.navigate(targetUrl + resp._id+"/upload/revision",
                                           {trigger: true});
             },this));
         },this));

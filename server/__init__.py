@@ -169,7 +169,7 @@ class TechJournal(Resource):
         self.model('folder').save(movedFolder)
         return movedFolder
 
-    @access.admin(scope=TokenScope.DATA_READ)
+    @access.user(scope=TokenScope.DATA_READ)
     @loadmodel(model='folder', level=AccessType.WRITE)
     @describeRoute(
       Description("Approve a submission and make it publicly visable")

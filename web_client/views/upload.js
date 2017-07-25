@@ -18,7 +18,7 @@ import UploadEntryTemplate from '../templates/journal_upload_entry.jade';
 
 var uploadView = View.extend({
     events: {
-        'submit #uploadForm': function (event) {
+        'submit #curateduploadForm': function (event) {
             event.preventDefault();
             this._appendData({
                 "source-license":this.$('#hiddenSourceLicense').val().trim(),
@@ -27,7 +27,7 @@ var uploadView = View.extend({
                 "notification-email":this.$('#hiddenSendNotificationEmail').val().trim()
         })
         },
-        'submit #adminUploadForm': function (event) {
+        'submit #approvedUploadForm': function (event) {
             event.preventDefault();
             this._approveSubmission({
                 "source-license":this.$('#hiddenSourceLicense').val().trim(),
@@ -130,6 +130,7 @@ var uploadView = View.extend({
     },
     initialize: function (subId) {
         this.parentId= subId.id;
+        this.newRevision= subId.NR
         restRequest({
             type: 'GET',
             path: 'folder/'+ this.parentId
@@ -148,7 +149,7 @@ var uploadView = View.extend({
         }, this));
     },
     render: function () {
-        this.$el.html(UploadViewTemplate({user:getCurrentUser()}));
+        this.$el.html(UploadViewTemplate({user:getCurrentUser(),newRevision: this.newRevision}));
         new MenuBarView({ el: this.$el, parentView: this });
         return this;
     },
