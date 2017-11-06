@@ -5,6 +5,7 @@ import router from 'girder/router';
 import MenuBarView from './menuBar.js';
 import { getCurrentUser } from 'girder/auth'
 import { restRequest } from 'girder/rest';
+import { renderMarkdown } from 'girder/misc';
 
 import FAQViewTemplate from '../templates/journal_help_faq.jade';
 
@@ -25,7 +26,7 @@ var FAQView = View.extend({
         
     },
     render: function(faqText) {
-            this.$el.html(FAQViewTemplate({info:faqText}));
+            this.$el.html(FAQViewTemplate({info:faqText,renderMarkdown: renderMarkdown}));
             new MenuBarView({ el: this.$el, parentView: this, searchBoxVal: "Search..."});
         return this;
     }

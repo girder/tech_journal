@@ -3,6 +3,7 @@ import View from 'girder/views/View';
 import events from 'girder/events';
 import router from 'girder/router';
 import MenuBarView from './menuBar.js';
+import MarkdownWidget from 'girder/views/widgets/MarkdownWidget';
 import { getCurrentUser } from 'girder/auth'
 import { restRequest } from 'girder/rest';
 
@@ -18,9 +19,9 @@ var ManageHelpView = View.extend({
         event.preventDefault();
         // save Content to show on other pages
         this._saveHelp([
-        {key: "main", value: $("#mainPage p").text().trim()},
-        {key: "about", value: $("#aboutPage p").text().trim()},
-        {key: "faq"  , value: $("#faqPage p").text().trim()}
+        {key: "main", value: this.HelpEditor.val()},
+        {key: "about", value: this.AboutEditor.val() },
+        {key: "faq"  , value: this.FAQEditor.val()}
         ])
       }
     },
@@ -38,11 +39,35 @@ var ManageHelpView = View.extend({
     render: function(existingPages) {
             this.$el.html(manageHelpViewTemplate());
             new MenuBarView({ el: this.$el, parentView: this, searchBoxVal: "Search..."});
-            tinymce.init({selector:".textDiv", mode : "exact", inline:true,skin:false ,height:500, menubar: false,toolbar: 'undo redo'});
+            this.HelpEditor = new MarkdownWidget({
+                prefix: 'homepage',
+                placeholder: 'Enter Markdown for the Help Page',
+                parentView: this,
+                parent: this.folder,
+                enableUploads: false
+            });
+            this.FAQEditor = new MarkdownWidget({
+                prefix: 'homepage',
+                placeholder: 'Enter Markdown for the FAQ Page',
+                parentView: this,
+                parent: this.folder,
+                enableUploads: false
+            });
+
+            this.AboutEditor = new MarkdownWidget({
+                prefix: 'homepage',
+                placeholder: 'Enter Markdown for the About Page',
+                parentView: this,
+                enableUploads: false
+            });
+
             // Prepopulate the pages
-              this.$("#mainPage p").text(existingPages['main'])
-              this.$("#faqPage p").text(existingPages['faq'])
-              this.$("#aboutPage p").text(existingPages['about'])
+              this.HelpEditor.text = existingPages['main'];
+              this.HelpEditor.setElement(this.$('#mainPage')).render();
+              this.FAQEditor.text = existingPages['faq'];
+              this.FAQEditor.setElement(this.$('#faqPage')).render();
+              this.AboutEditor.text = existingPages['about'];
+              this.AboutEditor.setElement(this.$('#aboutPage')).render();
         return this;
     },
     _saveHelp: function(inData) {

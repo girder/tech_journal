@@ -7,4 +7,4 @@ div(class="Wrapper")
       font(size="+1")
         | Help
     p 
-     | #{info}
+      .g-help-description!= renderMarkdown(info)

@@ -7,4 +7,4 @@ div(class="Wrapper")
       font(size="+1")
         | Frequently Asked Questions
     p
-     | #{info}
+      .g-faq-description!= renderMarkdown(info)

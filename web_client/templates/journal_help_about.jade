@@ -7,4 +7,4 @@ div(class="Wrapper")
       font(size="+1")
         | About
     p 
-     | #{info}
+      .g-about-description!= renderMarkdown(info)

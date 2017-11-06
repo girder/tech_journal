@@ -5,6 +5,7 @@ import router from 'girder/router';
 import MenuBarView from './menuBar.js';
 import { getCurrentUser } from 'girder/auth'
 import { restRequest } from 'girder/rest';
+import { renderMarkdown } from 'girder/misc';
 
 import HelpViewTemplate from '../templates/journal_help.jade';
 
@@ -25,7 +26,7 @@ var HelpView = View.extend({
         
     },
     render: function(helpText) {
-            this.$el.html(HelpViewTemplate({info:helpText}));
+            this.$el.html(HelpViewTemplate({info:helpText,renderMarkdown: renderMarkdown}));
             new MenuBarView({ el: this.$el, parentView: this, searchBoxVal: "Search..."});
         return this;
     }
