@@ -108,6 +108,17 @@ var SubmitView = View.extend({
     _createSubmission: function (inData) {
             var authors = []
             var comments = []
+            var hasPermission = $(".subPermission:checked").val()
+            var corpCLAVal = $(".CLAPermission:checked").val()
+            if (hasPermission == "No") {
+              events.trigger('g:alert', {
+                  icon: 'ok',
+                  text: 'You must have permission to submit files in order to proceed',
+                  type: 'warning',
+                  timeout: 4000
+              });
+              return
+            }
             this.$("#authors .list-item").each(function(index,val) {
               var authorName = ''
               $(val).children('input').each(function(index2,val2) {
@@ -128,6 +139,8 @@ var SubmitView = View.extend({
                 'authors': authors,
                 'tags':tags,
                 'comments':comments,
+                'permission':hasPermission,
+                'CorpCLA': corpCLAVal,
                 'targetIssue': this.itemId
             };
             if(this.newRevision) {

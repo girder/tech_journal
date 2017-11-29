@@ -17,7 +17,7 @@ div(class="Wrapper")
                             *
                  tr
                    td
-                     textarea#revisionEntry(class="bigInput parsley-validated" name="revNotes" data-reqired="true")
+                     textarea#revisionEntry(class="bigInput parsley-validated" name="revNotes" required)
                tr
                  td
                    div(class="submission")
@@ -28,7 +28,7 @@ div(class="Wrapper")
                        Main title of your submission
                tr
                  td
-                   textarea#titleEntry(class="smallInput parsley-validated" name="title" data-rangelength="[1-200]" data-reqired="true")
+                   textarea#titleEntry(class="smallInput parsley-validated" name="title" data-rangelength="[1-200]" required)
                      if info.parInfo.name
                        | #{info.parInfo.name}
                tr
@@ -54,7 +54,7 @@ div(class="Wrapper")
                        Institution of the principal author
                tr
                  td
-                   textarea#institutionEntry(class="smallInput parsley-validated" name="institution" data-reqired="true")
+                   textarea#institutionEntry(class="smallInput parsley-validated" name="institution" required)
                      if info.info.meta
                          | #{info.info.meta.institution}
                tr
@@ -65,7 +65,7 @@ div(class="Wrapper")
                          *
                tr
                  td
-                   textarea#abstractEntry(class="bigInput parsley-validated" name="description" data-reqired="true")
+                   textarea#abstractEntry(class="bigInput parsley-validated" name="description" required)
                     if info.parInfo.description
                         | #{info.parInfo.description}
                tr
@@ -87,7 +87,7 @@ div(class="Wrapper")
                          *
                tr
                  td
-                   select#typeEntry(class="parsely-validated" data-required="true" name="type")
+                   select#typeEntry(class="parsely-validated" required name="type")
                      option(value="0") General
                      option(value="1") Publication
                      option(value="2") Tutorial
@@ -125,11 +125,11 @@ div(class="Wrapper")
                    span Do you have the permission to submit the content of this article?
                    span(style="color:#A60000;").
                          *
-                   input#PubPermissionsYes(class="parsley-validated" type="radio" value="yes"
-                                        name="permission" data-required="true")
+                   input#PubPermissionsYes(class="parsley-validated subPermission" type="radio" value="yes"
+                                        name="permission" required)
                    label(for="PubPermissionsYes") Yes
-                   input#PubPermissionsNo(class="parsley-validated" type="radio" value="No"
-                                        name="permission" data-required="true")
+                   input#PubPermissionsNo(class="parsley-validated subPermission" type="radio" value="No"
+                                        name="permission" required)
                    label(for="PubPermissionsYes") No
                    br
                    span If submitting on behalf of a corporation, Do you accept the
@@ -137,14 +137,14 @@ div(class="Wrapper")
                    | ?
                    span(style="color:#A60000;").
                          *
-                   input#PubClaYes(class="parsley-validated" type="radio" value="yes"
-                                        name="cla" data-required="true")
+                   input#PubClaYes(class="parsley-validated CLAPermission" type="radio" value="yes"
+                                        name="cla" required)
                    label(for="PubClaYes") Yes
-                   input#PubClaNo(class="parsley-validated" type="radio" value="No"
-                                        name="cla" data-required="true")
+                   input#PubClaNo(class="parsley-validated CLAPermission" type="radio" value="No"
+                                        name="cla" required)
                    label(for="PubClaNo") No
-                   input#PubClaInd(class="parsley-validated" type="radio" value="No"
-                                        name="cla" data-required="true")
+                   input#PubClaInd(class="parsley-validated CLAPermission" type="radio" value="Ind"
+                                        name="cla" required)
                    label(for="PubClaInd") Submit as Individual
                    br
                    span Copyright holder:

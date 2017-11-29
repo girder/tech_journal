@@ -69,6 +69,8 @@ var editView = View.extend({
                     this.parentId= resp[1]._id
                     this.$el.html(SubmitViewTemplate({info:{info:resp[0], "parInfo": resp[1], "NR":this.newRevision}}));
                     new MenuBarView({ el: this.$el, parentView: this, searchBoxVal: ""});
+                    $(".subPermission[value="+resp[0]["meta"]["permission"]+"]").prop("checked","checked")
+                    $(".CLAPermission[value="+resp[0]["meta"]["CorpCLA"]+"]").prop("checked","checked")
                     return this;
             }, this));  // End getting of OTJ Collection value setting
     },

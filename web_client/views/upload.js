@@ -133,9 +133,9 @@ var uploadView = View.extend({
         this.newRevision= subId.NR
         restRequest({
             type: 'GET',
-            path: 'folder/'+ this.parentId
+            path: 'journal/'+ this.parentId +"/details"
         }).done(_.bind(function (resp) {
-            this.parent = resp;
+            this.curRevision = resp[0];
             this.render();
             restRequest({
                 type: 'GET',
@@ -144,6 +144,10 @@ var uploadView = View.extend({
                 for(var index in itemResp) {
                   this.$('#uploadTable').append(UploadEntryTemplate({info: itemResp[index]}));
                   this.$('#uploadQuestions').show();
+                  $("#acceptRights").prop("checked",'checked')
+                  $("#acceptLicense").prop("checked",'checked')
+                  $("#licenseChoice").val(resp[0]["meta"]["source-license"])
+                  $("#otherLicenseInput").val(resp[0]["meta"]["source-license-text"])
                 }
             }, this));
         }, this));
@@ -222,15 +226,22 @@ var uploadView = View.extend({
              }, this));
     },
     _appendData: function(subData) {
-        restRequest({
+           restRequest({
                type: 'PUT',
-               path: 'journal/'+this.parentId+'/finalize',
+               path: 'journal/'+this.parentId+'/metadata',
                contentType: 'application/json',
-               data: JSON.stringify(subData)
+               data: JSON.stringify(subData),
+               error:null
            }).done(_.bind(function (respMD) {
-               router.navigate('#plugins/journal/view/'+this.parentId,
-                                      {trigger: true});
-             }, this));
+                restRequest({
+                       type: 'PUT',
+                       path: 'journal/'+this.parentId+'/finalize',
+                       contentType: 'application/json',
+                   }).done(_.bind(function (respMD) {
+                       router.navigate('#plugins/journal/view/'+this.parentId,
+                                              {trigger: true});
+                }, this));
+            }, this));
     }
 });
 
