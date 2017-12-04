@@ -1,5 +1,5 @@
-Tech Journal Plugin
-===================
+Tech Journal Plugin |build-status| |license-badge|
+==================================================
 
 Assumes an certain folder structure so far for the main page display:
 The top level collection ID value is what should be used in the configuration page
@@ -100,4 +100,13 @@ Some of the links, ``Journal`` and ``Help``, in the menu bar do not point to
 valid locations within the plugin yet.  The ``Home`` and ``New Submission``
 links will take you to the correct pages.
 
+
+.. |build-status| image:: https://circleci.com/gh/girder/tech_journal.png?style=shield
+    :target: https://circleci.com/gh/girder/tech_journal
+    :alt: Build Status
+    
+.. |license-badge| image:: https://img.shields.io/github/license/girder/tech_journal.svg
+    :target: https://raw.githubusercontent.com/girder/tech_journal/master/LICENSE
+    :alt: License
+    
 .. _`Read The Docs`: http://girder.readthedocs.io/en/latest/installation.html
