@@ -25,12 +25,12 @@ To set up the instance of the Technical Journal plugin, install Girder
 following the instructions found on the `Read The Docs`_ documentation.
 
 Once that has been installed and the administrator user has been created,
-clone the ``technical_journal`` into the ``plugins`` directory of the
+clone the ``tech_journal`` into the ``plugins`` directory of the
 Girder instance.
 
 .. parsed-literal::
   snyder@midas-vm:~/girder$ cd plugins/
-  snyder@midas-vm:~/girder/plugins$ git clone git://github.com/josephsnyder/technical_journal.git
+  snyder@midas-vm:~/girder/plugins$ git clone git://github.com/girder/tech_journal.git
 
 From there, there are a few more steps to take before you can start using the
 plugin, most of which will need to be done by the admin user.
@@ -72,7 +72,7 @@ To enable the plugin, sign in as an administrator and head to the
 A list of the current plugins will be shown, scroll down to the
 ``Technical Journal Plugin`` and enable it by switching the ``OFF`` slider
 to the on position.   Scroll to the top and click on the ``Restart Server``
-button to rebuild the instance and enable the ``technical_journal`` module
+button to rebuild the instance and enable the ``tech_journal`` module
 
 Configure the plugin
 ++++++++++++++++++++

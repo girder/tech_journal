@@ -17,9 +17,11 @@
 ###############################################################################
 
 # Constants representing the setting keys for this plugin
+
+
 class PluginSettings(object):
-    admin_email = 'technical_journal.admin_email'
-    default_journal = 'technical_journal.default_journal'
-    default_layout = 'technical_journal.default_layout'
-    base_handle = 'technical_journal.base_handle'
-    old_url = 'technical_journal.old_url'
+    admin_email = 'tech_journal.admin_email'
+    default_journal = 'tech_journal.default_journal'
+    default_layout = 'tech_journal.default_layout'
+    base_handle = 'tech_journal.base_handle'
+    old_url = 'tech_journal.old_url'

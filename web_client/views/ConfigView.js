@@ -14,21 +14,21 @@ var configView = View.extend({
             this.$('#g-journal-settings-error-message').empty();
 
             this._saveSettings([{
-                key: 'technical_journal.admin_email',
+                key: 'tech_journal.admin_email',
                 value: this.$('#admin_email').val().trim()
             }, {
-                key: 'technical_journal.default_journal',
+                key: 'tech_journal.default_journal',
                 value: this.$('#default_journal').val().trim()
-            },{
-                key: 'technical_journal.default_layout',
+            }, {
+                key: 'tech_journal.default_layout',
                 value: this.$('#default_layout').val().trim()
             },
             {
-                key: 'technical_journal.base_handle',
+                key: 'tech_journal.base_handle',
                 value: this.$('#base_handle').val().trim()
             },
             {
-                key: 'technical_journal.old_url',
+                key: 'tech_journal.old_url',
                 value: this.$('#old_url').val().trim()
             }]);
         }
@@ -40,25 +40,25 @@ var configView = View.extend({
             path: 'journal/setting',
             data: {
                 list: JSON.stringify([
-                    'technical_journal.admin_email',
-                    'technical_journal.default_journal',
-                    'technical_journal.default_layout',
-                    'technical_journal.base_handle',
-                    'technical_journal.old_url'
+                    'tech_journal.admin_email',
+                    'tech_journal.default_journal',
+                    'tech_journal.default_layout',
+                    'tech_journal.base_handle',
+                    'tech_journal.old_url'
                 ])
             }
         }).done(_.bind(function (resp) {
             this.render();
             this.$('#admin_email').val(
-                resp['technical_journal.admin_email']);
+                resp['tech_journal.admin_email']);
             this.$('#default_journal').val(
-                resp['technical_journal.default_journal']);
+                resp['tech_journal.default_journal']);
             this.$('#default_layout').val(
-                resp['technical_journal.default_layout']);
+                resp['tech_journal.default_layout']);
             this.$('#base_handle').val(
-                resp['technical_journal.base_handle']);
+                resp['tech_journal.base_handle']);
             this.$('#old_url').val(
-                resp['technical_journal.old_url']);
+                resp['tech_journal.old_url']);
         }, this));
     },
     render: function () {
@@ -66,7 +66,7 @@ var configView = View.extend({
 
         if (!this.breadcrumb) {
             this.breadcrumb = new PluginConfigBreadcrumbWidget({
-                pluginName: 'Technical Journal',
+                pluginName: 'Tech Journal',
                 el: this.$('.g-config-breadcrumb-container'),
                 parentView: this
             }).render();
