@@ -1,210 +1,205 @@
 
-h3.FilterH3{
-  margin-top: 5px;
-  margin-bottom: 0px;
-}
-.box {
-  margin-right: 10px;  
-  border-bottom: 1px dotted #E4E4E4;
-  border-right: 1px dotted #eeeeee;
-}
+h3.FilterH3
+  margin-top 5px
+  margin-bottom 0
 
-span.dynatree-icon {
-display: none!important;
-}
-ul.dynatree-container li{
-line-height: 14px!important;
-}
+.box
+  margin-right 10px
+  border-bottom 1px dotted #E4E4E4
+  border-right 1px dotted #eeeeee
 
-div.TreeEntry{
-  position: relative;
-}
-div.TreeEntry h4{
-  margin:5px;
-  border: 1px solid #ccc;
-  padding-left: 3px;
-  background: rgb(255,255,255); /* Old browsers */
-}
-div.TreeEntry h4:hover{
-  background: #eee;
-}
+span.dynatree-icon
+  display none!important
 
-div.issueButton{
-  line-height: 16px;
-  margin:5px;
-  cursor:pointer;
-  border: 1px solid #ccc;
-  padding-left: 3px;
-  height:30px;
-  background: rgb(255,255,255); /* Old browsers */
-}
-div.issueButton:hover{
-  background: #eee;
-}
+ul.dynatree-container
+  li
+    line-height 14px!important
+  border none!important
+  padding 0!important
 
-div.issueDetails{
-  position:relative;
-  top:-3px;
-  display:none;
-}
 
-div.issueSelected{
-  border: 1px solid black;
-  height:65px;
-}
+div.TreeEntry
+  position relative
+  h4
+    margin 5px
+    border 1px solid #ccc
+    padding-left 3px
+    background rgb(255, 255, 255) /* Old browsers */
+    :hover
+      background #eee
 
-div.issueTitle{
-  height:20px;
-  width:185px;
-  color:#4E4E4E;
-  position:relative;
-  top:-2px;
-}
-div.issueSubTitle{
-  font-size: 10px;
-  color:grey;
-  position:relative;
-  top:-6px;
-}
+  img.tooggleButton
+    position absolute
+    height 20px
+    cursor pointer
+    padding-left 170px
 
-div.issueActive{
-  color:black!important;
-}
+div.issueButton
+  line-height 16px
+  margin 5px
+  cursor pointer
+  border 1px solid #ccc
+  padding-left 3px
+  height 30px
+  background rgb(255, 255, 255) /* Old browsers */
 
-ul.dynatree-container {
-border: none!important;
-padding: 0px!important;
-}
+  &:hover
+    background #eee
 
-div.TreeEntry img.tooggleButton{
-  position: absolute;
-  height:20px;
-  cursor: pointer;
-  padding-left: 170px;
-}
 
-div.TreeEntry h4{
-  margin:5px;
-}
+div.issueDetails
+  position relative
+  top -3px
+  display none
 
-img#searchLoadingImg{
-  display:none;
-  float: right;
-  margin-top: 5px;
-  margin-right: 5px;
-}
 
-div.SearchResultsHeader{
-  position:relative;
-}
+div.issueSelected
+  border 1px solid black
+  height 65px
 
-div.SearchResultsSort{
-  height: 20px;
-  margin-bottom: 5px;
-  width:896px;
-}
 
-span.FilterTip{
-  position: absolute;
-  right: 0px;
-  top:5px;
-}
+div.issueTitle
+  height 20px
+  width 185px
+  color #4E4E4E
+  position relative
+  top -2px
+
+div.issueSubTitle
+  font-size 10px
+  color grey
+  position relative
+  top -6px
+
+div.issueActive
+  color black!important
+
+
+
+
+
+img#searchLoadingImg
+  display none
+  float right
+  margin-top 5px
+  margin-right 5px
+
+
+div.SearchResultsHeader
+  position relative
+
+
+div.SearchResultsSort
+  height 20px
+  margin-bottom 5px
+  width 896px
+
+
+span.FilterTip
+  position absolute
+  right 0
+  top 5px
+
 
 
 /* Search Result template*/
-div.SearchResultEntry{
-  max-width:880px;
-  height:97px;
-  margin-left:5px;
-  position:relative;
-  line-height: 16px;
-  opacity:0.8;
-}
-div.SearchResultEntry:hover{
-  background: #FBFBFB;   /*Glow*/
-  -webkit-box-shadow: #AAA 0 0 3px;
-  box-shadow: #AAA 0 0 3px;
-  -moz-box-shadow: 0px 0px 3px #AAA;
-  opacity:1;  
-}
 
-div#infoElement{
-  height:90px;
-  min-width: 450px;
-  overflow-x: hidden;
-  overflow-y: hidden;
-  -webkit-box-shadow: #AAA 0 0 3px;
-  box-shadow: #AAA 0 0 3px;
-  -moz-box-shadow: 0px 0px 3px #AAA;
-  opacity:1;
-  padding-left: 10px;
-  padding-right: 15px;
-  margin-bottom: 5px;
-  margin-right:10px;
-  text-align:justify;
-  text-justify:inter-word;
-}
-div#infoElement:hover{
-  overflow-y: scroll;
-}
 
-div.SearchResultEntry td{
-  position:relative;
-}
 
-div.SearchResultEntry img.ResultLogo{
-  height: 63px;
-  width: 63px;
-  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-  -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-  -o-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-  box-shadow: 0 5px 10px rgba(0,0,0,.2);
-  margin-top: 0px;
-  margin-right: 0px;
-  margin-left: 00px;
-}
-div.SearchResultEntry .CertifiedWrapper{
-  font-size:10px;
-  color:#333;
-}
-div.SearchResultEntry .CertifiedWrapper img{
-  width: 8px;
-  height: 8px;
-  position:relative;
-  top: -1px;
-}
-div.SearchResultEntry span.ResultTitle{
-  font-size: 14px;
-  color: #333;
-  font-weight: bold;
-}
-div.SearchResultEntry div.ResultAuthors{
-  color: #374E9E;
-  font-size: 12px;
-  font-weight: bold;
-}
-div.SearchResultEntry div.ResultDescription{
-  height: 61px;
-  margin-top:3px;
-  line-height: 16px;
-  font-size: 12px;
-  text-align:justify;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  text-justify:inter-word;
-}
-div.SearchResultEntry div.ResultSubDescription{
-  float:right;
-  color:grey;
-  font-size: 10px;
-  margin-left: 10px;
-  position:relative;
-  top:1px;
-}
-div.SearchResultEntry a.resourceLink{
-  position:absolute;
-  z-index:50;
-  width:896px;
-  border:0px;
-  height: 97px;
-}
+div#infoElement
+  height 90px
+  min-width 450px
+  overflow-x hidden
+  overflow-y hidden
+  -webkit-box-shadow #AAA 0 0 3px
+  box-shadow #AAA 0 0 3px
+  -moz-box-shadow 0 0 3px #AAA
+  opacity 1
+  padding-left 10px
+  padding-right 15px
+  margin-bottom 5px
+  margin-right 10px
+  text-align justify
+  text-justify inter-word
+  &:hover
+    overflow-y scroll
+
+
+
+
+div.SearchResultEntry
+  max-width 880px
+  height 97px
+  margin-left 5px
+  position relative
+  line-height 16px
+  opacity 0.8
+
+
+  &:hover
+    background #FBFBFB /*Glow*/
+    -webkit-box-shadow #AAA 0 0 3px
+    box-shadow #AAA 0 0 3px
+    -moz-box-shadow 0 0 3px #AAA
+    opacity 1
+
+  td
+    position relative
+
+
+  img.ResultLogo
+    height 63px
+    width 63px
+    -webkit-box-shadow 0 5px 10px rgba(0, 0, 0, 0.2)
+    -moz-box-shadow 0 5px 10px rgba(0, 0, 0, 0.2)
+    -o-box-shadow 0 5px 10px rgba(0, 0, 0, 0.2)
+    box-shadow 0 5px 10px rgba(0, 0, 0, 0.2)
+    margin-top 0
+    margin-right 0
+    margin-left 0
+
+  .CertifiedWrapper
+    font-size 10px
+    color #333
+
+    img
+      width 8px
+      height 8px
+      position relative
+      top -1px
+
+  span.ResultTitle
+    font-size 14px
+    color #333
+    font-weight bold
+
+  div.ResultAuthors
+    color #374E9E
+    font-size 12px
+    font-weight bold
+
+  div.ResultDescription
+    height 61px
+    margin-top 3px
+    line-height 16px
+    font-size 12px
+    text-align justify
+    text-overflow ellipsis
+    overflow hidden
+    text-justify inter-word
+
+  div.ResultSubDescription
+    float right
+    color grey
+    font-size 10px
+    margin-left 10px
+    position relative
+    top 1px
+
+  a.resourceLink
+    position absolute
+    z-index 50
+    width 896px
+    border none
+    height 97px
+

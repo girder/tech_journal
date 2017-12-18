@@ -1,19 +1,17 @@
 import _ from 'underscore';
+
 import View from 'girder/views/View';
-import events from 'girder/events';
-import router from 'girder/router';
-import MenuBarView from './menuBar.js';
-import { getCurrentUser } from 'girder/auth'
 import { restRequest } from 'girder/rest';
 import { renderMarkdown } from 'girder/misc';
 
+import MenuBarView from './menuBar.js';
 import AboutViewTemplate from '../templates/journal_help_about.jade';
 
 var AboutView = View.extend({
 
     events: {
     },
-    initialize: function() {
+    initialize: function () {
         restRequest({
             type: 'GET',
             path: 'journal/setting',
@@ -23,13 +21,12 @@ var AboutView = View.extend({
         }).done(_.bind(function (resp) {
             this.render(resp['about']);
         }, this));
-        
     },
-    render: function(aboutText) {
-            this.$el.html(AboutViewTemplate({info:aboutText,renderMarkdown: renderMarkdown}));
-            new MenuBarView({ el: this.$el, parentView: this, searchBoxVal: "Search..."});
+    render: function (aboutText) {
+        this.$el.html(AboutViewTemplate({info: aboutText, renderMarkdown: renderMarkdown}));
+        MenuBarView({ el: this.$el, parentView: this, searchBoxVal: 'Search...' });
         return this;
     }
 });
 
-export default AboutView
+export default AboutView;

@@ -1,30 +1,30 @@
 mixin issueFilter(info)
-  div(class="issueButton" key=info._id)
-    div(class="issueTitle" qtipconditionnal="" style="word-wrap: break-word")
-        | #{info.name}
-    div(class="issueSubTitle")
-    div(class="issueDetails")
-      a(class="issuePage" href='') Show Details
+  .issueButton(key=info._id)
+    .issueTitle(qtipconditional="", style="word-wrap: break-word")
+      | #{info.name}
+    .issueSubTitle
+    .issueDetails
+      a.issuePage(href='') Show Details
       a(href="") Submit a new article
 
-div#headerBar
+#headerBar
 
-div(class="Wrapper")
-  div(class="Content")
-    div(class="ContentWithLeftPanel")
-      div(class="Panel box")
+.Wrapper
+  .Content
+    .ContentWithLeftPanel
+      .Panel.box
         h2.FilterH3 Filters:
-        div.FiltersPanel
-          div(class="issueButton issueSelected" key="*")
-            div(class="issueTitle" qtipconditionnal="All" style="word-wrap: break-word")
+        #FiltersPanel
+          .issueButton.issueSelected(key="*")
+            .issueTitle(qtipconditional="All", style="word-wrap: break-word")
             | All Issues
           for item in info.issues
-             +issueFilter(item)
-      div(class="MainContent")
-        div#noResultElement(style="display:none;")
-          b
+            +issueFilter(item)
+      .MainContent
+        #noResultElement(style="display:none;")
+          b.
             Your search did not match any items.
-        div#infoElement
+        #infoElement
           br
           span(style="font-weight:bold")
           |  The OSEHRA Technical Journal
@@ -34,9 +34,9 @@ div(class="Wrapper")
           |  and to channel this innovation in the form of concrete working pieces of
           |  software that can later be integrated into the OSEHRA open source platform.
           br
-          div(class="hidable")
-        div(class="SearchResultsHeader")
-        div(class="searchResults")
-        div#showMoreResults
-          a
+          .hidable
+        .SearchResultsHeader
+        .searchResults
+        #showMoreResults
+          a.
             Show more results

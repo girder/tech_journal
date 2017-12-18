@@ -1,76 +1,72 @@
 import _ from 'underscore';
+
 import View from 'girder/views/View';
 import events from 'girder/events';
-import router from 'girder/router';
-import MenuBarView from './menuBar.js';
 import MarkdownWidget from 'girder/views/widgets/MarkdownWidget';
-import { getCurrentUser } from 'girder/auth'
 import { restRequest } from 'girder/rest';
 
+import MenuBarView from './menuBar.js';
 import manageHelpViewTemplate from '../templates/journal_admin_help.jade';
-
-import tinymce from 'tinymce/tinymce'
-require('tinymce/themes/modern/theme')
 
 var ManageHelpView = View.extend({
 
     events: {
-      'submit #mainForm': function(event) {
-        event.preventDefault();
+        'submit #mainForm': function (event) {
+            event.preventDefault();
         // save Content to show on other pages
-        this._saveHelp([
-        {key: "main", value: this.HelpEditor.val()},
-        {key: "about", value: this.AboutEditor.val() },
-        {key: "faq"  , value: this.FAQEditor.val()}
-        ])
-      }
+            this._saveHelp([
+        { key: 'main', value: this.HelpEditor.val() },
+        { key: 'about', value: this.AboutEditor.val() },
+        { key: 'faq', value: this.FAQEditor.val() }
+            ]);
+        }
     },
-    initialize: function() {
+    initialize: function () {
         restRequest({
             type: 'GET',
             path: 'journal/setting',
             data: {
-                list: JSON.stringify(['main','about','faq'])
+                list: JSON.stringify(['main', 'about', 'faq'])
             }
         }).done(_.bind(function (resp) {
             this.render(resp);
         }, this));
     },
-    render: function(existingPages) {
-            this.$el.html(manageHelpViewTemplate());
-            new MenuBarView({ el: this.$el, parentView: this, searchBoxVal: "Search..."});
-            this.HelpEditor = new MarkdownWidget({
-                prefix: 'homepage',
-                placeholder: 'Enter Markdown for the Help Page',
-                parentView: this,
-                parent: this.folder,
-                enableUploads: false
-            });
-            this.FAQEditor = new MarkdownWidget({
-                prefix: 'homepage',
-                placeholder: 'Enter Markdown for the FAQ Page',
-                parentView: this,
-                parent: this.folder,
-                enableUploads: false
-            });
+    render: function (existingPages) {
+        this.$el.html(manageHelpViewTemplate());
+        MenuBarView({ el: this.$el, parentView: this, searchBoxVal: 'Search...' });
+        this.HelpEditor = new MarkdownWidget({
+            prefix: 'homepage',
+            placeholder: 'Enter Markdown for the Help Page',
+            parentView: this,
+            parent: this.folder,
+            enableUploads: false
+        });
+        this.FAQEditor = new MarkdownWidget({
+            prefix: 'homepage',
+            placeholder: 'Enter Markdown for the FAQ Page',
+            parentView: this,
+            parent: this.folder,
+            enableUploads: false
+        });
 
-            this.AboutEditor = new MarkdownWidget({
-                prefix: 'homepage',
-                placeholder: 'Enter Markdown for the About Page',
-                parentView: this,
-                enableUploads: false
-            });
+        this.AboutEditor = new MarkdownWidget({
+            prefix: 'homepage',
+            placeholder: 'Enter Markdown for the About Page',
+            parentView: this,
+            enableUploads: false
+        });
 
             // Prepopulate the pages
-              this.HelpEditor.text = existingPages['main'];
-              this.HelpEditor.setElement(this.$('#mainPage')).render();
-              this.FAQEditor.text = existingPages['faq'];
-              this.FAQEditor.setElement(this.$('#faqPage')).render();
-              this.AboutEditor.text = existingPages['about'];
-              this.AboutEditor.setElement(this.$('#aboutPage')).render();
+        this.HelpEditor.text = existingPages['main'];
+        this.HelpEditor.setElement(this.$('#mainPage')).render();
+        this.FAQEditor.text = existingPages['faq'];
+        this.FAQEditor.setElement(this.$('#faqPage')).render();
+        this.AboutEditor.text = existingPages['about'];
+        this.AboutEditor.setElement(this.$('#aboutPage')).render();
         return this;
     },
-    _saveHelp: function(inData) {
+    _saveHelp: function (inData) {
         restRequest({
             type: 'PUT',
             path: 'journal/setting',
@@ -85,8 +81,8 @@ var ManageHelpView = View.extend({
                 type: 'success',
                 timeout: 4000
             });
-        },this));
+        }, this));
     }
 });
 
-export default ManageHelpView
+export default ManageHelpView;

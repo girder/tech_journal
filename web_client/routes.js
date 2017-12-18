@@ -1,137 +1,147 @@
 import router from 'girder/router';
 import events from 'girder/events';
-import LoginView from 'girder/views/layout/LoginView';
-import { getCurrentUser } from 'girder/auth'
+import { getCurrentUser } from 'girder/auth';
 import { Layout } from 'girder/constants';
 import { exposePluginConfig } from 'girder/utilities/PluginUtils';
 
-exposePluginConfig('technical_journal', 'plugins/journal/config');
-
-
+// Import views from plugin
 import configView from './views/ConfigView';
-router.route('plugins/journal/config', 'journalConfig', function () {
-    testUserAccess(configView,{},true,true);
-});
-
 import indexView from './views/index';
-router.route('plugins/journal', 'mainView', function (query) {
-    testUserAccess(indexView, query, false, false)
+import submitView from './views/submit';
+import editView from './views/editSubmission';
+import listView from './views/listJournals';
+import uploadView from './views/upload';
+import submissionView from './views/view';
+import approvalView from './views/manageApproval';
+import downloadView from './views/download';
+import manageJournalView from './views/manageJournal';
+import EditIssueView from './views/editIssue';
+import EditJournalView from './views/editJournal';
+import manageHelpView from './views/manageHelp';
+import HelpView from './views/help_main';
+import FAQView from './views/help_faq';
+import AboutView from './views/help_about';
+import FeedBackView from './views/feedback';
+
+exposePluginConfig('tech_journal', 'plugins/journal/config');
+
+// Journal Configuration page
+router.route('plugins/journal/config', 'journalConfig', function () {
+    testUserAccess(configView, {}, true, true);
 });
 
-import submitView from './views/submit';
-import editView from './views/editSubmission'
+// Main page of Journal
+router.route('plugins/journal', 'mainView', function (query) {
+    testUserAccess(indexView, query, false, false);
+});
+
+// Submission related pages
 router.route('plugins/journal/submission/new', 'submissionInfo', function () {
-        testUserAccess(submitView, {id:"new"}, true, false)
+    testUserAccess(submitView, {id: 'new'}, true, false);
 });
 
 router.route('plugins/journal/submission/:id/new', 'submissionInfo', function (id) {
-        testUserAccess(submitView, {id:id}, true, false)
+    testUserAccess(submitView, {id: id}, true, false);
 });
 // Pass through the revision view to eliminate the need to pick an issue
 router.route('plugins/journal/submission/:id/edit', 'submissionInfo', function (id) {
-        testUserAccess(editView, {id:id,NR:false}, true, false)
+    testUserAccess(editView, {id: id, NR: false}, true, false);
 });
 router.route('plugins/journal/submission/:id/revision', 'submissionInfo', function (id) {
-        testUserAccess(editView, {id:id,NR:true}, true, false)
+    testUserAccess(editView, {id: id, NR: true}, true, false);
 });
 
 router.route('plugins/journal/submission/:id/approve', 'submissionInfo', function (id) {
-        testUserAccess(editView, {id:id,NR:false,approve:true}, true, true)
+    testUserAccess(editView, {id: id, NR: false, approve: true}, true, true);
 });
-import listView from './views/listJournals';
+// Listing page of Journal
 router.route('plugins/journal/list', 'listJournals', function () {
-        testUserAccess(listView, {}, true, true)
+    testUserAccess(listView, {}, true, true);
 });
 
-import uploadView from './views/upload';
+// Upload files to a submission
 router.route('plugins/journal/submission/:id/upload/new', 'uploadFiles', function (id) {
-        testUserAccess(uploadView, {id:id, newSub:true,NR:false}, true, false)
+    testUserAccess(uploadView, {id: id, newSub: true, NR: false}, true, false);
 });
 
 router.route('plugins/journal/submission/:id/upload/revision', 'uploadFiles', function (id) {
-        testUserAccess(uploadView, {id:id, newSub:true, NR:true}, true, false)
+    testUserAccess(uploadView, {id: id, newSub: true, NR: true}, true, false);
 });
 router.route('plugins/journal/submission/:id/upload/edit', 'uploadFiles', function (id) {
-        testUserAccess(uploadView, {id:id, newSub:false,NR:false}, true, false)
+    testUserAccess(uploadView, {id: id, newSub: false, NR: false}, true, false);
 });
 
-import submissionView from './views/view';
+// Page to view each individual submission
 router.route('plugins/journal/view/:id', 'submissionView', function (id) {
-    testUserAccess(submissionView, {id:id}, false, false)
+    testUserAccess(submissionView, {id: id}, false, false);
 });
 
-import approvalView from './views/manageApproval';
+// Page for admin to see submissions for approval
 router.route('plugins/journal/approval', 'approvalView', function () {
-    testUserAccess(approvalView,{},true,true);
+    testUserAccess(approvalView, {}, true, true);
 });
 
-import downloadView from './views/download';
+// Download page for each submission
 router.route('plugins/journal/view/:id/download', 'submissionDownload', function (id) {
-    testUserAccess(downloadView,{id:id}, false, false)
+    testUserAccess(downloadView, {id: id}, false, false);
 });
-import manageJournalView from './views/manageJournal';
+// View to manage (or create) a Journal
 router.route('plugins/journal/admin', 'manageJournalView', function () {
-        testUserAccess(manageJournalView,{},true,true);
+    testUserAccess(manageJournalView, {}, true, true);
 });
 
-import EditIssueView from './views/editIssue';
+// View to manage(or create) an Issue to submit to
 router.route('plugins/journal/admin/issue/:id/:type', 'editIssue', function (id, type) {
-    testUserAccess(EditIssueView,{id: id, type:type},true,true);
+    testUserAccess(EditIssueView, {id: id, type: type}, true, true);
 });
 
-import EditJournalView from './views/editJournal';
-//Existing journal route
+// View to manage a Journal entry
+// Existing journal route
 router.route('plugins/journal/admin/journal/:id', 'editJournal', function (id) {
-    testUserAccess(EditJournalView,{id:id},true,true);
-
+    testUserAccess(EditJournalView, {id: id}, true, true);
 });
 // Help pages
-import manageHelpView from './views/manageHelp';
-//Existing journal route
-router.route('plugins/journal/admin/help', 'editJournal', function () {
-    testUserAccess(manageHelpView,{},true,true);
+
+// Admin page to set the content of each help page
+router.route('plugins/journal/admin/help', 'adminHelp', function () {
+    testUserAccess(manageHelpView, {}, true, true);
 });
 
-import HelpView from './views/help_main';
-//Existing journal route
+// Display page for the Help page of the Journal
 router.route('plugins/journal/help', 'HelpView', function () {
-    testUserAccess(HelpView,{},false,false);
+    testUserAccess(HelpView, {}, false, false);
 });
-import FAQView from './views/help_faq';
-//Existing journal route
+
+// Display page for the F.A.Q. page of the Journal
 router.route('plugins/journal/help/faq', 'FAQView', function () {
-    testUserAccess(FAQView,{},false,false);
-
+    testUserAccess(FAQView, {}, false, false);
 });
-import AboutView from './views/help_about';
-//Existing journal route
+
+// Display page of the About page of the Journal
 router.route('plugins/journal/help/about', 'AboutView', function () {
-    testUserAccess(AboutView,{},false,false);
-
+    testUserAccess(AboutView, {}, false, false);
 });
-import FeedBackView from './views/feedback';
-//Existing journal route
+
+// Display page for a user to submit feedback to Journal Admins
 router.route('plugins/journal/help/feedback', 'FeedBackView', function () {
-    testUserAccess(FeedBackView,{},false,false);
+    testUserAccess(FeedBackView, {}, false, false);
 });
 
 function testUserAccess(view, args, needsUser, needsAdmin) {
     var userFlag  = true;
     var adminFlag = true;
     if (needsUser || needsAdmin) {
-      var user = getCurrentUser();
-      if(needsUser && user==null){
-          userFlag=false;
-      }
-      if(needsAdmin && (user!=null) && !user.attributes.admin){
-          adminFlag=false
-      }
+        var user = getCurrentUser();
+        if (needsUser && user === null) {
+            userFlag = false;
+        }
+        if (needsAdmin && (user !== null) && !user.attributes.admin) {
+            adminFlag = false;
+        }
     }
     if (userFlag && adminFlag) {
-        events.trigger('g:navigateTo', view,args,{layout: Layout.EMPTY});
-    }
-    else {
-        window.location.href='#plugins/journal?dialog=login'
+        events.trigger('g:navigateTo', view, args, {layout: Layout.EMPTY});
+    } else {
+        window.location.href = '#plugins/journal?dialog=login';
     }
 }
-

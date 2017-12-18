@@ -15,7 +15,7 @@
 #  limitations under the License.
 ###############################################################################
 from girder.models.model_base import AccessControlledModel
-from ..constants import TechJournalSettings,TechJournalSettingsDefault
+from ..constants import TechJournalSettingsDefault
 
 
 class Journal(AccessControlledModel):
@@ -73,9 +73,4 @@ class Journal(AccessControlledModel):
         """
         if key in TechJournalSettingsDefault.defaults:
             return TechJournalSettingsDefault.defaults[key]
-        else:
-            fn = setting_utilities.getDefaultFunction(key)
-
-            if callable(fn):
-                return fn()
         return None

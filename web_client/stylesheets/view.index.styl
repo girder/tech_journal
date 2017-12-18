@@ -1,187 +1,182 @@
 
 /* For the publication page */
-#publication {
 
-}
+.linkToArchiveWrapper
+  color #666666
 
-.linkToArchiveWrapper{
-  color:#666666;
-}
+#publication
+  .thumbnail
+    padding-top  10px
+    /* width 300px*/
+    margin auto
 
-#publication .thumbnail {
-  padding-top: 10px;
-  /*width:300px;*/
-  margin:auto auto;
+  .title
+    font-size  120%
+    font-weight  bold
+    text-align center
+    padding-bottom 10px
 
-}
 
-#publication .title {
-  font-size: 120%;
-  font-weight: bold;
-  text-align:center;
-  padding-bottom:10px;
-}
+  .title2
+    font-size  120%
+    font-weight  bold
+    text-align center
+    padding-bottom 10px
 
-#publication .title2 {
-  font-size: 120%;
-  font-weight: bold;
-  text-align:center;
-  padding-bottom:10px;
-}
 
-#publication .authors {
-  text-align:center;
-}
+  .authors
+    text-align center
 
-#publication .authors a{
-  font-weight:normal;
-}
 
-#publication .institution {
-  font-size: 80%;
-  text-align:center;
-}
+    a
+      font-weight normal
 
-#publication .institution a{
-  font-weight:normal;
-}
 
-#publication .journal {
-  padding-top: 10px;
-}
+  .institution
+    font-size  80%
+    text-align center
 
-#publication .submittedby {
-  padding-top: 10px;
-  font-size: 80%;
-}
 
-#publication .abstract {
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
+    a
+      font-weight normal
 
-.reviews {
-  font-size: 110%;
-  text-align:center;
-  font-weight: bold;
-  border-top: 1px solid;
-  background-color:#DDDDDD;
-}
 
-.review {
-  border-top: 1px solid;
-  padding-bottom: 20px;
-}
-.reviewedit {
-  padding-bottom: 20px;
-}
+#publication, .journal
+  padding-top  10px
 
-.review_header2 {
-  font-size: 80%;
-  background-color:#EEEEEE;
-}
 
-.review_header {
-  color: #666666;
-  background-color:#EEEEEE;
-}
+#publication, .submittedby
+  padding-top  10px
+  font-size  80%
+
+
+#publication, .abstract
+  padding-top  10px
+  padding-bottom  10px
+
+
+.reviews
+  font-size  110%
+  text-align center
+  font-weight  bold
+  border-top  1px solid
+  background-color #DDDDDD
+
+
+.review
+  border-top  1px solid
+  padding-bottom  20px
+
+.reviewedit
+  padding-bottom  20px
+
+
+.review_header2
+  font-size  80%
+  background-color #EEEEEE
+
+
+.review_header
+  color  #666666
+  background-color #EEEEEE
+
 
 /* size of reviews paragrahp*/
-.review p{
-  margin: 0.5em 0;
-}
+.review, p
+  margin  0.5em 0
 
-/* share buttons on publication page 
-.sociable-hovers {
-  opacity: .4;
-  -moz-opacity: .4;
-  filter: alpha(opacity=40);
-}
-.sociable-hovers:hover {
-  opacity: 1;
-  -moz-opacity: 1;
-  filter: alpha(opacity=100);
-}
+
+/* share buttons on publication page
+.sociable-hovers
+  opacity  .4
+  -moz-opacity  .4
+  filter  alpha(opacity=40)
+
+.sociable-hovers :hover
+  opacity  1
+  -moz-opacity  1
+  filter  alpha(opacity=100)
+
 */
 
-.publication {
-  position:relative;
-  padding-bottom:30px;
-  border-bottom: 1px dotted #eeeeee;
-}
+.publication
+  position relative
+  padding-bottom 30px
+  border-bottom  1px dotted #eeeeee
 
-.publication_left {
-  padding-top: 5px;
-}
 
-.publication_rating {
-  position: relative;
-  top: 10px;
-}
+.publication_left
+  padding-top  5px
 
-.publication_description {
-  position: absolute;
-  top: 0px;
-  left: 80px;
-  width: 620px;
-}
 
-.publication_title {
-}
+.publication_rating
+  position  relative
+  top  10px
 
-.publication_authors {
-  font-size: 80%;
-}
 
-.publication_authors a{
-  font-weight: normal;
-}
+.publication_description
+  position  absolute
+  top  0
+  left  80px
+  width  620px
 
-.publication_abstract {
-  font-size: 90%;
-  text-align: justify;
-}
 
-.publication_footer {
-  margin-top: 5px;
-  font-size: 80%;
-}
+.publication_title
+
+
+.publication_authors
+  font-size  80%
+
+
+.publication_authors, a
+  font-weight  normal
+
+
+.publication_abstract
+  font-size  90%
+  text-align  justify
+
+
+.publication_footer
+  margin-top  5px
+  font-size  80%
+
 
 /* hide un-used element of the ratings*/
-div#ratingContainer h4, div#commentsContainer h4{
-  display:none;
-}
-div#ratingContainer div#ratingsChart{
-  display:none;
-}
-div#ratingContainer div#ratingsAverage{
-  float:none!important;
-}
-div#ratingContainer span.addRating{
-  float:none!important;
-  display:none!important;
-}
-div#ratingContainer div#ratingsUsern, div#ratingContainer div.loginToRate{
-  float:right!important;
-  position:relative; top:-16px;
-  height: 10px;
-}
-div#ratingContainer div.ratingsVSpacer{
-  float:none!important;
-  display:none!important;
-}
+div#ratingContainer h4, div#commentsContainer h4
+  display none
 
-div.Panel {
- border-left: 1px dotted #eeeeee;
- padding-left: 5px;
-  
-}
-div.Panel h4{
-  margin-bottom: 0px;
-  border-bottom: 1px solid grey;
-}
+div#ratingContainer, div#ratingsChart
+  display none
 
-.share-icon {
-opacity: 0.5!important;
-filter: Alpha(Opacity=50)!important;
-}
+div#ratingContainer div#ratingsAverage
+  float none!important
+
+div#ratingContainer, span.addRating
+  float none!important
+  display none!important
+
+div#ratingContainer div#ratingsUsern, div#ratingContainer div.loginToRate
+  float right!important
+  position relative top -16px
+  height  10px
+
+div#ratingContainer, div.ratingsVSpacer
+  float none!important
+  display none!important
+
+
+div.Panel
+  border-left  1px dotted #eeeeee
+  padding-left  5px
+
+
+div.Panel, h4
+  margin-bottom  0
+  border-bottom  1px solid grey
+
+
+.share-icon
+  opacity  0.5!important
+  // filter  alpha(Opacity=50)!important
+

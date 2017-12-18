@@ -1,86 +1,80 @@
-div#headerBar
-div(class="Wrapper")
-  div(class="Content")
+#headerBar
+.Wrapper
+  .Content
     div
       br
-      form#issueForm(class="mainForm" data-validate="parsley" method="POST" action="")
-        table(width="100%" border="0")
+      form#issueForm.mainForm(data-validate="parsley", method="POST", action="")
+        table(width="100%", border="0")
           tbody
             tr
-              td(width="25%" style="vertical-align: top;")
+              td(width="25%", style="vertical-align: top;")
                 div(align="right")
                   strong Name:
               td(width="75%")
-                input#issueName(class="parsley-validated" type="text" value=info.name data-require="true" name="name")
+                input#issueName.parsley-validated(type="text", value=info.name, data-require="true", name="name")
             tr
-              td(width="25%" style="vertical-align: top;")
+              td(width="25%", style="vertical-align: top;")
                 div(align="right")
                   strong Description:
               td(width="75%")
                 textarea#issueDescription(name="short_description")
                   | #{info.description}
             tr
-              td(width="25%" style="vertical-align: top;")
+              td(width="25%", style="vertical-align: top;")
                 div(align="right")
                   strong Related Links:
               td(width="75%")
                 textarea(name="related_link")
             tr
-              td(width="25%" style="vertical-align: top;")
+              td(width="25%", style="vertical-align: top;")
                 div(align="right")
                   strong License (Publisher):
               td(width="75%")
                 |Set license to
-                select (name="licensemenu" onchange="ChangeAuthorLicense(this.value)")
+                select (name="licensemenu", onchange="ChangeAuthorLicense(this.value)")
                 br
                 |or modify the following text
                 br
                 textarea#authorLicense(name="authorLicense")
             tr
-              td(width="25%" style="vertical-align: top;")
+              td(width="25%", style="vertical-align: top;")
                 div(align="right")
                   strong License (Author):
               td(width="75%")
                 |Set license to
-                select (name="copyrightmenu" onchange="ChangeReaderLicense(this.value)")
+                select (name="copyrightmenu", onchange="ChangeReaderLicense(this.value)")
                 br
                 |or modify the following text
                 br
             tr
-              td(width="25%" style="vertical-align: top;")
+              td(width="25%", style="vertical-align: top;")
                 div(align="right")
                   strong Paperdue date:
               td
-                input(class="datepicker picker__input parsley-validated" type="text"
-                      data-type="dateIso" data-required="true" name="paperdue_date"
-                      value="" placeholder="Select a date." readonly="")
-                input(type="hidden" name="paperdue_date_submit")
+                input.datepicker.picker__input.parsley-validated(type="text", data-type="dateIso", data-required="true", name="paperdue_date", value="", placeholder="Select a date.", readonly="")
+                input(type="hidden", name="paperdue_date_submit")
             tr
-              td(width="25%" style="vertical-align: top;")
+              td(width="25%", style="vertical-align: top;")
                 div(align="right")
                   strong Decision date:
               td
-                input(class="datepicker picker__input parsley-validated" type="text"
-                      data-type="dateIso" data-required="true" name="paperdue_date"
-                      value="" placeholder="Select a date." readonly="")
-                input(type="hidden" name="paperdue_date_submit")
+                input.datepicker.picker__input.parsley-validated(type="text", data-type="dateIso", data-required="true", name="decision_date", value="", placeholder="Select a date.", readonly="")
+                input(type="hidden", name="paperdue_date_submit")
             tr
-              td(width="25%" style="vertical-align: top;")
+              td(width="25%", style="vertical-align: top;")
                 div(align="right")
                   strong Publication date
               td
-                input(class="datepicker picker__input parsley-validated" type="text"
-                      data-type="dateIso" data-required="true" name="paperdue_date"
-                      value="" placeholder="Select a date." readonly="")
-                input(type="hidden" name="paperdue_date_submit")
+                input.datepicker.picker__input.parsley-validated(type="text", data-type="dateIso", data-required="true", name="publication_date", value="", placeholder="Select a date.", readonly="")
+                input(type="hidden", name="paperdue_date_submit")
             tr
-              td(width="25%" style="vertical-align: top;")
+              td(width="25%", style="vertical-align: top;")
                 div(align="right")
                   strong Private:
               td
-                input(type="checkbox" value="1" name="defaultpolicy")
+                input(type="checkbox", value="1", name="defaultpolicy")
             tr
               td
               td
-                input(type="submit" value=" << Cancel" name="data[Admin][cancel]")
-                input(type="submit" value="Create >>" name="data[Admin][add]")
+                input(type="submit", value=" << Cancel", name="data[Admin][cancel]")
+                input(type="submit", value="Create >>", name="data[Admin][add]")

@@ -1,27 +1,25 @@
-div(class="ContentWithRightPanel")
-  div(class="Panel")
+.ContentWithRightPanel
+  .Panel
     h4 Resources
       ul
         li
-          a
+          a.
            Download
-
-
     h4 Export citation:
       ul
         li
-          form#form1( action="" method="post" name="form1")
+          form#form1(action="", method="post", name="form1")
             select (name="exportType")
-              option(value="bibtex")
+              option(value="bibtex").
                 Bibtex
-              option(value="xml")
+              option(value="xml").
                 XML
-            input( type="submit"  value="Export")
+            input(type="submit", value="Export")
       h4 Statistics
       ul
-        li
+        li.
           Views
-        li
+        li.
           Aggregate Downloads
-      div#ratingContainer
+      #ratingContainer
       h4 Information

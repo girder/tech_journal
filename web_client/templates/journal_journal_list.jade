@@ -1,11 +1,11 @@
 mixin journalItem(item)
-    h3(style='margin-bottom:3px')
-      a(href="#plugins/journal?collection="+item._id) #{item.name}
+  h3(style='margin-bottom:3px')
+    a(href="#plugins/journal?collection="+item._id) #{item.name}
 
-div#headerBar
+#headerBar
 
-div(class="Wrapper")
-  div(class="Content")
+.Wrapper
+  .Content
     div
       br
       div(align="center")
@@ -13,4 +13,3 @@ div(class="Wrapper")
           strong Journals
       for item in info.journals
         +journalItem(item)
-      

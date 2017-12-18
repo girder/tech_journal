@@ -26,11 +26,12 @@ class TechJournalSettings(object):
     base_handle = 'tech_journal.base_handle'
     old_url = 'tech_journal.old_url'
 
+
 class TechJournalSettingsDefault:
-  defaults={
-      'tech_journal.admin_email':"",
-      'tech_journal.default_journal':"",
-      'tech_journal.default_layout':"",
-      'tech_journal.base_handle':"",
-      'tech_journal.old_url':""
-  }
+    defaults = {
+        'tech_journal.admin_email': "",
+        'tech_journal.default_journal': "",
+        'tech_journal.default_layout': "",
+        'tech_journal.base_handle': "",
+        'tech_journal.old_url': ""
+    }

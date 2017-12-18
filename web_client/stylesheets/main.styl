@@ -1,978 +1,765 @@
 /** Define global attributes */
-body {
-  background-color: white;
-  border: 0px;
-
-  font: 83%/1.4 arial,helvetica,sans-serif;
-  margin: 0px;
-  padding: 0px;
-  text-align: left;
-  width: 100%;
-  height: 100%;
-  min-width: 800px;
-}
-
+body
+  border none
+  font  83%/1.4 arial, helvetica, sans-serif
+  margin  0
+  padding  0
+  text-align  left
+  width  100%
+  height  100%
+  min-width  800px
+  background-color  #D4D4D4
 
 /*
 Colors
 */
 
-body {
-  background-color: #D4D4D4;
-}
+#footer
+  .text
+    font-size  80%
+    color #999999
+
+  .copyright
+    font-size  80%
+    color #999999
+
+.issn
+  font-size  80%
+  color #999999
+  position relative
+  margin-left 5px
+  float  left
+  width  100px
+  bottom  15px
 
 
-#footer .text {
-  font-size: 80%;
-  color:#999999;
-}
-#footer .copyright {
-  font-size: 80%;
-  color:#999999;
-}
+.powered
+  font-size  80%
+  color #999999
+  position relative
+  float  right
+  width  100px
+  bottom  15px
 
-.issn {
-  font-size: 80%;
-  color:#999999;
-  position:relative;
-  margin-left:5px;
-  float: left;
-  width: 100px;
-  bottom: 15px;
-}
 
-.powered {
-  font-size: 80%;
-  color:#999999;
-  position:relative;
-  float: right;
-  width: 100px;
-  bottom: 15px;
-}
+div .graytext
+  color #666666
+  border-bottom-color  #DDDDDD
 
-div .graytext{
-  color:#666666;
-  border-bottom-color: #DDDDDD;
-}
 
 /* image in index*/
 .newsimage
-{
-  background:white; 
-  border: 1px solid #FFDB70 ;
-  -webkit-box-shadow: #CCC 0px 0px 2px;
-  -moz-box-shadow: 0px 0px 2px #CCC;
-  -moz-border-radius: 2px;
-  -webkit-border-radius: 2px;
-  -khtml-border-radius: 2px;
-  border-radius: 2px;
-  margin-bottom: 2px;
-}
+  background white
+  border  1px solid #FFDB70
+  -webkit-box-shadow  #CCC 0 0 2px
+  -moz-box-shadow  0 0 2px #CCC
+  -moz-border-radius  2px
+  -webkit-border-radius  2px
+  -khtml-border-radius  2px
+  border-radius  2px
+  margin-bottom  2px
+  img
+    margin  4px
+    width  63px
+/* image in index*/
+  padding-bottom 7px
+  width 70px
+  height 63px
+  background-repeat no-repeat
+  background-position top left
+  border none
+  margin none
 
 /*submission */
 
-#submission input,textarea{
-  background-color:#FFFBF0;
-}
+#submission input textarea
+  background-color #FFFBF0
+
+.submission
+  position relative
+  padding-top 30px
+  margin-bottom  10px
+  .title
+    color  #000000
+    border-bottom  1px solid #999999
+    position absolute
+    bottom 0
+    left 0
+    width 300px
+    font-weight  bold
+  .caption
+    color  #999999
+    border-bottom  1px solid #999999
+    position absolute
+    bottom 0
+    right -1
+    font-size  80%
+    text-align  right
 
 
-.submission .title{
-  color: #000000;
-  border-bottom: 1px solid #999999;
-}
+.subcaption
+  font-size  80%
+  text-align  left
+  color  #666666
 
-.submission .caption{
-  color: #999999;
-  border-bottom: 1px solid #999999;
-}
+#step4
+  .title
+    font-weight  bold
+    color  #000000
+  .authors
+    font-size  80%
+    color  #999999
 
-.subcaption {
-  color: #666666;
-}
-
-#step4 .title{
-  color: #000000;
-}
-
-#step4 .authors{
-  color: #999999;
-}
 
 /* journal */
 
-.journaltitle{
-  color: #777777;
-}
+.journaltitle
+  color  #777777
 
-#journal .introductory{
-  color: #666666;
-}
 
-#journal .dates{
-  color: #666666;
-}
+#journal
+  .introductory
+    color  #666666
+  .dates
+    color  #666666
+  .relatedsites
+    color  #777777
 
-#journal .relatedsites{
-  color: #777777;
-}
 
 /* publication */
-.publication_authors {
-  color:#666666;
- }
- 
- .publication_footer {
-  color:#666666;
- }
- 
-#publication .title {
-  color: #3366FF; /** publication title */
-}
-#publication .title2 {
-  color: #3366FF;  /** publication title */
-}
-#publication .journal {
-  color: #666666;
-}
-.reviews {
-  border-top-color:#DDDDDD;
-}
-.review {
-  border-top-color:#DDDDDD;
-}
-.review_header2 {
-  color: #666666;
-}
- 
-.review_header {
-  color: #666666;
-}
+.publication_authors
+  color #666666
 
 
-.helpful {
-  font-size: 80%;
-  color: #666666;
-}
+.publication_footer
+  color #666666
 
-.review_comment {
-  font-size: 80%;
-  color: #666666;
-}
- 
- /*first bloc in index*/
- .info {
-  background:#d2d0c2;
-  background-repeat:no-repeat;
-}
+
+#publication
+  .title
+    color  #3366FF /** publication title */
+  .title2
+    color  #3366FF /** publication title */
+  .journal
+    color  #666666
+
+.reviews
+  border-top-color #DDDDDD
+
+.review
+  border-top-color #DDDDDD
+
+.review_header2
+  color  #666666
+
+.review_header
+  color  #666666
+
+.helpful
+  font-size  80%
+  color  #666666
+
+.review_comment
+  font-size  80%
+  color  #666666
+
+/*first bloc in index*/
+.info
+  background #d2d0c2
+  background-repeat no-repeat
+  line-height  12px
+  margin-top 10px
+  margin-left 0
+  margin-right 20px
+  margin-bottom  0
+  padding-top 20px
+  padding-bottom 5px
+  padding-left 10px
+  width 639px
+  background-position top left
+  /*border  1px solid*/
 
 /* background cell (table)*/
-.colortable{
- background-color : #fffaec; 
-}
+.colortable
+  background-color   #fffaec
 
-.linedivider {
-  background-repeat:no-repeat;
-}
-
+.linedivider
+  background-repeat no-repeat
+  span
+    display  none
+  width  100%
+  height  2px
 
 /* menu */
-#topbar{  
-  background-color: #FFDB70;
-  background-image: -webkit-gradient(linear,left top,left bottom,from(#eaca67),to(#FFDB70));
-  background-image: -moz-linear-gradient(center top,#eaca67 0%,#FFDB70 100% );
-  -webkit-box-shadow: #666 0 0 3px;
-  box-shadow: #666 0 0 3px;
-  -moz-box-shadow: 0px 0px 3px #666;
-  -moz-border-radius: 0px 0px 2px 2px;
-  -webkit-border-radius: 0px 0px 2px 2px;
-  -khtml-border-radius: 0px 0px 2px 2px;
-  border-radius: 0px 0px 2px 2px;
-}
+#topbar
+  background-color  #FFDB70
+  background-image  -webkit-gradient(linear, left top, left bottom, from(#eaca67), to(#FFDB70))
+  background-image  -moz-linear-gradient(center top, #eaca67 0, #FFDB70 100%)
+  -webkit-box-shadow  #666 0 0 3px
+  box-shadow  #666 0 0 3px
+  -moz-box-shadow  0 0 3px #666
+  -moz-border-radius  0 0 2px 2px
+  -webkit-border-radius  0 0 2px 2px
+  -khtml-border-radius  0 0 2px 2px
+  border-radius  0 0 2px 2px
+  position relative
+  font-weight bold
+  padding  0p
+  height  26px
+  padding-right 3px
+  background-repeat no-repeat
+  background-position bottom left
+  margin-bottom  15px
 
-.nav li a, .nav li a:link, .nav li a:active, .nav li a:visited {
-  font: bold Arial, Helvetica, sans-serif;
-  color: #444444;
-}
+.nav
+  list-style  none
+  margin  0
+  padding  0
+  font-family  Arial, Helvetica, sans-serif
+  z-index  100
+  position  relative
+  top  0
+  
+  ul
+    list-style  none
+    margin  0
+    padding  0
+    li
+      a
+        padding-right  20px
+        width  110px
+        white-space  nowrap
+        background-image  none
+        border-top-width  0
+        border-right-width  1px
+        border-bottom-width  1px
+        border-left-width  1px
+        border-top-style  solid
+        border-right-style  solid
+        border-bottom-style  solid
+        border-left-style  solid
 
-.nav li a.submm{
-  background-color: #FFFFFF;
-}
+  li
+    float  left
+    margin  0
+    padding  0
+    position  relative
+    border-left 1px solid grey
+    /*opacity  0.5*/
+    a
+      display  block
+      text-decoration  none
+      margin  none
+      padding-top  3px
+      padding-right  13px
+      padding-bottom  3px
+      padding-left  13px
+      link, :active, :visited
+        display  block
+        text-decoration  none
+        margin  none
+        padding-top  3px
+        padding-right  13px
+        padding-bottom  3px
+        padding-left  13px
+      font  bold Arial, Helvetica, sans-serif
+      color  #444444
+      &:hover
+        display block
+        color  #7094FF
+    a.submm
+      background-color  #FFDB70 /* background of the menu*/
+      background-image  none
+      
+    ul
+      list-style  none
+      margin  none
+      position  absolute
+      left  -1px
+      display none
+      top  24px
+      -webkit-box-shadow  #666 0 0 3px
+      box-shadow  #666 0 0 3px
+      background  #FFFFFF
+      a
+        border-color  grey
+        :hover
+          background  #ccc
+          color  #000
+#submm
+  background-color  #FFFFFF
+  background-image  none
 
-#submm{
-  background-color: #FFFFFF;
-}
+a
+  hover#submm
+    background-color  #CCCCCC
+    background-image  none
 
-a:hover#submm{
-  background-color: #CCCCCC;
-}
+  color  #56758B
+  cursor pointer
+  :visited
+    text-decoration  none
+    border none
+  :active
+    outline  none
+  :focus
+    -moz-outline-style  none
 
-.nav li a:hover {
-  color: #7094FF;
-}
+#menu
+  position  relative
+  background #7094FF
+  background-image  -webkit-gradient(linear, left top, left bottom, from(#5578dc), to(#7094FF))
+  background-image  -moz-linear-gradient(center top, #5578dc 0, #7094FF 100%)
+  // filter  progid DXImageTransform.Microsoft.gradient(startColorstr='#5578dc', endColorstr='#7094FF')
+  -webkit-box-shadow  #666 0 0 3px
+  box-shadow  #666 0 0 3px
+  -moz-box-shadow  0 0 3px #666
+  height 55px
+  margin  none
+  padding none
+  border  none
 
-.nav li ul {
-  background: #FFFFFF;
-}
+  #title
+    position  absolute
+    font-size  80%
+    left  60px
+    top  37px
+    width  300px
+    color  #DFE1EB
 
-.nav ul li a {
-  border-color: grey;
-}
+#topmenu
+  position  absolute
+  left  10px
+  top  3px
+  width  200px
+  a
+    font-weight  bold
+    text-decoration  none
+    top  -18px
+    color  #000000
+    &:hover
+      color  #FFDB70
+  &:hover
+    text-decoration  underline
 
-.nav ul li a:hover {
-  background: #ccc;
-  color: #000;
-}
-.nav li a.submm{
-  background-color: #FFDB70; /* background of the menu*/
-  background-image: none;
-}
+#about
+  position  absolute
+  z-index  0
+  top  15px
+  left  200px
+  font-size  120%
 
-#menu{
-  position: relative;
-  background:#7094FF;
-  background-image: -webkit-gradient(linear,left top,left bottom,from(#5578dc),to(#7094FF));
-  background-image: -moz-linear-gradient(center top,#5578dc 0%,#7094FF 100% );
-  //filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#5578dc',endColorstr='#7094FF');
-  -webkit-box-shadow: #666 0 0 3px;
-  box-shadow: #666 0 0 3px;
-  -moz-box-shadow: 0px 0px 3px #666;
-}
+  .register
+    margin-left  7px
+    padding-left  7px
+    border-left  1px solid grey
 
-#menu #title {
-  color: #DFE1EB;
-}
-
-#topmenu a {
-  color: #000000;
-}
-
-#topmenu a:hover {
-  color: #FFDB70;
-}
-
-#about a {
-  color: #000000;
-}
-
-#about a:hover {
-  color: #DFE1EB;
-}
-
-#toplogin {
-  color: #EEEEEE;
-}
-
-#toplogin input {
-  color: #777777;
-}
-
-#toplogin a {
-  color: #000000;
-}
-
-#toplogin a:hover {
-  color: #FFDB70; /** */
-  text-decoration: underline;
-}
+  a
+    font-weight  bold
+    text-decoration  none
+    top  -18px
+    color  #000000
+    &:hover
+      color  #DFE1EB
+      text-decoration  underline
 
 
+#toplogin
+  float  right
+  padding-top  7px
+  padding-right  5px
+  font-weight  bold
+  text-decoration  none
+  font-size  100%
+  color  #EEEEEE
+  input
+    color  #777777
+  a
+    color  #000000
+    :hover
+      color  #FFDB70 /** */
+      text-decoration  underline
+    font-weight  bold
+    text-decoration  none
+    top  -8px
+
+  .login
+    position relative
+    border  none
 /*-------------------------------------------------
 HEADER
 -------------------------------------------------*/
 
-.righttop {
-  margin-top: 10px;
-  float:right;
-  width:270px;
-  margin-bottom: 10px;
-  }
-  
-  
+.righttop
+  margin-top  10px
+  float right
+  width 270px
+  margin-bottom  10px
+
+li#browseLink
+  border  none!important
 
 
-#topbar{
-  position:relative;
-  font-weight:bold;
-  padding: 0px;
-  height: 26px;
-  padding-right:3px;
-  background-repeat:no-repeat;
-  background-position:bottom left;
-  margin-bottom: 15px;
-}
+#activem
+  background-position  right bottom
+
+div.Header
+  padding 0 30px
+  /* Search bar */
+  div.HeaderSearch
+    padding-left  35px
+    float right
+    position relative
+
+    a#advancedSearchLink
+      position  absolute
+      right  3px
+      bottom  -13px
+      color  #F3F1EC
+
+    input#live_search
+      font-size  12px
+      opacity  0.9
+      border none
+      padding  6px 10px 5px 24px
+      width  150px
+      position relative
+      -moz-border-radius  0 0 0 6px
+      -webkit-border-radius  0 0 0 6px
+      -khtml-border-radius  0 0 0 6px
+      border-radius  0 0 6 0
+
+/* Header top size and baskcground */
+  div.HeaderTopContent
+    margin  0 auto
+    max-width  1100px
+    min-width  800px
+    padding  none
+    height  70px
 
 
-.nav {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  z-index: 100;
-  position: relative;
-  top: 0px;
-}
-
-.nav ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.nav li {
-  float: left;
-  margin: 0;
-  padding: 0;
-  position: relative;
-  border-left:1px solid grey;
-  /*opacity: 0.5;*/
-}
-
-li#browseLink{
-  border: none!important;
-}
-
-.nav li a, .nav li a:link, .nav li a:active, .nav li a:visited {
-  display: block;
-  text-decoration: none;
-  margin: 0px;
-  padding-top: 3px;
-  padding-right: 13px;
-  padding-bottom: 3px;
-  padding-left: 13px;
-}
-
-.nav li a.submm{
-  background-image: none;
-}
-
-#submm{
-  background-image: none;
-}
-
-a:hover#submm{
-  background-image: none;
-}
-
-#activem{
-  background-position: right bottom;
-}
-
-.nav li a:hover {
-  display:block;
-}
-
-.nav li ul {
-  list-style: none;
-  margin: 0;
-  position: absolute;
-  left: -1px;
-  display:none;
-  top: 24px;
-  -webkit-box-shadow: #666 0 0 3px;
-  box-shadow: #666 0 0 3px;
-  
-}
-
-
-.nav ul li a {
-  padding-right: 20px;
-  width: 110px;
-  white-space: nowrap;
-  background-image: none;
-  border-top-width: 0px;
-  border-right-width: 1px;
-  border-bottom-width: 1px;
-  border-left-width: 1px;
-  border-top-style: solid;
-  border-right-style: solid;
-  border-bottom-style: solid;
-  border-left-style: solid;
-}
-
-.input text{
-
-}
-
-
-#menu{
-  height:55px;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-#menu #title {
-  position: absolute;
-  font-size: 80%;
-  left: 60px;
-  top: 37px;
-  width: 300px;
-}
-
-#topmenu {
-  position: absolute;
-  left: 10px;
-  top: 3px;
-  width: 200px;
-}
-
-#topmenu a {
-  font-weight: bold;
-  text-decoration: none;
-  top: -18px; 
-}
-
-#topmenu a:hover {
-  text-decoration: underline;
-}
-
-#about {
-  position: absolute;
-  z-index: 3;
-  top: 15px;
-  left: 200px;
-  font-size: 120%;
-}
-
-
-#about .register {
-  margin-left: 7px;
-  padding-left: 7px;
-  border-left: 1px solid grey;
-}
-
-#about a {
-  font-weight: bold;
-  text-decoration: none;
-  top: -18px; 
-}
-
-#about a:hover {
-  text-decoration: underline;
-}
-
-#toplogin {
-  float: right;
-  padding-top: 7px;
-  padding-right: 5px;
-  font-weight: bold;
-  text-decoration: none;  
-  font-size: 100%;
-}
-
-#toplogin a {
-  font-weight: bold;
-  text-decoration: none;
-  top: -8px; 
-}
-
-#toplogin .login {
-  position:relative;
-  border: 0px;
-}
-
-
-div.Header {
-  padding:0px 30px;
-}
-
-/* Header top size and baskcground */ 
-div.Header div.HeaderTopContent{
-  margin: 0px auto;
-  max-width: 1100px;
-  min-width: 800px;
-  padding: 0px 0px 0px;
-  height: 70px;
-
-}
-
-/* Header bottom size */ 
-div.Header div.HeaderBottomContent{
-  margin: 0px auto;
-  max-width: 1100px;
-  min-width: 800px;
-  padding: 0px 0px 0px;
-  height: 22px;
-}
+/* Header bottom size */
+  div.HeaderBottomContent
+    margin  0 auto
+    max-width  1100px
+    min-width  800px
+    padding  none
+    height  22px
 
 /* Logo */
-div.Header div.HeaderLogo{
-  height: 82px;
-  width: 81px;
-  margin: 5px;
-  float:left;
-  cursor: pointer;
-}
+  div.HeaderLogo
+    height  82px
+    width  81px
+    margin  5px
+    float left
+    cursor  pointer
 
 /* Text Logo */
-div.Header div.HeaderLogoText{
-  font-size: 30px;
-  height: 82px;
-  width: 400px;
-  margin: 25px 0px 0px 10px;
-  float:left;
-  cursor: pointer;
-}
+  div.HeaderLogoText
+    font-size  30px
+    height  82px
+    width  400px
+    margin  25px 0 0 10px
+    float left
+    cursor  pointer
 
 /* Rss Image */
-div.Header div.HeaderRss{
-  float:right;
-  margin: 35px 15px 0px 0px;
-}
+  div.HeaderRss
+    float right
+    margin  35px 15px 0 0
 
 /* Header Menu */
-div.HeaderMenu{
-  position: absolute;
-  margin: 7px 0px 0px 0px;
-  font-size: 12px;
-}
+div.HeaderMenu
+  position  absolute
+  margin  7px
+  font-size  12px
 
-div.HeaderMenu li a {
-  display: block;
-  text-decoration: none;
-}
+  li
+    a
+      display  block
+      text-decoration  none
+      :hover
+        background-color  #e5e5e5
+        text-decoration none
 
-div.HeaderMenu li a:hover {
-  background-color: #e5e5e5;
-  text-decoration:none;
-}
+  ul
+    display  block
+    list-style-type  disc
+    margin  none
+    padding  none
+    position  relative
 
-div.HeaderMenu ul{
-  display: block;
-  list-style-type: disc;
-  margin: 0px 0px 0px 0px;
-  padding: 0px;
-  position: relative;
-}
+    li
+      display  block
+      float  left
+      list-style-type  none
+      margin-left  10px
+      padding-left  10px
+      border-left  1px black solid
+      position  relative
 
-div.HeaderMenu ul li{
-  display: block;
-  float: left;
-  list-style-type: none;
-  margin-left: 10px;
-  padding-left: 10px;
-  border-left: 1px black solid;
-  position: relative;
-}
+      .first
+        display  block
+        float  left
+        list-style-type  none
+        margin-left  0
+        padding-left  0
+        border  none
 
-div.HeaderMenu ul li.first{
-  display: block;
-  float: left;
-  list-style-type: none;
-  margin-left: 0px;
-  padding-left: 0px;
-  border: none;
-}
+#searchloading
+  position absolute
+  color #FFFFFF
+  text-decoration none
+  width  12px
+  height  12px
+  top  12px
+  right  7px
 
-/* Search bar */
-div.Header div.HeaderSearch{
-  padding-left: 35px;
-  float:right;
-  position:relative;
-}
+.search-category
+  clear  both
+  color  #333BA0
+  font-weight  bold
+  font-size  12px
+  background-color  #F6F9FE
+  line-height  1.5
 
-div.Header div.HeaderSearch a#advancedSearchLink{
-  position: absolute;
-  right: 3px;
-  bottom: -13px;
-  color: #F3F1EC;
-}
-
-div.Header div.HeaderSearch input#live_search{
-  font-size: 12px;
-  opacity: 0.9;
-  border:none;
-  padding: 6px 10px 5px 24px;
-  width: 150px;
-  position:relative;
-  right:-3px;
-  -moz-border-radius: 0px 0px 0px 6px;
-  -webkit-border-radius: 0px 0px 0px 6px;
-  -khtml-border-radius: 0px 0px 0px 6px;
-  border-radius: 0px 0px 6px 0px;
-}
-
-#searchloading{
-  position:absolute;
-  color:#FFFFFF;
-  text-decoration:none;
-  width: 12px;
-  height: 12px;
-  top: 12px;
-  right: 7px;
-}
-
-.search-category{
-  clear: both;
-  color: #333BA0;
-  font-weight: bold;
-  font-size: 12px;
-  background-color: #F6F9FE;
-  line-height: 1.5;
-}
-
-.search-items{
-  background-color: #FFFFFF;
-  font-size: 12px!important;
-}
+.search-items
+  background-color  #FFFFFF
+  font-size  12px!important
 
 /*-------------------------------------------------
 WRAPPER (contain content and footer)
 -------------------------------------------------*/
-div.Wrapper {
-  margin: 0px auto;
-  max-width: 1100px;
-  min-width: 800px;
-  padding: 0px 30px 30px;
-}
+div.Wrapper
+  margin  0 auto
+  max-width  1100px
+  min-width  800px
+  padding  0 30px 30px
+
 
 /*-------------------------------------------------
 MAIN CONTENT
 -------------------------------------------------*/
 
-div.Content {
-  
-  position:relative;
-  color: #000000;
-  background:#FFFFFF;
-  -webkit-box-shadow: #FFF 0px 0px 3px;
-  -moz-box-shadow: 0px 0px 2px #FFF;
-  box-shadow: #FFF 0 0 3px;
-  -moz-border-radius: 2px;
-  -webkit-border-radius: 2px;
-  -khtml-border-radius: 2px;
-  border-radius: 2px;
-  padding: 5px;
-  margin-top: 15px;
-  float: left;
-  width: 100%;
-}
+div.Content
+  position relative
+  color  #000000
+  background #FFFFFF
+  -webkit-box-shadow  #FFF 0 0 3px
+  -moz-box-shadow  0 0 2px #FFF
+  box-shadow  #FFF 0 0 3px
+  -moz-border-radius  2px
+  -webkit-border-radius  2px
+  -khtml-border-radius  2px
+  border-radius  2px
+  padding  5px
+  margin-top  15px
+  float  left
+  width  100%
 
-div.ContentWithLeftPanel{
-  
-}
+div.ContentWithLeftPanel
+  div.Panel
+    width  200px
+    float  left
+  div.MainContent
+    margin-left 204px
 
-div.ContentWithLeftPanel div.Panel{
-  width: 200px;
-  float: left;
-}
-
-div.ContentWithLeftPanel div.MainContent{
-  margin-left:204px;
-}
-
-div.ContentWithRightPanel{
-
-}
-
-div.ContentWithRightPanel div.Panel{
-  width: 250px;
-  float: right;
-}
-
-div.ContentWithRightPanel div.MainContent{
-  margin-right:264px;
-}
-
+div.ContentWithRightPanel
+  div.Panel
+    width  250px
+    float  right
+  div.MainContent
+    margin-right 264px
 
 /*-------------------------------------------------
 FOOTER
 -------------------------------------------------*/
-div.Footer{
-  clear: both;
-  color: #999999;
-  font-size: 10px;
-  line-height: 1.6em;
-  padding-top: 20px;
-  text-align: left;
-  width: 300px;
-  font: 100%/1.4 arial,helvetica,sans-serif;
-  text-decoration: none;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-}
-
+div.Footer
+  clear  both
+  color  #999999
+  font-size  10px
+  line-height  1.6em
+  padding-top  20px
+  text-align  left
+  width  300px
+  font  100%/1.4 arial, helvetica, sans-serif
+  text-decoration  none
+  margin-left  auto
+  margin-right  auto
+  // text-align  center
 
 /* ------------------------------------------
 LOGIN / REGISTER Modal Dialog
 ------------------------------------------*/
 
-.registerInfo{
-  display:none;
-}
-form#registerForm {
-  margin-left: 0px!important;
-  color:black!important;
-}
-form#registerForm label{
-  color:black!important;
-}
-form#registerForm a{
-  color:black!important;
-}
-form#loginForm input.globalButton{
-  margin-left: 0px;
-}
+.registerInfo
+  display none
 
-a.closeButton{
-  float:right;
-}
+form#registerForm
+  margin-left  0!important
+  color black!important
 
-.TopDynamicBar { /* The div that shows/hides. */
-    display:none; /* starts out hidden */
-    z-index:40001; /* High z-index to ensure it appears above all content */
-}
-.TopDynamicBar  .dumbBoxOverlay { /* Shades out background when selector is active */
-    position:fixed;
-    width:100%;
-    height:100%;
-    background-color:black;
-    opacity:.5; /* Sets opacity so it's partly transparent */
-    //-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=50)"; /* IE transparency */
-    //filter:alpha(opacity=50); /* More IE transparency */
-    z-index:40001;
-}
-.TopDynamicBar  .vertical-offset { /* Fixed position to provide the vertical offset */
-    position:fixed;
-    top:30%;
-    width:100%;
-    z-index:40002; /* ensures box appears above overlay */
-}
-.TopDynamicBar .dumbBox { /* The actual box, centered in the fixed-position div */
-    width:605px; /* Whatever width you want the box to be */
-    position:relative;
-    margin:0 auto;
+  label
+    color black!important
+  a
+    color black!important
+
+form#loginForm input.globalButton
+  margin-left  0
+
+a.closeButton
+  float right
+
+.TopDynamicBar /* The div that shows/hides. */
+  display none /* starts out hidden */
+  z-index 40000 /* High z-index to ensure it appears above all content */
+
+  .dumbBoxOverlay /* Shades out background when selector is active */
+    position fixed
+    width 100%
+    height 100%
+    background-color black
+    opacity 0.5 /* Sets opacity so it's partly transparent */
+    // -ms-filter "progid DXImageTransform.Microsoft.Alpha(Opacity=50)" /* IE transparency */
+    // filter alpha(opacity=50) /* More IE transparency */
+    z-index 40000
+
+  .vertical-offset /* Fixed position to provide the vertical offset */
+    position fixed
+    top 30%
+    width 100%
+    z-index 40010 /* ensures box appears above overlay */
+
+  .dumbBox /* The actual box, centered in the fixed-position div */
+    width 605px /* Whatever width you want the box to be */
+    position relative
+    margin 0 auto
     /*Everything below is just visual styling */
-    background-color:white;
-    padding:10px;
-    border:1px solid black;
-}
+    background-color white
+    padding 10px
+    border 1px solid black
+
 
 
 
 /** Reset default css value */
-dl {
-  margin:0;
-  padding: 0;
-}
+dl
+  margin none
+  padding  none
 
-dt{
+dt
 
-}
+img
+  border none
 
-img{
-  border:0px;
-}
-
-a {
-  color: #56758B;
-  cursor:pointer;
-}
-
-a:visited {
-  text-decoration: none;
-  border:none;
-}
-
-a:active, li:active
-{
-  outline: none;
-}
-
-a:focus, li:focus
-{
-  -moz-outline-style: none;
-}
-
+li
+  :active
+    outline  none
+  :focus
+    -moz-outline-style  none
 
 /* Default (menu and blocs) */
-.decal  {
-  margin-left:10px;
-  }
-.decal2  {
-  margin-left:80px;
-  }
+.decal
+  margin-left 10px
 
-/* image in index*/
-.newsimage  {
-  padding-bottom:7px;
-  width:70px;
-  height:63px;
-  background-repeat:no-repeat;
-  background-position:top left;
-  border:0px;
-  margin:0px;
-  }
-  .newsimage img{
-  margin: 4px 4px 4px 4px;
-  width: 63px;
-  }
+.decal2
+  margin-left 80px
 
-.newsdecal  {
-  margin-left :5px;
-  }
 
-/*first bloc in index*/
-.info  {
-  line-height: 12px;
-  margin-top:10px;
-  margin-left:0px;
-  margin-right:20px;
-  margin-bottom: 0px;
-  padding-top:20px;
-  padding-bottom:5px;
-  padding-left:10px;
-  width:639px;
-  background-repeat:no-repeat;
-  background-position:top left;
-  /*border: 1px solid;*/
-  }
 
-  .linedivider {
-  width: 100%;
-  height: 2px;
-  }
+.newsdecal
+  margin-left  5px
 
-  .linedivider span {
-  display: none;
-  }
+
+
+
+
 /* avoid creating unecessary gap in IE6 */
-  form {
-  display:inline;
-  }
+form
+  display inline
 
-  input, textarea, select {
-  border: 1px solid #c0c0c0;
-  }
 
-  .required-fields {
-  display: none;
-  }
+input textarea select
+  border  1px solid #c0c0c0
 
-  .left {
-  float: left;
-  width: 700px;
-  }
 
-  .right {
-  line-height: 12px;
-  float: right;
-  margin-right: 10px;
-  width:270px;
-  border-left: 1px solid #DAD8D4;
-  padding-left: 5px;
-  }
+.required-fields
+  display  none
 
-  #notification {
-  position:relative;
-  left: -23px;
-  }
 
-.social_networks {
-  position: relative;
-  top: -10px;
-  left: -23px;
-  list-style-type: none;
-  list-style-image: none;
-}
+.left
+  float  left
+  width  700px
 
-.social_networks li {
-    padding: 4px 0 2px 22px !important;
-    margin-left: 0;
-}
+
+.right
+  line-height  12px
+  float  right
+  margin-right  10px
+  width 270px
+  border-left  1px solid #DAD8D4
+  padding-left  5px
+
+
+#notification
+  position relative
+  left  -23px
+
+.social_networks li
+    padding  4px 0 2px 22px !important
+    margin-left  0
+  position  relative
+  top  -10px
+  left  -23px
+  list-style-type  none
+  list-style-image  none
+
+
 
 
 /*
 Form error*/
-input.parsley-success, textarea.parsley-success {
-    color: #468847 !important;
-    background-color: #DFF0D8 !important;
-    border: 1px solid #D6E9C6 !important;
-  }
-  input.parsley-error, textarea.parsley-error {
-    color: #B94A48 !important;
-    background-color: #F2DEDE !important;
-    border: 1px solid #EED3D7 !important;
-  }
+input.parsley-success
+  textarea.parsley-success
+    color  #468847 !important
+    background-color  #DFF0D8 !important
+    border  1px solid #D6E9C6 !important
 
-  ul.parsley-error-list {
-      font-size: 11px;
-      margin: 2px;
-      list-style-type:none;
-      padding: 0px;
-  }
-  ul.parsley-error-list li {
-      line-height: 11px;
-  }
-  
+  textarea.parsley-error
+    color  #B94A48 !important
+    background-color  #F2DEDE !important
+    border  1px solid #EED3D7 !important
+
+
+ul.parsley-error-list
+  font-size  11px
+  margin  2px
+  list-style-type none
+  padding  none
+  li
+    line-height  11px
+
+
 /*
 Submission
 */
-div#info_title{
-font-size:14px;
-border-bottom:1px solid #BDBDBD;
-width:400px;
-}
-.info_title{
-font-size:14px;
-border-bottom:1px solid #BDBDBD;
-width:400px;
-}
+div#info_title
+  font-size 14px
+  border-bottom 1px solid #BDBDBD
+  width 400px
 
-.submission{
-  position:relative;
-  padding-top:30px;
-  margin-bottom: 10px;
-}
+.info_title
+  font-size 14px
+  border-bottom 1px solid #BDBDBD
+  width 400px
 
-.submission .title{
-  position:absolute;
-  bottom:0;
-  left:0;
-  width:300px;
-  font-weight: bold;
-}
 
-.submission .caption{
-  position:absolute;
-  bottom:0;
-  right:-1;
-  font-size: 80%;
-  text-align: right;
-}
-
-.subcaption {
-  font-size: 80%;
-  text-align: left;
-}
-
-#step4 .title{
-  font-weight: bold;
-}
-
-#step4 .authors{
-  font-size: 80%;
-}
-
-#step10 .title{
-  position:relative;
-  font-weight: bold;
-  border-bottom: 1px solid;
-  border-bottom-color:#999999;
-}
-
-#step10 .title a{
-  position:absolute;
-  bottom:1;
-  right:0;
-}
-/* Individual basic styling for TinyMCE which I haven't been able to style
-   with the program itself.
-*/
-.textDiv {
-      background-color : #FFFBF0;
-}
-.textDiv p {
-      word-wrap: break-word;
-}
+#step10 .title
+  position relative
+  font-weight  bold
+  border-bottom  1px solid
+  border-bottom-color #999999
+  a
+    position absolute
+    bottom 1
+    right 0

@@ -1,53 +1,53 @@
-div#announcement-banner(class="alertHeader")
-div(class="TopDynamicBar" style="display:none;")
-  div(class="dumbBoxOverlay")
-  div( class="vertical-offset")
-    div(class="dumbBox")
-      div(class="TopDynamicClose")
-        a(class="closeButton" onclick="$('.TopDynamicBar').hide();" href="#")
+#announcement-banner.alertHeader
+.TopDynamicBar(style="display:none;")
+  .dumbBoxOverlay
+  .vertical-offset
+    .dumbBox
+      .TopDynamicClose
+        a.closeButton(onclick="$('.TopDynamicBar').hide();", href="#")
           span
-            img( alt="" src="/journal/core/public/images/icons/close.png")
-      div(class="TopDynamicContent")
-      div(class="TopDynamicLoading")
-        img( alt="" src="/journal/core/public/images/icons/loading.gif")
-      input( type="hidden" class="DynamicContentPage")
-div(class="MainDialog" style="display:none;")
-  div(class="MainDialogContent")
-  div(class="MainDialogLoading")
-    img(alt="" src="/journal/core/public/images/icons/loading.gif")
-  input(type="hidden" class="DialogContentPage")
+            img(alt="", src="/journal/core/public/images/icons/close.png")
+      .TopDynamicContent
+      .TopDynamicLoading
+        img(alt="", src="/journal/core/public/images/icons/loading.gif")
+      input.DynamicContentPage(type="hidden")
+.MainDialog(style="display:none;")
+  .MainDialogContent
+  .MainDialogLoading
+    img(alt="", src="/journal/core/public/images/icons/loading.gif")
+  input.DialogContentPage(type="hidden")
 
-div(class="Header")
-  div(class="HeaderTopContent panelsBackground")
-    div#menu
-      div#topmenu
-        a( style='border:none;' href="#plugins/journal")
-          img( style='border:none;' src="http://osehra.org/profiles/drupal_commons/themes/commons_osehra_earth/images/logo.png" alt="logo" height="50")
-      div#title.
+.Header
+  .HeaderTopContent.panelsBackground
+    #menu
+      #topmenu
+        a(style='border:none;', href="#plugins/journal")
+          img(style='border:none;', src="http://osehra.org/profiles/drupal_commons/themes/commons_osehra_earth/images/logo.png", alt="logo", height="50")
+      #title.
         OSEHRA Technical Journal
-      div#toplogin
-        div#loginForm
+      #toplogin
+        #loginForm
           unless user
-              a(href='#plugins/journal?dialog=login') Sign In
+            a(href='#plugins/journal?dialog=login') Sign In
           if user
-              |Welcome #{user.name()}!
-              a#logout Log out
-      br/
-      div( style="position:absolute;right:0px;")
-        div( style="position:relative;top:7px;left:-8px;font-size:11px;color:white;")
-          a( href="#plugins/journal/help/about")
+            |Welcome #{user.name()}!
+            a#logout Log out
+      br
+      div(style="position:absolute;right:0px;")
+        div(style="position:relative;top:7px;left:-8px;font-size:11px;color:white;")
+          a(href="#plugins/journal/help/about")
             | About
           unless user
-            a#forgotPasswordLink(style="margin-left: 7px;padding-left: 7px;border-left: 1px solid grey;" href='#plugins/journal?dialog=resetpassword')
+            a#forgotPasswordLink(style="margin-left: 7px;padding-left: 7px;border-left: 1px solid grey;", href='#plugins/journal?dialog=resetpassword')
               | Forgot your password
-            a(style="margin-left: 7px;padding-left: 7px;border-left: 1px solid grey;" href="#plugins/journal?dialog=register" class="register")
+            a.register(style="margin-left: 7px;padding-left: 7px;border-left: 1px solid grey;", href="#plugins/journal?dialog=register")
               | Register
-            a(style="margin-left: 7px;padding-left: 7px;border-left: 1px solid grey;"  href='/journal/googleoauth/user/login')
-             | Sign in with your Google Account
-             img(style="top:-2px;border:none;position:relative;" src="/journal/privateModules/journal/public/images/google_icon.png")
+            a(style="margin-left: 7px;padding-left: 7px;border-left: 1px solid grey;", href='/journal/googleoauth/user/login')
+              | Sign in with your Google Account
+              img(style="top:-2px;border:none;position:relative;", src="/journal/privateModules/journal/public/images/google_icon.png")
 
-    div#topbar
-      ul#Nav(class="nav navbar-nav")
+    #topbar
+      ul#Nav.nav.navbar-nav
         li#browseLink
           a(href="#plugins/journal")
             | Home
@@ -60,59 +60,61 @@ div(class="Header")
         if user
           li#profileLink
             a(href='#user/'+user._id) My Profile
-            div#userOptionsDiv
+            #userOptionsDiv
               ul#userOptionsList
                 li
-                  a(class="submm" href='#plugins/journal?query="creatorId":"'+user.id+'"') My Publications
+                  a.submm(href='#plugins/journal?query="creatorId":"'+user.id+'"') My Publications
                 li
-                  a(class="submm" href='') Edit Profile
+                  a.submm(href='') Edit Profile
           if user.attributes.admin
             li#adminLink
               a(href="") Admin
-              div#adminOptionsDiv
+              #adminOptionsDiv
                 ul#adminOptionsList
                   li
-                    a(class="submm" href='#plugins/journal/admin') Journals
+                    a.submm(href='#plugins/journal/admin') Journals
                   li
-                    a(class="submm" href='#users') Users
+                    a.submm(href='#users') Users
                   li
-                    a(class="submm") Categories
+                    a.submm. 
+                      Categories
                   li
-                    a(class="submm") Disclaimers
+                    a.submm. 
+                      Disclaimers
                   li
-                    a(class="submm" href='#plugins/journal/admin/help') Help & About
+                    a.submm(href='#plugins/journal/admin/help') Help & About
                   li
-                    a(class="submm" href='#plugins/journal/config') Config
+                    a.submm(href='#plugins/journal/config') Config
                   li
-                    a(class="submm") Review Questions
+                    a.submm.
+                      Review Questions
         li#helpLink
           a(href="#plugins/journal/help")
             | Help
-          div#helpOptions
+          #helpOptions
             ul#helpOptionsList
               li
-                a( class="submm"  style="width:160px;"  href="#plugins/journal/help")
+                a.submm(style="width:160px;", href="#plugins/journal/help")
                   | Submission and Review
               li
-                a( class="submm" style="width:160px;" href="#plugins/journal/help/faq")
+                a.submm(style="width:160px;", href="#plugins/journal/help/faq")
                   | F.A.Q.
               li
-                a( class="submm"  style="width:160px;" href="#plugins/journal/help/feedback")
+                a.submm(style="width:160px;", href="#plugins/journal/help/feedback")
                   | Feedback
         if user
           if user.attributes.admin
             if (approvalNum > 0)
               li
-                a(href="#plugins/journal/approval" style="color:orange;")
+                a(href="#plugins/journal/approval", style="color:orange;")
                   | Waiting Approval : #{approvalNum}
 
-      div(class="HeaderSearch nav navbar-nav navbar-right")
-
-        input#live_search(type="text" class="panelsBackground" value=searchVal autocomplete="off" autocorrect="off" autocapitalize="off")
-        input#live_search_value( type="hidden" value="init")
-        div#searchloading( style="display:none")
-        input#search_button(type="button" class="" value="Search")
-        input#clear_button(type="button" class="" value="Clear")
-    div(class="HeaderAction")
-      div(class="viewNoticeWrapper")
-        div(class="viewNotice")
+      .HeaderSearch.nav.navbar-nav.navbar-right
+        input#live_search.panelsBackground(type="text", value=searchVal, autocomplete="off", autocorrect="off", autocapitalize="off")
+        input#live_search_value(type="hidden", value="init")
+        #searchloading(style="display:none")
+        input#search_button(type="button", value="Search")
+        input#clear_button(type="button", value="Clear")
+    .HeaderAction
+      .viewNoticeWrapper
+        .viewNotice
