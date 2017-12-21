@@ -44,8 +44,8 @@ var indexView = View.extend({
                 this.$('.searchResults').html(IndexEntryViewTemplate({info: {'submissions': jrnResp}}));
             }, this));
         },
-        'click #showMoreResults': function(event) {
-            this.getSubmissions(this.defaultJournal, this.querystring,$('.SearchResultEntry').length);
+        'click #showMoreResults': function (event) {
+            this.getSubmissions(this.defaultJournal, this.querystring, $('.SearchResultEntry').length);
         }
     },
     initialize: function (query) {
@@ -66,10 +66,10 @@ var indexView = View.extend({
             }
             if (!$.isEmptyObject(query['query'])) {
                 this.querystring = query['query'];
-                this.querySubmissions(collectionID, this.querystring ,0);
+                this.querySubmissions(collectionID, this.querystring, 0);
             }
 
-            this.getSubmissions(collectionID, this.querystring,0);
+            this.getSubmissions(collectionID, this.querystring, 0);
         }, this));  // End getting of OTJ Collection value setting
     },
     render: function (subData, searchVal, collection) {
@@ -92,7 +92,7 @@ var indexView = View.extend({
         return this;
     },
 
-    querySubmissions: function (collection, queryString,startIndex) {
+    querySubmissions: function (collection, queryString, startIndex) {
         restRequest({
             type: 'GET',
             path: 'journal/' + collection + '/search?query={' + queryString + '}'
@@ -100,18 +100,17 @@ var indexView = View.extend({
             this.render(jrnResp, 'Search...', collection);
         }, this));
     },
-    getSubmissions: function (collection, queryString,startIndex) {
+    getSubmissions: function (collection, queryString, startIndex) {
         restRequest({
             type: 'GET',
-            path: 'journal/' + collection + '/submissions?strtIndex='+startIndex+'&filterID=*',
+            path: 'journal/' + collection + '/submissions?strtIndex=' + startIndex + '&filterID=*',
             params: {
                 filterID: '*'
             }
         }).done(_.bind(function (jrnResp) {
-            if( startIndex === 0 ) {
+            if (startIndex === 0) {
                 this.render(jrnResp, 'Search...', collection);
-            }
-            else {
+            } else {
                 this.$('.searchResults').html(this.$('.searchResults').html() + IndexEntryViewTemplate({info: {'submissions': jrnResp}}));
             }
         }, this));
