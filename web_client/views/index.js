@@ -43,6 +43,9 @@ var indexView = View.extend({
                 // Only update the search results, leaving the menu bar and selected issue intact.
                 this.$('.searchResults').html(IndexEntryViewTemplate({info: {'submissions': jrnResp}}));
             }, this));
+        },
+        'click #showMoreResults': function(event) {
+            this.getSubmissions(this.defaultJournal, this.querystring,$('.SearchResultEntry').length);
         }
     },
     initialize: function (query) {
@@ -57,22 +60,21 @@ var indexView = View.extend({
         }).done(_.bind(function (resp) {
             this.defaultJournal = resp['tech_journal.default_journal'];
             var collectionID = this.defaultJournal;
-            var querystring = '*';
+            this.querystring = '*';
             if (!$.isEmptyObject(query['collection'])) {
                 collectionID = query['collection'];
             }
             if (!$.isEmptyObject(query['query'])) {
-                querystring = query['query'];
-                this.querySubmissions(collectionID, querystring);
+                this.querystring = query['query'];
+                this.querySubmissions(collectionID, this.querystring ,0);
             }
 
-            this.getSubmissions(collectionID, querystring);
+            this.getSubmissions(collectionID, this.querystring,0);
         }, this));  // End getting of OTJ Collection value setting
     },
     render: function (subData, searchVal, collection) {
         var pendingSubs = 0;
         subData.forEach(function (d) {
-            console.log(d);
             if (d.curation.status === 'REQUESTED') { pendingSubs++; }
         });
         restRequest({
@@ -80,7 +82,7 @@ var indexView = View.extend({
             path: 'journal/' + collection + '/issues'
         }).done(_.bind(function (jrnResp) {
             this.$el.html(IndexViewTemplate({info: { 'issues': jrnResp }}));
-            this.$('.searchResults').html(IndexEntryViewTemplate({info: {'submissions': subData}}));
+            this.$('.searchResults').html(this.$('.searchResults').html() + IndexEntryViewTemplate({info: {'submissions': subData}}));
             new MenuBarView({ el: this.$el,
                 parentView: this,
                 searchBoxVal: searchVal,
@@ -90,7 +92,7 @@ var indexView = View.extend({
         return this;
     },
 
-    querySubmissions: function (collection, queryString) {
+    querySubmissions: function (collection, queryString,startIndex) {
         restRequest({
             type: 'GET',
             path: 'journal/' + collection + '/search?query={' + queryString + '}'
@@ -98,15 +100,20 @@ var indexView = View.extend({
             this.render(jrnResp, 'Search...', collection);
         }, this));
     },
-    getSubmissions: function (collection, queryString) {
+    getSubmissions: function (collection, queryString,startIndex) {
         restRequest({
             type: 'GET',
-            path: 'journal/' + collection + '/submissions?filterID=*',
+            path: 'journal/' + collection + '/submissions?strtIndex='+startIndex+'&filterID=*',
             params: {
                 filterID: '*'
             }
         }).done(_.bind(function (jrnResp) {
-            this.render(jrnResp, 'Search...', collection);
+            if( startIndex === 0 ) {
+                this.render(jrnResp, 'Search...', collection);
+            }
+            else {
+                this.$('.searchResults').html(this.$('.searchResults').html() + IndexEntryViewTemplate({info: {'submissions': jrnResp}}));
+            }
         }, this));
     }
 });

@@ -110,6 +110,8 @@ class TechJournal(Resource):
                    .param('id', "The ID of the Journal (collection) to pull from", paramType='path')
                    .param('filterID', "The ID of the Issue to limit the results from",
                           required=False)
+                   .param('strtIndex', "The index of the list of issues to start displaying",
+                          required=False)
                    .errorResponse('Test error.')
                    .errorResponse('Read access was denied on the issue.', 403)
                    )
@@ -130,7 +132,8 @@ class TechJournal(Resource):
                                                             ))
                     submission['currentRevision'] = submissionInfo[-1]
                     totalData.append(submission)
-        return totalData
+        totalData.reverse()
+        return totalData[int(params["strtIndex"]):int(params["strtIndex"])+20]
 
     @access.public(scope=TokenScope.DATA_READ)
     @filtermodel(model='collection')
