@@ -43,7 +43,7 @@ var downloadView = View.extend({
             parentDownloadUrl: parentDownloadUrl,
             paperDownloadUrl: paperDownloadUrl
         }));
-        MenuBarView({ el: this.$el, parentView: this });
+        new MenuBarView({ el: this.$el, parentView: this });
         return this;
     }
 });

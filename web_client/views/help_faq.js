@@ -24,7 +24,7 @@ var FAQView = View.extend({
     },
     render: function (faqText) {
         this.$el.html(FAQViewTemplate({info: faqText, renderMarkdown: renderMarkdown}));
-        MenuBarView({ el: this.$el, parentView: this, searchBoxVal: 'Search...' });
+        new MenuBarView({ el: this.$el, parentView: this, searchBoxVal: 'Search...' });
         return this;
     }
 });

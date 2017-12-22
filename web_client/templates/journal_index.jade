@@ -17,7 +17,7 @@ mixin issueFilter(info)
         #FiltersPanel
           .issueButton.issueSelected(key="*")
             .issueTitle(qtipconditional="All", style="word-wrap: break-word")
-            | All Issues
+              | All Issues
           for item in info.issues
             +issueFilter(item)
       .MainContent

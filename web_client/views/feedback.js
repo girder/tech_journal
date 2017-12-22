@@ -12,7 +12,7 @@ var FeedbackView = View.extend({
     },
     render: function () {
         this.$el.html(FeedbackViewTemplate());
-        MenuBarView({ el: this.$el, parentView: this, searchBoxVal: 'Search...' });
+        new MenuBarView({ el: this.$el, parentView: this, searchBoxVal: 'Search...' });
         return this;
     }
 });

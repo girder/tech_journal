@@ -42,7 +42,7 @@ var EditIssueView = View.extend({
     },
     render: function (parentId) {
         this.$el.html(editIssueTemplate({info: parentId}));
-        MenuBarView({ el: this.$el, parentView: this });
+        new MenuBarView({ el: this.$el, parentView: this });
         return this;
     },
     _updateIssue: function (issueData) {

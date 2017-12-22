@@ -31,7 +31,7 @@ var manageJournalView = View.extend({
     },
     render: function () {
         this.$el.html(ManageJournalsTemplate());
-        MenuBarView({ el: this.$el, parentView: this });
+        new MenuBarView({ el: this.$el, parentView: this });
         return this;
     }
 });

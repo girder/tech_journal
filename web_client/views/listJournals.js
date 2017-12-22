@@ -18,7 +18,7 @@ var listView = View.extend({
             path: 'journal'
         }).done(_.bind(function (jrnResp) {
             this.$el.html(JournalListTemplate({ info: { 'journals': jrnResp } }));
-            MenuBarView({ el: this.$el, parentView: this, searchBoxVal: searchVal });
+            new MenuBarView({ el: this.$el, parentView: this, searchBoxVal: searchVal });
         }, this));
 
         return this;

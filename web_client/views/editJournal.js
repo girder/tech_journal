@@ -29,7 +29,7 @@ var EditJournalView = View.extend({
     },
     render: function (journalInfo) {
         this.$el.html(editJournalTemplate(journalInfo));
-        MenuBarView({ el: this.$el, parentView: this });
+        new MenuBarView({ el: this.$el, parentView: this });
         return this;
     },
     _createJournal: function (journalData) {

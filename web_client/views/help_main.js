@@ -24,7 +24,7 @@ var HelpView = View.extend({
     },
     render: function (helpText) {
         this.$el.html(HelpViewTemplate({info: helpText, renderMarkdown: renderMarkdown}));
-        MenuBarView({ el: this.$el, parentView: this, searchBoxVal: 'Search...' });
+        new MenuBarView({ el: this.$el, parentView: this, searchBoxVal: 'Search...' });
         return this;
     }
 });

@@ -24,7 +24,7 @@ var AboutView = View.extend({
     },
     render: function (aboutText) {
         this.$el.html(AboutViewTemplate({info: aboutText, renderMarkdown: renderMarkdown}));
-        MenuBarView({ el: this.$el, parentView: this, searchBoxVal: 'Search...' });
+        new MenuBarView({ el: this.$el, parentView: this, searchBoxVal: 'Search...' });
         return this;
     }
 });
