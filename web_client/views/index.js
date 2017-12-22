@@ -38,14 +38,14 @@ var indexView = View.extend({
             // Use the journal API to filter by selected submission
             restRequest({
                 type: 'GET',
-                path: 'journal/' + this.defaultJournal + '/submissions?filterID=' + $(event.currentTarget.parentNode).attr('key')
+                path: 'journal/' + this.defaultJournal + '/submissions?strtIndex=0&filterID=' + $(event.currentTarget.parentNode).attr('key')
             }).done(_.bind(function (jrnResp) {
                 // Only update the search results, leaving the menu bar and selected issue intact.
                 this.$('.searchResults').html(IndexEntryViewTemplate({info: {'submissions': jrnResp}}));
             }, this));
         },
         'click #showMoreResults': function (event) {
-            this.getSubmissions(this.defaultJournal, this.querystring, $('.SearchResultEntry').length);
+            this.getSubmissions(this.collectionID, this.querystring, $('.SearchResultEntry').length);
         }
     },
     initialize: function (query) {
@@ -59,17 +59,18 @@ var indexView = View.extend({
             }
         }).done(_.bind(function (resp) {
             this.defaultJournal = resp['tech_journal.default_journal'];
-            var collectionID = this.defaultJournal;
+            this.collectionID = this.defaultJournal;
             this.querystring = '*';
             if (!$.isEmptyObject(query['collection'])) {
-                collectionID = query['collection'];
-            }
-            if (!$.isEmptyObject(query['query'])) {
-                this.querystring = query['query'];
-                this.querySubmissions(collectionID, this.querystring, 0);
+                this.collectionID = query['collection'];
             }
 
-            this.getSubmissions(collectionID, this.querystring, 0);
+            if (!$.isEmptyObject(query['query'])) {
+                this.querystring = query['query'];
+                this.querySubmissions(this.collectionID, this.querystring, 0);
+            }
+
+            this.getSubmissions(this.collectionID, this.querystring, 0);
         }, this));  // End getting of OTJ Collection value setting
     },
     render: function (subData, searchVal, collection) {

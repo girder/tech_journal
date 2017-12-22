@@ -130,7 +130,8 @@ class TechJournal(Resource):
                                                             parent=submission,
                                                             user=self.getCurrentUser()
                                                             ))
-                    submission['currentRevision'] = submissionInfo[-1]
+                    if len(submissionInfo):
+                        submission['currentRevision'] = submissionInfo[-1]
                     totalData.append(submission)
         totalData.reverse()
         return totalData[int(params["strtIndex"]):int(params["strtIndex"])+20]
