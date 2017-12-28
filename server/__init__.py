@@ -18,6 +18,7 @@
 ###############################################################################
 import six
 import json
+import datetime
 
 from girder.api.describe import Description, describeRoute
 from girder.api.rest import Resource, RestException, filtermodel, loadmodel
@@ -63,8 +64,9 @@ class TechJournal(Resource):
         self.route('GET', (':id', 'submissions'), self.getAllSubmissions)
         self.route('GET', (), self.getAllJournals)
         self.route('GET', (':id', 'issues'), self.getAllIssues)
+        self.route('GET', (':id', 'openissues',), self.getFilteredIssues)
         self.route('GET', (':id', 'details'), self.getSubmissionDetails)
-        self.route('GET', (':id', 'search'), self.getFilteredIssues)
+        self.route('GET', (':id', 'search'), self.getFilteredSubmissions)
         self.route('PUT', (':id', 'metadata'), self.setSubmissionMetadata)
         self.route('PUT', (':id', 'finalize'), self.finalizeSubmission)
         self.route('PUT', (':id', 'approve'), self.approveSubmission)
@@ -85,6 +87,29 @@ class TechJournal(Resource):
                                                         parent=collection,
                                                         user=self.getCurrentUser()))
         return issues
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @loadmodel(model='collection', level=AccessType.READ)
+    @describeRoute(
+        Description('Get filtered Issues from a given Journal which are still active')
+        .responseClass('Collection')
+        .param('id', "The ID of the Journal (collection) to pull from", paramType='path')
+        .errorResponse('Test error.')
+        .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def getFilteredIssues(self, collection, params):
+        issues = list(self.model('folder').childFolders(parentType='collection',
+                                                        parent=collection,
+                                                        user=self.getCurrentUser()))
+        activeIssues = []
+        for issue in issues:
+          try:
+              dateofIssue = datetime.datetime.strptime(issue["meta"]["paperDue"], '%Y-%m-%d %H:%M:%S')
+          except ValueError:
+              dateofIssue = datetime.datetime.strptime(issue["meta"]["paperDue"], '%Y-%m-%dT%H:%M:%S.%fZ')
+          if dateofIssue > datetime.datetime.now():
+            activeIssues.append(issue)
+        return activeIssues
 
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='folder', level=AccessType.READ)
@@ -239,7 +264,7 @@ class TechJournal(Resource):
         .errorResponse('Test error.')
         .errorResponse('Read access was denied on the issue.', 403)
         )
-    def getFilteredIssues(self, collection, params):
+    def getFilteredSubmissions(self, collection, params):
         self.requireParams('query', params)
         filterParams = json.loads(params["query"])
         totalData = list()

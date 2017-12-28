@@ -58,7 +58,7 @@ var SubmitView = View.extend({
             }).done(_.bind(function (resp) {
                 restRequest({
                     type: 'GET',
-                    path: 'journal/' + resp['tech_journal.default_journal'] + '/issues'
+                    path: 'journal/' + resp['tech_journal.default_journal'] + '/openissues'
                 }).done(_.bind(function (jrnResp) {
                     this.render(jrnResp, 1);
                 }, this));
