@@ -15,9 +15,9 @@ var EditIssueView = View.extend({
             if (event.originalEvent.explicitOriginalTarget.defaultValue === 'Create >>') {
                 var values = {issueName: this.$('#issueName')[0].value,
                     issueDescription: this.$('#issueDescription')[0].value,
-                    "paperDue":$(".datepicker")[0].value,
-                    "decision":$(".datepicker")[1].value,
-                    "publication":$(".datepicker")[2].value
+                    'paperDue': $('.datepicker')[0].value,
+                    'decision': $('.datepicker')[1].value,
+                    'publicatioN': $('.datepicker')[2].value
                 };
                 if (this.update) {
                     this._updateIssue(values);
@@ -57,17 +57,17 @@ var EditIssueView = View.extend({
                 description: issueData.issueDescription
             }
         }).done(_.bind(function (jrnResp) {
-            var paperDue = new Date(issueData.paperDue)
-            var decision = new Date(issueData.decision)
-            var publication = new Date(issueData.publication)
-            var issueDateData = {"paperDue":paperDue,
-                             "decision": decision,
-                             "publication":publication
-            }
+            var paperDue = new Date(issueData.paperDue);
+            var decision = new Date(issueData.decision);
+            var publication = new Date(issueData.publication);
+            var issueDateData = {'paperDue': paperDue,
+                'decision': decision,
+                'publication': publication
+            };
             restRequest({
-                type: "PUT",
+                type: 'PUT',
                 contentType: 'application/json',
-                url: "folder/" + jrnResp['_id']+ "/metadata",
+                url: 'folder/' + jrnResp['_id'] + '/metadata',
                 data: JSON.stringify(issueDateData)
             }).done(_.bind(function (metaResp) {
             }, this));
@@ -81,20 +81,20 @@ var EditIssueView = View.extend({
                 parentId: this.parentId,
                 parentType: this.parentType,
                 name: issueData.issueName,
-                description: issueData.issueDescription,
+                description: issueData.issueDescription
             }
         }).done(_.bind(function (jrnResp) {
-            var paperDue = new Date(issueData.paperDue)
-            var decision = new Date(issueData.decision)
-            var publication = new Date(issueData.publication)
-            var issueDateData = {"paperDue":paperDue,
-                             "decision": decision,
-                             "publication":publication
-            }
+            var paperDue = new Date(issueData.paperDue);
+            var decision = new Date(issueData.decision);
+            var publication = new Date(issueData.publication);
+            var issueDateData = {'paperDue': paperDue,
+                'decision': decision,
+                'publication': publication
+            };
             restRequest({
-                type: "PUT",
+                type: 'PUT',
                 contentType: 'application/json',
-                url: "folder/" + jrnResp['_id']+ "/metadata",
+                url: 'folder/' + jrnResp['_id'] + '/metadata',
                 data: JSON.stringify(issueDateData)
             }).done(_.bind(function (metaResp) {
 
@@ -106,12 +106,12 @@ var EditIssueView = View.extend({
             type: 'GET',
             url: 'folder/' + journalData.id
         }).done(_.bind(function (jrnInfo) {
-            var paperDueTmp = new Date(jrnInfo["meta"]["paperDue"])
-            var publicationTmp = new Date(jrnInfo["meta"]["publication"])
-            var decisionTmp = new Date(jrnInfo["meta"]["decision"])
-            jrnInfo["meta"]["paperDue"] = paperDueTmp.toJSON().slice(0,10)
-            jrnInfo["meta"]["publication"] = publicationTmp.toJSON().slice(0,10)
-            jrnInfo["meta"]["decision"] = decisionTmp.toJSON().slice(0,10)
+            var paperDueTmp = new Date(jrnInfo['meta']['paperDue']);
+            var publicationTmp = new Date(jrnInfo['meta']['publication']);
+            var decisionTmp = new Date(jrnInfo['meta']['decision']);
+            jrnInfo['meta']['paperDue'] = paperDueTmp.toJSON().slice(0, 10);
+            jrnInfo['meta']['publication'] = publicationTmp.toJSON().slice(0, 10);
+            jrnInfo['meta']['decision'] = decisionTmp.toJSON().slice(0, 10);
             this.render(jrnInfo);
         }, this));
     }

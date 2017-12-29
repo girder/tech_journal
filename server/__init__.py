@@ -103,12 +103,14 @@ class TechJournal(Resource):
                                                         user=self.getCurrentUser()))
         activeIssues = []
         for issue in issues:
-          try:
-              dateofIssue = datetime.datetime.strptime(issue["meta"]["paperDue"], '%Y-%m-%d %H:%M:%S')
-          except ValueError:
-              dateofIssue = datetime.datetime.strptime(issue["meta"]["paperDue"], '%Y-%m-%dT%H:%M:%S.%fZ')
-          if dateofIssue > datetime.datetime.now():
-            activeIssues.append(issue)
+            try:
+                dateofIssue = datetime.datetime.strptime(issue["meta"]["paperDue"],
+                                                         '%Y-%m-%d %H:%M:%S')
+            except ValueError:
+                dateofIssue = datetime.datetime.strptime(issue["meta"]["paperDue"],
+                                                         '%Y-%m-%dT%H:%M:%S.%fZ')
+            if dateofIssue > datetime.datetime.now():
+                activeIssues.append(issue)
         return activeIssues
 
     @access.public(scope=TokenScope.DATA_READ)
