@@ -59,13 +59,13 @@
             | New Publication
         if user
           li#profileLink
-            a(href='#user/'+user._id) My Profile
+            a(href='#user/' + user.id) My Profile
             #userOptionsDiv
               ul#userOptionsList
                 li
                   a.submm(href='#plugins/journal?query="creatorId":"'+user.id+'"') My Publications
                 li
-                  a.submm(href='') Edit Profile
+                  a.submm(href='#useraccount/' + user.id + '/info') Edit Profile
           if user.attributes.admin
             li#adminLink
               a(href="") Admin
