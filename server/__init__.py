@@ -47,12 +47,13 @@ def validateSettings(event):
 
 
 def checkValue(infoList, filterParams, value):
-    if type(infoList[value]) == list:
-        if not (filterParams[value] in infoList[value]):
-            return True
-    else:
-        if not (filterParams[value] == str(infoList[value])):
-            return True
+    if value in infoList:
+        if type(infoList[value]) == list:
+            if (filterParams[value] in infoList[value]):
+                return True
+        else:
+            if (filterParams[value] == infoList[value]):
+                return True
     return False
 
 
@@ -132,7 +133,7 @@ class TechJournal(Resource):
 
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)
-    @describeRoute(Description('Get all submissions from a given')
+    @describeRoute(Description('Get all submissions from a given Journal')
                    .responseClass('Collection')
                    .param('id', "The ID of the Journal (collection) to pull from", paramType='path')
                    .param('filterID', "The ID of the Issue to limit the results from",
@@ -162,6 +163,72 @@ class TechJournal(Resource):
                     totalData.append(submission)
         totalData.reverse()
         return totalData[int(params["strtIndex"]):int(params["strtIndex"])+20]
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @loadmodel(model='collection', level=AccessType.READ)
+    @describeRoute(
+        Description('Get submissions matching a certain set of parameters')
+        .responseClass('Collection')
+        .param('id', "The ID of the Journal (collection) to pull from", paramType='path')
+        .param('query', "A JSON object to filter the objects over", required=False)
+        .param('text', "A JSON object to filter the objects over", required=False)
+        .errorResponse('Test error.')
+        .errorResponse('Read access was denied on the issue.', 403)
+        )
+    def getFilteredSubmissions(self, collection, params):
+        user = self.getCurrentUser()
+        if 'text' in params:
+            totalData = list(self.model('folder').textSearch(params['text'], user=user))
+            for submission in totalData:
+                submissionInfo = list(self.model('folder')
+                                          .childFolders(parentType='folder',
+                                                        parent=submission,
+                                                        user=self.getCurrentUser()
+                                                        ))
+                if len(submissionInfo):
+                    submission['currentRevision'] = submissionInfo[-1]
+        else:
+            filterParams = json.loads(params["query"])
+            totalData = list()
+            issues = list(self.model('folder').childFolders(parentType='collection',
+                                                            parent=collection,
+                                                            user=user
+                                                            ))
+            for issue in issues:
+                testInfo = list(self.model('folder').childFolders(parentType='folder',
+                                                                  parent=issue,
+                                                                  user=user
+                                                                  ))
+                for submission in testInfo:
+                    foundMatch = True
+                    for key in filterParams.keys():
+                        if key in submission["meta"].keys():
+                            foundMatch = checkValue(submission["meta"], filterParams, key)
+                        else:
+                            foundMatch = checkValue(submission, filterParams, key)
+                    revisionInfo = list(self.model('folder')
+                                            .childFolders(parentType='folder',
+                                                          parent=submission,
+                                                          user=self.getCurrentUser()
+                                                          ))
+                    if not foundMatch:
+                        for revision in revisionInfo:
+                            for key in filterParams.keys():
+                                if key in revision["meta"].keys():
+                                    foundMatch = checkValue(revision["meta"], filterParams, key)
+                                else:
+                                    foundMatch = checkValue(revision, filterParams, key)
+                    if foundMatch:
+                        # Find all folders under each submission to capture all revisions
+                        submissionInfo = list(self.model('folder')
+                                                  .childFolders(parentType='folder',
+                                                                parent=submission,
+                                                                user=self.getCurrentUser()
+                                                                ))
+                        if len(submissionInfo):
+                            submission['currentRevision'] = submissionInfo[-1]
+                        totalData.append(submission)
+        return totalData
 
     @access.public(scope=TokenScope.DATA_READ)
     @filtermodel(model='collection')
@@ -254,37 +321,6 @@ class TechJournal(Resource):
         self.model('folder').setMetadata(parentFolder, parentMetaData)
         self.model('folder').setMetadata(folder, metadata)
         return "Success"
-
-    @access.public(scope=TokenScope.DATA_READ)
-    @loadmodel(model='collection', level=AccessType.READ)
-    @filtermodel(model='folder')
-    @describeRoute(
-        Description('Get submissions matching a certain set of parameters')
-        .responseClass('Collection')
-        .param('id', "The ID of the Journal (collection) to pull from", paramType='path')
-        .param('query', "A JSON object to filter the objects over")
-        .errorResponse('Test error.')
-        .errorResponse('Read access was denied on the issue.', 403)
-        )
-    def getFilteredSubmissions(self, collection, params):
-        self.requireParams('query', params)
-        filterParams = json.loads(params["query"])
-        totalData = list()
-        issues = list(self.model('folder').childFolders(parentType='collection', parent=collection,
-                                                        user=self.getCurrentUser()))
-        for issue in issues:
-            testInfo = list(self.model('folder').childFolders(parentType='folder', parent=issue,
-                                                              user=self.getCurrentUser()))
-            for submission in testInfo:
-                foundMismatch = False
-                for key in filterParams.keys():
-                    if key in submission["meta"].keys():
-                        foundMismatch = checkValue(submission["meta"], filterParams, key)
-                    else:
-                        foundMismatch = checkValue(submission, filterParams, key)
-                if not foundMismatch:
-                    totalData.append(submission)
-        return totalData
 
     @access.admin(scope=TokenScope.DATA_READ)
     @describeRoute(

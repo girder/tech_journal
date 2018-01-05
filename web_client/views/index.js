@@ -22,9 +22,9 @@ var indexView = View.extend({
             var searchText = $('#live_search').val();
             restRequest({
                 type: 'GET',
-                path: 'folder?text=' + searchText + '&parentType=folder'
+                path: 'journal/' + this.collectionID + '/search?text=' + searchText
             }).done(_.bind(function (resp) {
-                this.render(resp, searchText);
+                this.render(resp, searchText, this.collectionID);
             }, this));
         },
         'click #clear_button': function (event) {
@@ -68,9 +68,9 @@ var indexView = View.extend({
             if (!$.isEmptyObject(query['query'])) {
                 this.querystring = query['query'];
                 this.querySubmissions(this.collectionID, this.querystring, 0);
+            } else {
+                this.getSubmissions(this.collectionID, this.querystring, 0);
             }
-
-            this.getSubmissions(this.collectionID, this.querystring, 0);
         }, this));  // End getting of OTJ Collection value setting
     },
     render: function (subData, searchVal, collection) {

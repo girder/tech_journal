@@ -110,7 +110,7 @@
                   | Waiting Approval : #{approvalNum}
 
       .HeaderSearch.nav.navbar-nav.navbar-right
-        input#live_search.panelsBackground(type="text", value=searchVal, autocomplete="off", autocorrect="off", autocapitalize="off")
+        input#live_search.panelsBackground(type="text", placeholder=searchVal, autocomplete="off", autocorrect="off", autocapitalize="off")
         input#live_search_value(type="hidden", value="init")
         #searchloading(style="display:none")
         input#search_button(type="button", value="Search")
