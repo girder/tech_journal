@@ -31,6 +31,13 @@ mixin deleteCommentConfirmation()
           ul
             li
               a#downloadLink Download
+          if info.revision.meta.github
+            p#githubDisclaimer
+              span(style="color:red;") Caution:
+              | Github repository may have been updated since submission
+            ul
+              li
+                a(href=info.revision.meta.github) GitHub
         h4 Export citation:
         h4 Statistics:
         h4 Information

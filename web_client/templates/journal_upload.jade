@@ -22,7 +22,11 @@
       br
       br
       #uploadContentBlock
-      #githubContentBlock
+      #githubContentBlock(style="width:700px; display:none;")
+        label
+          | Set GitHub URL (for example: https://github.com/Girder/Girder)
+        input#github(type="text", name="github", style="width:400px;")
+        input#addGithub(type="button", value="Add")
       input#hiddenSourceLicense(type="hidden", value="0", name="source-license")
       input#hiddenSourceLicenseText(type="hidden", value="No License Specified", name="source-license-text")
       input#hiddenAttributionPolicy(type="hidden", value="0", name="attribution-policy")

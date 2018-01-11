@@ -36,12 +36,31 @@ var uploadView = View.extend({
 
         'change #typeFile': function (event) {
             event.preventDefault();
-            this._uploadFiles(event);
+            if (event.target.value === '6') {
+                $('#githubContentBlock').show();
+            } else {
+                $('#githubContentBlock').hide();
+                this._uploadFiles(event);
+            }
         },
         'click .deleteLink': function (event) {
             event.preventDefault();
             var itemEntry = event.currentTarget.parentElement.parentElement;
             this._deleteFile(itemEntry);
+        },
+        'click #addGithub': function (event) {
+            event.preventDefault();
+            var subData = {'github': $('#github').val()};
+            restRequest({
+                type: 'PUT',
+                path: 'folder/' + this.parentId + '/metadata',
+                contentType: 'application/json',
+                data: JSON.stringify(subData),
+                error: null
+            }).done(_.bind(function (respMD) {
+                this.$('#uploadTable').append(UploadEntryTemplate({info: {'name': subData['github'], '_id': 'github', 'meta': {'type': 6}}}));
+                this.$('#uploadQuestions').show();
+            }, this));
         },
 
         // Change function for updating the attribution policy value and submit status
@@ -50,7 +69,7 @@ var uploadView = View.extend({
             this.$('#hiddenAttributionPolicy').attr('value', acceptAttributionPolicyIsSelected ? 1 : 0);
             this.submitCheck();
         },
-        // Change function for updating the "Right to distribute" and submit status
+        // Change function for updating the 'Right to distribute' and submit status
         'change #acceptRights': function (event) {
             this.submitCheck();
         },
@@ -188,13 +207,27 @@ var uploadView = View.extend({
         }, this).render();
     },
     _deleteFile: function (itemEntry) {
-        restRequest({
-            type: 'DELETE',
-            path: 'item/' + itemEntry.attributes.getNamedItem('key').nodeValue,
-            error: null
-        }).done(_.bind(function (respMD) {
-            this.$(itemEntry).remove();
-        }, this));
+        var objectIdentifier = itemEntry.attributes.getNamedItem('key').nodeValue;
+        if (objectIdentifier === 'github') {
+            var subData = {'github': ''};
+            restRequest({
+                type: 'PUT',
+                path: 'folder/' + this.parentId + '/metadata',
+                contentType: 'application/json',
+                data: JSON.stringify(subData),
+                error: null
+            }).done(_.bind(function (respMD) {
+                this.$(itemEntry).remove();
+            }, this));
+        } else {
+            restRequest({
+                type: 'DELETE',
+                path: 'item/' + objectIdentifier,
+                error: null
+            }).done(_.bind(function (respMD) {
+                this.$(itemEntry).remove();
+            }, this));
+        }
     },
 
     _approveSubmission: function (subData) {
