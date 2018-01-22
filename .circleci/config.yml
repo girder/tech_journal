@@ -1,0 +1,69 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: girder/girder_test:latest-py2
+      - image: circleci/mongo:3.6-ram
+        command: ["mongod", "--storageEngine", "ephemeralForTest", "--dbpath", "/dev/shm/mongo"]
+
+    working_directory: /home/circleci/project # as $CIRCLE_WORKING_DIRECTORY
+
+    steps:
+      - run:
+          name: Clone Girder
+          command: git clone --depth 1 --branch 2.x-maintenance -- https://github.com/girder/girder.git girder
+      - checkout:
+          path: girder/plugins/tech_journal
+
+      - run:
+          name: Create and activate virtualenv
+          command: |
+            virtualenv girder_env
+            echo "source $CIRCLE_WORKING_DIRECTORY/girder_env/bin/activate" >> $BASH_ENV
+      - restore_cache:
+          key: venv-{{ arch }}-{{ checksum "girder/setup.py" }}-{{ checksum "girder/requirements-dev.txt" }}
+      - run:
+          name: Install Girder
+          command: |
+            pip install --upgrade --editable . --requirement requirements-dev.txt
+          # pytest_girder requires that install be run from this directory
+          working_directory: girder
+      - run:
+          name: Install tech_journal
+          command: girder-install plugin girder/plugins/tech_journal
+      - run:
+          name: Install coverage client
+          command: pip install --upgrade codecov
+      - save_cache:
+          paths: girder_env
+          key: venv-{{ arch }}-{{ checksum "girder/setup.py" }}-{{ checksum "girder/requirements-dev.txt" }}
+
+      - restore_cache:
+          key: npm-{{ arch }}-{{ checksum "girder/package.json" }}-{{ checksum "girder/plugins/tech_journal/plugin.json" }}
+      - run:
+          name: Build Girder web client
+          command: girder-install web --dev --plugins=tech_journal
+          environment:
+            - npm_config_cache: /home/circleci/project/npm_cache
+      - save_cache:
+          paths: npm_cache
+          key: npm-{{ arch }}-{{ checksum "girder/package.json" }}-{{ checksum "girder/plugins/tech_journal/plugin.json" }}
+
+      - run:
+          name: Create Girder build directory
+          command: mkdir girder_build
+      - run:
+          name: Run CMake
+          command: |
+            cmake -DPYTHON_VERSION:STRING=2.7 -DRUN_CORE_TESTS:BOOL=OFF -DTEST_PLUGINS:STRING="tech_journal" $CIRCLE_WORKING_DIRECTORY/girder
+            make
+          working_directory: girder_build
+
+      - run:
+          name: Run CTest
+          # Include "girder_coverage" label once Python tests are added
+          command: ctest -VV -LE 'girder_coverage'
+          working_directory: girder_build
+      - run:
+          name: Upload coverage
+          command: codecov --disable search pycov gcov --root girder/plugins/tech_journal --file girder/build/test/coverage/py_coverage.xml
