@@ -28,7 +28,7 @@ var submissionView = View.extend({
             event.preventDefault();
             var targetIndex = this.$(event.target).attr('val');
             this.currentComments.forEach(function (d) {
-                if (d['index'] === targetIndex) {
+                if (d.index === targetIndex) {
                     d.name = '';
                     d.text = '';
                 }
@@ -57,9 +57,9 @@ var submissionView = View.extend({
     },
     render: function (totalDetails) {
         totalDetails[1].meta.comments.sort(function (a, b) {
-            if (a['index'] > b['index']) return -1;
-            if (a['index'] < b['index']) return 1;
-            if (a['index'] === b['index']) return 0;
+            if (a.index > b.index) return -1;
+            if (a.index < b.index) return 1;
+            if (a.index === b.index) return 0;
         });
         this.currentComments = totalDetails[1].meta.comments;
         this.parentId = totalDetails[1]._id;

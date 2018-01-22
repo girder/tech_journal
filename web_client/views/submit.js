@@ -136,8 +136,8 @@ var SubmitView = View.extend({
             'targetIssue': this.itemId
         };
         if (this.newRevision) {
-            subData['revisionNotes'] = this.$('#revisionEntry').val().trim();
-            subData['previousRevision'] = this.itemId;
+            subData.revisionNotes = this.$('#revisionEntry').val().trim();
+            subData.previousRevision = this.itemId;
         }
         restRequest({
             type: 'POST',

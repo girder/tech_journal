@@ -19,7 +19,7 @@ var AboutView = View.extend({
                 list: JSON.stringify(['about'])
             }
         }).done(_.bind(function (resp) {
-            this.render(resp['about']);
+            this.render(resp.about);
         }, this));
     },
     render: function (aboutText) {

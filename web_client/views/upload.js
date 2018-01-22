@@ -58,7 +58,7 @@ var uploadView = View.extend({
                 data: JSON.stringify(subData),
                 error: null
             }).done(_.bind(function (respMD) {
-                this.$('#uploadTable').append(UploadEntryTemplate({info: {'name': subData['github'], '_id': 'github', 'meta': {'type': 6}}}));
+                this.$('#uploadTable').append(UploadEntryTemplate({info: {'name': subData.github, '_id': 'github', 'meta': {'type': 6}}}));
                 this.$('#uploadQuestions').show();
             }, this));
         },
@@ -150,8 +150,8 @@ var uploadView = View.extend({
                     this.$('#uploadQuestions').show();
                     $('#acceptRights').prop('checked', 'checked');
                     $('#acceptLicense').prop('checked', 'checked');
-                    $('#licenseChoice').val(resp[0]['meta']['source-license']);
-                    $('#otherLicenseInput').val(resp[0]['meta']['source-license-text']);
+                    $('#licenseChoice').val(resp[0].meta['source-license']);
+                    $('#otherLicenseInput').val(resp[0].meta['source-license-text']);
                 }
             }, this));
         }, this));

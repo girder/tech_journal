@@ -58,11 +58,11 @@ var ManageHelpView = View.extend({
         });
 
         // Prepopulate the pages
-        this.HelpEditor.text = existingPages['main'];
+        this.HelpEditor.text = existingPages.main;
         this.HelpEditor.setElement(this.$('#mainPage')).render();
-        this.FAQEditor.text = existingPages['faq'];
+        this.FAQEditor.text = existingPages.faq;
         this.FAQEditor.setElement(this.$('#faqPage')).render();
-        this.AboutEditor.text = existingPages['about'];
+        this.AboutEditor.text = existingPages.about;
         this.AboutEditor.setElement(this.$('#aboutPage')).render();
         return this;
     },

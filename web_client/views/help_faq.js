@@ -19,7 +19,7 @@ var FAQView = View.extend({
                 list: JSON.stringify(['faq'])
             }
         }).done(_.bind(function (resp) {
-            this.render(resp['faq']);
+            this.render(resp.faq);
         }, this));
     },
     render: function (faqText) {

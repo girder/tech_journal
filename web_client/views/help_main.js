@@ -19,7 +19,7 @@ var HelpView = View.extend({
                 list: JSON.stringify(['main'])
             }
         }).done(_.bind(function (resp) {
-            this.render(resp['main']);
+            this.render(resp.main);
         }, this));
     },
     render: function (helpText) {

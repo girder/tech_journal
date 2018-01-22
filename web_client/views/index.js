@@ -61,12 +61,12 @@ var indexView = View.extend({
             this.defaultJournal = resp['tech_journal.default_journal'];
             this.collectionID = this.defaultJournal;
             this.querystring = '*';
-            if (!$.isEmptyObject(query['collection'])) {
-                this.collectionID = query['collection'];
+            if (!$.isEmptyObject(query.collection)) {
+                this.collectionID = query.collection;
             }
 
-            if (!$.isEmptyObject(query['query'])) {
-                this.querystring = query['query'];
+            if (!$.isEmptyObject(query.query)) {
+                this.querystring = query.query;
                 this.querySubmissions(this.collectionID, this.querystring, 0);
             } else {
                 this.getSubmissions(this.collectionID, this.querystring, 0);
