@@ -58,7 +58,7 @@ var SubmitView = View.extend({
             }).done(_.bind(function (resp) {
                 restRequest({
                     type: 'GET',
-                    path: 'journal/' + resp['tech_journal.default_journal'] + '/openissues'
+                    path: `journal/${resp['tech_journal.default_journal']}/openissues`
                 }).done(_.bind(function (jrnResp) {
                     this.render(jrnResp, 1);
                 }, this));
@@ -81,7 +81,7 @@ var SubmitView = View.extend({
             this.itemId = subResp;
             restRequest({
                 type: 'GET',
-                path: 'folder/' + this.itemId
+                path: `folder/${this.itemId}`
             }).done(_.bind(function (resp) {
                 if (this.newSub) {
                     issueInfo = {};
@@ -114,7 +114,7 @@ var SubmitView = View.extend({
         this.$('#authors .list-item').each(function (index, val) {
             var authorName = '';
             $(val).children('input').each(function (index2, val2) {
-                if (val2.value !== '') authorName += ' ' + val2.value;
+                if (val2.value !== '') authorName += ` ${val2.value}`;
             });
             if (authorName.length > 0) authors.push(authorName.trim());
         });
@@ -168,12 +168,12 @@ var SubmitView = View.extend({
         }).done(_.bind(function (resp) {
             restRequest({
                 type: 'PUT',
-                path: 'journal/' + resp._id + '/metadata',
+                path: `journal/${resp._id}/metadata`,
                 contentType: 'application/json',
                 data: JSON.stringify(subData),
                 error: null
             }).done(_.bind(function (respMD) {
-                router.navigate(targetUrl + resp._id + '/upload/new',
+                router.navigate(`${targetUrl}${resp._id}/upload/new`,
                                       {trigger: true});
             }, this));
         }, this));

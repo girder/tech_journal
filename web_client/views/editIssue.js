@@ -51,7 +51,7 @@ var EditIssueView = View.extend({
     _updateIssue: function (issueData) {
         restRequest({
             type: 'PUT',
-            url: 'folder/' + this.parentId,
+            url: `folder/${this.parentId}`,
             data: {
                 name: issueData.issueName,
                 description: issueData.issueDescription
@@ -67,7 +67,7 @@ var EditIssueView = View.extend({
             restRequest({
                 type: 'PUT',
                 contentType: 'application/json',
-                url: 'folder/' + jrnResp['_id'] + '/metadata',
+                url: `folder/${jrnResp['_id']}/metadata`,
                 data: JSON.stringify(issueDateData)
             }).done(_.bind(function (metaResp) {
             }, this));
@@ -94,7 +94,7 @@ var EditIssueView = View.extend({
             restRequest({
                 type: 'PUT',
                 contentType: 'application/json',
-                url: 'folder/' + jrnResp['_id'] + '/metadata',
+                url: `folder/${jrnResp['_id']}/metadata`,
                 data: JSON.stringify(issueDateData)
             }).done(_.bind(function (metaResp) {
 
@@ -104,7 +104,7 @@ var EditIssueView = View.extend({
     _getCurrentInfo: function (journalData) {
         restRequest({
             type: 'GET',
-            url: 'folder/' + journalData.id
+            url: `folder/${journalData.id}`
         }).done(_.bind(function (jrnInfo) {
             var paperDueTmp = new Date(jrnInfo['meta']['paperDue']);
             var publicationTmp = new Date(jrnInfo['meta']['publication']);

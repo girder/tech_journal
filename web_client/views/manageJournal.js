@@ -21,7 +21,7 @@ var manageJournalView = View.extend({
             for (var index in resp) {
                 restRequest({
                     type: 'GET',
-                    path: 'journal/' + resp[index]._id + '/issues'
+                    path: `journal/${resp[index]._id}/issues`
                 }).done(_.bind(function (jrnResp) {
                     allIssues = allIssues.concat(jrnResp);
                     this.$('#journalListing').html(ManageJournalsEntryTemplate({ issueInfo: allIssues, parentInfo: resp }));

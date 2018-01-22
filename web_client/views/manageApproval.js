@@ -23,7 +23,7 @@ var manageApprovalView = View.extend({
         }).done(_.bind(function (resp) {
             restRequest({
                 type: 'GET',
-                path: 'journal/' + resp['technical_journal.default_journal'] + '/submissions?filterID=*',
+                path: `journal/${resp['technical_journal.default_journal']}/submissions?filterID=*`,
                 params: {
                     filterID: '*'
                 }

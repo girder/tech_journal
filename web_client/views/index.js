@@ -22,7 +22,7 @@ var indexView = View.extend({
             var searchText = $('#live_search').val();
             restRequest({
                 type: 'GET',
-                path: 'journal/' + this.collectionID + '/search?text=' + searchText
+                path: `journal/${this.collectionID}/search?text=${searchText}`
             }).done(_.bind(function (resp) {
                 this.render(resp, searchText, this.collectionID);
             }, this));
@@ -38,7 +38,7 @@ var indexView = View.extend({
             // Use the journal API to filter by selected submission
             restRequest({
                 type: 'GET',
-                path: 'journal/' + this.defaultJournal + '/submissions?strtIndex=0&filterID=' + $(event.currentTarget.parentNode).attr('key')
+                path: `journal/${this.defaultJournal}/submissions?strtIndex=0&filterID=${$(event.currentTarget.parentNode).attr('key')}`
             }).done(_.bind(function (jrnResp) {
                 // Only update the search results, leaving the menu bar and selected issue intact.
                 this.$('.searchResults').html(IndexEntryViewTemplate({info: {'submissions': jrnResp}}));
@@ -80,7 +80,7 @@ var indexView = View.extend({
         });
         restRequest({
             type: 'GET',
-            path: 'journal/' + collection + '/issues'
+            path: `journal/${collection}/issues`
         }).done(_.bind(function (jrnResp) {
             this.$el.html(IndexViewTemplate({info: { 'issues': jrnResp }}));
             this.$('.searchResults').html(this.$('.searchResults').html() + IndexEntryViewTemplate({info: {'submissions': subData}}));
@@ -96,7 +96,7 @@ var indexView = View.extend({
     querySubmissions: function (collection, queryString, startIndex) {
         restRequest({
             type: 'GET',
-            path: 'journal/' + collection + '/search?query={' + queryString + '}'
+            path: `journal/${collection}/search?query={${queryString}}`
         }).done(_.bind(function (jrnResp) {
             this.render(jrnResp, 'Search...', collection);
         }, this));
@@ -104,7 +104,7 @@ var indexView = View.extend({
     getSubmissions: function (collection, queryString, startIndex) {
         restRequest({
             type: 'GET',
-            path: 'journal/' + collection + '/submissions?strtIndex=' + startIndex + '&filterID=*',
+            path: `journal/${collection}/submissions?strtIndex=${startIndex}&filterID=*`,
             params: {
                 filterID: '*'
             }

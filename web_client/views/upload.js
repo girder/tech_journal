@@ -53,7 +53,7 @@ var uploadView = View.extend({
             var subData = {'github': $('#github').val()};
             restRequest({
                 type: 'PUT',
-                path: 'folder/' + this.parentId + '/metadata',
+                path: `folder/${this.parentId}/metadata`,
                 contentType: 'application/json',
                 data: JSON.stringify(subData),
                 error: null
@@ -137,13 +137,13 @@ var uploadView = View.extend({
         this.newRevision = subId.NR;
         restRequest({
             type: 'GET',
-            path: 'journal/' + this.parentId + '/details'
+            path: `journal/${this.parentId}/details`
         }).done(_.bind(function (resp) {
             this.curRevision = resp[0];
             this.render();
             restRequest({
                 type: 'GET',
-                path: 'item?folderId=' + this.parentId
+                path: `item?folderId=${this.parentId}`
             }).done(_.bind(function (itemResp) {
                 for (var index in itemResp) {
                     this.$('#uploadTable').append(UploadEntryTemplate({info: itemResp[index]}));
@@ -191,11 +191,11 @@ var uploadView = View.extend({
             };
             restRequest({
                 type: 'GET',
-                path: 'item?folderId=' + this.parentId + '&name=' + retInfo.files[0].name
+                path: `item?folderId=${this.parentId}&name=${retInfo.files[0].name}`
             }).done(_.bind(function (resp) {
                 restRequest({
                     type: 'PUT',
-                    path: 'item/' + resp[0]._id + '/metadata',
+                    path: `item/${resp[0]._id}/metadata`,
                     contentType: 'application/json',
                     data: JSON.stringify(subData),
                     error: null
@@ -212,7 +212,7 @@ var uploadView = View.extend({
             var subData = {'github': ''};
             restRequest({
                 type: 'PUT',
-                path: 'folder/' + this.parentId + '/metadata',
+                path: `folder/${this.parentId}/metadata`,
                 contentType: 'application/json',
                 data: JSON.stringify(subData),
                 error: null
@@ -222,7 +222,7 @@ var uploadView = View.extend({
         } else {
             restRequest({
                 type: 'DELETE',
-                path: 'item/' + objectIdentifier,
+                path: `item/${objectIdentifier}`,
                 error: null
             }).done(_.bind(function (respMD) {
                 this.$(itemEntry).remove();
@@ -233,28 +233,28 @@ var uploadView = View.extend({
     _approveSubmission: function (subData) {
         restRequest({
             type: 'PUT',
-            path: 'journal/' + this.parentId + '/approve',
+            path: `journal/${this.parentId}/approve`,
             contentType: 'application/json',
             data: JSON.stringify(subData)
         }).done(_.bind(function (respMD) {
-            router.navigate('#plugins/journal/view/' + this.parentId,
+            router.navigate(`#plugins/journal/view/${this.parentId}`,
                                       {trigger: true});
         }, this));
     },
     _appendData: function (subData) {
         restRequest({
             type: 'PUT',
-            path: 'journal/' + this.parentId + '/metadata',
+            path: `journal/${this.parentId}/metadata`,
             contentType: 'application/json',
             data: JSON.stringify(subData),
             error: null
         }).done(_.bind(function (respMD) {
             restRequest({
                 type: 'PUT',
-                path: 'journal/' + this.parentId + '/finalize',
+                path: `journal/${this.parentId}/finalize`,
                 contentType: 'application/json'
             }).done(_.bind(function (respMD) {
-                router.navigate('#plugins/journal/view/' + this.parentId,
+                router.navigate(`#plugins/journal/view/${this.parentId}`,
                                               {trigger: true});
             }, this));
         }, this));

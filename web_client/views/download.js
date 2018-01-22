@@ -14,12 +14,12 @@ var downloadView = View.extend({
         this.parentId = subId.id;
         restRequest({
             type: 'GET',
-            path: 'folder/' + this.parentId
+            path: `folder/${this.parentId}`
         }).done(_.bind(function (resp) {
             this.parent = resp;
             restRequest({
                 type: 'GET',
-                path: 'item?folderId=' + this.parentId
+                path: `item?folderId=${this.parentId}`
             }).done(_.bind(function (itemResp) {
                 for (var index in itemResp) {
                     if (itemResp[index].meta.type === 'Paper') {
@@ -33,10 +33,10 @@ var downloadView = View.extend({
     render: function (paperItem) {
         var paperDownloadUrl =
             paperItem && paperItem._id
-            ? apiRoot + '/item/' + paperItem._id + '/download'
+            ? `${apiRoot}/item/${paperItem._id}/download`
             : null;
         var parentDownloadUrl =
-            apiRoot + '/folder/' + this.parentId + '/download';
+             `${apiRoot}/folder/${this.parentId}/download`;
 
         this.$el.html(DownloadViewTemplate({
             parent: this.parentId,

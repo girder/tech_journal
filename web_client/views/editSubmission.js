@@ -19,7 +19,7 @@ var editView = View.extend({
             event.preventDefault();
             restRequest({
                 type: 'PUT',
-                path: 'folder/' + this.parentId,
+                path: `folder/${this.parentId}`,
                 data: {
                     parentType: 'folder',
                     name: this.$('#titleEntry').val().trim(),
@@ -31,7 +31,7 @@ var editView = View.extend({
                     this._generateNewRevision();
                 } else {
                     this._updateSubmission(this.itemId);
-                    router.navigate('#plugins/journal/submission/' + this.itemId + '/upload/edit',
+                    router.navigate(`#plugins/journal/submission/${this.itemId}/upload/edit`,
                     {trigger: true});
                 }
             }, this));
@@ -60,13 +60,13 @@ var editView = View.extend({
         this.itemId = subResp;
         restRequest({
             type: 'GET',
-            path: 'journal/' + this.itemId + '/details'
+            path: `journal/${this.itemId}/details`
         }).done(_.bind(function (resp) {
             this.parentId = resp[1]._id;
             this.$el.html(SubmitViewTemplate({info: {info: resp[0], 'parInfo': resp[1], 'NR': this.newRevision}}));
             new MenuBarView({ el: this.$el, parentView: this, searchBoxVal: '' });
-            $('.subPermission[value=' + resp[0]['meta']['permission'] + ']').prop('checked', 'checked');
-            $('.CLAPermission[value=' + resp[0]['meta']['CorpCLA'] + ']').prop('checked', 'checked');
+            $(`.subPermission[value=${resp[0]['meta']['permission']}]`).prop('checked', 'checked');
+            $(`.CLAPermission[value=${resp[0]['meta']['CorpCLA']}]`).prop('checked', 'checked');
             return this;
         }, this));  // End getting of OTJ Collection value setting
     },
@@ -99,7 +99,7 @@ var editView = View.extend({
         // if new submission, generate first "revision" folder inside of generated folder
         restRequest({
             type: 'GET',
-            path: 'folder/' + this.parentId + '/details'
+            path: `folder/${this.parentId}/details`
         }).done(_.bind(function (resp) {
             restRequest({
                 type: 'POST',
@@ -121,7 +121,7 @@ var editView = View.extend({
     _updateSubmission: function (itemID) {
         restRequest({
             type: 'PUT',
-            path: 'journal/' + itemID + '/metadata',
+            path: `journal/${itemID}/metadata`,
             contentType: 'application/json',
             data: JSON.stringify(this._captureSubmissionInformation()),
             error: null

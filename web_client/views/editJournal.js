@@ -57,7 +57,7 @@ var EditJournalView = View.extend({
     _getCurrentInfo: function (journalData) {
         restRequest({
             type: 'GET',
-            path: 'collection/' + journalData.id
+            path: `collection/${journalData.id}`
         }).done(_.bind(function (jrnInfo) {
             this.render({info: jrnInfo});
         }, this));
