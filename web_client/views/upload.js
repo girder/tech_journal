@@ -163,13 +163,18 @@ var uploadView = View.extend({
     },
 
     submitCheck: function () {
-        this.$('input[type=submit]').attr('disabled', !this.$('#acceptRights').is(':checked') ||
-          !this.$('#acceptLicense').is(':checked') ||
-          (this.$('#acceptAttributionPolicy').is(':visible') &&
-          !this.$('#acceptAttributionPolicy').is(':checked')) ||
-          (this.$('#otherLicenseInput').is(':visible') &&
-          !this.$('#otherLicenseInput').val())
-      );
+        this.$('input[type=submit]').attr('disabled',
+            !this.$('#acceptRights').is(':checked') ||
+            !this.$('#acceptLicense').is(':checked') ||
+            (
+                this.$('#acceptAttributionPolicy').is(':visible') &&
+                !this.$('#acceptAttributionPolicy').is(':checked')
+            ) ||
+            (
+                this.$('#otherLicenseInput').is(':visible') &&
+                !this.$('#otherLicenseInput').val()
+            )
+        );
     },
     _uploadFiles: function (data) {
         // taken from HierarchyWidget.js
@@ -237,8 +242,7 @@ var uploadView = View.extend({
             contentType: 'application/json',
             data: JSON.stringify(subData)
         }).done(_.bind(function (respMD) {
-            router.navigate(`#plugins/journal/view/${this.parentId}`,
-                                      {trigger: true});
+            router.navigate(`#plugins/journal/view/${this.parentId}`, {trigger: true});
         }, this));
     },
     _appendData: function (subData) {
@@ -254,8 +258,7 @@ var uploadView = View.extend({
                 path: `journal/${this.parentId}/finalize`,
                 contentType: 'application/json'
             }).done(_.bind(function (respMD) {
-                router.navigate(`#plugins/journal/view/${this.parentId}`,
-                                              {trigger: true});
+                router.navigate(`#plugins/journal/view/${this.parentId}`, {trigger: true});
             }, this));
         }, this));
     }

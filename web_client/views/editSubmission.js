@@ -32,7 +32,7 @@ var editView = View.extend({
                 } else {
                     this._updateSubmission(this.itemId);
                     router.navigate(`#plugins/journal/submission/${this.itemId}/upload/edit`,
-                    {trigger: true});
+                        {trigger: true});
                 }
             }, this));
         },
@@ -68,7 +68,7 @@ var editView = View.extend({
             $(`.subPermission[value=${resp[0]['meta']['permission']}]`).prop('checked', 'checked');
             $(`.CLAPermission[value=${resp[0]['meta']['CorpCLA']}]`).prop('checked', 'checked');
             return this;
-        }, this));  // End getting of OTJ Collection value setting
+        }, this)); // End getting of OTJ Collection value setting
     },
     _captureSubmissionInformation() {
         var authors = [];
@@ -113,8 +113,7 @@ var editView = View.extend({
                 error: null
             }).done(_.bind(function (resp) {
                 this._updateSubmission(resp._id);
-                router.navigate(targetUrl + resp._id + '/upload/revision',
-                                          {trigger: true});
+                router.navigate(`${targetUrl}${resp._id}/upload/revision`, {trigger: true});
             }, this));
         }, this));
     },

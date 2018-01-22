@@ -71,7 +71,7 @@ var indexView = View.extend({
             } else {
                 this.getSubmissions(this.collectionID, this.querystring, 0);
             }
-        }, this));  // End getting of OTJ Collection value setting
+        }, this)); // End getting of OTJ Collection value setting
     },
     render: function (subData, searchVal, collection) {
         var pendingSubs = 0;

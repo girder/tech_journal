@@ -13,11 +13,11 @@ var ManageHelpView = View.extend({
     events: {
         'submit #mainForm': function (event) {
             event.preventDefault();
-        // save Content to show on other pages
+            // save Content to show on other pages
             this._saveHelp([
-        { key: 'main', value: this.HelpEditor.val() },
-        { key: 'about', value: this.AboutEditor.val() },
-        { key: 'faq', value: this.FAQEditor.val() }
+                { key: 'main', value: this.HelpEditor.val() },
+                { key: 'about', value: this.AboutEditor.val() },
+                { key: 'faq', value: this.FAQEditor.val() }
             ]);
         }
     },
@@ -57,7 +57,7 @@ var ManageHelpView = View.extend({
             enableUploads: false
         });
 
-            // Prepopulate the pages
+        // Prepopulate the pages
         this.HelpEditor.text = existingPages['main'];
         this.HelpEditor.setElement(this.$('#mainPage')).render();
         this.FAQEditor.text = existingPages['faq'];

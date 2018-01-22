@@ -62,7 +62,7 @@ var SubmitView = View.extend({
                 }).done(_.bind(function (jrnResp) {
                     this.render(jrnResp, 1);
                 }, this));
-            }, this));  // End getting of OTJ Collection value setting
+            }, this)); // End getting of OTJ Collection value setting
         } else {
             this.newRevision = id.NR;
             this.approval = id.approval;
@@ -94,7 +94,7 @@ var SubmitView = View.extend({
                 }
                 this.$('#pageContent').html(SubmitViewTemplate({ info: { info: {}, parInfo: {} } }));
                 return this;
-            }, this));  // End getting of OTJ Collection value setting
+            }, this)); // End getting of OTJ Collection value setting
         }
     },
     _createSubmission: function (inData) {
@@ -173,8 +173,7 @@ var SubmitView = View.extend({
                 data: JSON.stringify(subData),
                 error: null
             }).done(_.bind(function (respMD) {
-                router.navigate(`${targetUrl}${resp._id}/upload/new`,
-                                      {trigger: true});
+                router.navigate(`${targetUrl}${resp._id}/upload/new`, {trigger: true});
             }, this));
         }, this));
     }

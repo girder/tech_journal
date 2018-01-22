@@ -27,7 +27,7 @@ var manageJournalView = View.extend({
                     this.$('#journalListing').html(ManageJournalsEntryTemplate({ issueInfo: allIssues, parentInfo: resp }));
                 }, this));
             }
-        }, this));  // End getting of OTJ Collection value setting
+        }, this)); // End getting of OTJ Collection value setting
     },
     render: function () {
         this.$el.html(ManageJournalsTemplate());

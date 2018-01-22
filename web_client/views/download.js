@@ -33,8 +33,8 @@ var downloadView = View.extend({
     render: function (paperItem) {
         var paperDownloadUrl =
             paperItem && paperItem._id
-            ? `${apiRoot}/item/${paperItem._id}/download`
-            : null;
+                ? `${apiRoot}/item/${paperItem._id}/download`
+                : null;
         var parentDownloadUrl =
              `${apiRoot}/folder/${this.parentId}/download`;
 

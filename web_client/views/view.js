@@ -12,8 +12,7 @@ var submissionView = View.extend({
 
     events: {
         'click #downloadLink': function (event) {
-            router.navigate(`#plugins/journal/view/${this.displayId}/download`,
-                                       {trigger: true});
+            router.navigate(`#plugins/journal/view/${this.displayId}/download`, {trigger: true});
         },
         'click #addCommentButton': function (event) {
             event.preventDefault();
@@ -43,7 +42,7 @@ var submissionView = View.extend({
 
         'change #revisionSelector': function (event) {
             router.navigate(`#plugins/journal/view/${this.$('.revisionOption:selected').val()}`,
-                                       {trigger: true});
+                {trigger: true});
         }
     },
     initialize: function (subId) {
@@ -54,7 +53,7 @@ var submissionView = View.extend({
             path: `journal/${this.displayId}/details`
         }).done(_.bind(function (totalDetails) {
             this.render(totalDetails);
-        }, this));  // End getting of parentData
+        }, this)); // End getting of parentData
     },
     render: function (totalDetails) {
         totalDetails[1].meta.comments.sort(function (a, b) {
