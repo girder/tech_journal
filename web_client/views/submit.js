@@ -1,5 +1,3 @@
-import _ from 'underscore';
-
 import View from 'girder/views/View';
 import router from 'girder/router';
 import events from 'girder/events';
@@ -55,14 +53,14 @@ var SubmitView = View.extend({
                         'tech_journal.default_journal'
                     ])
                 }
-            }).done(_.bind(function (resp) {
+            }).done((resp) => {
                 restRequest({
                     type: 'GET',
                     path: `journal/${resp['tech_journal.default_journal']}/openissues`
-                }).done(_.bind(function (jrnResp) {
+                }).done((jrnResp) => {
                     this.render(jrnResp, 1);
-                }, this));
-            }, this)); // End getting of OTJ Collection value setting
+                });
+            }); // End getting of OTJ Collection value setting
         } else {
             this.newRevision = id.NR;
             this.approval = id.approval;
@@ -82,7 +80,7 @@ var SubmitView = View.extend({
             restRequest({
                 type: 'GET',
                 path: `folder/${this.itemId}`
-            }).done(_.bind(function (resp) {
+            }).done((resp) => {
                 if (this.newSub) {
                     issueInfo = {};
                 } else {
@@ -94,7 +92,7 @@ var SubmitView = View.extend({
                 }
                 this.$('#pageContent').html(SubmitViewTemplate({ info: { info: {}, parInfo: {} } }));
                 return this;
-            }, this)); // End getting of OTJ Collection value setting
+            }); // End getting of OTJ Collection value setting
         }
     },
     _createSubmission: function (inData) {
@@ -149,9 +147,9 @@ var SubmitView = View.extend({
                 description: inData.subDescription
             },
             error: null
-        }).done(_.bind(function (resp) {
+        }).done((resp) => {
             this._findUploadTarget(resp._id, subData);
-        }, this));
+        });
     },
     _findUploadTarget: function (parentId, subData) {
         var targetUrl = '#plugins/journal/submission/';
@@ -165,17 +163,17 @@ var SubmitView = View.extend({
                 name: 'Revision 1'
             },
             error: null
-        }).done(_.bind(function (resp) {
+        }).done((resp) => {
             restRequest({
                 type: 'PUT',
                 path: `journal/${resp._id}/metadata`,
                 contentType: 'application/json',
                 data: JSON.stringify(subData),
                 error: null
-            }).done(_.bind(function (respMD) {
+            }).done((respMD) => {
                 router.navigate(`${targetUrl}${resp._id}/upload/new`, {trigger: true});
-            }, this));
-        }, this));
+            });
+        });
     }
 });
 

@@ -1,5 +1,3 @@
-import _ from 'underscore';
-
 import View from 'girder/views/View';
 import { restRequest } from 'girder/rest';
 
@@ -23,9 +21,9 @@ var indexView = View.extend({
             restRequest({
                 type: 'GET',
                 path: `journal/${this.collectionID}/search?text=${searchText}`
-            }).done(_.bind(function (resp) {
+            }).done((resp) => {
                 this.render(resp, searchText, this.collectionID);
-            }, this));
+            });
         },
         'click #clear_button': function (event) {
             // search the available submissions for the text entered in the box
@@ -39,10 +37,10 @@ var indexView = View.extend({
             restRequest({
                 type: 'GET',
                 path: `journal/${this.defaultJournal}/submissions?strtIndex=0&filterID=${$(event.currentTarget.parentNode).attr('key')}`
-            }).done(_.bind(function (jrnResp) {
+            }).done((jrnResp) => {
                 // Only update the search results, leaving the menu bar and selected issue intact.
                 this.$('.searchResults').html(IndexEntryViewTemplate({info: {'submissions': jrnResp}}));
-            }, this));
+            });
         },
         'click #showMoreResults': function (event) {
             this.getSubmissions(this.collectionID, this.querystring, $('.SearchResultEntry').length);
@@ -57,7 +55,7 @@ var indexView = View.extend({
                     'tech_journal.default_journal'
                 ])
             }
-        }).done(_.bind(function (resp) {
+        }).done((resp) => {
             this.defaultJournal = resp['tech_journal.default_journal'];
             this.collectionID = this.defaultJournal;
             this.querystring = '*';
@@ -71,7 +69,7 @@ var indexView = View.extend({
             } else {
                 this.getSubmissions(this.collectionID, this.querystring, 0);
             }
-        }, this)); // End getting of OTJ Collection value setting
+        }); // End getting of OTJ Collection value setting
     },
     render: function (subData, searchVal, collection) {
         var pendingSubs = 0;
@@ -81,14 +79,14 @@ var indexView = View.extend({
         restRequest({
             type: 'GET',
             path: `journal/${collection}/issues`
-        }).done(_.bind(function (jrnResp) {
+        }).done((jrnResp) => {
             this.$el.html(IndexViewTemplate({info: { 'issues': jrnResp }}));
             this.$('.searchResults').html(this.$('.searchResults').html() + IndexEntryViewTemplate({info: {'submissions': subData}}));
             new MenuBarView({ el: this.$el,
                 parentView: this,
                 searchBoxVal: searchVal,
                 pendingSubNum: pendingSubs });
-        }, this));
+        });
 
         return this;
     },
@@ -97,9 +95,9 @@ var indexView = View.extend({
         restRequest({
             type: 'GET',
             path: `journal/${collection}/search?query={${queryString}}`
-        }).done(_.bind(function (jrnResp) {
+        }).done((jrnResp) => {
             this.render(jrnResp, 'Search...', collection);
-        }, this));
+        });
     },
     getSubmissions: function (collection, queryString, startIndex) {
         restRequest({
@@ -108,13 +106,13 @@ var indexView = View.extend({
             params: {
                 filterID: '*'
             }
-        }).done(_.bind(function (jrnResp) {
+        }).done((jrnResp) => {
             if (startIndex === 0) {
                 this.render(jrnResp, 'Search...', collection);
             } else {
                 this.$('.searchResults').html(this.$('.searchResults').html() + IndexEntryViewTemplate({info: {'submissions': jrnResp}}));
             }
-        }, this));
+        });
     }
 });
 

@@ -1,5 +1,3 @@
-import _ from 'underscore';
-
 import View from 'girder/views/View';
 import { restRequest, apiRoot } from 'girder/rest';
 
@@ -15,20 +13,20 @@ var downloadView = View.extend({
         restRequest({
             type: 'GET',
             path: `folder/${this.parentId}`
-        }).done(_.bind(function (resp) {
+        }).done((resp) => {
             this.parent = resp;
             restRequest({
                 type: 'GET',
                 path: `item?folderId=${this.parentId}`
-            }).done(_.bind(function (itemResp) {
+            }).done((itemResp) => {
                 for (var index in itemResp) {
                     if (itemResp[index].meta.type === 'Paper') {
                         this.paperItem = itemResp[index];
                     }
                 }
                 this.render(this.paperItem);
-            }, this));
-        }, this));
+            });
+        });
     },
     render: function (paperItem) {
         var paperDownloadUrl =

@@ -1,5 +1,3 @@
-import _ from 'underscore';
-
 import View from 'girder/views/View';
 import { getCurrentUser } from 'girder/auth';
 import { restRequest } from 'girder/rest';
@@ -13,9 +11,9 @@ var MenuBarView = View.extend({
             restRequest({
                 type: 'DELETE',
                 path: 'user/authentication'
-            }).done(_.bind(function (resp) {
+            }).done((resp) => {
                 window.location.reload();
-            }));
+            });
         },
         'mouseenter #profileLink': function (event) {
             this.$('#adminOptionsList').attr('style', 'display: none;');

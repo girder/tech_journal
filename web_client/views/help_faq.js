@@ -1,5 +1,3 @@
-import _ from 'underscore';
-
 import View from 'girder/views/View';
 import { restRequest } from 'girder/rest';
 import { renderMarkdown } from 'girder/misc';
@@ -18,9 +16,9 @@ var FAQView = View.extend({
             data: {
                 list: JSON.stringify(['faq'])
             }
-        }).done(_.bind(function (resp) {
+        }).done((resp) => {
             this.render(resp.faq);
-        }, this));
+        });
     },
     render: function (faqText) {
         this.$el.html(FAQViewTemplate({info: faqText, renderMarkdown: renderMarkdown}));

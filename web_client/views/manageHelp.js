@@ -1,5 +1,3 @@
-import _ from 'underscore';
-
 import View from 'girder/views/View';
 import events from 'girder/events';
 import MarkdownWidget from 'girder/views/widgets/MarkdownWidget';
@@ -28,9 +26,9 @@ var ManageHelpView = View.extend({
             data: {
                 list: JSON.stringify(['main', 'about', 'faq'])
             }
-        }).done(_.bind(function (resp) {
+        }).done((resp) => {
             this.render(resp);
-        }, this));
+        });
     },
     render: function (existingPages) {
         this.$el.html(manageHelpViewTemplate());
@@ -74,14 +72,14 @@ var ManageHelpView = View.extend({
                 list: JSON.stringify(inData)
             },
             error: null
-        }).done(_.bind(function (resp) {
+        }).done((resp) => {
             events.trigger('g:alert', {
                 icon: 'ok',
                 text: 'Help Pages saved.',
                 type: 'success',
                 timeout: 4000
             });
-        }, this));
+        });
     }
 });
 

@@ -1,5 +1,3 @@
-import _ from 'underscore';
-
 import View from 'girder/views/View';
 import router from 'girder/router';
 import { getCurrentUser } from 'girder/auth';
@@ -51,9 +49,9 @@ var submissionView = View.extend({
         restRequest({
             type: 'GET',
             path: `journal/${this.displayId}/details`
-        }).done(_.bind(function (totalDetails) {
+        }).done((totalDetails) => {
             this.render(totalDetails);
-        }, this)); // End getting of parentData
+        }); // End getting of parentData
     },
     render: function (totalDetails) {
         totalDetails[1].meta.comments.sort(function (a, b) {
@@ -75,9 +73,9 @@ var submissionView = View.extend({
             contentType: 'application/json',
             data: JSON.stringify({'comments': this.currentComments}),
             error: null
-        }).done(_.bind(function (resp) {
+        }).done((resp) => {
             window.location.reload();
-        }, this));
+        });
     }
 });
 

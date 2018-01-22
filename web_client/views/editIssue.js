@@ -1,5 +1,3 @@
-import _ from 'underscore';
-
 import View from 'girder/views/View';
 import router from 'girder/router';
 import { restRequest } from 'girder/rest';
@@ -56,7 +54,7 @@ var EditIssueView = View.extend({
                 name: issueData.issueName,
                 description: issueData.issueDescription
             }
-        }).done(_.bind(function (jrnResp) {
+        }).done((jrnResp) => {
             var paperDue = new Date(issueData.paperDue);
             var decision = new Date(issueData.decision);
             var publication = new Date(issueData.publication);
@@ -69,9 +67,9 @@ var EditIssueView = View.extend({
                 contentType: 'application/json',
                 url: `folder/${jrnResp._id}/metadata`,
                 data: JSON.stringify(issueDateData)
-            }).done(_.bind(function (metaResp) {
-            }, this));
-        }, this));
+            }).done((metaResp) => {
+            });
+        });
     },
     _createIssue: function (issueData) {
         restRequest({
@@ -83,7 +81,7 @@ var EditIssueView = View.extend({
                 name: issueData.issueName,
                 description: issueData.issueDescription
             }
-        }).done(_.bind(function (jrnResp) {
+        }).done((jrnResp) => {
             var paperDue = new Date(issueData.paperDue);
             var decision = new Date(issueData.decision);
             var publication = new Date(issueData.publication);
@@ -96,16 +94,16 @@ var EditIssueView = View.extend({
                 contentType: 'application/json',
                 url: `folder/${jrnResp._id}/metadata`,
                 data: JSON.stringify(issueDateData)
-            }).done(_.bind(function (metaResp) {
+            }).done((metaResp) => {
 
-            }, this));
-        }, this));
+            });
+        });
     },
     _getCurrentInfo: function (journalData) {
         restRequest({
             type: 'GET',
             url: `folder/${journalData.id}`
-        }).done(_.bind(function (jrnInfo) {
+        }).done((jrnInfo) => {
             var paperDueTmp = new Date(jrnInfo.meta.paperDue);
             var publicationTmp = new Date(jrnInfo.meta.publication);
             var decisionTmp = new Date(jrnInfo.meta.decision);
@@ -113,7 +111,7 @@ var EditIssueView = View.extend({
             jrnInfo.meta.publication = publicationTmp.toJSON().slice(0, 10);
             jrnInfo.meta.decision = decisionTmp.toJSON().slice(0, 10);
             this.render(jrnInfo);
-        }, this));
+        });
     }
 });
 

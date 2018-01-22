@@ -1,5 +1,3 @@
-import _ from 'underscore';
-
 import View from 'girder/views/View';
 import router from 'girder/router';
 import { restRequest } from 'girder/rest';
@@ -26,7 +24,7 @@ var editView = View.extend({
                     description: this.$('#abstractEntry').val().trim()
                 },
                 error: null
-            }).done(_.bind(function (resp) {
+            }).done((resp) => {
                 if (this.newRevision) {
                     this._generateNewRevision();
                 } else {
@@ -34,7 +32,7 @@ var editView = View.extend({
                     router.navigate(`#plugins/journal/submission/${this.itemId}/upload/edit`,
                         {trigger: true});
                 }
-            }, this));
+            });
         },
         'click #authorAdd': function (event) {
             event.preventDefault();
@@ -61,14 +59,14 @@ var editView = View.extend({
         restRequest({
             type: 'GET',
             path: `journal/${this.itemId}/details`
-        }).done(_.bind(function (resp) {
+        }).done((resp) => {
             this.parentId = resp[1]._id;
             this.$el.html(SubmitViewTemplate({info: {info: resp[0], 'parInfo': resp[1], 'NR': this.newRevision}}));
             new MenuBarView({ el: this.$el, parentView: this, searchBoxVal: '' });
             $(`.subPermission[value=${resp[0].meta.permission}]`).prop('checked', 'checked');
             $(`.CLAPermission[value=${resp[0].meta.CorpCLA}]`).prop('checked', 'checked');
             return this;
-        }, this)); // End getting of OTJ Collection value setting
+        }); // End getting of OTJ Collection value setting
     },
     _captureSubmissionInformation() {
         var authors = [];
@@ -100,7 +98,7 @@ var editView = View.extend({
         restRequest({
             type: 'GET',
             path: `folder/${this.parentId}/details`
-        }).done(_.bind(function (resp) {
+        }).done((resp) => {
             restRequest({
                 type: 'POST',
                 path: 'folder',
@@ -111,11 +109,11 @@ var editView = View.extend({
                     description: this.$('#revisionEntry').val().trim()
                 },
                 error: null
-            }).done(_.bind(function (resp) {
+            }).done((resp) => {
                 this._updateSubmission(resp._id);
                 router.navigate(`${targetUrl}${resp._id}/upload/revision`, {trigger: true});
-            }, this));
-        }, this));
+            });
+        });
     },
     _updateSubmission: function (itemID) {
         restRequest({
@@ -124,8 +122,8 @@ var editView = View.extend({
             contentType: 'application/json',
             data: JSON.stringify(this._captureSubmissionInformation()),
             error: null
-        }).done(_.bind(function (respMD) {
-        }, this));
+        }).done((respMD) => {
+        });
     }
 });
 

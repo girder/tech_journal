@@ -1,5 +1,3 @@
-import _ from 'underscore';
-
 import View from 'girder/views/View';
 import router from 'girder/router';
 import { restRequest } from 'girder/rest';
@@ -51,16 +49,16 @@ var EditJournalView = View.extend({
                 description: journalData.issueDescription,
                 public: publicJournal
             }
-        }).done(_.bind(function (jrnResp) {
-        }, this));
+        }).done((jrnResp) => {
+        });
     },
     _getCurrentInfo: function (journalData) {
         restRequest({
             type: 'GET',
             path: `collection/${journalData.id}`
-        }).done(_.bind(function (jrnInfo) {
+        }).done((jrnInfo) => {
             this.render({info: jrnInfo});
-        }, this));
+        });
     }
 });
 
