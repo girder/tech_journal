@@ -1,0 +1,6 @@
+comment:
+  layout: "header, diff, files, footer"
+  require_changes: true
+coverage:
+  status:
+    patch: false
