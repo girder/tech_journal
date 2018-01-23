@@ -15,7 +15,8 @@ var EditIssueView = View.extend({
                     issueDescription: this.$('#issueDescription')[0].value,
                     'paperDue': $('.datepicker')[0].value,
                     'decision': $('.datepicker')[1].value,
-                    'publicatioN': $('.datepicker')[2].value
+                    'publication': $('.datepicker')[2].value,
+                    '__issue__': true
                 };
                 if (this.update) {
                     this._updateIssue(values);
@@ -63,7 +64,8 @@ var EditIssueView = View.extend({
             var publication = new Date(issueData.publication);
             var issueDateData = {'paperDue': paperDue,
                 'decision': decision,
-                'publication': publication
+                'publication': publication,
+                '__issue__': true
             };
             restRequest({
                 type: 'PUT',
@@ -90,7 +92,8 @@ var EditIssueView = View.extend({
             var publication = new Date(issueData.publication);
             var issueDateData = {'paperDue': paperDue,
                 'decision': decision,
-                'publication': publication
+                'publication': publication,
+                '__issue__': true
             };
             restRequest({
                 type: 'PUT',

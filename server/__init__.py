@@ -178,7 +178,8 @@ class TechJournal(Resource):
     def getFilteredSubmissions(self, collection, params):
         user = self.getCurrentUser()
         if 'text' in params:
-            totalData = list(self.model('folder').textSearch(params['text'], user=user))
+            filters = {'$and': [{ 'meta.__issue__': {'$ne': 'true'}}]}
+            totalData = list(self.model('folder').textSearch(params['text'], user=user, filters=filters))
             for submission in totalData:
                 submissionInfo = list(self.model('folder')
                                           .childFolders(parentType='folder',
