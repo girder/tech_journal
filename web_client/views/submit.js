@@ -72,7 +72,10 @@ var SubmitView = View.extend({
     render: function (subResp, state) {
         this.$el.html(SelectIssueTemplate({info: subResp}));
         var issueInfo;
-        new MenuBarView({ el: this.$el, parentView: this });
+        new MenuBarView({ // eslint-disable-line no-new
+            el: this.$el,
+            parentView: this
+        });
         if (state === 1) {
             return this;
         } else {

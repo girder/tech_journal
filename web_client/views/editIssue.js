@@ -43,7 +43,10 @@ var EditIssueView = View.extend({
     },
     render: function (parentId) {
         this.$el.html(editIssueTemplate({info: parentId}));
-        new MenuBarView({ el: this.$el, parentView: this });
+        new MenuBarView({ // eslint-disable-line no-new
+            el: this.$el,
+            parentView: this
+        });
         return this;
     },
     _updateIssue: function (issueData) {

@@ -29,7 +29,10 @@ var manageJournalView = View.extend({
     },
     render: function () {
         this.$el.html(ManageJournalsTemplate());
-        new MenuBarView({ el: this.$el, parentView: this });
+        new MenuBarView({ // eslint-disable-line no-new
+            el: this.$el,
+            parentView: this
+        });
         return this;
     }
 });

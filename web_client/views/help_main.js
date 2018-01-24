@@ -22,7 +22,11 @@ var HelpView = View.extend({
     },
     render: function (helpText) {
         this.$el.html(HelpViewTemplate({info: helpText, renderMarkdown: renderMarkdown}));
-        new MenuBarView({ el: this.$el, parentView: this, searchBoxVal: 'Search...' });
+        new MenuBarView({ // eslint-disable-line no-new
+            el: this.$el,
+            parentView: this,
+            searchBoxVal: 'Search...'
+        });
         return this;
     }
 });

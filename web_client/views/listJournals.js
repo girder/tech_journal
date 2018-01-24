@@ -16,7 +16,11 @@ var listView = View.extend({
             path: 'journal'
         }).done((jrnResp) => {
             this.$el.html(JournalListTemplate({ info: { 'journals': jrnResp } }));
-            new MenuBarView({ el: this.$el, parentView: this, searchBoxVal: searchVal });
+            new MenuBarView({ // eslint-disable-line no-new
+                el: this.$el,
+                parentView: this,
+                searchBoxVal: searchVal
+            });
         });
 
         return this;

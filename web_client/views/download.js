@@ -41,7 +41,10 @@ var downloadView = View.extend({
             parentDownloadUrl: parentDownloadUrl,
             paperDownloadUrl: paperDownloadUrl
         }));
-        new MenuBarView({ el: this.$el, parentView: this });
+        new MenuBarView({ // eslint-disable-line no-new
+            el: this.$el,
+            parentView: this
+        });
         return this;
     }
 });

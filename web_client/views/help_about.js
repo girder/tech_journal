@@ -22,7 +22,11 @@ var AboutView = View.extend({
     },
     render: function (aboutText) {
         this.$el.html(AboutViewTemplate({info: aboutText, renderMarkdown: renderMarkdown}));
-        new MenuBarView({ el: this.$el, parentView: this, searchBoxVal: 'Search...' });
+        new MenuBarView({ // eslint-disable-line no-new
+            el: this.$el,
+            parentView: this,
+            searchBoxVal: 'Search...'
+        });
         return this;
     }
 });

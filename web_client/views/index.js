@@ -82,10 +82,12 @@ var indexView = View.extend({
         }).done((jrnResp) => {
             this.$el.html(IndexViewTemplate({info: { 'issues': jrnResp }}));
             this.$('.searchResults').html(this.$('.searchResults').html() + IndexEntryViewTemplate({info: {'submissions': subData}}));
-            new MenuBarView({ el: this.$el,
+            new MenuBarView({ // eslint-disable-line no-new
+                el: this.$el,
                 parentView: this,
                 searchBoxVal: searchVal,
-                pendingSubNum: pendingSubs });
+                pendingSubNum: pendingSubs
+            });
         });
 
         return this;

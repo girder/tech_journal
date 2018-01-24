@@ -27,7 +27,10 @@ var EditJournalView = View.extend({
     },
     render: function (journalInfo) {
         this.$el.html(editJournalTemplate(journalInfo));
-        new MenuBarView({ el: this.$el, parentView: this });
+        new MenuBarView({ // eslint-disable-line no-new
+            el: this.$el,
+            parentView: this
+        });
         return this;
     },
     _createJournal: function (journalData) {

@@ -62,7 +62,10 @@ var submissionView = View.extend({
         this.currentComments = totalDetails[1].meta.comments;
         this.parentId = totalDetails[1]._id;
         this.$el.html(SubmissionViewTemplate({ user: this.currentUser, info: { 'revision': totalDetails[0], 'parent': totalDetails[1], 'otherRevisions': totalDetails[2] } }));
-        new MenuBarView({ el: this.$el, parentView: this });
+        new MenuBarView({ // eslint-disable-line no-new
+            el: this.$el,
+            parentView: this
+        });
         this.$(`.revisionOption[value=${totalDetails[0]._id}]`).prop('selected', true);
         return this;
     },

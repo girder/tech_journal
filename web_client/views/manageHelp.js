@@ -32,7 +32,11 @@ var ManageHelpView = View.extend({
     },
     render: function (existingPages) {
         this.$el.html(manageHelpViewTemplate());
-        new MenuBarView({ el: this.$el, parentView: this, searchBoxVal: 'Search...' });
+        new MenuBarView({ // eslint-disable-line no-new
+            el: this.$el,
+            parentView: this,
+            searchBoxVal: 'Search...'
+        });
         this.HelpEditor = new MarkdownWidget({
             prefix: 'homepage',
             placeholder: 'Enter Markdown for the Help Page',
