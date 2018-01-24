@@ -3,7 +3,7 @@ import { restRequest } from 'girder/rest';
 import { renderMarkdown } from 'girder/misc';
 
 import MenuBarView from './menuBar.js';
-import FAQViewTemplate from '../templates/journal_help_faq.jade';
+import FAQViewTemplate from '../templates/journal_help_faq.pug';
 
 var FAQView = View.extend({
 

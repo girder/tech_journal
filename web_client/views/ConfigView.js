@@ -3,7 +3,7 @@ import View from 'girder/views/View';
 import events from 'girder/events';
 import { restRequest } from 'girder/rest';
 
-import ConfigViewTemplate from '../templates/journal_configView.jade';
+import ConfigViewTemplate from '../templates/journal_configView.pug';
 
 var configView = View.extend({
     events: {

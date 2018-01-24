@@ -5,8 +5,8 @@ import { getCurrentUser } from 'girder/auth';
 import { restRequest } from 'girder/rest';
 
 import MenuBarView from './menuBar.js';
-import SubmitViewTemplate from '../templates/journal_submit.jade';
-import SelectIssueTemplate from '../templates/journal_select_issue.jade';
+import SubmitViewTemplate from '../templates/journal_submit.pug';
+import SelectIssueTemplate from '../templates/journal_select_issue.pug';
 import SubmitAuthorEntryTemplate from '../templates/journal_author_entry.pug';
 import SubmitTagEntryTemplate from '../templates/journal_tag_entry.pug';
 

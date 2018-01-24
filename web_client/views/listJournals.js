@@ -2,7 +2,7 @@ import View from 'girder/views/View';
 import { restRequest } from 'girder/rest';
 
 import MenuBarView from './menuBar.js';
-import JournalListTemplate from '../templates/journal_journal_list.jade';
+import JournalListTemplate from '../templates/journal_journal_list.pug';
 
 var listView = View.extend({
     events: {

@@ -3,7 +3,7 @@ import { restRequest } from 'girder/rest';
 import { renderMarkdown } from 'girder/misc';
 
 import MenuBarView from './menuBar.js';
-import HelpViewTemplate from '../templates/journal_help.jade';
+import HelpViewTemplate from '../templates/journal_help.pug';
 
 var HelpView = View.extend({
 

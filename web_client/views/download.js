@@ -2,7 +2,7 @@ import View from 'girder/views/View';
 import { restRequest, apiRoot } from 'girder/rest';
 
 import MenuBarView from './menuBar.js';
-import DownloadViewTemplate from '../templates/journal_download.jade';
+import DownloadViewTemplate from '../templates/journal_download.pug';
 
 var downloadView = View.extend({
     events: {
