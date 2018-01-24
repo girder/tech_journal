@@ -2,10 +2,8 @@ import router from 'girder/router';
 import events from 'girder/events';
 import { getCurrentUser } from 'girder/auth';
 import { Layout } from 'girder/constants';
-import { exposePluginConfig } from 'girder/utilities/PluginUtils';
 
 // Import views from plugin
-import configView from './views/ConfigView';
 import indexView from './views/index';
 import submitView from './views/submit';
 import editView from './views/editSubmission';
@@ -22,13 +20,6 @@ import HelpView from './views/help_main';
 import FAQView from './views/help_faq';
 import AboutView from './views/help_about';
 import FeedBackView from './views/feedback';
-
-exposePluginConfig('tech_journal', 'plugins/journal/config');
-
-// Journal Configuration page
-router.route('plugins/journal/config', 'journalConfig', function () {
-    testUserAccess(configView, {}, true, true);
-});
 
 // Main page of Journal
 router.route('plugins/journal', 'mainView', function (query) {
