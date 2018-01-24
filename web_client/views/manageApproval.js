@@ -1,5 +1,3 @@
-import _ from 'underscore';
-
 import View from 'girder/views/View';
 import { restRequest } from 'girder/rest';
 
@@ -20,14 +18,14 @@ var manageApprovalView = View.extend({
                     'technical_journal.default_journal'
                 ])
             }
-        }).done(_.bind(function (resp) {
+        }).done((resp) => {
             restRequest({
                 type: 'GET',
-                path: 'journal/' + resp['technical_journal.default_journal'] + '/submissions?filterID=*',
+                path: `journal/${resp['technical_journal.default_journal']}/submissions?filterID=*`,
                 params: {
                     filterID: '*'
                 }
-            }).done(_.bind(function (jrnResp) {
+            }).done((jrnResp) => {
                 var approvalSubs = [];
                 jrnResp.forEach(function (sub) {
                     if (sub.curation.status === 'REQUESTED') {
@@ -35,13 +33,18 @@ var manageApprovalView = View.extend({
                     }
                 });
                 this.render(approvalSubs);
-            }, this));
-        }, this));
+            });
+        });
     },
     render: function (subData) {
         this.$el.html(ApprovalViewTemplate({}));
         this.$('.SearchResults').html(IndexEntryViewTemplate({ info: { 'submissions': subData, approveLink: true } }));
-        new MenuBarView({ el: this.$el, parentView: this, searchBoxVal: '', appCount: 0 });
+        new MenuBarView({ // eslint-disable-line no-new
+            el: this.$el,
+            parentView: this,
+            searchBoxVal: '',
+            appCount: 0
+        });
         return this;
     }
 });

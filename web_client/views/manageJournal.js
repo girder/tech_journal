@@ -1,5 +1,3 @@
-import _ from 'underscore';
-
 import View from 'girder/views/View';
 import { restRequest } from 'girder/rest';
 
@@ -17,21 +15,24 @@ var manageJournalView = View.extend({
         restRequest({
             type: 'GET',
             path: 'journal'
-        }).done(_.bind(function (resp) {
+        }).done((resp) => {
             for (var index in resp) {
                 restRequest({
                     type: 'GET',
-                    path: 'journal/' + resp[index]._id + '/issues'
-                }).done(_.bind(function (jrnResp) {
+                    path: `journal/${resp[index]._id}/issues`
+                }).done((jrnResp) => {
                     allIssues = allIssues.concat(jrnResp);
                     this.$('#journalListing').html(ManageJournalsEntryTemplate({ issueInfo: allIssues, parentInfo: resp }));
-                }, this));
+                });
             }
-        }, this));  // End getting of OTJ Collection value setting
+        }); // End getting of OTJ Collection value setting
     },
     render: function () {
         this.$el.html(ManageJournalsTemplate());
-        new MenuBarView({ el: this.$el, parentView: this });
+        new MenuBarView({ // eslint-disable-line no-new
+            el: this.$el,
+            parentView: this
+        });
         return this;
     }
 });

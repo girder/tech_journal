@@ -1,5 +1,3 @@
-import _ from 'underscore';
-
 import View from 'girder/views/View';
 import events from 'girder/events';
 import MarkdownWidget from 'girder/views/widgets/MarkdownWidget';
@@ -13,11 +11,11 @@ var ManageHelpView = View.extend({
     events: {
         'submit #mainForm': function (event) {
             event.preventDefault();
-        // save Content to show on other pages
+            // save Content to show on other pages
             this._saveHelp([
-        { key: 'main', value: this.HelpEditor.val() },
-        { key: 'about', value: this.AboutEditor.val() },
-        { key: 'faq', value: this.FAQEditor.val() }
+                { key: 'main', value: this.HelpEditor.val() },
+                { key: 'about', value: this.AboutEditor.val() },
+                { key: 'faq', value: this.FAQEditor.val() }
             ]);
         }
     },
@@ -28,13 +26,17 @@ var ManageHelpView = View.extend({
             data: {
                 list: JSON.stringify(['main', 'about', 'faq'])
             }
-        }).done(_.bind(function (resp) {
+        }).done((resp) => {
             this.render(resp);
-        }, this));
+        });
     },
     render: function (existingPages) {
         this.$el.html(manageHelpViewTemplate());
-        new MenuBarView({ el: this.$el, parentView: this, searchBoxVal: 'Search...' });
+        new MenuBarView({ // eslint-disable-line no-new
+            el: this.$el,
+            parentView: this,
+            searchBoxVal: 'Search...'
+        });
         this.HelpEditor = new MarkdownWidget({
             prefix: 'homepage',
             placeholder: 'Enter Markdown for the Help Page',
@@ -57,12 +59,12 @@ var ManageHelpView = View.extend({
             enableUploads: false
         });
 
-            // Prepopulate the pages
-        this.HelpEditor.text = existingPages['main'];
+        // Prepopulate the pages
+        this.HelpEditor.text = existingPages.main;
         this.HelpEditor.setElement(this.$('#mainPage')).render();
-        this.FAQEditor.text = existingPages['faq'];
+        this.FAQEditor.text = existingPages.faq;
         this.FAQEditor.setElement(this.$('#faqPage')).render();
-        this.AboutEditor.text = existingPages['about'];
+        this.AboutEditor.text = existingPages.about;
         this.AboutEditor.setElement(this.$('#aboutPage')).render();
         return this;
     },
@@ -74,14 +76,14 @@ var ManageHelpView = View.extend({
                 list: JSON.stringify(inData)
             },
             error: null
-        }).done(_.bind(function (resp) {
+        }).done((resp) => {
             events.trigger('g:alert', {
                 icon: 'ok',
                 text: 'Help Pages saved.',
                 type: 'success',
                 timeout: 4000
             });
-        }, this));
+        });
     }
 });
 

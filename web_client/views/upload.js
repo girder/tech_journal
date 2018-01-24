@@ -1,5 +1,3 @@
-import _ from 'underscore';
-
 import View from 'girder/views/View';
 import router from 'girder/router';
 import FolderModel from 'girder/models/FolderModel';
@@ -53,14 +51,14 @@ var uploadView = View.extend({
             var subData = {'github': $('#github').val()};
             restRequest({
                 type: 'PUT',
-                path: 'folder/' + this.parentId + '/metadata',
+                path: `folder/${this.parentId}/metadata`,
                 contentType: 'application/json',
                 data: JSON.stringify(subData),
                 error: null
-            }).done(_.bind(function (respMD) {
-                this.$('#uploadTable').append(UploadEntryTemplate({info: {'name': subData['github'], '_id': 'github', 'meta': {'type': 6}}}));
+            }).done((respMD) => {
+                this.$('#uploadTable').append(UploadEntryTemplate({info: {'name': subData.github, '_id': 'github', 'meta': {'type': 6}}}));
                 this.$('#uploadQuestions').show();
-            }, this));
+            });
         },
 
         // Change function for updating the attribution policy value and submit status
@@ -137,39 +135,47 @@ var uploadView = View.extend({
         this.newRevision = subId.NR;
         restRequest({
             type: 'GET',
-            path: 'journal/' + this.parentId + '/details'
-        }).done(_.bind(function (resp) {
+            path: `journal/${this.parentId}/details`
+        }).done((resp) => {
             this.curRevision = resp[0];
             this.render();
             restRequest({
                 type: 'GET',
-                path: 'item?folderId=' + this.parentId
-            }).done(_.bind(function (itemResp) {
+                path: `item?folderId=${this.parentId}`
+            }).done((itemResp) => {
                 for (var index in itemResp) {
                     this.$('#uploadTable').append(UploadEntryTemplate({info: itemResp[index]}));
                     this.$('#uploadQuestions').show();
                     $('#acceptRights').prop('checked', 'checked');
                     $('#acceptLicense').prop('checked', 'checked');
-                    $('#licenseChoice').val(resp[0]['meta']['source-license']);
-                    $('#otherLicenseInput').val(resp[0]['meta']['source-license-text']);
+                    $('#licenseChoice').val(resp[0].meta['source-license']);
+                    $('#otherLicenseInput').val(resp[0].meta['source-license-text']);
                 }
-            }, this));
-        }, this));
+            });
+        });
     },
     render: function () {
         this.$el.html(UploadViewTemplate({user: getCurrentUser(), newRevision: this.newRevision}));
-        new MenuBarView({ el: this.$el, parentView: this });
+        new MenuBarView({ // eslint-disable-line no-new
+            el: this.$el,
+            parentView: this
+        });
         return this;
     },
 
     submitCheck: function () {
-        this.$('input[type=submit]').attr('disabled', !this.$('#acceptRights').is(':checked') ||
-          !this.$('#acceptLicense').is(':checked') ||
-          (this.$('#acceptAttributionPolicy').is(':visible') &&
-          !this.$('#acceptAttributionPolicy').is(':checked')) ||
-          (this.$('#otherLicenseInput').is(':visible') &&
-          !this.$('#otherLicenseInput').val())
-      );
+        this.$('input[type=submit]').attr('disabled',
+            !this.$('#acceptRights').is(':checked') ||
+            !this.$('#acceptLicense').is(':checked') ||
+            (
+                this.$('#acceptAttributionPolicy').is(':visible') &&
+                !this.$('#acceptAttributionPolicy').is(':checked')
+            ) ||
+            (
+                this.$('#otherLicenseInput').is(':visible') &&
+                !this.$('#otherLicenseInput').val()
+            )
+        );
     },
     _uploadFiles: function (data) {
         // taken from HierarchyWidget.js
@@ -191,19 +197,19 @@ var uploadView = View.extend({
             };
             restRequest({
                 type: 'GET',
-                path: 'item?folderId=' + this.parentId + '&name=' + retInfo.files[0].name
-            }).done(_.bind(function (resp) {
+                path: `item?folderId=${this.parentId}&name=${retInfo.files[0].name}`
+            }).done((resp) => {
                 restRequest({
                     type: 'PUT',
-                    path: 'item/' + resp[0]._id + '/metadata',
+                    path: `item/${resp[0]._id}/metadata`,
                     contentType: 'application/json',
                     data: JSON.stringify(subData),
                     error: null
-                }).done(_.bind(function (respMD) {
+                }).done((respMD) => {
                     this.$('#uploadTable').append(UploadEntryTemplate({info: respMD}));
                     this.$('#uploadQuestions').show();
-                }, this));
-            }, this));
+                });
+            });
         }, this).render();
     },
     _deleteFile: function (itemEntry) {
@@ -212,52 +218,50 @@ var uploadView = View.extend({
             var subData = {'github': ''};
             restRequest({
                 type: 'PUT',
-                path: 'folder/' + this.parentId + '/metadata',
+                path: `folder/${this.parentId}/metadata`,
                 contentType: 'application/json',
                 data: JSON.stringify(subData),
                 error: null
-            }).done(_.bind(function (respMD) {
+            }).done((respMD) => {
                 this.$(itemEntry).remove();
-            }, this));
+            });
         } else {
             restRequest({
                 type: 'DELETE',
-                path: 'item/' + objectIdentifier,
+                path: `item/${objectIdentifier}`,
                 error: null
-            }).done(_.bind(function (respMD) {
+            }).done((respMD) => {
                 this.$(itemEntry).remove();
-            }, this));
+            });
         }
     },
 
     _approveSubmission: function (subData) {
         restRequest({
             type: 'PUT',
-            path: 'journal/' + this.parentId + '/approve',
+            path: `journal/${this.parentId}/approve`,
             contentType: 'application/json',
             data: JSON.stringify(subData)
-        }).done(_.bind(function (respMD) {
-            router.navigate('#plugins/journal/view/' + this.parentId,
-                                      {trigger: true});
-        }, this));
+        }).done((respMD) => {
+            router.navigate(`#plugins/journal/view/${this.parentId}`, {trigger: true});
+        });
     },
     _appendData: function (subData) {
         restRequest({
             type: 'PUT',
-            path: 'journal/' + this.parentId + '/metadata',
+            path: `journal/${this.parentId}/metadata`,
             contentType: 'application/json',
             data: JSON.stringify(subData),
             error: null
-        }).done(_.bind(function (respMD) {
+        }).done((respMD) => {
             restRequest({
                 type: 'PUT',
-                path: 'journal/' + this.parentId + '/finalize',
+                path: `journal/${this.parentId}/finalize`,
                 contentType: 'application/json'
-            }).done(_.bind(function (respMD) {
-                router.navigate('#plugins/journal/view/' + this.parentId,
-                                              {trigger: true});
-            }, this));
-        }, this));
+            }).done((respMD) => {
+                router.navigate(`#plugins/journal/view/${this.parentId}`, {trigger: true});
+            });
+        });
     }
 });
 

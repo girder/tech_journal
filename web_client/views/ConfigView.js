@@ -1,5 +1,3 @@
-import _ from 'underscore';
-
 import PluginConfigBreadcrumbWidget from 'girder/views/widgets/PluginConfigBreadcrumbWidget';
 import View from 'girder/views/View';
 import events from 'girder/events';
@@ -47,7 +45,7 @@ var configView = View.extend({
                     'tech_journal.old_url'
                 ])
             }
-        }).done(_.bind(function (resp) {
+        }).done((resp) => {
             this.render();
             this.$('#admin_email').val(
                 resp['tech_journal.admin_email']);
@@ -59,7 +57,7 @@ var configView = View.extend({
                 resp['tech_journal.base_handle']);
             this.$('#old_url').val(
                 resp['tech_journal.old_url']);
-        }, this));
+        });
     },
     render: function () {
         this.$el.html(ConfigViewTemplate());
@@ -82,17 +80,17 @@ var configView = View.extend({
                 list: JSON.stringify(settings)
             },
             error: null
-        }).done(_.bind(function (resp) {
+        }).done((resp) => {
             events.trigger('g:alert', {
                 icon: 'ok',
                 text: 'Settings saved.',
                 type: 'success',
                 timeout: 4000
             });
-        }, this)).error(_.bind(function (resp) {
+        }).error((resp) => {
             this.$('#g-journal-settings-error-message').text(
                 resp.responseJSON.message);
-        }, this));
+        });
     }
 });
 

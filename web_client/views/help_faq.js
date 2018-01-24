@@ -1,5 +1,3 @@
-import _ from 'underscore';
-
 import View from 'girder/views/View';
 import { restRequest } from 'girder/rest';
 import { renderMarkdown } from 'girder/misc';
@@ -18,13 +16,17 @@ var FAQView = View.extend({
             data: {
                 list: JSON.stringify(['faq'])
             }
-        }).done(_.bind(function (resp) {
-            this.render(resp['faq']);
-        }, this));
+        }).done((resp) => {
+            this.render(resp.faq);
+        });
     },
     render: function (faqText) {
         this.$el.html(FAQViewTemplate({info: faqText, renderMarkdown: renderMarkdown}));
-        new MenuBarView({ el: this.$el, parentView: this, searchBoxVal: 'Search...' });
+        new MenuBarView({ // eslint-disable-line no-new
+            el: this.$el,
+            parentView: this,
+            searchBoxVal: 'Search...'
+        });
         return this;
     }
 });

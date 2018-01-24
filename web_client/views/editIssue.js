@@ -1,5 +1,3 @@
-import _ from 'underscore';
-
 import View from 'girder/views/View';
 import router from 'girder/router';
 import { restRequest } from 'girder/rest';
@@ -45,18 +43,21 @@ var EditIssueView = View.extend({
     },
     render: function (parentId) {
         this.$el.html(editIssueTemplate({info: parentId}));
-        new MenuBarView({ el: this.$el, parentView: this });
+        new MenuBarView({ // eslint-disable-line no-new
+            el: this.$el,
+            parentView: this
+        });
         return this;
     },
     _updateIssue: function (issueData) {
         restRequest({
             type: 'PUT',
-            url: 'folder/' + this.parentId,
+            url: `folder/${this.parentId}`,
             data: {
                 name: issueData.issueName,
                 description: issueData.issueDescription
             }
-        }).done(_.bind(function (jrnResp) {
+        }).done((jrnResp) => {
             var paperDue = new Date(issueData.paperDue);
             var decision = new Date(issueData.decision);
             var publication = new Date(issueData.publication);
@@ -67,11 +68,11 @@ var EditIssueView = View.extend({
             restRequest({
                 type: 'PUT',
                 contentType: 'application/json',
-                url: 'folder/' + jrnResp['_id'] + '/metadata',
+                url: `folder/${jrnResp._id}/metadata`,
                 data: JSON.stringify(issueDateData)
-            }).done(_.bind(function (metaResp) {
-            }, this));
-        }, this));
+            }).done((metaResp) => {
+            });
+        });
     },
     _createIssue: function (issueData) {
         restRequest({
@@ -83,7 +84,7 @@ var EditIssueView = View.extend({
                 name: issueData.issueName,
                 description: issueData.issueDescription
             }
-        }).done(_.bind(function (jrnResp) {
+        }).done((jrnResp) => {
             var paperDue = new Date(issueData.paperDue);
             var decision = new Date(issueData.decision);
             var publication = new Date(issueData.publication);
@@ -94,26 +95,26 @@ var EditIssueView = View.extend({
             restRequest({
                 type: 'PUT',
                 contentType: 'application/json',
-                url: 'folder/' + jrnResp['_id'] + '/metadata',
+                url: `folder/${jrnResp._id}/metadata`,
                 data: JSON.stringify(issueDateData)
-            }).done(_.bind(function (metaResp) {
+            }).done((metaResp) => {
 
-            }, this));
-        }, this));
+            });
+        });
     },
     _getCurrentInfo: function (journalData) {
         restRequest({
             type: 'GET',
-            url: 'folder/' + journalData.id
-        }).done(_.bind(function (jrnInfo) {
-            var paperDueTmp = new Date(jrnInfo['meta']['paperDue']);
-            var publicationTmp = new Date(jrnInfo['meta']['publication']);
-            var decisionTmp = new Date(jrnInfo['meta']['decision']);
-            jrnInfo['meta']['paperDue'] = paperDueTmp.toJSON().slice(0, 10);
-            jrnInfo['meta']['publication'] = publicationTmp.toJSON().slice(0, 10);
-            jrnInfo['meta']['decision'] = decisionTmp.toJSON().slice(0, 10);
+            url: `folder/${journalData.id}`
+        }).done((jrnInfo) => {
+            var paperDueTmp = new Date(jrnInfo.meta.paperDue);
+            var publicationTmp = new Date(jrnInfo.meta.publication);
+            var decisionTmp = new Date(jrnInfo.meta.decision);
+            jrnInfo.meta.paperDue = paperDueTmp.toJSON().slice(0, 10);
+            jrnInfo.meta.publication = publicationTmp.toJSON().slice(0, 10);
+            jrnInfo.meta.decision = decisionTmp.toJSON().slice(0, 10);
             this.render(jrnInfo);
-        }, this));
+        });
     }
 });
 

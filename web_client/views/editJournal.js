@@ -1,5 +1,3 @@
-import _ from 'underscore';
-
 import View from 'girder/views/View';
 import router from 'girder/router';
 import { restRequest } from 'girder/rest';
@@ -29,7 +27,10 @@ var EditJournalView = View.extend({
     },
     render: function (journalInfo) {
         this.$el.html(editJournalTemplate(journalInfo));
-        new MenuBarView({ el: this.$el, parentView: this });
+        new MenuBarView({ // eslint-disable-line no-new
+            el: this.$el,
+            parentView: this
+        });
         return this;
     },
     _createJournal: function (journalData) {
@@ -51,16 +52,16 @@ var EditJournalView = View.extend({
                 description: journalData.issueDescription,
                 public: publicJournal
             }
-        }).done(_.bind(function (jrnResp) {
-        }, this));
+        }).done((jrnResp) => {
+        });
     },
     _getCurrentInfo: function (journalData) {
         restRequest({
             type: 'GET',
-            path: 'collection/' + journalData.id
-        }).done(_.bind(function (jrnInfo) {
+            path: `collection/${journalData.id}`
+        }).done((jrnInfo) => {
             this.render({info: jrnInfo});
-        }, this));
+        });
     }
 });
 

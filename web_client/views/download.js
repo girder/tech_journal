@@ -1,5 +1,3 @@
-import _ from 'underscore';
-
 import View from 'girder/views/View';
 import { restRequest, apiRoot } from 'girder/rest';
 
@@ -14,36 +12,39 @@ var downloadView = View.extend({
         this.parentId = subId.id;
         restRequest({
             type: 'GET',
-            path: 'folder/' + this.parentId
-        }).done(_.bind(function (resp) {
+            path: `folder/${this.parentId}`
+        }).done((resp) => {
             this.parent = resp;
             restRequest({
                 type: 'GET',
-                path: 'item?folderId=' + this.parentId
-            }).done(_.bind(function (itemResp) {
+                path: `item?folderId=${this.parentId}`
+            }).done((itemResp) => {
                 for (var index in itemResp) {
                     if (itemResp[index].meta.type === 'Paper') {
                         this.paperItem = itemResp[index];
                     }
                 }
                 this.render(this.paperItem);
-            }, this));
-        }, this));
+            });
+        });
     },
     render: function (paperItem) {
         var paperDownloadUrl =
             paperItem && paperItem._id
-            ? apiRoot + '/item/' + paperItem._id + '/download'
-            : null;
+                ? `${apiRoot}/item/${paperItem._id}/download`
+                : null;
         var parentDownloadUrl =
-            apiRoot + '/folder/' + this.parentId + '/download';
+             `${apiRoot}/folder/${this.parentId}/download`;
 
         this.$el.html(DownloadViewTemplate({
             parent: this.parentId,
             parentDownloadUrl: parentDownloadUrl,
             paperDownloadUrl: paperDownloadUrl
         }));
-        new MenuBarView({ el: this.$el, parentView: this });
+        new MenuBarView({ // eslint-disable-line no-new
+            el: this.$el,
+            parentView: this
+        });
         return this;
     }
 });

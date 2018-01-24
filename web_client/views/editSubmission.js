@@ -1,5 +1,3 @@
-import _ from 'underscore';
-
 import View from 'girder/views/View';
 import router from 'girder/router';
 import { restRequest } from 'girder/rest';
@@ -19,22 +17,22 @@ var editView = View.extend({
             event.preventDefault();
             restRequest({
                 type: 'PUT',
-                path: 'folder/' + this.parentId,
+                path: `folder/${this.parentId}`,
                 data: {
                     parentType: 'folder',
                     name: this.$('#titleEntry').val().trim(),
                     description: this.$('#abstractEntry').val().trim()
                 },
                 error: null
-            }).done(_.bind(function (resp) {
+            }).done((resp) => {
                 if (this.newRevision) {
                     this._generateNewRevision();
                 } else {
                     this._updateSubmission(this.itemId);
-                    router.navigate('#plugins/journal/submission/' + this.itemId + '/upload/edit',
-                    {trigger: true});
+                    router.navigate(`#plugins/journal/submission/${this.itemId}/upload/edit`,
+                        {trigger: true});
                 }
-            }, this));
+            });
         },
         'click #authorAdd': function (event) {
             event.preventDefault();
@@ -60,15 +58,19 @@ var editView = View.extend({
         this.itemId = subResp;
         restRequest({
             type: 'GET',
-            path: 'journal/' + this.itemId + '/details'
-        }).done(_.bind(function (resp) {
+            path: `journal/${this.itemId}/details`
+        }).done((resp) => {
             this.parentId = resp[1]._id;
             this.$el.html(SubmitViewTemplate({info: {info: resp[0], 'parInfo': resp[1], 'NR': this.newRevision}}));
-            new MenuBarView({ el: this.$el, parentView: this, searchBoxVal: '' });
-            $('.subPermission[value=' + resp[0]['meta']['permission'] + ']').prop('checked', 'checked');
-            $('.CLAPermission[value=' + resp[0]['meta']['CorpCLA'] + ']').prop('checked', 'checked');
+            new MenuBarView({ // eslint-disable-line no-new
+                el: this.$el,
+                parentView: this,
+                searchBoxVal: ''
+            });
+            $(`.subPermission[value=${resp[0].meta.permission}]`).prop('checked', 'checked');
+            $(`.CLAPermission[value=${resp[0].meta.CorpCLA}]`).prop('checked', 'checked');
             return this;
-        }, this));  // End getting of OTJ Collection value setting
+        }); // End getting of OTJ Collection value setting
     },
     _captureSubmissionInformation() {
         var authors = [];
@@ -99,8 +101,8 @@ var editView = View.extend({
         // if new submission, generate first "revision" folder inside of generated folder
         restRequest({
             type: 'GET',
-            path: 'folder/' + this.parentId + '/details'
-        }).done(_.bind(function (resp) {
+            path: `folder/${this.parentId}/details`
+        }).done((resp) => {
             restRequest({
                 type: 'POST',
                 path: 'folder',
@@ -111,22 +113,21 @@ var editView = View.extend({
                     description: this.$('#revisionEntry').val().trim()
                 },
                 error: null
-            }).done(_.bind(function (resp) {
+            }).done((resp) => {
                 this._updateSubmission(resp._id);
-                router.navigate(targetUrl + resp._id + '/upload/revision',
-                                          {trigger: true});
-            }, this));
-        }, this));
+                router.navigate(`${targetUrl}${resp._id}/upload/revision`, {trigger: true});
+            });
+        });
     },
     _updateSubmission: function (itemID) {
         restRequest({
             type: 'PUT',
-            path: 'journal/' + itemID + '/metadata',
+            path: `journal/${itemID}/metadata`,
             contentType: 'application/json',
             data: JSON.stringify(this._captureSubmissionInformation()),
             error: null
-        }).done(_.bind(function (respMD) {
-        }, this));
+        }).done((respMD) => {
+        });
     }
 });
 
