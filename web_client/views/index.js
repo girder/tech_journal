@@ -10,8 +10,8 @@ import '../stylesheets/view.index.styl';
 import '../stylesheets/item.comments.styl';
 
 import MenuBarView from './menuBar.js';
-import IndexViewTemplate from '../templates/journal_index.jade';
-import IndexEntryViewTemplate from '../templates/journal_index_entry.jade';
+import IndexViewTemplate from '../templates/journal_index.pug';
+import IndexEntryViewTemplate from '../templates/journal_index_entry.pug';
 
 var indexView = View.extend({
     events: {

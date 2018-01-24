@@ -2,8 +2,8 @@ import View from 'girder/views/View';
 import { restRequest } from 'girder/rest';
 
 import MenuBarView from './menuBar.js';
-import ApprovalViewTemplate from '../templates/journal_admin_approval.jade';
-import IndexEntryViewTemplate from '../templates/journal_index_entry.jade';
+import ApprovalViewTemplate from '../templates/journal_admin_approval.pug';
+import IndexEntryViewTemplate from '../templates/journal_index_entry.pug';
 
 var manageApprovalView = View.extend({
 

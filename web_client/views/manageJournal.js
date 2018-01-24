@@ -2,8 +2,8 @@ import View from 'girder/views/View';
 import { restRequest } from 'girder/rest';
 
 import MenuBarView from './menuBar.js';
-import ManageJournalsTemplate from '../templates/journal_manage_journals.jade';
-import ManageJournalsEntryTemplate from '../templates/journal_manage_journals_entry.jade';
+import ManageJournalsTemplate from '../templates/journal_manage_journals.pug';
+import ManageJournalsEntryTemplate from '../templates/journal_manage_journals_entry.pug';
 
 var manageJournalView = View.extend({
 

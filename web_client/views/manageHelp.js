@@ -4,7 +4,7 @@ import MarkdownWidget from 'girder/views/widgets/MarkdownWidget';
 import { restRequest } from 'girder/rest';
 
 import MenuBarView from './menuBar.js';
-import manageHelpViewTemplate from '../templates/journal_admin_help.jade';
+import manageHelpViewTemplate from '../templates/journal_admin_help.pug';
 
 var ManageHelpView = View.extend({
 

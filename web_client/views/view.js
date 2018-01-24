@@ -4,7 +4,7 @@ import { getCurrentUser } from 'girder/auth';
 import { restRequest } from 'girder/rest';
 
 import MenuBarView from './menuBar.js';
-import SubmissionViewTemplate from '../templates/journal_view.jade';
+import SubmissionViewTemplate from '../templates/journal_view.pug';
 
 var submissionView = View.extend({
 

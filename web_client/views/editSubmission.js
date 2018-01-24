@@ -3,7 +3,7 @@ import router from 'girder/router';
 import { restRequest } from 'girder/rest';
 
 import MenuBarView from './menuBar.js';
-import SubmitViewTemplate from '../templates/journal_submit.jade';
+import SubmitViewTemplate from '../templates/journal_submit.pug';
 import SubmitAuthorEntryTemplate from '../templates/journal_author_entry.pug';
 import SubmitTagEntryTemplate from '../templates/journal_tag_entry.pug';
 

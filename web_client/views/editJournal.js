@@ -3,7 +3,7 @@ import router from 'girder/router';
 import { restRequest } from 'girder/rest';
 
 import MenuBarView from './menuBar.js';
-import editJournalTemplate from '../templates/journal_edit_journal.jade';
+import editJournalTemplate from '../templates/journal_edit_journal.pug';
 
 var EditJournalView = View.extend({
 

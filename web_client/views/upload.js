@@ -7,8 +7,8 @@ import { handleClose } from 'girder/dialog';
 import { restRequest } from 'girder/rest';
 
 import MenuBarView from './menuBar.js';
-import UploadViewTemplate from '../templates/journal_upload.jade';
-import UploadEntryTemplate from '../templates/journal_upload_entry.jade';
+import UploadViewTemplate from '../templates/journal_upload.pug';
+import UploadEntryTemplate from '../templates/journal_upload_entry.pug';
 
 var fileTypes = ['', 'Thumbnail', 'Source', 'Paper', 'Data', 'Other', 'Github', 'Reference', 'Testing'];
 var uploadView = View.extend({
