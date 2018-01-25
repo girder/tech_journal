@@ -1,19 +1,11 @@
 import View from 'girder/views/View';
 import { restRequest } from 'girder/rest';
 
-// Import all stylesheets
-import '../stylesheets/main.styl';
-import '../stylesheets/index.index.styl';
-import '../stylesheets/submit.index.styl';
-import '../stylesheets/submit.upload.styl';
-import '../stylesheets/view.index.styl';
-import '../stylesheets/item.comments.styl';
+import MenuBarView from '../../views/menuBar.js';
+import HomeTemplate from './home.pug';
+import IndexEntryViewTemplate from '../../templates/journal_index_entry.pug';
 
-import MenuBarView from './menuBar.js';
-import IndexViewTemplate from '../templates/journal_index.pug';
-import IndexEntryViewTemplate from '../templates/journal_index_entry.pug';
-
-var indexView = View.extend({
+const HomePage = View.extend({
     events: {
         'click #search_button': function (event) {
             // search the available submissions for the text entered in the box
@@ -80,7 +72,9 @@ var indexView = View.extend({
             type: 'GET',
             path: `journal/${collection}/issues`
         }).done((jrnResp) => {
-            this.$el.html(IndexViewTemplate({info: { 'issues': jrnResp }}));
+            this.$el.html(HomeTemplate({
+                info: { 'issues': jrnResp }
+            }));
             this.$('.searchResults').html(this.$('.searchResults').html() + IndexEntryViewTemplate({info: {'submissions': subData}}));
             new MenuBarView({ // eslint-disable-line no-new
                 el: this.$el,
@@ -118,4 +112,4 @@ var indexView = View.extend({
     }
 });
 
-export default indexView;
+export default HomePage;

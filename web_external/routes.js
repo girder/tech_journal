@@ -1,3 +1,5 @@
+/* eslint-disable import/first, import/order */
+
 import Backbone from 'backbone';
 
 import router from 'girder/router';
@@ -6,7 +8,6 @@ import { getCurrentUser } from 'girder/auth';
 import { Layout } from 'girder/constants';
 
 // Import views from plugin
-import indexView from './views/index';
 import submitView from './views/submit';
 import editView from './views/editSubmission';
 import listView from './views/listJournals';
@@ -26,9 +27,10 @@ import FeedBackView from './views/feedback';
 // Clear all of the existing routes, which will always added by Girder
 Backbone.history.handlers = [];
 
-// Main page of Journal
-router.route('plugins/journal', 'mainView', function (query) {
-    testUserAccess(indexView, query, false, false);
+// Home page
+import HomePage from './pages/home/home';
+router.route('', 'home', function (query) {
+    testUserAccess(HomePage, query, false, false);
 });
 
 // Submission related pages
@@ -138,6 +140,6 @@ function testUserAccess(view, args, needsUser, needsAdmin) {
     if (userFlag && adminFlag) {
         events.trigger('g:navigateTo', view, args, {layout: Layout.EMPTY});
     } else {
-        window.location.href = '#plugins/journal?dialog=login';
+        window.location.href = '#?dialog=login';
     }
 }
