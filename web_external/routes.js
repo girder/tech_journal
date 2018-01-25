@@ -1,3 +1,5 @@
+import Backbone from 'backbone';
+
 import router from 'girder/router';
 import events from 'girder/events';
 import { getCurrentUser } from 'girder/auth';
@@ -20,6 +22,9 @@ import HelpView from './views/help_main';
 import FAQView from './views/help_faq';
 import AboutView from './views/help_about';
 import FeedBackView from './views/feedback';
+
+// Clear all of the existing routes, which will always added by Girder
+Backbone.history.handlers = [];
 
 // Main page of Journal
 router.route('plugins/journal', 'mainView', function (query) {
