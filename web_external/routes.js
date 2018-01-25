@@ -18,9 +18,6 @@ import manageJournalView from './views/manageJournal';
 import EditIssueView from './views/editIssue';
 import EditJournalView from './views/editJournal';
 import manageHelpView from './views/manageHelp';
-import HelpView from './views/help_main';
-import FAQView from './views/help_faq';
-import AboutView from './views/help_about';
 import FeedBackView from './views/feedback';
 
 // Clear all of the existing routes, which will always added by Girder
@@ -106,18 +103,19 @@ router.route('plugins/journal/admin/help', 'adminHelp', function () {
 });
 
 // Display page for the Help page of the Journal
-router.route('plugins/journal/help', 'HelpView', function () {
-    testUserAccess(HelpView, {}, false, false);
+import HelpPage from './pages/help/help';
+router.route('help', 'help', function () {
+    testUserAccess(HelpPage, {title: 'Help', settingKey: 'main'}, false, false);
 });
 
 // Display page for the F.A.Q. page of the Journal
-router.route('plugins/journal/help/faq', 'FAQView', function () {
-    testUserAccess(FAQView, {}, false, false);
+router.route('help/faq', 'helpFaq', function () {
+    testUserAccess(HelpPage, {title: 'Frequently Asked Questions', settingKey: 'faq'}, false, false);
 });
 
 // Display page of the About page of the Journal
-router.route('plugins/journal/help/about', 'AboutView', function () {
-    testUserAccess(AboutView, {}, false, false);
+router.route('help/about', 'helpAbout', function () {
+    testUserAccess(HelpPage, {title: 'About', settingKey: 'about'}, false, false);
 });
 
 // Display page for a user to submit feedback to Journal Admins
