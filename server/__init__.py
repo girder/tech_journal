@@ -16,6 +16,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 ###############################################################################
+import os
 import six
 import json
 import datetime
@@ -27,14 +28,32 @@ from girder.constants import AccessType, TokenScope
 from girder.models.model_base import ValidationException
 # from girder.utility import mail_utils
 from girder.utility.model_importer import ModelImporter
+from girder.utility.plugin_utilities import getPluginDir, registerPluginWebroot
+from girder.utility.webroot import WebrootBase
 from girder import events
 from . import constants
+
+
+class Webroot(WebrootBase):
+    """
+    The webroot endpoint simply serves the main index HTML file.
+    """
+    def __init__(self, templatePath=None):
+        if not templatePath:
+            templatePath = os.path.join(getPluginDir(), 'tech_journal', 'server', 'webroot.mako')
+        super(Webroot, self).__init__(templatePath)
+
+        self.vars = {
+            'apiRoot': '/api/v1',
+            'staticRoot': '/static',
+            'title': 'Technical Journal'
+        }
 
 
 def validateSettings(event):
     key, val = event.info['key'], event.info['value']
 
-    if key == constants.PluginSettings.admin_email:
+    if key == constants.TechJournalSettings.admin_email:
         if val:
             if not isinstance(val, six.string_types):
                 raise ValidationException(
@@ -374,3 +393,5 @@ def load(info):
     techJournal = TechJournal()
     events.bind('model.setting.validate', 'journalMain', validateSettings)
     info['apiRoot'].journal = techJournal
+
+    registerPluginWebroot(Webroot(), info['name'])

@@ -3,13 +3,10 @@
     "description": "An attempt to generate a plug in for a Tech Journal module",
     "version": "0.0.1",
     "dependencies": ["curation"],
-    "npm": {
-        "dependencies": {
-            "css-loader": "^0.26.2 ",
-            "style-loader":"^0.17.0",
-            "image-webpack-loader": "^3.3.0 ",
-            "imports-loader":"^0.7.1",
-            "exports-loader":"^0.6.4"
+    "webpack": {
+        "main": {
+            "plugin": "web_client/main.js",
+            "app": "web_external/main.js"
         }
-    }
+  }
 }
