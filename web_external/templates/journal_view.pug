@@ -2,7 +2,7 @@ mixin revisionOption(value,selectedRev)
   option.revisionOption(value=value._id) #{value.name}
 
 mixin searchLink(value,type)
-  a(href='#plugins/journal?query="'+type+'":"'+ value+ '"') #{value}
+  a(href='#?query="'+type+'":"'+ value+ '"') #{value}
 
 mixin existingComment(commentInfo)
   .aComment(style="")
@@ -121,9 +121,9 @@ mixin deleteCommentConfirmation()
               else
                 .loginToComment
                   span
-                    a#loginToComment(href='#plugins/journal?dialog=login') Login
+                    a#loginToComment(href='#?dialog=login') Login
                     |  or
-                    a#registerToComment(href='#plugins/journal?dialog=register') register
+                    a#registerToComment(href='#?dialog=register') register
                     |  to add a comment
               #existingCommentsList
                 for comment in info.parent.meta.comments

@@ -21,26 +21,26 @@
   .HeaderTopContent.panelsBackground
     #menu
       #topmenu
-        a(style='border:none;', href="#plugins/journal")
+        a(style='border:none;', href="#")
           img(style='border:none;', src="http://osehra.org/profiles/drupal_commons/themes/commons_osehra_earth/images/logo.png", alt="logo", height="50")
       #title.
         OSEHRA Technical Journal
       #toplogin
         #loginForm
           unless user
-            a(href='#plugins/journal?dialog=login') Sign In
+            a(href='#?dialog=login') Sign In
           if user
             |Welcome #{user.name()}!
             a#logout Log out
       br
       div(style="position:absolute;right:0px;")
         div(style="position:relative;top:7px;left:-8px;font-size:11px;color:white;")
-          a(href="#plugins/journal/help/about")
+          a(href="#help/about")
             | About
           unless user
-            a#forgotPasswordLink(style="margin-left: 7px;padding-left: 7px;border-left: 1px solid grey;", href='#plugins/journal?dialog=resetpassword')
+            a#forgotPasswordLink(style="margin-left: 7px;padding-left: 7px;border-left: 1px solid grey;", href='#?dialog=resetpassword')
               | Forgot your password
-            a.register(style="margin-left: 7px;padding-left: 7px;border-left: 1px solid grey;", href="#plugins/journal?dialog=register")
+            a.register(style="margin-left: 7px;padding-left: 7px;border-left: 1px solid grey;", href="#?dialog=register")
               | Register
             a(style="margin-left: 7px;padding-left: 7px;border-left: 1px solid grey;", href='/journal/googleoauth/user/login')
               | Sign in with your Google Account
@@ -49,10 +49,10 @@
     #topbar
       ul#Nav.nav.navbar-nav
         li#browseLink
-          a(href="#plugins/journal")
+          a(href="#")
             | Home
         li
-          a(href="#plugins/journal/list")
+          a(href="#journals")
             | Journal
         li
           a(href='#plugins/journal/submission/new')
@@ -63,7 +63,8 @@
             #userOptionsDiv
               ul#userOptionsList
                 li
-                  a.submm(href='#plugins/journal?query="creatorId":"'+user.id+'"') My Publications
+                  // TODO: implement this route
+                  a.submm(href='#?query="creatorId":"'+user.id+'"') My Publications
                 li
                   a.submm(href='#useraccount/' + user.id + '/info') Edit Profile
           if user.attributes.admin
@@ -76,10 +77,10 @@
                   li
                     a.submm(href='#users') Users
                   li
-                    a.submm. 
+                    a.submm.
                       Categories
                   li
-                    a.submm. 
+                    a.submm.
                       Disclaimers
                   li
                     a.submm(href='#plugins/journal/admin/help') Help & About
@@ -89,15 +90,15 @@
                     a.submm.
                       Review Questions
         li#helpLink
-          a(href="#plugins/journal/help")
+          a(href="#help")
             | Help
           #helpOptions
             ul#helpOptionsList
               li
-                a.submm(style="width:160px;", href="#plugins/journal/help")
+                a.submm(style="width:160px;", href="#help")
                   | Submission and Review
               li
-                a.submm(style="width:160px;", href="#plugins/journal/help/faq")
+                a.submm(style="width:160px;", href="#help/faq")
                   | F.A.Q.
               li
                 a.submm(style="width:160px;", href="#plugins/journal/help/feedback")

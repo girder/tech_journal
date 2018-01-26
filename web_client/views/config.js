@@ -3,9 +3,9 @@ import View from 'girder/views/View';
 import events from 'girder/events';
 import { restRequest } from 'girder/rest';
 
-import ConfigViewTemplate from '../templates/journal_configView.pug';
+import ConfigTemplate from '../templates/config.pug';
 
-var configView = View.extend({
+const ConfigView = View.extend({
     events: {
         'submit #configForm': function (event) {
             event.preventDefault();
@@ -60,7 +60,7 @@ var configView = View.extend({
         });
     },
     render: function () {
-        this.$el.html(ConfigViewTemplate());
+        this.$el.html(ConfigTemplate());
 
         if (!this.breadcrumb) {
             this.breadcrumb = new PluginConfigBreadcrumbWidget({
@@ -94,4 +94,4 @@ var configView = View.extend({
     }
 });
 
-export default configView;
+export default ConfigView;

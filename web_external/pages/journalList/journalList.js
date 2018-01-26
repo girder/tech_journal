@@ -1,10 +1,10 @@
 import View from 'girder/views/View';
 import { restRequest } from 'girder/rest';
 
-import MenuBarView from './menuBar.js';
-import JournalListTemplate from '../templates/journal_journal_list.pug';
+import MenuBarView from '../../views/menuBar.js';
+import JournalListTemplate from './journalList.pug';
 
-var listView = View.extend({
+const JournalListPage = View.extend({
     events: {
     },
     initialize: function () {
@@ -15,7 +15,9 @@ var listView = View.extend({
             type: 'GET',
             path: 'journal'
         }).done((jrnResp) => {
-            this.$el.html(JournalListTemplate({ info: { 'journals': jrnResp } }));
+            this.$el.html(JournalListTemplate({
+                info: { 'journals': jrnResp }
+            }));
             new MenuBarView({ // eslint-disable-line no-new
                 el: this.$el,
                 parentView: this,
@@ -27,4 +29,4 @@ var listView = View.extend({
     }
 });
 
-export default listView;
+export default JournalListPage;
