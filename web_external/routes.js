@@ -8,8 +8,8 @@ import { getCurrentUser } from 'girder/auth';
 import { Layout } from 'girder/constants';
 
 // Import views from plugin
-import submitView from './views/submit';
-import editView from './views/editSubmission';
+import submitView from './pages/submit/submit';
+import editView from './pages/submit/editSubmission';
 import uploadView from './views/upload';
 import submissionView from './views/view';
 import approvalView from './views/manageApproval';
@@ -30,7 +30,7 @@ router.route('', 'home', function (query) {
 });
 
 // Submission related pages
-router.route('plugins/journal/submission/new', 'submissionInfo', function () {
+router.route('submission/new', 'submissionInfo', function () {
     testUserAccess(submitView, {id: 'new'}, true, false);
 });
 

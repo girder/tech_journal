@@ -4,11 +4,12 @@ import events from 'girder/events';
 import { getCurrentUser } from 'girder/auth';
 import { restRequest } from 'girder/rest';
 
-import MenuBarView from './menuBar.js';
-import SubmitViewTemplate from '../templates/journal_submit.pug';
-import SelectIssueTemplate from '../templates/journal_select_issue.pug';
-import SubmitAuthorEntryTemplate from '../templates/journal_author_entry.pug';
-import SubmitTagEntryTemplate from '../templates/journal_tag_entry.pug';
+import MenuBarView from '../../views/menuBar.js';
+import SubmitViewTemplate from './journal_submit.pug';
+import SelectIssueTemplate from './journal_select_issue.pug';
+import issueDetailsTemplate from './journal_issue_details.pug';
+import SubmitAuthorEntryTemplate from './journal_author_entry.pug';
+import SubmitTagEntryTemplate from './journal_tag_entry.pug';
 
 var SubmitView = View.extend({
     events: {
@@ -38,6 +39,18 @@ var SubmitView = View.extend({
             this.$('#tags').append(SubmitTagEntryTemplate({info: {info: '1'}}));
         },
         'click #removeTag': function (event) {
+            this.$(event.currentTarget.parentElement).remove();
+        },
+        'click #showDetails': function (event) {
+            this.targetIssueID = event.currentTarget.target;
+            restRequest({
+                type: 'GET',
+                path: `folder/${this.targetIssueID}`
+            }).done((resp) => {
+                this.$('#issueDetails').append(issueDetailsTemplate({info: resp}));
+            });
+        },
+        'click #closeDetails': function (event) {
             this.$(event.currentTarget.parentElement).remove();
         }
     },
@@ -70,6 +83,12 @@ var SubmitView = View.extend({
         }
     },
     render: function (subResp, state) {
+        if (Array.isArray(subResp)) {
+            subResp.forEach(function (obj) {
+                obj.daysLeft = obj.daysLeft = Math.round((new Date(obj.meta.paperDue).valueOf() -
+                    Date.now()) / 1000 / 60 / 60 / 24);
+            });
+        }
         this.$el.html(SelectIssueTemplate({info: subResp}));
         var issueInfo;
         new MenuBarView({ // eslint-disable-line no-new

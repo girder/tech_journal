@@ -6,22 +6,24 @@ mixin issueEntry(info)
     td
       | #{info.description}
     td
+      | #{info.daysLeft}
     td
       a.issueGen(target=info._id) Select Issue
       |,
-      a(href="") Show details
+      a#showDetails(target=info._id) Show details
 
 #pageContent
   .Wrapper
     .Content
       .viewMain
         h3 Choose a journal where to submit
+        #issueDetails
         #submission
           br
           | Don't know how to submit your paper? Visit the
-          a(href="") help page
+          a(href="#help") help page
           | or download an
-          a(href="") example
+          a example
           br
           br
           table(width="70%", border="0")
