@@ -5,8 +5,6 @@ import MenuBarView from './menuBar.js';
 import DownloadViewTemplate from '../templates/journal_download.pug';
 
 var downloadView = View.extend({
-    events: {
-    },
 
     initialize: function (subId) {
         this.parentId = subId.id;
