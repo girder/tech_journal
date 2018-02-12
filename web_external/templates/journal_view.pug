@@ -2,7 +2,7 @@ mixin revisionOption(value,selectedRev)
   option.revisionOption(value=value._id) #{value.name}
 
 mixin searchLink(value,type)
-  a(href='#?query="'+type+'":"'+ value+ '"') #{value}
+  a(href='#?query="'+type+'":["'+ value+ '"]') #{value}
 
 mixin existingComment(commentInfo)
   .aComment(style="")
@@ -54,6 +54,9 @@ if 'downloadStatistics' in info.revision
           ul
             li Type: #{info.revision.meta.type}
             li Categories:
+              each item in info.revision.meta.categories
+                +searchLink(item,"category")
+                |,
             li Keywords:
               each item in info.revision.meta.tags
                 +searchLink(item,'tags')
@@ -66,7 +69,7 @@ if 'downloadStatistics' in info.revision
                     if value === info.revision._id
                       selected = "selected=''"
                     +revisionOption(value,selected)
-            li License: #{info.parent.meta.source-license}
+            li License: #{info.revision.meta["source-license"]}
             if info.parent.meta.grant
               li Grant: #{info.parent.meta.grant}
         h4 Share

@@ -6,6 +6,7 @@ import MenuBarView from '../../views/menuBar.js';
 import SubmitViewTemplate from './journal_submit.pug';
 import SubmitAuthorEntryTemplate from './journal_author_entry.pug';
 import SubmitTagEntryTemplate from './journal_tag_entry.pug';
+import CategoryTemplate from '../home/home_categoryTemplate.pug';
 
 var editView = View.extend({
     events: {
@@ -69,7 +70,18 @@ var editView = View.extend({
             });
             $(`.subPermission[value=${resp[0].meta.permission}]`).prop('checked', 'checked');
             $(`.CLAPermission[value=${resp[0].meta.CorpCLA}]`).prop('checked', 'checked');
-            return this;
+            restRequest({
+                type: 'GET',
+                path: 'journal/categories'
+            }).done((catResp) => {
+                for (var key in catResp) {
+                    this.$('#treeWrapper').html(this.$('#treeWrapper').html() + CategoryTemplate({'catName': catResp[key]['key'], 'values': catResp[key]['value']}));
+                }
+                for (var catIndx in resp[0].meta.categories) {
+                    this.$(`.filterOption[val=${resp[0].meta.categories[catIndx]}]`).attr('checked', true);
+                }
+                return this;
+            });
         }); // End getting of OTJ Collection value setting
     },
     _captureSubmissionInformation() {
@@ -85,6 +97,12 @@ var editView = View.extend({
         this.$('#tags input').each(function (index, val) {
             tags.push(val.value.trim());
         });
+        var categories = [];
+        this.$('.filterOption').each(function (index, val) {
+            if (val.checked) {
+                categories.push(val.attributes['val'].value);
+            }
+        });
         var subData = {
             'institution': this.$('#institutionEntry').val().trim(),
             'related': this.$('#relatedEntry').val().trim(),
@@ -92,7 +110,8 @@ var editView = View.extend({
             'copyright': this.$('#copyrightEntry').val().trim(),
             'grant': this.$('#grantEntry').val().trim(),
             'authors': authors,
-            'tags': tags
+            'tags': tags,
+            'categories': categories
         };
         return subData;
     },

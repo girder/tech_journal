@@ -4,6 +4,7 @@ import { restRequest } from 'girder/rest';
 import MenuBarView from '../../views/menuBar.js';
 import HomeTemplate from './home.pug';
 import IndexEntryViewTemplate from '../../templates/journal_index_entry.pug';
+import CategoryTemplate from './home_categoryTemplate.pug';
 
 const HomePage = View.extend({
     events: {
@@ -14,7 +15,7 @@ const HomePage = View.extend({
                 type: 'GET',
                 path: `journal/${this.collectionID}/search?text=${searchText}`
             }).done((resp) => {
-                this.render(resp, searchText, this.collectionID);
+                this.render(resp, searchText, this.collectionID, 0);
             });
         },
         'click #clear_button': function (event) {
@@ -36,6 +37,29 @@ const HomePage = View.extend({
         },
         'click #showMoreResults': function (event) {
             this.getSubmissions(this.collectionID, this.querystring, $('.SearchResultEntry').length);
+        },
+        'click .filterOption': function (event) {
+            var queryString = '';
+            if (this.$('.filterOption:checked').length) {
+                this.$('.categoryTree').each(function (index, category) {
+                    var catName = $(category).siblings('h4').text();
+                    if (queryString !== '') {
+                        queryString += ',';
+                    }
+                    queryString += `"${catName}":[`;
+                    var innerQuery = '';
+                    $(category).find('.filterOption:checked').each(function (index, filter) {
+                        if (innerQuery !== '') {
+                            innerQuery += ',';
+                        }
+                        innerQuery += `"${$(filter).attr('val')}"`;
+                    });
+                    queryString += `${innerQuery}]`;
+                });
+                this.querySubmissions(this.collectionID, queryString, 0);
+            } else {
+                this.initialize(this.querystring);
+            }
         }
     },
     initialize: function (query) {
@@ -63,7 +87,7 @@ const HomePage = View.extend({
             }
         }); // End getting of OTJ Collection value setting
     },
-    render: function (subData, searchVal, collection) {
+    render: function (subData, searchVal, collection, startIndex) {
         var pendingSubs = 0;
         restRequest({
             type: 'GET',
@@ -74,9 +98,12 @@ const HomePage = View.extend({
                 path: `journal/${this.defaultJournal}/pending?`
             }).done((pendRsp) => {
                 pendingSubs = pendRsp.length;
-                this.$el.html(HomeTemplate({
-                    info: { 'issues': jrnResp }
-                }));
+                if (!this.$('.searchResults').length) {
+                    this.$el.html(HomeTemplate({info: { 'issues': jrnResp }}));
+                }
+                if (startIndex === 0) {
+                    this.$('.searchResults').html('');
+                }
                 this.$('.searchResults').html(this.$('.searchResults').html() + IndexEntryViewTemplate({info: {'submissions': subData}}));
                 new MenuBarView({ // eslint-disable-line no-new
                     el: this.$el,
@@ -84,9 +111,18 @@ const HomePage = View.extend({
                     searchBoxVal: searchVal,
                     pendingSubNum: pendingSubs
                 });
+                if (this.$('#treeWrapper').find('.treeEntry').length < 3) {
+                    restRequest({
+                        type: 'GET',
+                        path: 'journal/categories'
+                    }).done((resp) => {
+                        for (var key in resp) {
+                            this.$('#treeWrapper').html(this.$('#treeWrapper').html() + CategoryTemplate({'catName': resp[key]['key'], 'values': resp[key]['value']}));
+                        }
+                    }); // End getting of OTJ Collection value setting
+                }
             });
         });
-
         return this;
     },
 
@@ -95,7 +131,7 @@ const HomePage = View.extend({
             type: 'GET',
             path: `journal/${collection}/search?query={${queryString}}`
         }).done((jrnResp) => {
-            this.render(jrnResp, 'Search...', collection);
+            this.render(jrnResp, 'Search...', collection, startIndex);
         });
     },
     getSubmissions: function (collection, queryString, startIndex) {
@@ -106,11 +142,7 @@ const HomePage = View.extend({
                 filterID: '*'
             }
         }).done((jrnResp) => {
-            if (startIndex === 0) {
-                this.render(jrnResp, 'Search...', collection);
-            } else {
-                this.$('.searchResults').html(this.$('.searchResults').html() + IndexEntryViewTemplate({info: {'submissions': jrnResp}}));
-            }
+            this.render(jrnResp, 'Search...', collection, startIndex);
         });
     }
 });
