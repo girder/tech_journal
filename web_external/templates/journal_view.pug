@@ -65,7 +65,7 @@ if 'downloadStatistics' in info.revision
                     if value === info.revision._id
                       selected = "selected=''"
                     +revisionOption(value,selected)
-            li License: #{info.parent.meta.source-license}
+            li License: #{info.revision.meta["source-license"]}
             if info.parent.meta.grant
               li Grant: #{info.parent.meta.grant}
         h4 Share

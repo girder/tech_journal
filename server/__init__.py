@@ -296,7 +296,7 @@ class TechJournal(Resource):
     @access.user(scope=TokenScope.DATA_READ)
     @loadmodel(model='folder', level=AccessType.WRITE)
     @describeRoute(
-        Description("Approve a submission and make it publicly visable")
+        Description("Approve a submission and make it publicly visible")
         .param('id', 'The ID of the folder.', paramType='path')
         .errorResponse('Test error.')
         .errorResponse('Read access was denied on the issue.', 403)

@@ -74,16 +74,16 @@ var uploadView = View.extend({
         // Change function for updating the submissions licensing and submit status
         'change #acceptLicense': function (event) {
             var license = this.$('#licenseChoice').val();
-            this.$('#hiddenSourceLicense').attr('value', this.$('#licenseChoice').is(':checked') ? license : 0);
+            this.$('#hiddenSourceLicense').attr('value', this.$('#licenseChoice').is(':checked') ? license : "Not Defined");
 
-            if (license === 1 && this.$('#acceptLicense').is(':checked')) {
+            if (license === "Apache 2.0" && this.$('#acceptLicense').is(':checked')) {
                 this.$('#acceptAttributionPolicy').show();
                 this.$('#acceptAttributionPolicyLabel').show();
             } else {
                 this.$('#acceptAttributionPolicy').hide();
                 this.$('#acceptAttributionPolicyLabel').hide();
             }
-            if (license === 3 && this.$('#acceptLicense').is(':checked')) {
+            if (license === "Other" && this.$('#acceptLicense').is(':checked')) {
                 this.$('#otherLicenseInput').show();
                 this.$('#otherLicenseInputLabel').show();
             } else {
@@ -99,7 +99,7 @@ var uploadView = View.extend({
             var license = this.$('#licenseChoice').val();
             this.$('#hiddenSourceLicense').attr('value', this.$('#acceptLicense').is(':checked') ? license : 0);
 
-            if (license === 1 && this.$('#acceptLicense').is(':checked')) {
+            if ((license === "Apache 2.0") && this.$('#acceptLicense').is(':checked')) {
                 this.$('#acceptAttributionPolicy').show();
                 this.$('#acceptAttributionPolicyLabel').show();
             } else {
@@ -107,7 +107,7 @@ var uploadView = View.extend({
                 this.$('#acceptAttributionPolicyLabel').hide();
             }
 
-            if (license === 3 && this.$('#acceptLicense').is(':checked')) {
+            if (license === "Other" && this.$('#acceptLicense').is(':checked')) {
                 this.$('#otherLicenseInput').show();
                 this.$('#otherLicenseInputLabel').show();
             } else {
@@ -239,11 +239,19 @@ var uploadView = View.extend({
     _approveSubmission: function (subData) {
         restRequest({
             type: 'PUT',
-            path: `journal/${this.parentId}/approve`,
+            path: `journal/${this.parentId}/metadata`,
             contentType: 'application/json',
-            data: JSON.stringify(subData)
+            data: JSON.stringify(subData),
+            error: null
         }).done((respMD) => {
-            router.navigate(`#plugins/journal/view/${this.parentId}`, {trigger: true});
+            restRequest({
+                type: 'PUT',
+                path: `journal/${this.parentId}/approve`,
+                contentType: 'application/json',
+                data: JSON.stringify(subData)
+            }).done((respMD) => {
+                router.navigate(`#plugins/journal/view/${this.parentId}`, {trigger: true});
+            });
         });
     },
     _appendData: function (subData) {
