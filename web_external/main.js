@@ -20,7 +20,7 @@ $(() => {
         parentView: null
     });
     app.start()
-        .then(() => {
+        .done(() => {
             // The default layout will always show on the first render (since app.navigateTo isn't
             // called), so trigger a normal navigation to hide it again.
             // TODO: This should use the current location, instead of the home page, to allow direct
