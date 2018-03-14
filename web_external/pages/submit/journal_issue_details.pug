@@ -1,0 +1,13 @@
+div(style="border: 3px solid black;")
+  h2 #{info.name}
+  pre #{info.description}
+  h3(style="margin-bottom:0;")
+  p
+    b Paper due:
+    | #{info.meta.paperDue}
+    b Decision:
+    | #{info.meta.decision}
+    b Publication:
+    | #{info.meta.publication}
+  input#closeDetails(type="button", value="Close")
+j
