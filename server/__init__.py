@@ -20,12 +20,14 @@ import os
 import six
 import json
 import datetime
+from bson.objectid import ObjectId
 
 from girder.api.describe import Description, describeRoute
 from girder.api.rest import Resource, RestException, filtermodel, loadmodel
 from girder.api import access
 from girder.constants import AccessType, TokenScope
 from girder.models.model_base import ValidationException
+from girder.models.folder import Folder
 # from girder.utility import mail_utils
 from girder.utility.model_importer import ModelImporter
 from girder.utility.plugin_utilities import getPluginDir, registerPluginWebroot
@@ -388,10 +390,31 @@ class TechJournal(Resource):
                 raise RestException('List was not a valid JSON list.')
             return {k: getFunc(k, **funcParams) for k in keys}
 
+    def _onDownloadFileComplete(self, event):
+        Folder().increment(
+            query={'_id': ObjectId(event.info['id'])},
+            field='downloadStatistics.completed',
+            amount=1
+        )
+
+    def _onPageView(self, event):
+        Folder().increment(
+            query={'_id': ObjectId(event.info['id'])},
+            field='downloadStatistics.views',
+            amount=1
+        )
+
 
 def load(info):
     techJournal = TechJournal()
     events.bind('model.setting.validate', 'journalMain', validateSettings)
     info['apiRoot'].journal = techJournal
-
+    # Bind REST events
+    events.bind('rest.get.folder/:id/download.after',
+                'tech_journal',
+                techJournal._onDownloadFileComplete)
+    events.bind('rest.get.journal/:id/details.after',
+                'tech_journal',
+                techJournal._onPageView)
+    Folder().exposeFields(level=AccessType.READ, fields='downloadStatistics')
     registerPluginWebroot(Webroot(), info['name'])

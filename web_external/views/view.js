@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import View from 'girder/views/View';
 import router from 'girder/router';
 import { getCurrentUser } from 'girder/auth';
