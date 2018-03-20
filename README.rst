@@ -5,7 +5,7 @@ Assumes an certain folder structure so far for the main page display:
 The top level collection ID value is what should be used in the configuration page
 It will then search for the folders under each, to find all available journal "issues"
 
-From each of those "issues", it will query for a "submission" which is an available folder 
+From each of those "issues", it will query for a "submission" which is an available folder
 in the "issue".  Eventually, this folder will have metadata for the rest of the information
 that needs to be shown.  A sample structure is found in a graphic diagram before, with the Girder
 type in parenthesis:
@@ -104,9 +104,9 @@ links will take you to the correct pages.
 .. |build-status| image:: https://circleci.com/gh/girder/tech_journal.png?style=shield
     :target: https://circleci.com/gh/girder/tech_journal
     :alt: Build Status
-    
+
 .. |license-badge| image:: https://img.shields.io/github/license/girder/tech_journal.svg
     :target: https://raw.githubusercontent.com/girder/tech_journal/master/LICENSE
     :alt: License
-    
+
 .. _`Read The Docs`: http://girder.readthedocs.io/en/latest/installation.html
