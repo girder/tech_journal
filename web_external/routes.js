@@ -10,7 +10,6 @@ import { Layout } from 'girder/constants';
 // Import views from plugin
 import submitView from './pages/submit/submit';
 import editView from './pages/submit/editSubmission';
-import uploadView from './views/upload';
 import submissionView from './views/view';
 import approvalView from './views/manageApproval';
 import downloadView from './views/download';
@@ -54,6 +53,7 @@ router.route('journals', 'journalList', function () {
     testUserAccess(JournalListPage, {}, true, true);
 });
 
+import uploadView from './pages/upload/upload';
 // Upload files to a submission
 router.route('plugins/journal/submission/:id/upload/new', 'uploadFiles', function (id) {
     testUserAccess(uploadView, {id: id, newSub: true, NR: false}, true, false);

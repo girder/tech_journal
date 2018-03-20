@@ -6,9 +6,9 @@ import { getCurrentUser } from 'girder/auth';
 import { handleClose } from 'girder/dialog';
 import { restRequest } from 'girder/rest';
 
-import MenuBarView from './menuBar.js';
-import UploadViewTemplate from '../templates/journal_upload.pug';
-import UploadEntryTemplate from '../templates/journal_upload_entry.pug';
+import MenuBarView from '../../views/menuBar.js';
+import UploadViewTemplate from './journal_upload.pug';
+import UploadEntryTemplate from './journal_upload_entry.pug';
 
 var fileTypes = ['', 'Thumbnail', 'Source', 'Paper', 'Data', 'Other', 'Github', 'Reference', 'Testing'];
 var uploadView = View.extend({
@@ -75,21 +75,7 @@ var uploadView = View.extend({
         'change #acceptLicense': function (event) {
             var license = this.$('#licenseChoice').val();
             this.$('#hiddenSourceLicense').attr('value', this.$('#licenseChoice').is(':checked') ? license : 0);
-
-            if (license === 1 && this.$('#acceptLicense').is(':checked')) {
-                this.$('#acceptAttributionPolicy').show();
-                this.$('#acceptAttributionPolicyLabel').show();
-            } else {
-                this.$('#acceptAttributionPolicy').hide();
-                this.$('#acceptAttributionPolicyLabel').hide();
-            }
-            if (license === 3 && this.$('#acceptLicense').is(':checked')) {
-                this.$('#otherLicenseInput').show();
-                this.$('#otherLicenseInputLabel').show();
-            } else {
-                this.$('#otherLicenseInput').hide();
-                this.$('#otherLicenseInputLabel').hide();
-            }
+            this._checkForm(license);
             var acceptAttributionPolicyIsSelected = $('#acceptAttributionPolicy').is(':visible') && $('#acceptAttributionPolicy').is(':checked');
             this.$('#hiddenAttributionPolicy').attr('value', acceptAttributionPolicyIsSelected ? 1 : 0);
             this.submitCheck();
@@ -97,23 +83,8 @@ var uploadView = View.extend({
 
         'change #licenseChoice': function (event) {
             var license = this.$('#licenseChoice').val();
-            this.$('#hiddenSourceLicense').attr('value', this.$('#acceptLicense').is(':checked') ? license : 0);
-
-            if (license === 1 && this.$('#acceptLicense').is(':checked')) {
-                this.$('#acceptAttributionPolicy').show();
-                this.$('#acceptAttributionPolicyLabel').show();
-            } else {
-                this.$('#acceptAttributionPolicy').hide();
-                this.$('#acceptAttributionPolicyLabel').hide();
-            }
-
-            if (license === 3 && this.$('#acceptLicense').is(':checked')) {
-                this.$('#otherLicenseInput').show();
-                this.$('#otherLicenseInputLabel').show();
-            } else {
-                this.$('#otherLicenseInput').hide();
-                this.$('#otherLicenseInputLabel').hide();
-            }
+            this.$('#hiddenSourceLicense').attr('value', this.$('#acceptLicense').is(':checked') ? license : '0');
+            this._checkForm(license);
             var acceptAttributionPolicyIsSelected = this.$('#acceptAttributionPolicy').is(':visible') && this.$('#acceptAttributionPolicy').is(':checked');
             this.$('#hiddenAttributionPolicy').attr('value', acceptAttributionPolicyIsSelected ? 1 : 0);
             this.submitCheck();
@@ -262,6 +233,22 @@ var uploadView = View.extend({
                 router.navigate(`#plugins/journal/view/${this.parentId}`, {trigger: true});
             });
         });
+    },
+    _checkForm: function (license) {
+        if (license === '1' && this.$('#acceptLicense').is(':checked')) {
+            this.$('#acceptAttributionPolicy').show();
+            this.$('#acceptAttributionPolicyLabel').show();
+        } else {
+            this.$('#acceptAttributionPolicy').hide();
+            this.$('#acceptAttributionPolicyLabel').hide();
+        }
+        if (license === '3' && this.$('#acceptLicense').is(':checked')) {
+            this.$('#otherLicenseInput').show();
+            this.$('#otherLicenseInputLabel').show();
+        } else {
+            this.$('#otherLicenseInput').hide();
+            this.$('#otherLicenseInputLabel').hide();
+        }
     }
 });
 
