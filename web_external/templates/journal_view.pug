@@ -22,6 +22,12 @@ mixin deleteCommentConfirmation()
     input.globalButton.deleteCommentYes(type="button", value="Yes")
     input.globalButton.deleteCommentNo(type="button", value="Cancel")
 
+-  var downloadCount=0
+-  var viewCount=0
+if 'downloadStatistics' in info.revision
+  - downloadCount = info.revision.downloadStatistics.completed
+  - viewCount = info.revision.downloadStatistics.views
+
 #headerBar
 .Wrapper
   .Content
@@ -40,6 +46,9 @@ mixin deleteCommentConfirmation()
                 a(href=info.revision.meta.github) GitHub
         h4 Export citation:
         h4 Statistics:
+          ul
+            li Views: #{viewCount}
+            li Downloads: #{downloadCount}
         h4 Information
           ul
             li Type: #{info.revision.meta.type}
