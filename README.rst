@@ -12,11 +12,15 @@ type in parenthesis:
 
 .. parsed-literal::
 
-   OTJ (Collection) --------> 2016 Jan-Jun (folder) -----> Submission 1 (folder)  --> blah.tar
-              \                                     \------ Submission 2 (folder) --> Paper.docx
-               \
-                \   --------> 2016 Jun-Dec (folder) -----> Submission 3 (folder)  --> Paper2.docx
-
+   OTJ (collection)
+   ├── 2016 Jan-Jun (folder)
+   │   ├── Submission 1 (folder)
+   │   │   └── blah.tar
+   │   └── Submission 2 (folder)
+   │       └── Paper.docx
+   └── 2016 Jun-Dec (folder)
+       └── Submission 3 (folder)
+           └── Paper2.docx
 
 Setup Instructions
 ------------------
