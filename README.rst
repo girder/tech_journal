@@ -92,11 +92,11 @@ generated above and click ``Save Configuration``.
 Once that has been saved, the plugin should be configured and ready to be used.
 Visit the entry point of the plugin by visiting:::
 
-   http://<webroot>/#plugins/journal/journal
+   http://<webroot>/tech_journal
 
 Or something like this for a localhost instance:::
 
-  http://localhost:8080/#plugins/journal/journal
+  http://localhost:8080/tech_journal
 
 **WARNING**
 
