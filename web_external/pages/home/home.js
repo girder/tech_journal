@@ -35,7 +35,11 @@ const HomePage = View.extend({
             });
         },
         'click #showMoreResults': function (event) {
-            this.getSubmissions(this.collectionID, this.querystring, $('.SearchResultEntry').length);
+            if (this.querystring === '*') {
+                this.getSubmissions(this.collectionID, this.querystring, $('.SearchResultEntry').length);
+            } else {
+                this.querySubmissions(this.collectionID, this.querystring, $('.SearchResultEntry').length);
+            }
         }
     },
     initialize: function (query) {
