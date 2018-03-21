@@ -1,22 +1,26 @@
 Tech Journal Plugin |build-status| |license-badge|
 ==================================================
 
-Assumes an certain folder structure so far for the main page display:
+Assumes a certain folder structure so far for the main page display:
 The top level collection ID value is what should be used in the configuration page
 It will then search for the folders under each, to find all available journal "issues"
 
-From each of those "issues", it will query for a "submission" which is an available folder 
+From each of those "issues", it will query for a "submission" which is an available folder
 in the "issue".  Eventually, this folder will have metadata for the rest of the information
-that needs to be shown.  A sample structure is found in a graphic diagram before, with the Girder
+that needs to be shown.  A sample structure is found in a graphic diagram below, with the Girder
 type in parenthesis:
 
 .. parsed-literal::
 
-   OTJ (Collection) --------> 2016 Jan-Jun (folder) -----> Submission 1 (folder)  --> blah.tar
-              \                                     \------ Submission 2 (folder) --> Paper.docx
-               \
-                \   --------> 2016 Jun-Dec (folder) -----> Submission 3 (folder)  --> Paper2.docx
-
+   OTJ (collection)
+   ├── 2016 Jan-Jun (folder)
+   │   ├── Submission 1 (folder)
+   │   │   └── blah.tar
+   │   └── Submission 2 (folder)
+   │       └── Paper.docx
+   └── 2016 Jun-Dec (folder)
+       └── Submission 3 (folder)
+           └── Paper2.docx
 
 Setup Instructions
 ------------------
@@ -47,7 +51,7 @@ This creation of the collection can also be done by utilizing the
 ``plugins/admin/journal`` page of the OTJ.
 
 **Note**  The description of the collection must contain the string
- `` __journal__ `` to be picked up by certain OTJ pages.
+``__journal__`` to be picked up by certain OTJ pages.
 
 The "Unique ID" of this folder, which can be found by clicking on the blue
 button with  an ``i`` on it, will be used later to configure the Tech Journal
@@ -86,13 +90,13 @@ filled out at this point.  Enter the ``Unique ID`` of the collection that was
 generated above and click ``Save Configuration``.
 
 Once that has been saved, the plugin should be configured and ready to be used.
-Visit the entry point of the plugin by visiting:::
+Visit the entry point of the plugin by visiting::
 
-   http://<webroot>/#plugins/journal/journal
+   http://<webroot>/tech_journal
 
-Or something like this for a localhost instance:::
+Or something like this for a localhost instance::
 
-  http://localhost:8080/#plugins/journal/journal
+  http://localhost:8080/tech_journal
 
 **WARNING**
 
@@ -104,9 +108,9 @@ links will take you to the correct pages.
 .. |build-status| image:: https://circleci.com/gh/girder/tech_journal.png?style=shield
     :target: https://circleci.com/gh/girder/tech_journal
     :alt: Build Status
-    
+
 .. |license-badge| image:: https://img.shields.io/github/license/girder/tech_journal.svg
     :target: https://raw.githubusercontent.com/girder/tech_journal/master/LICENSE
     :alt: License
-    
+
 .. _`Read The Docs`: http://girder.readthedocs.io/en/latest/installation.html
