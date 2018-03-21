@@ -18,4 +18,8 @@ $(() => {
         parentView: null
     });
     events.trigger('g:appload.after', app);
+
+    if (process.env.GA_KEY) {
+      console.log(process.env.GA_KEY);
+    }
 });
