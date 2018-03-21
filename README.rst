@@ -51,7 +51,7 @@ This creation of the collection can also be done by utilizing the
 ``plugins/admin/journal`` page of the OTJ.
 
 **Note**  The description of the collection must contain the string
- `` __journal__ `` to be picked up by certain OTJ pages.
+``__journal__`` to be picked up by certain OTJ pages.
 
 The "Unique ID" of this folder, which can be found by clicking on the blue
 button with  an ``i`` on it, will be used later to configure the Tech Journal
