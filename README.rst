@@ -90,11 +90,11 @@ filled out at this point.  Enter the ``Unique ID`` of the collection that was
 generated above and click ``Save Configuration``.
 
 Once that has been saved, the plugin should be configured and ready to be used.
-Visit the entry point of the plugin by visiting:::
+Visit the entry point of the plugin by visiting::
 
    http://<webroot>/tech_journal
 
-Or something like this for a localhost instance:::
+Or something like this for a localhost instance::
 
   http://localhost:8080/tech_journal
 
