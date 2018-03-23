@@ -14,19 +14,20 @@ import './routes';
 $(() => {
     const gaKey = process.env.GA_KEY;
     if (gaKey) {
-      // Inject the Google Analytics framework.
-      let s = document.createElement('script');
-      s.type = 'text/javascript';
-      s.src = `https://www.googletagmanager.com/gtag/js?id=${gaKey}`;
-      document.getElementsByTagName('head')[0].appendChild(s);
+        // Inject the Google Analytics framework.
+        let s = document.createElement('script');
+        s.type = 'text/javascript';
+        s.src = `https://www.googletagmanager.com/gtag/js?id=${gaKey}`;
+        document.getElementsByTagName('head')[0].appendChild(s);
 
-      // Launch tracking for this site.
-      window.dataLayer = window.dataLayer || [];
-      const gtag = function () {
-        dataLayer.push(arguments);
-      }
-      gtag('js', new Date());
-      gtag('config', gaKey);
+        // Launch tracking for this site.
+        let dataLayer = window.dataLayer;
+        dataLayer = dataLayer || [];
+        const gtag = function () {
+          dataLayer.push(arguments);
+        };
+        gtag('js', new Date());
+        gtag('config', gaKey);
     }
 
     events.trigger('g:appload.before');
