@@ -24,7 +24,7 @@ $(() => {
         let dataLayer = window.dataLayer;
         dataLayer = dataLayer || [];
         const gtag = function () {
-          dataLayer.push(arguments);
+            dataLayer.push(arguments);
         };
         gtag('js', new Date());
         gtag('config', gaKey);
