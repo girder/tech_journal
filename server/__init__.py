@@ -157,10 +157,8 @@ class TechJournal(Resource):
     @describeRoute(Description('Get all submissions from a given Journal')
                    .responseClass('Collection')
                    .param('id', "The ID of the Journal (collection) to pull from", paramType='path')
-                   .param('filterID', "The ID of the Issue to limit the results from",
-                          required=False)
-                   .param('strtIndex', "The index of the list of issues to start displaying",
-                          required=False)
+                   .param('filterID', "The ID of the Issue to limit the results from")
+                   .param('strtIndex', "The index of the list of issues to start displaying")
                    .errorResponse('Test error.')
                    .errorResponse('Read access was denied on the issue.', 403)
                    )
@@ -181,9 +179,11 @@ class TechJournal(Resource):
                                                             ))
                     if len(submissionInfo):
                         submission['currentRevision'] = submissionInfo[-1]
-                    totalData.append(submission)
-        totalData.reverse()
-        return totalData[int(params["strtIndex"]):int(params["strtIndex"])+20]
+                    if "curation" in submission:
+                        if submission['curation']['status'] != "REQUESTED":
+                            totalData.append(submission)
+        totalData = sorted(totalData, reverse=True, key=lambda submission: submission['updated'])
+        return totalData[int(params['strtIndex']):int(params['strtIndex'])+20]
 
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)
@@ -249,6 +249,7 @@ class TechJournal(Resource):
                         if len(submissionInfo):
                             submission['currentRevision'] = submissionInfo[-1]
                         totalData.append(submission)
+        totalData = sorted(totalData, reverse=True, key=lambda submission: submission['updated'])
         return totalData
 
     @access.public(scope=TokenScope.DATA_READ)
