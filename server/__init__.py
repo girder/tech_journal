@@ -84,6 +84,7 @@ class TechJournal(Resource):
         super(TechJournal, self).__init__()
         self.resourceName = 'journal'
         self.route('GET', (':id', 'submissions'), self.getAllSubmissions)
+        self.route('GET', (':id', 'pending'), self.getPendingSubmissions)
         self.route('GET', (), self.getAllJournals)
         self.route('GET', (':id', 'issues'), self.getAllIssues)
         self.route('GET', (':id', 'openissues',), self.getFilteredIssues)
@@ -184,6 +185,36 @@ class TechJournal(Resource):
                             totalData.append(submission)
         totalData = sorted(totalData, reverse=True, key=lambda submission: submission['updated'])
         return totalData[int(params['strtIndex']):int(params['strtIndex'])+20]
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @loadmodel(model='collection', level=AccessType.READ)
+    @describeRoute(Description('Get all pending submissions from a given Journal')
+                   .responseClass('Collection')
+                   .param('id', 'The ID of the Journal (collection) to pull from', paramType='path')
+                   .errorResponse('Test error.')
+                   .errorResponse('Read access was denied on the issue.', 403)
+                   )
+    def getPendingSubmissions(self, collection, params):
+        totalData = list()
+        issues = list(self.model('folder').childFolders(parentType='collection', parent=collection,
+                                                        user=self.getCurrentUser()))
+        for issue in issues:
+            testInfo = list(self.model('folder').childFolders(parentType='folder', parent=issue,
+                                                              user=self.getCurrentUser()))
+            for submission in testInfo:
+                # Find all folders under each submission to capture all revisions
+                submissionInfo = list(self.model('folder')
+                                          .childFolders(parentType='folder',
+                                                        parent=submission,
+                                                        user=self.getCurrentUser()
+                                                        ))
+                if len(submissionInfo):
+                    submission['currentRevision'] = submissionInfo[-1]
+                if "curation" in submission:
+                    if submission['curation']['status'] == "REQUESTED":
+                        totalData.append(submission)
+        totalData = sorted(totalData, reverse=True, key=lambda submission: submission['updated'])
+        return totalData
 
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)
