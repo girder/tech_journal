@@ -15,24 +15,16 @@ var manageApprovalView = View.extend({
             path: 'journal/setting',
             data: {
                 list: JSON.stringify([
-                    'technical_journal.default_journal'
+                    'tech_journal.default_journal'
                 ])
             }
         }).done((resp) => {
+            console.log(resp);
             restRequest({
                 type: 'GET',
-                path: `journal/${resp['technical_journal.default_journal']}/submissions?filterID=*`,
-                params: {
-                    filterID: '*'
-                }
+                path: `journal/${resp['tech_journal.default_journal']}/pending?`
             }).done((jrnResp) => {
-                var approvalSubs = [];
-                jrnResp.forEach(function (sub) {
-                    if (sub.curation.status === 'REQUESTED') {
-                        approvalSubs.push(sub);
-                    }
-                });
-                this.render(approvalSubs);
+                this.render(jrnResp);
             });
         });
     },

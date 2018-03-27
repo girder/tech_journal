@@ -65,22 +65,25 @@ const HomePage = View.extend({
     },
     render: function (subData, searchVal, collection) {
         var pendingSubs = 0;
-        subData.forEach(function (d) {
-            if (d.curation.status === 'REQUESTED') { pendingSubs++; }
-        });
         restRequest({
             type: 'GET',
             path: `journal/${collection}/issues`
         }).done((jrnResp) => {
-            this.$el.html(HomeTemplate({
-                info: { 'issues': jrnResp }
-            }));
-            this.$('.searchResults').html(this.$('.searchResults').html() + IndexEntryViewTemplate({info: {'submissions': subData}}));
-            new MenuBarView({ // eslint-disable-line no-new
-                el: this.$el,
-                parentView: this,
-                searchBoxVal: searchVal,
-                pendingSubNum: pendingSubs
+            restRequest({
+                type: 'GET',
+                path: `journal/${this.defaultJournal}/pending?`
+            }).done((pendRsp) => {
+                pendingSubs = pendRsp.length;
+                this.$el.html(HomeTemplate({
+                    info: { 'issues': jrnResp }
+                }));
+                this.$('.searchResults').html(this.$('.searchResults').html() + IndexEntryViewTemplate({info: {'submissions': subData}}));
+                new MenuBarView({ // eslint-disable-line no-new
+                    el: this.$el,
+                    parentView: this,
+                    searchBoxVal: searchVal,
+                    pendingSubNum: pendingSubs
+                });
             });
         });
 
