@@ -345,13 +345,13 @@ class TechJournal(Resource):
         data = {'name': parentFolder['name'],
                 'authors': folder['meta']['authors'],
                 'abstract': parentFolder['description']}
-        subject = ""
+        subject = ''
         if folder['name'] == 'Revision 1':
-            subject = "New Submission"
+            subject = 'New Submission'
             params['sendEmail'] = True
             emailTemplate = 'tech_journal_new_submission.mako'
         else:
-            subject = "Updated Submission"
+            subject = 'Updated Submission'
             data['rNotes'] = folder['description']
             emailTemplate = 'tech_journal_updated.mako'
         html = mail_utils.renderTemplate(emailTemplate, data)
@@ -396,9 +396,9 @@ class TechJournal(Resource):
                                                  force=True)
         self.model('folder').setMetadata(parentFolder, parentMetaData)
         self.model('folder').setMetadata(folder, metadata)
-        if "comments" in parentMetaData.keys():
+        if 'comments' in parentMetaData.keys():
             data = {'name': parentFolder['name'],
-                    'commentText': parentMetaData['comments'][-1]["text"],
+                    'commentText': parentMetaData['comments'][-1]['text'],
                     'commentAuthor':  parentMetaData['comments'][-1]["name"]}
             subject = "Comment Added - Submission %s" % parentFolder['name']
             emailTemplate = 'tech_journal_new_comment.mako'
