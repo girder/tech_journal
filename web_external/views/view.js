@@ -73,7 +73,7 @@ var submissionView = View.extend({
     updateComments: function () {
         restRequest({
             type: 'PUT',
-            path: `folder/${this.parentId}/metadata`,
+            path: `journal/${this.displayId}/metadata`,
             contentType: 'application/json',
             data: JSON.stringify({'comments': this.currentComments}),
             error: null

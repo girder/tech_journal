@@ -4,14 +4,14 @@
 ###############################################################################
 #  Copyright 2016 Open Source Electronic Health Record Alliance.
 #
-#  Licensed under the Apache License, Version 2.0 ( the "License" );
+#  Licensed under the Apache License, Version 2.0 ( the 'License' );
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
 #
 #    http://www.apache.org/licenses/LICENSE-2.0
 #
 #  Unless required by applicable law or agreed to in writing, software
-#  distributed under the License is distributed on an "AS IS" BASIS,
+#  distributed under the License is distributed on an 'AS IS' BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
@@ -28,7 +28,7 @@ from girder.api import access
 from girder.constants import AccessType, TokenScope
 from girder.models.model_base import ValidationException
 from girder.models.folder import Folder
-# from girder.utility import mail_utils
+from girder.utility import mail_utils
 from girder.utility.model_importer import ModelImporter
 from girder.utility.plugin_utilities import getPluginDir, registerPluginWebroot
 from girder.utility.webroot import WebrootBase
@@ -61,9 +61,9 @@ def validateSettings(event):
                 raise ValidationException(
                     'Tech Journal Resources must be a string.', 'value')
             # accept comma or space separated lists
-            resources = val.replace(",", " ").strip().split()
+            resources = val.replace(',', ' ').strip().split()
             # reformat to a comma-separated list
-            event.info["value"] = ",".join(resources)
+            event.info['value'] = ','.join(resources)
     event.preventDefault().stopPropagation()
 
 
@@ -101,7 +101,7 @@ class TechJournal(Resource):
     @describeRoute(
         Description('Get all Issues from a given Journal')
         .responseClass('Collection')
-        .param('id', "The ID of the Journal (collection) to pull from", paramType='path')
+        .param('id', 'The ID of the Journal (collection) to pull from', paramType='path')
         .errorResponse('Test error.')
         .errorResponse('Read access was denied on the issue.', 403)
     )
@@ -116,7 +116,7 @@ class TechJournal(Resource):
     @describeRoute(
         Description('Get filtered Issues from a given Journal which are still active')
         .responseClass('Collection')
-        .param('id', "The ID of the Journal (collection) to pull from", paramType='path')
+        .param('id', 'The ID of the Journal (collection) to pull from', paramType='path')
         .errorResponse('Test error.')
         .errorResponse('Read access was denied on the issue.', 403)
     )
@@ -127,10 +127,10 @@ class TechJournal(Resource):
         activeIssues = []
         for issue in issues:
             try:
-                dateofIssue = datetime.datetime.strptime(issue["meta"]["paperDue"],
+                dateofIssue = datetime.datetime.strptime(issue['meta']['paperDue'],
                                                          '%Y-%m-%d %H:%M:%S')
             except ValueError:
-                dateofIssue = datetime.datetime.strptime(issue["meta"]["paperDue"],
+                dateofIssue = datetime.datetime.strptime(issue['meta']['paperDue'],
                                                          '%Y-%m-%dT%H:%M:%S.%fZ')
             if dateofIssue > datetime.datetime.now():
                 activeIssues.append(issue)
@@ -140,14 +140,14 @@ class TechJournal(Resource):
     @loadmodel(model='folder', level=AccessType.READ)
     @describeRoute(
         Description('Get all details of a submission')
-        .param('id', "The ID of the submission", paramType='path')
+        .param('id', 'The ID of the submission', paramType='path')
         .errorResponse('Test error.')
         .errorResponse('Read access was denied on the issue.', 403)
     )
     def getSubmissionDetails(self, folder, params):
-        parentInfo = self.model('folder').load(folder["parentId"],
+        parentInfo = self.model('folder').load(folder['parentId'],
                                                user=self.getCurrentUser(), force=True)
-        currentInfo = self.model('folder').load(folder["_id"],
+        currentInfo = self.model('folder').load(folder['_id'],
                                                 user=self.getCurrentUser(), force=True)
         otherRevs = list(self.model('folder').childFolders(parentType='folder', parent=parentInfo,
                                                            user=self.getCurrentUser()))
@@ -168,7 +168,7 @@ class TechJournal(Resource):
         issues = list(self.model('folder').childFolders(parentType='collection', parent=collection,
                                                         user=self.getCurrentUser()))
         for issue in issues:
-            if ((str(issue["_id"]) == params["filterID"]) or (params["filterID"] == "*")):
+            if ((str(issue['_id']) == params['filterID']) or (params['filterID'] == '*')):
                 testInfo = list(self.model('folder').childFolders(parentType='folder', parent=issue,
                                                                   user=self.getCurrentUser()))
                 for submission in testInfo:
@@ -221,9 +221,9 @@ class TechJournal(Resource):
     @describeRoute(
         Description('Get submissions matching a certain set of parameters')
         .responseClass('Collection')
-        .param('id', "The ID of the Journal (collection) to pull from", paramType='path')
-        .param('query', "A JSON object to filter the objects over", required=False)
-        .param('text', "A JSON object to filter the objects over", required=False)
+        .param('id', 'The ID of the Journal (collection) to pull from', paramType='path')
+        .param('query', 'A JSON object to filter the objects over', required=False)
+        .param('text', 'A JSON object to filter the objects over', required=False)
         .errorResponse('Test error.')
         .errorResponse('Read access was denied on the issue.', 403)
         )
@@ -240,7 +240,7 @@ class TechJournal(Resource):
                 if len(submissionInfo):
                     submission['currentRevision'] = submissionInfo[-1]
         else:
-            filterParams = json.loads(params["query"])
+            filterParams = json.loads(params['query'])
             totalData = list()
             issues = list(self.model('folder').childFolders(parentType='collection',
                                                             parent=collection,
@@ -254,8 +254,8 @@ class TechJournal(Resource):
                 for submission in testInfo:
                     foundMatch = True
                     for key in filterParams.keys():
-                        if key in submission["meta"].keys():
-                            foundMatch = checkValue(submission["meta"], filterParams, key)
+                        if key in submission['meta'].keys():
+                            foundMatch = checkValue(submission['meta'], filterParams, key)
                         else:
                             foundMatch = checkValue(submission, filterParams, key)
                     revisionInfo = list(self.model('folder')
@@ -266,8 +266,8 @@ class TechJournal(Resource):
                     if not foundMatch:
                         for revision in revisionInfo:
                             for key in filterParams.keys():
-                                if key in revision["meta"].keys():
-                                    foundMatch = checkValue(revision["meta"], filterParams, key)
+                                if key in revision['meta'].keys():
+                                    foundMatch = checkValue(revision['meta'], filterParams, key)
                                 else:
                                     foundMatch = checkValue(revision, filterParams, key)
                     if foundMatch:
@@ -293,33 +293,33 @@ class TechJournal(Resource):
         )
     def getAllJournals(self, params):
         user = self.getCurrentUser()
-        return list(self.model('collection').textSearch("__journal__", user=user))
+        return list(self.model('collection').textSearch('__journal__', user=user))
 
     @access.user(scope=TokenScope.DATA_READ)
     @loadmodel(model='folder', level=AccessType.WRITE)
     @describeRoute(
-        Description("Move folder from user's directory to the\
-                    issue while prepping it for curation")
+        Description('Move folder from user\'s directory to the\
+                    issue while prepping it for curation')
         .param('id', 'The ID of the folder.', paramType='path')
         .errorResponse('Test error.')
         .errorResponse('Read access was denied on the issue.', 403)
         )
     def finalizeSubmission(self, params, folder):
         DEFAULTS = {
-            "enabled": True,
-            "status": "REQUESTED"
+            'enabled': True,
+            'status': 'REQUESTED'
         }
         folder['curation'] = DEFAULTS
         folder['public'] = False
         self.model('folder').save(folder)
-        parentFolder = self.model('folder').load(folder["parentId"], force=True)
-        targetFolder = self.model('folder').load(parentFolder["meta"]["targetIssue"], force=True)
-        movedFolder = self.model('folder').move(parentFolder, targetFolder, "folder")
-        # data = {"name": folder['name']}
-        # text = mail_utils.renderTemplate('technical_journal_new_submission.mako', data)
-        # mail_utils.sendEmail(toAdmins=True,
-        #                       subject="New Submission - Pending Approval",
-        #                       text=text)
+        parentFolder = self.model('folder').load(folder['parentId'], force=True)
+        targetFolder = self.model('folder').load(parentFolder['meta']['targetIssue'], force=True)
+        movedFolder = self.model('folder').move(parentFolder, targetFolder, 'folder')
+        data = {'name': folder['name']}
+        text = mail_utils.renderTemplate('technical_journal_new_submission.mako', data)
+        mail_utils.sendEmail(toAdmins=True,
+                             subject='New Submission - Pending Approval',
+                             text=text)
         movedFolder['curation'] = DEFAULTS
         parentFolder['public'] = False
         self.model('folder').save(movedFolder)
@@ -328,23 +328,34 @@ class TechJournal(Resource):
     @access.user(scope=TokenScope.DATA_READ)
     @loadmodel(model='folder', level=AccessType.WRITE)
     @describeRoute(
-        Description("Approve a submission and make it publicly visable")
+        Description('Approve a submission and make it publicly visable')
         .param('id', 'The ID of the folder.', paramType='path')
         .errorResponse('Test error.')
         .errorResponse('Read access was denied on the issue.', 403)
         )
     def approveSubmission(self, params, folder):
         DEFAULTS = {
-            "enabled": False,
-            "status": "APPROVED"}
-        parentFolder = self.model('folder').load(folder["parentId"], force=True)
-        if not (parentFolder["parentId"] == parentFolder["meta"]["targetIssue"]):
-            targetFolder = self.model('folder').load(parentFolder["meta"]["targetIssue"],
+            'enabled': False,
+            'status': 'APPROVED'}
+        parentFolder = self.model('folder').load(folder['parentId'], force=True)
+        if not (parentFolder['parentId'] == parentFolder['meta']['targetIssue']):
+            targetFolder = self.model('folder').load(parentFolder['meta']['targetIssue'],
                                                      force=True)
-            self.model('folder').move(parentFolder, targetFolder, "folder")
-        # data = {"name": folder['name']}
-        # text = mail_utils.renderTemplate('technical_journal_new_submission.mako', data)
-        # mail_utils.sendEmail(toAdmins=True, subject="New Submission", text=text)
+            self.model('folder').move(parentFolder, targetFolder, 'folder')
+        data = {'name': parentFolder['name'],
+                'authors': folder['meta']['authors'],
+                'abstract': parentFolder['description']}
+        subject = ''
+        if folder['name'] == 'Revision 1':
+            subject = 'New Submission'
+            params['sendEmail'] = True
+            emailTemplate = 'tech_journal_new_submission.mako'
+        else:
+            subject = 'Updated Submission'
+            data['rNotes'] = folder['description']
+            emailTemplate = 'tech_journal_updated.mako'
+        html = mail_utils.renderTemplate(emailTemplate, data)
+        mail_utils.sendEmail(toAdmins=True, subject=subject, text=html)
         folder['curation'] = DEFAULTS
         folder['public'] = True
         parentFolder['curation'] = DEFAULTS
@@ -353,27 +364,47 @@ class TechJournal(Resource):
         self.model('folder').save(folder)
         return folder
 
-    @access.public(scope=TokenScope.DATA_READ)
-    @loadmodel(model='folder', level=AccessType.WRITE)
+    @access.user(scope=TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
     @describeRoute(
-        Description('Set metadata for a submission. Most stays on each\
-                    revision, but others go to the parent folder')
+        Description('Set metadata for a submission. Most stays on each revision,\
+                    but others go to the parent folder')
         .param('id', 'The ID of the folder.', paramType='path')
         .param('body', 'A JSON object containing the metadata keys to add',
                paramType='body')
         .errorResponse('Test error.')
         .errorResponse('Read access was denied on the issue.', 403)
-        )
+    )
     def setSubmissionMetadata(self, params, folder):
+        # Submission metadata is split between the parent and revision folders:
+        #    revision:
+        #      type
+        #      authors
+        #      institution
+        #      tags
+        #    parent
+        #      all other metadata
+        #
         metadata = self.getBodyJson()
         parentMetaData = {}
-        for key in ['related', 'copyright', 'grant', 'comments', 'targetIssue']:
+        for key in ['related', 'copyright', 'grant', 'comments', 'source-license',
+                    'source-license-text', 'attribution-policy', 'targetIssue']:
             if key in metadata.keys():
                 parentMetaData[key] = metadata.pop(key)
-        parentFolder = self.model('folder').load(folder["parentId"], user=self.getCurrentUser())
+        parentFolder = self.model('folder').load(folder['parentId'],
+                                                 user=self.getCurrentUser(),
+                                                 force=True)
         self.model('folder').setMetadata(parentFolder, parentMetaData)
         self.model('folder').setMetadata(folder, metadata)
-        return "Success"
+        if 'comments' in parentMetaData.keys():
+            data = {'name': parentFolder['name'],
+                    'commentText': parentMetaData['comments'][-1]['text'],
+                    'commentAuthor':  parentMetaData['comments'][-1]["name"]}
+            subject = "Comment Added - Submission %s" % parentFolder['name']
+            emailTemplate = 'tech_journal_new_comment.mako'
+            html = mail_utils.renderTemplate(emailTemplate, data)
+            mail_utils.sendEmail(toAdmins=True, subject=subject, text=html)
+        return 'Success'
 
     @access.admin(scope=TokenScope.DATA_READ)
     @describeRoute(
