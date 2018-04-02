@@ -18,7 +18,7 @@ var submissionView = View.extend({
             var commentInfo = {
                 'name': this.currentUser.name(),
                 'text': this.$('#commentText').val().trim(),
-                'index': this.currentComments.length
+                'index': String(this.currentComments.length)
             };
             this.currentComments.push(commentInfo);
             this.updateComments();
@@ -27,7 +27,7 @@ var submissionView = View.extend({
             event.preventDefault();
             var targetIndex = this.$(event.target).attr('val');
             this.currentComments.forEach(function (d) {
-                if (d.index === targetIndex) {
+                if (String(d.index) === targetIndex) {
                     d.name = '';
                     d.text = '';
                 }
