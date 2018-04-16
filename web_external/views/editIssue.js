@@ -49,33 +49,32 @@ var EditIssueView = View.extend({
         });
         return this;
     },
-    _updateIssue: function (issueData) {
-        restRequest({
+    _updateIssue: async function (issueData) {
+        const jrnResp = await restRequest({
             type: 'PUT',
             url: `folder/${this.parentId}`,
             data: {
                 name: issueData.issueName,
                 description: issueData.issueDescription
             }
-        }).done((jrnResp) => {
-            var paperDue = new Date(issueData.paperDue);
-            var decision = new Date(issueData.decision);
-            var publication = new Date(issueData.publication);
-            var issueDateData = {'paperDue': paperDue,
-                'decision': decision,
-                'publication': publication
-            };
-            restRequest({
-                type: 'PUT',
-                contentType: 'application/json',
-                url: `folder/${jrnResp._id}/metadata`,
-                data: JSON.stringify(issueDateData)
-            }).done((metaResp) => {
-            });
+        });
+
+        var paperDue = new Date(issueData.paperDue);
+        var decision = new Date(issueData.decision);
+        var publication = new Date(issueData.publication);
+        var issueDateData = {'paperDue': paperDue,
+            'decision': decision,
+            'publication': publication
+        };
+        restRequest({
+            type: 'PUT',
+            contentType: 'application/json',
+            url: `folder/${jrnResp._id}/metadata`,
+            data: JSON.stringify(issueDateData)
         });
     },
-    _createIssue: function (issueData) {
-        restRequest({
+    _createIssue: async function (issueData) {
+        const jrnResp = await restRequest({
             type: 'POST',
             url: 'folder',
             data: {
@@ -84,37 +83,33 @@ var EditIssueView = View.extend({
                 name: issueData.issueName,
                 description: issueData.issueDescription
             }
-        }).done((jrnResp) => {
-            var paperDue = new Date(issueData.paperDue);
-            var decision = new Date(issueData.decision);
-            var publication = new Date(issueData.publication);
-            var issueDateData = {'paperDue': paperDue,
-                'decision': decision,
-                'publication': publication
-            };
-            restRequest({
-                type: 'PUT',
-                contentType: 'application/json',
-                url: `folder/${jrnResp._id}/metadata`,
-                data: JSON.stringify(issueDateData)
-            }).done((metaResp) => {
-
-            });
+        });
+        var paperDue = new Date(issueData.paperDue);
+        var decision = new Date(issueData.decision);
+        var publication = new Date(issueData.publication);
+        var issueDateData = {'paperDue': paperDue,
+            'decision': decision,
+            'publication': publication
+        };
+        restRequest({
+            type: 'PUT',
+            contentType: 'application/json',
+            url: `folder/${jrnResp._id}/metadata`,
+            data: JSON.stringify(issueDateData)
         });
     },
-    _getCurrentInfo: function (journalData) {
-        restRequest({
+    _getCurrentInfo: async function (journalData) {
+        const jrnInfo = await restRequest({
             type: 'GET',
             url: `folder/${journalData.id}`
-        }).done((jrnInfo) => {
-            var paperDueTmp = new Date(jrnInfo.meta.paperDue);
-            var publicationTmp = new Date(jrnInfo.meta.publication);
-            var decisionTmp = new Date(jrnInfo.meta.decision);
-            jrnInfo.meta.paperDue = paperDueTmp.toJSON().slice(0, 10);
-            jrnInfo.meta.publication = publicationTmp.toJSON().slice(0, 10);
-            jrnInfo.meta.decision = decisionTmp.toJSON().slice(0, 10);
-            this.render(jrnInfo);
         });
+        var paperDueTmp = new Date(jrnInfo.meta.paperDue);
+        var publicationTmp = new Date(jrnInfo.meta.publication);
+        var decisionTmp = new Date(jrnInfo.meta.decision);
+        jrnInfo.meta.paperDue = paperDueTmp.toJSON().slice(0, 10);
+        jrnInfo.meta.publication = publicationTmp.toJSON().slice(0, 10);
+        jrnInfo.meta.decision = decisionTmp.toJSON().slice(0, 10);
+        this.render(jrnInfo);
     }
 });
 
