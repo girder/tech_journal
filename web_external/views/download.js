@@ -6,25 +6,24 @@ import DownloadViewTemplate from '../templates/journal_download.pug';
 
 var downloadView = View.extend({
 
-    initialize: function (subId) {
+    initialize: async function (subId) {
         this.parentId = subId.id;
-        restRequest({
+        const resp = await restRequest({
             type: 'GET',
             path: `folder/${this.parentId}`
-        }).done((resp) => {
-            this.parent = resp;
-            restRequest({
-                type: 'GET',
-                path: `item?folderId=${this.parentId}`
-            }).done((itemResp) => {
-                for (var index in itemResp) {
-                    if (itemResp[index].meta.type === 'Paper') {
-                        this.paperItem = itemResp[index];
-                    }
-                }
-                this.render(this.paperItem);
-            });
         });
+        this.parent = resp;
+        const itemResp = await restRequest({
+            type: 'GET',
+            path: `item?folderId=${this.parentId}`
+        });
+
+        for (var index in itemResp) {
+            if (itemResp[index].meta.type === 'Paper') {
+                this.paperItem = itemResp[index];
+            }
+        }
+        this.render(this.paperItem);
     },
     render: function (paperItem) {
         var paperDownloadUrl =
