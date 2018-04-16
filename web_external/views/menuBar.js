@@ -7,13 +7,12 @@ import MenuBarViewTemplate from '../templates/journal_menu_bar.pug';
 var MenuBarView = View.extend({
 
     events: {
-        'click #logout': function (event) {
-            restRequest({
+        'click #logout': async function (event) {
+            const resp = await restRequest({
                 type: 'DELETE',
                 path: 'user/authentication'
-            }).done((resp) => {
-                window.location.reload();
             });
+            window.location.reload();
         },
         'mouseenter #profileLink': function (event) {
             this.$('#adminOptionsList').attr('style', 'display: none;');
