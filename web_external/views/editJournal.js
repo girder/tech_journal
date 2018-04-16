@@ -52,16 +52,14 @@ var EditJournalView = View.extend({
                 description: journalData.issueDescription,
                 public: publicJournal
             }
-        }).done((jrnResp) => {
         });
     },
-    _getCurrentInfo: function (journalData) {
-        restRequest({
+    _getCurrentInfo: async function (journalData) {
+        const jrnInfo = await restRequest({
             type: 'GET',
             path: `collection/${journalData.id}`
-        }).done((jrnInfo) => {
-            this.render({info: jrnInfo});
         });
+        this.render({info: jrnInfo});
     }
 });
 
