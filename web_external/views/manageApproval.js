@@ -9,8 +9,8 @@ var manageApprovalView = View.extend({
 
     events: {
     },
-    initialize: function (options) {
-        restRequest({
+    initialize: async function (options) {
+        const resp = await restRequest({
             type: 'GET',
             path: 'journal/setting',
             data: {
@@ -18,15 +18,13 @@ var manageApprovalView = View.extend({
                     'tech_journal.default_journal'
                 ])
             }
-        }).done((resp) => {
-            console.log(resp);
-            restRequest({
-                type: 'GET',
-                path: `journal/${resp['tech_journal.default_journal']}/pending?`
-            }).done((jrnResp) => {
-                this.render(jrnResp);
-            });
         });
+        console.log(resp);
+        const jrnResp = await restRequest({
+            type: 'GET',
+            path: `journal/${resp['tech_journal.default_journal']}/pending?`
+        });
+        this.render(jrnResp);
     },
     render: function (subData) {
         this.$el.html(ApprovalViewTemplate({}));
