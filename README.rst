@@ -25,19 +25,33 @@ type in parenthesis:
 Setup Instructions
 ------------------
 
-To set up the instance of the Technical Journal plugin, install Girder
-following the instructions found on the `Read The Docs`_ documentation.
+To set up the Technical Journal plugin, follow these steps.
 
-Once that has been installed and the administrator user has been created,
-clone the ``tech_journal`` into the ``plugins`` directory of the
-Girder instance.
+1. Clone this repository: `git clone https://github.com/girder/tech_journal`.
+2. In the git repo directory, create a Python virtual environment: `virtualenv
+   venv`.
+3. Activate the virtual environment: `. venv/bin/activate`.
+4. Install Girder from PyPI: `pip install girder`.
+5. Build the Girder web client: `girder-install web`.
+6. Install the plugin's NPM dependencies: `npm install`.
+7. Build the plugin bundle: `npm run build`.
+8. Register the plugin to Girder: `girder-install plugin -s .`. (The `-s` is
+   important: it installs the plugin via symlink, since the virtual environment
+   is contained within the directory that will be installed as the plugin.)
+9. Start Girder: `girder-server`.
+10. Navigate to the Girder plugin configuration page and activate the Tech
+    Journal plugin.
+11. Restart Girder on the command line by hitting Ctrl-C and then re-running
+    `girder-server` (note: although ordinarily Girder would want to rebuild the
+    newly activated plugin, you do not need to do that now, since we are
+    building this plugin in a "standalone" mode, outside the control of Girder's
+    build system).
+12. (see below)
+13. Navigate to http://localhost:8080/tech_journal to launch the application.
 
-.. parsed-literal::
-  snyder@midas-vm:~/girder$ cd plugins/
-  snyder@midas-vm:~/girder/plugins$ git clone git://github.com/girder/tech_journal.git
-
-From there, there are a few more steps to take before you can start using the
-plugin, most of which will need to be done by the admin user.
+Before step 13, there are a few more steps to take before you can start using
+the plugin, most of which will need to be done by the admin user. These are
+described in the following sections.
 
 Generate Folder Structure
 ++++++++++++++++++++++++++
