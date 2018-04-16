@@ -32,8 +32,8 @@ const ConfigView = View.extend({
         }
     },
 
-    initialize: function () {
-        restRequest({
+    initialize: async function () {
+        const resp = await restRequest({
             type: 'GET',
             path: 'journal/setting',
             data: {
@@ -45,19 +45,14 @@ const ConfigView = View.extend({
                     'tech_journal.old_url'
                 ])
             }
-        }).done((resp) => {
-            this.render();
-            this.$('#admin_email').val(
-                resp['tech_journal.admin_email']);
-            this.$('#default_journal').val(
-                resp['tech_journal.default_journal']);
-            this.$('#default_layout').val(
-                resp['tech_journal.default_layout']);
-            this.$('#base_handle').val(
-                resp['tech_journal.base_handle']);
-            this.$('#old_url').val(
-                resp['tech_journal.old_url']);
         });
+
+        this.render();
+        this.$('#admin_email').val(resp['tech_journal.admin_email']);
+        this.$('#default_journal').val(resp['tech_journal.default_journal']);
+        this.$('#default_layout').val(resp['tech_journal.default_layout']);
+        this.$('#base_handle').val(resp['tech_journal.base_handle']);
+        this.$('#old_url').val(resp['tech_journal.old_url']);
     },
     render: function () {
         this.$el.html(ConfigTemplate());
@@ -72,25 +67,27 @@ const ConfigView = View.extend({
 
         return this;
     },
-    _saveSettings: function (settings) {
-        restRequest({
-            type: 'PUT',
-            path: 'journal/setting',
-            data: {
-                list: JSON.stringify(settings)
-            },
-            error: null
-        }).done((resp) => {
+    _saveSettings: async function (settings) {
+        try {
+            const resp = await restRequest({
+                type: 'PUT',
+                path: 'journal/setting',
+                data: {
+                    list: JSON.stringify(settings)
+                },
+                error: null
+            })
+
             events.trigger('g:alert', {
                 icon: 'ok',
                 text: 'Settings saved.',
                 type: 'success',
                 timeout: 4000
             });
-        }).error((resp) => {
+        } catch (err) {
             this.$('#g-journal-settings-error-message').text(
-                resp.responseJSON.message);
-        });
+                err.responseJSON.message);
+        }
     }
 });
 
