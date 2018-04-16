@@ -7,15 +7,14 @@ import IndexEntryViewTemplate from '../../templates/journal_index_entry.pug';
 
 const HomePage = View.extend({
     events: {
-        'click #search_button': function (event) {
+        'click #search_button': async function () {
             // search the available submissions for the text entered in the box
-            var searchText = $('#live_search').val();
-            restRequest({
+            const searchText = $('#live_search').val();
+            const resp = await restRequest({
                 type: 'GET',
                 path: `journal/${this.collectionID}/search?text=${searchText}`
-            }).done((resp) => {
-                this.render(resp, searchText, this.collectionID);
             });
+            this.render(resp, searchText, this.collectionID);
         },
         'click #clear_button': function (event) {
             // search the available submissions for the text entered in the box
