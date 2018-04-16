@@ -44,15 +44,14 @@ var submissionView = View.extend({
                 {trigger: true});
         }
     },
-    initialize: function (subId) {
+    initialize: async function (subId) {
         this.displayId = subId.id;
         this.currentUser = getCurrentUser();
-        restRequest({
+        const totalDetails = await restRequest({
             type: 'GET',
             path: `journal/${this.displayId}/details`
-        }).done((totalDetails) => {
-            this.render(totalDetails);
-        }); // End getting of parentData
+        });
+        this.render(totalDetails);
     },
     render: function (totalDetails) {
         totalDetails[1].meta.comments.sort(function (a, b) {
@@ -70,16 +69,15 @@ var submissionView = View.extend({
         this.$(`.revisionOption[value=${totalDetails[0]._id}]`).prop('selected', true);
         return this;
     },
-    updateComments: function () {
-        restRequest({
+    updateComments: async function () {
+        const resp = await restRequest({
             type: 'PUT',
             path: `journal/${this.displayId}/metadata`,
             contentType: 'application/json',
             data: JSON.stringify({'comments': this.currentComments}),
             error: null
-        }).done((resp) => {
-            window.location.reload();
         });
+        window.location.reload();
     }
 });
 
