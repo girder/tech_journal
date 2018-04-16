@@ -46,19 +46,18 @@ var uploadView = View.extend({
             var itemEntry = event.currentTarget.parentElement.parentElement;
             this._deleteFile(itemEntry);
         },
-        'click #addGithub': function (event) {
+        'click #addGithub': async function (event) {
             event.preventDefault();
             var subData = {'github': $('#github').val()};
-            restRequest({
+            const respMD = await restRequest({
                 type: 'PUT',
                 path: `folder/${this.parentId}/metadata`,
                 contentType: 'application/json',
                 data: JSON.stringify(subData),
                 error: null
-            }).done((respMD) => {
-                this.$('#uploadTable').append(UploadEntryTemplate({info: {'name': subData.github, '_id': 'github', 'meta': {'type': 6}}}));
-                this.$('#uploadQuestions').show();
             });
+            this.$('#uploadTable').append(UploadEntryTemplate({info: {'name': subData.github, '_id': 'github', 'meta': {'type': 6}}}));
+            this.$('#uploadQuestions').show();
         },
 
         // Change function for updating the attribution policy value and submit status
@@ -101,29 +100,29 @@ var uploadView = View.extend({
             this.submitCheck();
         }
     },
-    initialize: function (subId) {
+    initialize: async function (subId) {
         this.parentId = subId.id;
         this.newRevision = subId.NR;
-        restRequest({
+        const resp = await restRequest({
             type: 'GET',
             path: `journal/${this.parentId}/details`
-        }).done((resp) => {
-            this.curRevision = resp[0];
-            this.render();
-            restRequest({
-                type: 'GET',
-                path: `item?folderId=${this.parentId}`
-            }).done((itemResp) => {
-                for (var index in itemResp) {
-                    this.$('#uploadTable').append(UploadEntryTemplate({info: itemResp[index]}));
-                    this.$('#uploadQuestions').show();
-                    $('#acceptRights').prop('checked', 'checked');
-                    $('#acceptLicense').prop('checked', 'checked');
-                    $('#licenseChoice').val(resp[0].meta['source-license']);
-                    $('#otherLicenseInput').val(resp[0].meta['source-license-text']);
-                }
-            });
         });
+
+        this.curRevision = resp[0];
+        this.render();
+        const itemResp = await restRequest({
+            type: 'GET',
+            path: `item?folderId=${this.parentId}`
+        });
+
+        for (var index in itemResp) {
+            this.$('#uploadTable').append(UploadEntryTemplate({info: itemResp[index]}));
+            this.$('#uploadQuestions').show();
+            $('#acceptRights').prop('checked', 'checked');
+            $('#acceptLicense').prop('checked', 'checked');
+            $('#licenseChoice').val(resp[0].meta['source-license']);
+            $('#otherLicenseInput').val(resp[0].meta['source-license-text']);
+        }
     },
     render: function () {
         this.$el.html(UploadViewTemplate({user: getCurrentUser(), newRevision: this.newRevision}));
@@ -159,80 +158,77 @@ var uploadView = View.extend({
             parent: model,
             parentType: this.parentType,
             parentView: this
-        }).on('g:uploadFinished', function (retInfo) {
+        }).on('g:uploadFinished', async function (retInfo) {
             handleClose('upload');
             // upload the information to the submission value
             // show the information in the table
             var subData = {
                 'type': fileTypes[this.$('#typeFile').val().trim()]
             };
-            restRequest({
+            const resp = await restRequest({
                 type: 'GET',
                 path: `item?folderId=${this.parentId}&name=${retInfo.files[0].name}`
-            }).done((resp) => {
-                restRequest({
-                    type: 'PUT',
-                    path: `item/${resp[0]._id}/metadata`,
-                    contentType: 'application/json',
-                    data: JSON.stringify(subData),
-                    error: null
-                }).done((respMD) => {
-                    this.$('#uploadTable').append(UploadEntryTemplate({info: respMD}));
-                    this.$('#uploadQuestions').show();
-                });
             });
+
+            const respMD = await restRequest({
+                type: 'PUT',
+                path: `item/${resp[0]._id}/metadata`,
+                contentType: 'application/json',
+                data: JSON.stringify(subData),
+                error: null
+            });
+
+            this.$('#uploadTable').append(UploadEntryTemplate({info: respMD}));
+            this.$('#uploadQuestions').show();
         }, this).render();
     },
-    _deleteFile: function (itemEntry) {
+    _deleteFile: async function (itemEntry) {
         var objectIdentifier = itemEntry.attributes.getNamedItem('key').nodeValue;
         if (objectIdentifier === 'github') {
             var subData = {'github': ''};
-            restRequest({
+            const respMD = await restRequest({
                 type: 'PUT',
                 path: `folder/${this.parentId}/metadata`,
                 contentType: 'application/json',
                 data: JSON.stringify(subData),
                 error: null
-            }).done((respMD) => {
-                this.$(itemEntry).remove();
             });
+            this.$(itemEntry).remove();
         } else {
-            restRequest({
+            const respMD = await restRequest({
                 type: 'DELETE',
                 path: `item/${objectIdentifier}`,
                 error: null
-            }).done((respMD) => {
-                this.$(itemEntry).remove();
             });
+            this.$(itemEntry).remove();
         }
     },
 
-    _approveSubmission: function (subData) {
-        restRequest({
+    _approveSubmission: async function (subData) {
+        const respMD = await restRequest({
             type: 'PUT',
             path: `journal/${this.parentId}/approve`,
             contentType: 'application/json',
             data: JSON.stringify(subData)
-        }).done((respMD) => {
-            router.navigate(`#plugins/journal/view/${this.parentId}`, {trigger: true});
         });
+        router.navigate(`#plugins/journal/view/${this.parentId}`, {trigger: true});
     },
-    _appendData: function (subData) {
-        restRequest({
+    _appendData: async function (subData) {
+        const respMD = await restRequest({
             type: 'PUT',
             path: `journal/${this.parentId}/metadata`,
             contentType: 'application/json',
             data: JSON.stringify(subData),
             error: null
-        }).done((respMD) => {
-            restRequest({
-                type: 'PUT',
-                path: `journal/${this.parentId}/finalize`,
-                contentType: 'application/json'
-            }).done((respMD) => {
-                router.navigate(`#plugins/journal/view/${this.parentId}`, {trigger: true});
-            });
         });
+
+        const respMD2 = await restRequest({
+            type: 'PUT',
+            path: `journal/${this.parentId}/finalize`,
+            contentType: 'application/json'
+        });
+
+        router.navigate(`#plugins/journal/view/${this.parentId}`, {trigger: true});
     },
     _checkForm: function (license) {
         if (license === '1' && this.$('#acceptLicense').is(':checked')) {
