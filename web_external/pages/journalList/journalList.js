@@ -10,19 +10,19 @@ const JournalListPage = View.extend({
     initialize: function () {
         this.render();
     },
-    render: function (subData, searchVal) {
-        restRequest({
+    render: async function (subData, searchVal) {
+        const jrnResp = await restRequest({
             type: 'GET',
             path: 'journal'
-        }).done((jrnResp) => {
-            this.$el.html(JournalListTemplate({
-                info: { 'journals': jrnResp }
-            }));
-            new MenuBarView({ // eslint-disable-line no-new
-                el: this.$el,
-                parentView: this,
-                searchBoxVal: searchVal
-            });
+        });
+
+        this.$el.html(JournalListTemplate({
+            info: { 'journals': jrnResp }
+        }));
+        new MenuBarView({ // eslint-disable-line no-new
+            el: this.$el,
+            parentView: this,
+            searchBoxVal: searchVal
         });
 
         return this;
