@@ -472,6 +472,11 @@ def load(info):
     techJournal = TechJournal()
     events.bind('model.setting.validate', 'journalMain', validateSettings)
     info['apiRoot'].journal = techJournal
+    print os.path.join(info['pluginRootDir'], 'dist', 'js')
+    info['config']['/tech_journal_js'] = {
+        'tools.staticdir.on': True,
+        'tools.staticdir.dir': os.path.join(info['pluginRootDir'], 'dist', 'js')
+    }
     # Bind REST events
     events.bind('rest.get.folder/:id/download.after',
                 'tech_journal',
