@@ -13,9 +13,9 @@ var editView = View.extend({
             this.parentID = event.currentTarget.target;
             this.render(event.currentTarget.target);
         },
-        'submit #submitForm': function (event) {
+        'submit #submitForm': async function (event) {
             event.preventDefault();
-            restRequest({
+            const resp = await restRequest({
                 type: 'PUT',
                 path: `folder/${this.parentId}`,
                 data: {
@@ -24,15 +24,15 @@ var editView = View.extend({
                     description: this.$('#abstractEntry').val().trim()
                 },
                 error: null
-            }).done((resp) => {
-                if (this.newRevision) {
-                    this._generateNewRevision();
-                } else {
-                    this._updateSubmission(this.itemId);
-                    router.navigate(`#plugins/journal/submission/${this.itemId}/upload/edit`,
-                        {trigger: true});
-                }
             });
+
+            if (this.newRevision) {
+                this._generateNewRevision();
+            } else {
+                this._updateSubmission(this.itemId);
+                router.navigate(`#plugins/journal/submission/${this.itemId}/upload/edit`,
+                    {trigger: true});
+            }
         },
         'click #authorAdd': function (event) {
             event.preventDefault();
@@ -54,23 +54,23 @@ var editView = View.extend({
         this.newSub = false;
         this.render(id.id);
     },
-    render: function (subResp) {
+    render: async function (subResp) {
         this.itemId = subResp;
-        restRequest({
+        const resp = await restRequest({
             type: 'GET',
             path: `journal/${this.itemId}/details`
-        }).done((resp) => {
-            this.parentId = resp[1]._id;
-            this.$el.html(SubmitViewTemplate({info: {info: resp[0], 'parInfo': resp[1], 'NR': this.newRevision}}));
-            new MenuBarView({ // eslint-disable-line no-new
-                el: this.$el,
-                parentView: this,
-                searchBoxVal: ''
-            });
-            $(`.subPermission[value=${resp[0].meta.permission}]`).prop('checked', 'checked');
-            $(`.CLAPermission[value=${resp[0].meta.CorpCLA}]`).prop('checked', 'checked');
-            return this;
-        }); // End getting of OTJ Collection value setting
+        });
+
+        this.parentId = resp[1]._id;
+        this.$el.html(SubmitViewTemplate({info: {info: resp[0], 'parInfo': resp[1], 'NR': this.newRevision}}));
+        new MenuBarView({ // eslint-disable-line no-new
+            el: this.$el,
+            parentView: this,
+            searchBoxVal: ''
+        });
+        $(`.subPermission[value=${resp[0].meta.permission}]`).prop('checked', 'checked');
+        $(`.CLAPermission[value=${resp[0].meta.CorpCLA}]`).prop('checked', 'checked');
+        return this;
     },
     _captureSubmissionInformation() {
         var authors = [];
@@ -96,37 +96,36 @@ var editView = View.extend({
         };
         return subData;
     },
-    _generateNewRevision: function () {
+    _generateNewRevision: async function () {
         var targetUrl = '#plugins/journal/submission/';
         // if new submission, generate first "revision" folder inside of generated folder
-        restRequest({
+        const resp = await restRequest({
             type: 'GET',
             path: `folder/${this.parentId}/details`
-        }).done((resp) => {
-            restRequest({
-                type: 'POST',
-                path: 'folder',
-                data: {
-                    parentId: this.parentId,
-                    parentType: 'folder',
-                    name: 'Revision ' + ++resp.nFolders,
-                    description: this.$('#revisionEntry').val().trim()
-                },
-                error: null
-            }).done((resp) => {
-                this._updateSubmission(resp._id);
-                router.navigate(`${targetUrl}${resp._id}/upload/revision`, {trigger: true});
-            });
         });
+
+        const resp2 = await restRequest({
+            type: 'POST',
+            path: 'folder',
+            data: {
+                parentId: this.parentId,
+                parentType: 'folder',
+                name: 'Revision ' + ++resp.nFolders,
+                description: this.$('#revisionEntry').val().trim()
+            },
+            error: null
+        });
+
+        this._updateSubmission(resp2._id);
+        router.navigate(`${targetUrl}${resp2._id}/upload/revision`, {trigger: true});
     },
-    _updateSubmission: function (itemID) {
-        restRequest({
+    _updateSubmission: async function (itemID) {
+        await restRequest({
             type: 'PUT',
             path: `journal/${itemID}/metadata`,
             contentType: 'application/json',
             data: JSON.stringify(this._captureSubmissionInformation()),
             error: null
-        }).done((respMD) => {
         });
     }
 });

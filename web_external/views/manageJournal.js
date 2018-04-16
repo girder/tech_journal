@@ -9,23 +9,23 @@ var manageJournalView = View.extend({
 
     events: {
     },
-    initialize: function (subId) {
+    initialize: async function (subId) {
         var allIssues = [];
         this.render();
-        restRequest({
+        const resp = await restRequest({
             type: 'GET',
             path: 'journal'
-        }).done((resp) => {
-            for (var index in resp) {
-                restRequest({
-                    type: 'GET',
-                    path: `journal/${resp[index]._id}/issues`
-                }).done((jrnResp) => {
-                    allIssues = allIssues.concat(jrnResp);
-                    this.$('#journalListing').html(ManageJournalsEntryTemplate({ issueInfo: allIssues, parentInfo: resp }));
-                });
-            }
-        }); // End getting of OTJ Collection value setting
+        });
+
+        for (var index in resp) {
+            const jrnResp = await restRequest({
+                type: 'GET',
+                path: `journal/${resp[index]._id}/issues`
+            });
+
+            allIssues = allIssues.concat(jrnResp);
+            this.$('#journalListing').html(ManageJournalsEntryTemplate({ issueInfo: allIssues, parentInfo: resp }));
+        }
     },
     render: function () {
         this.$el.html(ManageJournalsTemplate());

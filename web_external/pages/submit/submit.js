@@ -41,24 +41,23 @@ var SubmitView = View.extend({
         'click #removeTag': function (event) {
             this.$(event.currentTarget.parentElement).remove();
         },
-        'click #showDetails': function (event) {
+        'click #showDetails': async function (event) {
             this.targetIssueID = event.currentTarget.target;
-            restRequest({
+            const resp = await restRequest({
                 type: 'GET',
                 path: `folder/${this.targetIssueID}`
-            }).done((resp) => {
-                this.$('#issueDetails').append(issueDetailsTemplate({info: resp}));
             });
+            this.$('#issueDetails').append(issueDetailsTemplate({info: resp}));
         },
         'click #closeDetails': function (event) {
             this.$(event.currentTarget.parentElement).remove();
         }
     },
-    initialize: function (id) {
+    initialize: async function (id) {
         this.user = getCurrentUser();
         if (id.id === 'new') {
             this.newSub = true;
-            restRequest({
+            const resp = await restRequest({
                 type: 'GET',
                 path: 'journal/setting',
                 data: {
@@ -66,14 +65,13 @@ var SubmitView = View.extend({
                         'tech_journal.default_journal'
                     ])
                 }
-            }).done((resp) => {
-                restRequest({
-                    type: 'GET',
-                    path: `journal/${resp['tech_journal.default_journal']}/openissues`
-                }).done((jrnResp) => {
-                    this.render(jrnResp, 1);
-                });
-            }); // End getting of OTJ Collection value setting
+            });
+
+            const jrnResp = await restRequest({
+                type: 'GET',
+                path: `journal/${resp['tech_journal.default_journal']}/openissues`
+            });
+            this.render(jrnResp, 1);
         } else {
             this.newRevision = id.NR;
             this.approval = id.approval;
@@ -82,7 +80,7 @@ var SubmitView = View.extend({
             this.render(id.id, 2);
         }
     },
-    render: function (subResp, state) {
+    render: async function (subResp, state) {
         if (Array.isArray(subResp)) {
             subResp.forEach(function (obj) {
                 obj.daysLeft = obj.daysLeft = Math.round((new Date(obj.meta.paperDue).valueOf() -
@@ -99,25 +97,25 @@ var SubmitView = View.extend({
             return this;
         } else {
             this.itemId = subResp;
-            restRequest({
+            const resp = await restRequest({
                 type: 'GET',
                 path: `folder/${this.itemId}`
-            }).done((resp) => {
-                if (this.newSub) {
-                    issueInfo = {};
-                } else {
-                    issueInfo = resp;
-                }
-                if (this.newRevision) {
-                    issueInfo.NR = this.newRevision;
-                    this.parentID = issueInfo.parentID;
-                }
-                this.$('#pageContent').html(SubmitViewTemplate({ info: { info: {}, parInfo: {} } }));
-                return this;
-            }); // End getting of OTJ Collection value setting
+            });
+
+            if (this.newSub) {
+                issueInfo = {};
+            } else {
+                issueInfo = resp;
+            }
+            if (this.newRevision) {
+                issueInfo.NR = this.newRevision;
+                this.parentID = issueInfo.parentID;
+            }
+            this.$('#pageContent').html(SubmitViewTemplate({ info: { info: {}, parInfo: {} } }));
+            return this;
         }
     },
-    _createSubmission: function (inData) {
+    _createSubmission: async function (inData) {
         var authors = [];
         var comments = [];
         var hasPermission = $('.subPermission:checked').val();
@@ -159,7 +157,7 @@ var SubmitView = View.extend({
             subData.revisionNotes = this.$('#revisionEntry').val().trim();
             subData.previousRevision = this.itemId;
         }
-        restRequest({
+        const resp = await restRequest({
             type: 'POST',
             path: 'folder',
             data: {
@@ -169,14 +167,13 @@ var SubmitView = View.extend({
                 description: inData.subDescription
             },
             error: null
-        }).done((resp) => {
-            this._findUploadTarget(resp._id, subData);
         });
+        this._findUploadTarget(resp._id, subData);
     },
-    _findUploadTarget: function (parentId, subData) {
+    _findUploadTarget: async function (parentId, subData) {
         var targetUrl = '#plugins/journal/submission/';
         // if new submission, generate first "revision" folder inside of generated folder
-        restRequest({
+        const resp = await restRequest({
             type: 'POST',
             path: 'folder',
             data: {
@@ -185,17 +182,16 @@ var SubmitView = View.extend({
                 name: 'Revision 1'
             },
             error: null
-        }).done((resp) => {
-            restRequest({
-                type: 'PUT',
-                path: `journal/${resp._id}/metadata`,
-                contentType: 'application/json',
-                data: JSON.stringify(subData),
-                error: null
-            }).done((respMD) => {
-                router.navigate(`${targetUrl}${resp._id}/upload/new`, {trigger: true});
-            });
         });
+
+        const respMD = await restRequest({
+            type: 'PUT',
+            path: `journal/${resp._id}/metadata`,
+            contentType: 'application/json',
+            data: JSON.stringify(subData),
+            error: null
+        });
+        router.navigate(`${targetUrl}${resp._id}/upload/new`, {trigger: true});
     }
 });
 

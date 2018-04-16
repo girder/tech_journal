@@ -6,21 +6,21 @@ import MenuBarView from '../../views/menuBar.js';
 import HelpTemplate from './help.pug';
 
 const HelpPage = View.extend({
-    initialize: function (settings) {
+    initialize: async function (settings) {
         this.title = settings.title;
         this.helpText = '';
         const settingKey = settings.settingKey;
 
-        restRequest({
+        const resp = await restRequest({
             type: 'GET',
             path: 'journal/setting',
             data: {
                 list: JSON.stringify([settingKey])
             }
-        }).done((resp) => {
-            this.helpText = resp[settingKey];
-            this.render();
         });
+
+        this.helpText = resp[settingKey];
+        this.render();
     },
     render: function () {
         this.$el.html(HelpTemplate({
