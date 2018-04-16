@@ -22,6 +22,6 @@
     <div id="g-global-info-staticroot" class="hide">${staticRoot}</div>
     <script src="${staticRoot}/built/girder_lib.min.js"></script>
     <script src="${staticRoot}/built/plugins/oauth/plugin.min.js"></script>
-    <script src="${staticRoot}/built/plugins/tech_journal/app.min.js"></script>
+    <script src="/tech_journal_js/main.js"></script>
   </body>
 </html>

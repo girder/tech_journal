@@ -1,4 +1,5 @@
 import path from 'path';
+import webpack from 'webpack';
 
 export default {
   entry: './web_external/main.js',
@@ -6,6 +7,21 @@ export default {
     path: path.resolve('dist'),
     filename: 'js/[name].js',
   },
+  resolve: {
+    // This alias is needed to ensure that a single jquery codebase is used by
+    // both tech_journal and bootstrap in order to make Girder's modal views
+    // (e.g., LoginView) work properly.
+    alias: {
+      'jquery': require.resolve('jquery')
+    }
+  },
+  plugins: [
+    new webpack.ProvidePlugin({
+      jQuery: 'jquery',
+      $: 'jquery',
+      'window.jQuery': 'jquery'
+    })
+  ],
   module: {
     rules: [
       {
