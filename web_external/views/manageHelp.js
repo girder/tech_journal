@@ -19,16 +19,15 @@ var ManageHelpView = View.extend({
             ]);
         }
     },
-    initialize: function () {
-        restRequest({
+    initialize: async function () {
+        const resp = await restRequest({
             type: 'GET',
             path: 'journal/setting',
             data: {
                 list: JSON.stringify(['main', 'about', 'faq'])
             }
-        }).done((resp) => {
-            this.render(resp);
         });
+        this.render(resp);
     },
     render: function (existingPages) {
         this.$el.html(manageHelpViewTemplate());
@@ -68,21 +67,20 @@ var ManageHelpView = View.extend({
         this.AboutEditor.setElement(this.$('#aboutPage')).render();
         return this;
     },
-    _saveHelp: function (inData) {
-        restRequest({
+    _saveHelp: async function (inData) {
+        const resp = await restRequest({
             type: 'PUT',
             path: 'journal/setting',
             data: {
                 list: JSON.stringify(inData)
             },
             error: null
-        }).done((resp) => {
-            events.trigger('g:alert', {
-                icon: 'ok',
-                text: 'Help Pages saved.',
-                type: 'success',
-                timeout: 4000
-            });
+        });
+        events.trigger('g:alert', {
+            icon: 'ok',
+            text: 'Help Pages saved.',
+            type: 'success',
+            timeout: 4000
         });
     }
 });
