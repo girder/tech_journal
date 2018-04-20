@@ -10,8 +10,9 @@ mixin existingComment(commentInfo)
     a.commentUserName
       | #{commentInfo.name}
     span.commentDate
-    a.deleteCommentLink(val=commentInfo.index)
-      | Remove Comment
+    if (user.attributes.admin)
+      a.deleteCommentLink(val=commentInfo.index)
+        | Remove Comment
     .commentTextDiv
       span.commentText
         | #{commentInfo.text}

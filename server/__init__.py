@@ -93,6 +93,7 @@ class TechJournal(Resource):
         self.route('PUT', (':id', 'metadata'), self.setSubmissionMetadata)
         self.route('PUT', (':id', 'finalize'), self.finalizeSubmission)
         self.route('PUT', (':id', 'approve'), self.approveSubmission)
+        self.route('PUT', (':id', 'comments'), self.updateComments)
         self.route('PUT', ('setting',), self.setJournalSettings)
         self.route('GET', ('setting',), self.getJournalSettings)
 
@@ -396,14 +397,35 @@ class TechJournal(Resource):
                                                  force=True)
         self.model('folder').setMetadata(parentFolder, parentMetaData)
         self.model('folder').setMetadata(folder, metadata)
-        if 'comments' in parentMetaData.keys():
+        return 'Success'
+
+    @access.user(scope=TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+        Description('Set metadata for a submission. Most stays on each revision,\
+                    but others go to the parent folder')
+        .param('id', 'The ID of the folder.', paramType='path')
+        .param('sendEmail', "Send an email about comment update")
+        .param('body', 'A JSON object containing the comments to update',
+               paramType='body')
+        .errorResponse('Test error.')
+        .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def updateComments(self, params, folder):
+        metadata = self.getBodyJson()
+
+        parentFolder = self.model('folder').load(folder['parentId'],
+                                                 user=self.getCurrentUser(),
+                                                 force=True)
+        if params['sendEmail'] == 'send':
             data = {'name': parentFolder['name'],
-                    'commentText': parentMetaData['comments'][-1]['text'],
-                    'commentAuthor':  parentMetaData['comments'][-1]["name"]}
+                    'commentText': metadata['comments'][-1]['text'],
+                    'commentAuthor':  metadata['comments'][-1]["name"]}
             subject = "Comment Added - Submission %s" % parentFolder['name']
             emailTemplate = 'tech_journal_new_comment.mako'
             html = mail_utils.renderTemplate(emailTemplate, data)
             mail_utils.sendEmail(toAdmins=True, subject=subject, text=html)
+        self.model('folder').setMetadata(parentFolder, metadata)
         return 'Success'
 
     @access.admin(scope=TokenScope.DATA_READ)
