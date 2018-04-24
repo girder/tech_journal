@@ -18,21 +18,21 @@ var submissionView = View.extend({
             var commentInfo = {
                 'name': this.currentUser.name(),
                 'text': this.$('#commentText').val().trim(),
-                'index': this.currentComments.length
+                'index': String(this.currentComments.length)
             };
             this.currentComments.push(commentInfo);
-            this.updateComments();
+            this.updateComments('send');
         },
         'click .deleteCommentLink': function (event) {
             event.preventDefault();
             var targetIndex = this.$(event.target).attr('val');
             this.currentComments.forEach(function (d) {
-                if (d.index === targetIndex) {
+                if (String(d.index) === targetIndex) {
                     d.name = '';
                     d.text = '';
                 }
             });
-            this.updateComments();
+            this.updateComments('no');
         },
         'keyup #commentText': function (event) {
             var charsLeft = 1200 - this.$('#commentText').val().length;
@@ -70,10 +70,10 @@ var submissionView = View.extend({
         this.$(`.revisionOption[value=${totalDetails[0]._id}]`).prop('selected', true);
         return this;
     },
-    updateComments: function () {
+    updateComments: function (send) {
         restRequest({
             type: 'PUT',
-            path: `journal/${this.displayId}/metadata`,
+            path: `journal/${this.displayId}/comments?sendEmail=${send}`,
             contentType: 'application/json',
             data: JSON.stringify({'comments': this.currentComments}),
             error: null
