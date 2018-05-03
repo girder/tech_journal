@@ -21,6 +21,7 @@ import six
 import json
 import datetime
 import re
+import urllib
 from bson.objectid import ObjectId
 
 from girder.api.describe import Description, describeRoute
@@ -34,6 +35,8 @@ from girder.utility.model_importer import ModelImporter
 from girder.utility.plugin_utilities import getPluginDir, registerPluginWebroot
 from girder.utility.webroot import WebrootBase
 from girder import events
+from girder_worker_utils.transforms.girder_io import GirderUploadToItem
+from tech_journal_tasks.tasks import processGithub
 from . import constants
 
 
@@ -127,6 +130,7 @@ class TechJournal(Resource):
         return keyMatch
 
     def __init__(self):
+
         super(TechJournal, self).__init__()
         self.resourceName = 'journal'
         self.route('GET', (':id', 'submissions'), self.getAllSubmissions)
@@ -436,6 +440,20 @@ class TechJournal(Resource):
         #
         metadata = self.getBodyJson()
         parentMetaData = {}
+        if ['github'] == metadata.keys():
+            # first check for validity of URL
+            page = urllib.urlopen(metadata['github'])
+            if page.getcode() == 200:
+                # Spawn off Girder-worker process to generate the download from the URL
+                newItem = self.model("item").createItem(name="GitHub Repository",
+                                                        creator=self.getCurrentUser(),
+                                                        folder=folder,
+                                                        description=metadata['github'])
+                self.model("item").setMetadata(newItem, {'type': 6})
+                processGithub.delay(metadata['github'],
+                                    girder_result_hooks=[GirderUploadToItem(str(newItem['_id'])), ])
+            else:
+                raise RestException('The repository doesn\'t exist or the URL is invalid.')
         for key in ['related', 'copyright', 'grant', 'comments', 'source-license',
                     'source-license-text', 'attribution-policy', 'targetIssue']:
             if key in metadata.keys():
@@ -512,6 +530,7 @@ class TechJournal(Resource):
         .errorResponse('Read access was denied on the issue.', 403)
         )
     def getJournalSettings(self, params):
+
         getFunc = getattr(ModelImporter.model('journal', 'tech_journal'), 'get')
         funcParams = {}
         if 'list' in params:

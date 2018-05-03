@@ -1,5 +1,6 @@
 import View from 'girder/views/View';
 import router from 'girder/router';
+import events from 'girder/events';
 import FolderModel from 'girder/models/FolderModel';
 import UploadWidget from 'girder/views/widgets/UploadWidget';
 import { getCurrentUser } from 'girder/auth';
@@ -51,10 +52,17 @@ var uploadView = View.extend({
             var subData = {'github': $('#github').val()};
             restRequest({
                 type: 'PUT',
-                path: `folder/${this.parentId}/metadata`,
+                path: `journal/${this.parentId}/metadata`,
                 contentType: 'application/json',
                 data: JSON.stringify(subData),
                 error: null
+            }).fail((respMD) => {
+                events.trigger('g:alert', {
+                    icon: 'ok',
+                    text: 'The repository doesn\'t exist or the URL is invalid.',
+                    type: 'warning',
+                    timeout: 4000
+                });
             }).done((respMD) => {
                 this.$('#uploadTable').append(UploadEntryTemplate({info: {'name': subData.github, '_id': 'github', 'meta': {'type': 6}}}));
                 this.$('#uploadQuestions').show();
