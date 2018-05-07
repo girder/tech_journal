@@ -146,10 +146,16 @@ class TechJournal(Resource):
         self.route('PUT', (':id', 'comments'), self.updateComments)
         self.route('PUT', ('setting',), self.setJournalSettings)
         self.route('GET', ('setting',), self.getJournalSettings)
-        self.route('POST', ('category',), self.addCategory)
-        self.route('PUT', ('category',), self.updateCategory)
-        self.route('GET', ('categories',), self.getCategories)
-        self.route('DELETE', ('category',), self.rmCategory)
+        # APIs for categories
+        self.route('POST', ('category',), self.addJournalObj)
+        self.route('PUT', ('category',), self.updateJournalObj)
+        self.route('GET', ('categories',), self.getJournalObjs)
+        self.route('DELETE', ('category',), self.rmJournalObj)
+        # APIs for Disclaimers
+        self.route('POST', ('disclaimer',), self.addJournalObj)
+        self.route('PUT', ('disclaimer',), self.updateJournalObj)
+        self.route('GET', ('disclaimers',), self.getJournalObjs)
+        self.route('DELETE', ('disclaimer',), self.rmJournalObj)
 
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)
@@ -543,28 +549,31 @@ class TechJournal(Resource):
             return {k: getFunc(k, **funcParams) for k in keys}
 
     # -----------------------------------------------
-    #  Add category manipulation APIs
+    #  Add Journal Setting manipulation APIs
+    #  Used for both Categories and Disclaimers
     # -----------------------------------------------
 
     @access.public(scope=TokenScope.DATA_READ)
     @describeRoute(
-        Description('Create a category')
-        .param('text', "A category name", required=True)
+        Description('Create a setting object')
+        .param('text', "An object name", required=True)
+        .param('tag', "An object tag", required=True)
         .errorResponse()
         .errorResponse('Read access was denied on the issue.', 403)
         )
-    def addCategory(self, params):
+    def addJournalObj(self, params):
         ModelImporter.model('journal', 'tech_journal').set(key=params['text'],
-                                                           value=[], tag='categories')
+                                                           value=[], tag=params['tag'])
 
     @access.public(scope=TokenScope.DATA_READ)
     @describeRoute(
         Description('get the journal'' filter categories')
+        .param('tag', "An object tag", required=True)
         .errorResponse()
         .errorResponse('Read access was denied on the issue.', 403)
         )
-    def getCategories(self, params):
-        return ModelImporter.model('journal', 'tech_journal').getAllByTag('categories')
+    def getJournalObjs(self, params):
+        return ModelImporter.model('journal', 'tech_journal').getAllByTag(params['tag'])
 
     @access.public(scope=TokenScope.DATA_READ)
     @describeRoute(
@@ -573,18 +582,19 @@ class TechJournal(Resource):
         .errorResponse()
         .errorResponse('Read access was denied on the issue.', 403)
         )
-    def rmCategory(self, params):
+    def rmJournalObj(self, params):
         ModelImporter.model('journal', 'tech_journal').removeObj(params['text'])
 
     @access.admin(scope=TokenScope.DATA_READ)
     @describeRoute(
-        Description('Set the journal Settings')
+        Description('Set the journal objects')
         .param('list', 'A JSON list of objects with key and value representing\
                         a list of settings to set.', required=True)
+        .param('tag', "An object tag", required=True)
         .errorResponse()
         .errorResponse('Read access was denied on the issue.', 403)
         )
-    def updateCategory(self, params):
+    def updateJournalObj(self, params):
         settings = json.loads(params['list'])
         for setting in settings:
             if setting['value'] is None:
@@ -601,7 +611,7 @@ class TechJournal(Resource):
                 ModelImporter.model('journal', 'tech_journal').unset(key=setting['key'])
             else:
                 ModelImporter.model('journal', 'tech_journal').set(key=setting['key'],
-                                                                   value=value, tag='categories')
+                                                                   value=value, tag=params['tag'])
 
     def _onDownloadFileComplete(self, event):
         Folder().increment(

@@ -5,7 +5,15 @@ import MenuBarView from './menuBar.js';
 import DownloadViewTemplate from '../templates/journal_download.pug';
 
 var downloadView = View.extend({
-
+    events: {
+        'click .disclaimerRad': function (event) {
+            this.$('#downloadContent').hide();
+            var disclaimerAgree = $('.disclaimerRad:checked').val();
+            if (disclaimerAgree === 'agree') {
+                this.$('#downloadContent').show();
+            }
+        }
+    },
     initialize: function (subId) {
         this.parentId = subId.id;
         restRequest({
@@ -27,23 +35,36 @@ var downloadView = View.extend({
         });
     },
     render: function (paperItem) {
-        var paperDownloadUrl =
-            paperItem && paperItem._id
-                ? `${apiRoot}/item/${paperItem._id}/download`
-                : null;
-        var parentDownloadUrl =
-             `${apiRoot}/folder/${this.parentId}/download`;
-
-        this.$el.html(DownloadViewTemplate({
-            parent: this.parentId,
-            parentDownloadUrl: parentDownloadUrl,
-            paperDownloadUrl: paperDownloadUrl
-        }));
-        new MenuBarView({ // eslint-disable-line no-new
-            el: this.$el,
-            parentView: this
+        restRequest({
+            type: 'GET',
+            path: 'journal/disclaimers?tag=disclaimer'
+        }).done((resp) => {
+            var paperDownloadUrl =
+                paperItem && paperItem._id
+                    ? `${apiRoot}/item/${paperItem._id}/download`
+                    : null;
+            var parentDownloadUrl =
+                 `${apiRoot}/folder/${this.parentId}/download`;
+            var displayObj = {
+                parent: this.parentId,
+                parentDownloadUrl: parentDownloadUrl,
+                paperDownloadUrl: paperDownloadUrl
+            };
+            if (Object.keys(resp).indexOf(this.parent.meta.disclaimer) !== -1) {
+                displayObj['disclaimer'] = resp[this.parent.meta.disclaimer]['value'];
+            }
+            this.$el.html(DownloadViewTemplate(displayObj));
+            new MenuBarView({ // eslint-disable-line no-new
+                el: this.$el,
+                parentView: this
+            });
+            if (Object.keys(displayObj).indexOf('disclaimer') !== -1) {
+                this.$('#downloadContent').hide();
+            } else {
+                this.$('#disclaimer').hide();
+            }
+            return this;
         });
-        return this;
     }
 });
 

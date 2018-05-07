@@ -11,7 +11,7 @@ const adminCategoriesPage = View.extend({
             var catName = $(event.currentTarget).siblings('h4').text();
             restRequest({
                 type: 'DELETE',
-                path: `journal/category?text=${catName}`
+                path: `journal/category?text=${catName}&tag=disclaimer`
             }).done((resp) => {
                 $(event.currentTarget).closest('.TreeEntry').remove();
             });
@@ -29,7 +29,7 @@ const adminCategoriesPage = View.extend({
             //  Call out to category API to save initial object
             restRequest({
                 type: 'POST',
-                path: `journal/category?text=${newCatName}`
+                path: `journal/category?text=${newCatName}&tag=disclaimer`
             }).done((resp) => {
                 this.$('#treeWrapper').html(this.$('#treeWrapper').html() + adminCategoriesEntryTemplate({'name': newCatName, 'values': []}));
             });
@@ -46,7 +46,7 @@ const adminCategoriesPage = View.extend({
 
             restRequest({
                 type: 'PUT',
-                path: 'journal/category',
+                path: 'journal/category?tag=categories',
                 data: {
                     list: JSON.stringify([valueData])
                 }
@@ -61,7 +61,7 @@ const adminCategoriesPage = View.extend({
     initialize: function (query) {
         restRequest({
             type: 'GET',
-            path: 'journal/categories'
+            path: 'journal/categories?tag=categories'
         }).done((resp) => {
             this.render(resp);
         }); // End getting of OTJ Collection value setting

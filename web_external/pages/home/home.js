@@ -114,7 +114,7 @@ const HomePage = View.extend({
                 if (this.$('#treeWrapper').find('.treeEntry').length < 3) {
                     restRequest({
                         type: 'GET',
-                        path: 'journal/categories'
+                        path: 'journal/categories?tag=categories'
                     }).done((resp) => {
                         for (var key in resp) {
                             this.$('#treeWrapper').html(this.$('#treeWrapper').html() + CategoryTemplate({'catName': resp[key]['key'], 'values': resp[key]['value']}));

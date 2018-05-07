@@ -72,7 +72,7 @@ var editView = View.extend({
             $(`.CLAPermission[value=${resp[0].meta.CorpCLA}]`).prop('checked', 'checked');
             restRequest({
                 type: 'GET',
-                path: 'journal/categories'
+                path: 'journal/categories?tag=categories'
             }).done((catResp) => {
                 for (var key in catResp) {
                     this.$('#treeWrapper').html(this.$('#treeWrapper').html() + CategoryTemplate({'catName': catResp[key]['key'], 'values': catResp[key]['value']}));
@@ -80,7 +80,19 @@ var editView = View.extend({
                 for (var catIndx in resp[0].meta.categories) {
                     this.$(`.filterOption[val=${resp[0].meta.categories[catIndx]}]`).attr('checked', true);
                 }
-                return this;
+                restRequest({
+                    type: 'GET',
+                    path: `journal/disclaimers?tag=disclaimer`
+                }).done((disclaimerResp) => {
+                    for (var disc in disclaimerResp) {
+                        var selected = '';
+                        if (disc === resp[0].meta.disclaimer) {
+                            selected = 'selected="selected"';
+                        }
+                        this.$('#disclaimer').append('<option ' + selected + '>' + disc + '</option>');
+                    }
+                    return this;
+                });
             });
         }); // End getting of OTJ Collection value setting
     },
@@ -111,7 +123,8 @@ var editView = View.extend({
             'grant': this.$('#grantEntry').val().trim(),
             'authors': authors,
             'tags': tags,
-            'categories': categories
+            'categories': categories,
+            'disclaimer': this.$('#disclaimer').val().trim()
         };
         return subData;
     },
