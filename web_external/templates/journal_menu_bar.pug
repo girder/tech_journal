@@ -59,14 +59,14 @@
             | New Publication
         if user
           li#profileLink
-            a(href='#user/' + user.id) My Profile
+            a(href='/#user/' + user.id) My Profile
             #userOptionsDiv
               ul#userOptionsList
                 li
                   // TODO: implement this route
                   a.submm(href='#?query="creatorId":"'+user.id+'"') My Publications
                 li
-                  a.submm(href='#useraccount/' + user.id + '/info') Edit Profile
+                  a.submm(href='/#useraccount/' + user.id + '/info') Edit Profile
           if user.attributes.admin
             li#adminLink
               a(href="") Admin
@@ -75,7 +75,7 @@
                   li
                     a.submm(href='#plugins/journal/admin') Journals
                   li
-                    a.submm(href='#users') Users
+                    a.submm(href='/#users') Users
                   li
                     a.submm.
                       Categories
