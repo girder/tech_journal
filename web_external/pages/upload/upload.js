@@ -74,7 +74,7 @@ var uploadView = View.extend({
         // Change function for updating the submissions licensing and submit status
         'change #acceptLicense': function (event) {
             var license = this.$('#licenseChoice').val();
-            this.$('#hiddenSourceLicense').attr('value', this.$('#licenseChoice').is(':checked') ? license : 0);
+            this.$('#hiddenSourceLicense').attr('value', this.$('#licenseChoice').is(':checked') ? license : 'Not Defined');
             this._checkForm(license);
             var acceptAttributionPolicyIsSelected = $('#acceptAttributionPolicy').is(':visible') && $('#acceptAttributionPolicy').is(':checked');
             this.$('#hiddenAttributionPolicy').attr('value', acceptAttributionPolicyIsSelected ? 1 : 0);
@@ -83,7 +83,7 @@ var uploadView = View.extend({
 
         'change #licenseChoice': function (event) {
             var license = this.$('#licenseChoice').val();
-            this.$('#hiddenSourceLicense').attr('value', this.$('#acceptLicense').is(':checked') ? license : '0');
+            this.$('#hiddenSourceLicense').attr('value', this.$('#acceptLicense').is(':checked') ? license : 0);
             this._checkForm(license);
             var acceptAttributionPolicyIsSelected = this.$('#acceptAttributionPolicy').is(':visible') && this.$('#acceptAttributionPolicy').is(':checked');
             this.$('#hiddenAttributionPolicy').attr('value', acceptAttributionPolicyIsSelected ? 1 : 0);
@@ -210,11 +210,19 @@ var uploadView = View.extend({
     _approveSubmission: function (subData) {
         restRequest({
             type: 'PUT',
-            path: `journal/${this.parentId}/approve`,
+            path: `journal/${this.parentId}/metadata`,
             contentType: 'application/json',
-            data: JSON.stringify(subData)
+            data: JSON.stringify(subData),
+            error: null
         }).done((respMD) => {
-            router.navigate(`#plugins/journal/view/${this.parentId}`, {trigger: true});
+            restRequest({
+                type: 'PUT',
+                path: `journal/${this.parentId}/approve`,
+                contentType: 'application/json',
+                data: JSON.stringify(subData)
+            }).done((respMD) => {
+                router.navigate(`#plugins/journal/view/${this.parentId}`, {trigger: true});
+            });
         });
     },
     _appendData: function (subData) {

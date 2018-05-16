@@ -10,6 +10,7 @@ import SelectIssueTemplate from './journal_select_issue.pug';
 import issueDetailsTemplate from './journal_issue_details.pug';
 import SubmitAuthorEntryTemplate from './journal_author_entry.pug';
 import SubmitTagEntryTemplate from './journal_tag_entry.pug';
+import CategoryTemplate from '../home/home_categoryTemplate.pug';
 
 var SubmitView = View.extend({
     events: {
@@ -113,7 +114,15 @@ var SubmitView = View.extend({
                     this.parentID = issueInfo.parentID;
                 }
                 this.$('#pageContent').html(SubmitViewTemplate({ info: { info: {}, parInfo: {} } }));
-                return this;
+                restRequest({
+                    type: 'GET',
+                    path: 'journal/categories'
+                }).done((resp) => {
+                    for (var key in resp) {
+                        this.$('#treeWrapper').html(this.$('#treeWrapper').html() + CategoryTemplate({'catName': resp[key]['key'], 'values': resp[key]['value']}));
+                    }
+                    return this;
+                }); // End getting of OTJ Collection value setting
             }); // End getting of OTJ Collection value setting
         }
     },
@@ -142,6 +151,12 @@ var SubmitView = View.extend({
         this.$('#tags input').each(function (index, val) {
             tags.push(val.value.trim());
         });
+        var categories = [];
+        this.$('.filterOption').each(function (index, val) {
+            if (val.checked) {
+                categories.push(val.attributes['val'].value);
+            }
+        });
         var subData = {
             'institution': this.$('#institutionEntry').val().trim(),
             'related': this.$('#relatedEntry').val().trim(),
@@ -150,6 +165,7 @@ var SubmitView = View.extend({
             'grant': this.$('#grantEntry').val().trim(),
             'authors': authors,
             'tags': tags,
+            'categories': categories,
             'comments': comments,
             'permission': hasPermission,
             'CorpCLA': corpCLAVal,

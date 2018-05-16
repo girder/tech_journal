@@ -20,6 +20,7 @@ import os
 import six
 import json
 import datetime
+import re
 from bson.objectid import ObjectId
 
 from girder.api.describe import Description, describeRoute
@@ -67,18 +68,63 @@ def validateSettings(event):
     event.preventDefault().stopPropagation()
 
 
-def checkValue(infoList, filterParams, value):
-    if value in infoList:
-        if type(infoList[value]) == list:
-            if (filterParams[value] in infoList[value]):
+def checkValue(infoList, filterParams, category, value):
+    if 'meta' in infoList:
+        if "categories" in infoList['meta'].keys():
+            if value in infoList['meta']["categories"]:
+                return True
+    if category in infoList:
+        if type(infoList[category]) == list:
+            if (value in infoList[category]):
                 return True
         else:
-            if (filterParams[value] == infoList[value]):
+            if (value == infoList[category]):
                 return True
     return False
 
 
 class TechJournal(Resource):
+
+    def checkSubmission(self, filterParams, submission, searchObj, targetVal, category):
+        keyMatch = False
+        if searchObj in submission["meta"].keys():
+            keyMatch = keyMatch or checkValue(submission["meta"],
+                                              filterParams[category],
+                                              searchObj,
+                                              targetVal)
+        else:
+            keyMatch = keyMatch or checkValue(submission,
+                                              filterParams[category],
+                                              searchObj,
+                                              targetVal)
+        # Capture all revisions under each object
+        revisionInfo = list(self.model('folder')
+                                .childFolders(parentType='folder',
+                                              parent=submission,
+                                              user=self.getCurrentUser()
+                                              ))
+        # If not found in the top level data, search through each revision
+        if not keyMatch:
+            for revision in revisionInfo:
+                for key in filterParams[category]:
+                    searchObj = category
+                    targetVal = key
+                    if re.match("has.*code", key):
+                        searchObj = key
+                        targetVal = "true"
+                    if category == "License":
+                        searchObj = "source-license"
+                    if searchObj in revision["meta"].keys():
+                        keyMatch = keyMatch or checkValue(revision["meta"],
+                                                          filterParams[category],
+                                                          searchObj,
+                                                          targetVal)
+                    else:
+                        keyMatch = keyMatch or checkValue(revision,
+                                                          filterParams[category],
+                                                          searchObj,
+                                                          targetVal)
+        return keyMatch
 
     def __init__(self):
         super(TechJournal, self).__init__()
@@ -96,6 +142,10 @@ class TechJournal(Resource):
         self.route('PUT', (':id', 'comments'), self.updateComments)
         self.route('PUT', ('setting',), self.setJournalSettings)
         self.route('GET', ('setting',), self.getJournalSettings)
+        self.route('POST', ('category',), self.addCategory)
+        self.route('PUT', ('category',), self.updateCategory)
+        self.route('GET', ('categories',), self.getCategories)
+        self.route('DELETE', ('category',), self.rmCategory)
 
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)
@@ -220,67 +270,65 @@ class TechJournal(Resource):
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)
     @describeRoute(
-        Description('Get submissions matching a certain set of parameters')
+        Description('Get submissions matching a certain set of parameters by JSON')
         .responseClass('Collection')
-        .param('id', 'The ID of the Journal (collection) to pull from', paramType='path')
-        .param('query', 'A JSON object to filter the objects over', required=False)
-        .param('text', 'A JSON object to filter the objects over', required=False)
+        .param('id', "The ID of the Journal (collection) to pull from", paramType='path')
+        .param('query', "A JSON object to filter the objects over", required=True)
         .errorResponse('Test error.')
         .errorResponse('Read access was denied on the issue.', 403)
         )
     def getFilteredSubmissions(self, collection, params):
         user = self.getCurrentUser()
-        if 'text' in params:
-            totalData = list(self.model('folder').textSearch(params['text'], user=user))
-            for submission in totalData:
-                submissionInfo = list(self.model('folder')
-                                          .childFolders(parentType='folder',
-                                                        parent=submission,
-                                                        user=self.getCurrentUser()
+        filterParams = json.loads(params["query"])
+        totalData = list()
+        issues = list(self.model('folder').childFolders(parentType='collection',
+                                                        parent=collection,
+                                                        user=user
                                                         ))
-                if len(submissionInfo):
-                    submission['currentRevision'] = submissionInfo[-1]
-        else:
-            filterParams = json.loads(params['query'])
-            totalData = list()
-            issues = list(self.model('folder').childFolders(parentType='collection',
-                                                            parent=collection,
-                                                            user=user
+        for issue in issues:
+            testInfo = list(self.model('folder').childFolders(parentType='folder',
+                                                              parent=issue,
+                                                              user=user
+                                                              ))
+            for submission in testInfo:
+                # ===================================================
+                # Complicated search to "or" and "and" query objects
+                # ===================================================
+                submissionMatch = True
+                # Go through each category of the search query
+                for category in filterParams.keys():
+                    foundMatch = False
+                    # If no values found, skip it
+                    if not len(filterParams[category]):
+                        continue
+                    for key in filterParams[category]:
+                        searchObj = category
+                        targetVal = key
+                        if re.match("has.*code", key):
+                            searchObj = key
+                            targetVal = "true"
+                        if category == "License":
+                            searchObj = "source-license"
+                        foundMatch = self.checkSubmission(filterParams,
+                                                          submission,
+                                                          searchObj,
+                                                          targetVal,
+                                                          category) or foundMatch
+                    submissionMatch = foundMatch and submissionMatch
+                if submissionMatch:
+                    # Find all folders under each submission to capture all revisions
+                    submissionInfo = list(self.model('folder')
+                                              .childFolders(parentType='folder',
+                                                            parent=submission,
+                                                            user=self.getCurrentUser()
                                                             ))
-            for issue in issues:
-                testInfo = list(self.model('folder').childFolders(parentType='folder',
-                                                                  parent=issue,
-                                                                  user=user
-                                                                  ))
-                for submission in testInfo:
-                    foundMatch = True
-                    for key in filterParams.keys():
-                        if key in submission['meta'].keys():
-                            foundMatch = checkValue(submission['meta'], filterParams, key)
-                        else:
-                            foundMatch = checkValue(submission, filterParams, key)
-                    revisionInfo = list(self.model('folder')
-                                            .childFolders(parentType='folder',
-                                                          parent=submission,
-                                                          user=self.getCurrentUser()
-                                                          ))
-                    if not foundMatch:
-                        for revision in revisionInfo:
-                            for key in filterParams.keys():
-                                if key in revision['meta'].keys():
-                                    foundMatch = checkValue(revision['meta'], filterParams, key)
-                                else:
-                                    foundMatch = checkValue(revision, filterParams, key)
-                    if foundMatch:
-                        # Find all folders under each submission to capture all revisions
-                        submissionInfo = list(self.model('folder')
-                                                  .childFolders(parentType='folder',
-                                                                parent=submission,
-                                                                user=self.getCurrentUser()
-                                                                ))
-                        if len(submissionInfo):
-                            submission['currentRevision'] = submissionInfo[-1]
+                    # Grab the last object as its most current revision
+                    if len(submissionInfo):
+                        submission['currentRevision'] = submissionInfo[-1]
+                    # If not found already, add it to the returned information
+                    if submission not in totalData:
                         totalData.append(submission)
+
         totalData = sorted(totalData, reverse=True, key=lambda submission: submission['updated'])
         return totalData
 
@@ -329,7 +377,7 @@ class TechJournal(Resource):
     @access.user(scope=TokenScope.DATA_READ)
     @loadmodel(model='folder', level=AccessType.WRITE)
     @describeRoute(
-        Description('Approve a submission and make it publicly visable')
+        Description("Approve a submission and make it publicly visible")
         .param('id', 'The ID of the folder.', paramType='path')
         .errorResponse('Test error.')
         .errorResponse('Read access was denied on the issue.', 403)
@@ -430,7 +478,7 @@ class TechJournal(Resource):
 
     @access.admin(scope=TokenScope.DATA_READ)
     @describeRoute(
-        Description('Set the journal Settings')
+        Description('Set a Journal category for filtering')
         .param('list', 'A JSON list of objects with key and value representing\
                         a list of settings to set.', required=True)
         .errorResponse()
@@ -474,6 +522,67 @@ class TechJournal(Resource):
             except ValueError:
                 raise RestException('List was not a valid JSON list.')
             return {k: getFunc(k, **funcParams) for k in keys}
+
+    # -----------------------------------------------
+    #  Add category manipulation APIs
+    # -----------------------------------------------
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @describeRoute(
+        Description('Create a category')
+        .param('text', "A category name", required=True)
+        .errorResponse()
+        .errorResponse('Read access was denied on the issue.', 403)
+        )
+    def addCategory(self, params):
+        ModelImporter.model('journal', 'tech_journal').set(key=params['text'],
+                                                           value=[], tag='categories')
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @describeRoute(
+        Description('get the journal'' filter categories')
+        .errorResponse()
+        .errorResponse('Read access was denied on the issue.', 403)
+        )
+    def getCategories(self, params):
+        return ModelImporter.model('journal', 'tech_journal').getAllByTag('categories')
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @describeRoute(
+        Description('Delete a journal''s filter Category')
+        .param('text', "A category name", required=True)
+        .errorResponse()
+        .errorResponse('Read access was denied on the issue.', 403)
+        )
+    def rmCategory(self, params):
+        ModelImporter.model('journal', 'tech_journal').removeObj(params['text'])
+
+    @access.admin(scope=TokenScope.DATA_READ)
+    @describeRoute(
+        Description('Set the journal Settings')
+        .param('list', 'A JSON list of objects with key and value representing\
+                        a list of settings to set.', required=True)
+        .errorResponse()
+        .errorResponse('Read access was denied on the issue.', 403)
+        )
+    def updateCategory(self, params):
+        settings = json.loads(params['list'])
+        for setting in settings:
+            if setting['value'] is None:
+                value = None
+            else:
+                try:
+                    if isinstance(setting['value'], six.string_types):
+                        value = json.loads(setting['value'])
+                    else:
+                        value = setting['value']
+                except ValueError:
+                    value = setting['value']
+            if value is None:
+                ModelImporter.model('journal', 'tech_journal').unset(key=setting['key'])
+            else:
+                ModelImporter.model('journal', 'tech_journal').set(key=setting['key'],
+                                                                   value=value, tag='categories')
 
     def _onDownloadFileComplete(self, event):
         Folder().increment(

@@ -1,0 +1,12 @@
+mixin catEntry(val)
+  li.filterEntry
+    input.filterOption(val=val, type="checkbox")
+    a.dynatree-title(href="#") #{val}
+
+.treeEntry
+  img.toggleButton
+  h4 #{catName}
+  #categoryTree--1.categoryTree
+    ul.dynatree-container
+      for val in values
+        +catEntry(val)

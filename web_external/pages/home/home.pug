@@ -15,6 +15,9 @@ mixin issueFilter(info)
       .Panel.box
         h2.FilterH3 Filters:
         #FiltersPanel
+          #treeWrapper
+            include ./journal_main_code_filter.pug
+            include ./journal_main_license_filter.pug
           .issueButton.issueSelected(key="*")
             .issueTitle(qtipconditional="All", style="word-wrap: break-word")
               | All Issues

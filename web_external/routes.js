@@ -28,6 +28,12 @@ router.route('', 'home', function (query) {
     testUserAccess(HomePage, query, false, false);
 });
 
+// adminCategories page
+import adminCategoriesPage from './pages/adminCategories/adminCategories';
+router.route('admin/categories', 'adminCategories', function () {
+    testUserAccess(adminCategoriesPage, {}, false, false);
+});
+
 // Submission related pages
 router.route('submission/new', 'submissionInfo', function () {
     testUserAccess(submitView, {id: 'new'}, true, false);
