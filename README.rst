@@ -15,12 +15,17 @@ type in parenthesis:
    OTJ (collection)
    ├── 2016 Jan-Jun (folder)
    │   ├── Submission 1 (folder)
-   │   │   └── blah.tar
+   │   │   └── Revision 1
+   |   |       └── blah.tar
+   │   │   └── Revision 2
+   |   |       └── blah_v2.tar
    │   └── Submission 2 (folder)
-   │       └── Paper.docx
+   │   │   └── Revision 1
+   │           └── Paper.docx
    └── 2016 Jun-Dec (folder)
        └── Submission 3 (folder)
-           └── Paper2.docx
+           └── Revision 1
+               └── Paper2.docx
 
 Setup Instructions
 ------------------
@@ -38,6 +43,87 @@ Girder instance.
 
 From there, there are a few more steps to take before you can start using the
 plugin, most of which will need to be done by the admin user.
+
+Install girder_worker
+++++++++++++++++++++++++++
+
+The submission upload page has the capability to submit a GitHub URL and
+have the Tech Journal download the ``master`` branch of the repository
+to be made available as the download of the submission.  To do this,
+it utilizes the girder_worker_ tool.  This requires some additional setup
+and installation:
+
+Aquire girder-worker
+____________________
+
+The girder-worker code can be installed via the Python PIP package system
+
+.. parsed-literal::
+
+  sudo pip install girder_worker
+
+
+Install RabbitMQ
+________________
+
+Download and install RabbitMQ_
+
+Install Tech Journal Tasks
+__________________________
+
+The package found in the ``tech_journal_tasks`` directory will also need
+to be installed into the environment prior to starting the girder_worker
+program.
+
+This is accomplished by entering the ``tech_journal_tasks`` directory
+and executing the setup.py file with the ``install`` directive.  This should
+likely be run as sudo
+
+.. parsed-literal::
+
+  girder/plugins/tech_journal$ cd tech_journal_tasks
+  tech_journal/tech_journal_tasks$ sudo python setup.py install
+
+Start girder_worker
+___________________
+
+Executing the ``girder_worker`` program will start the task listener. If
+one has accepted the default installation for RabbitMQ, there will be no
+changes necessary to the girder_worker configuration to allow it to connect
+to RabbitMQ.  Start girder_worker with the following command:
+
+.. parsed-literal::
+
+  girder-worker -l info
+
+When viewing the first set of output, ensure that the ``ProcessGitHub``
+task is listed as one of the registered tasks under the ``[tasks]`` header:
+
+.. parsed-literal::
+
+  snyder@midas-vm:~$ girder-worker -l info
+   -------------- celery@midas-vm v4.1.0 (latentcall)
+  ---- **** -----
+  --- * ***  * -- Linux-4.4.0-121-generic-x86_64-with-Ubuntu-16.04-xenial 2018-05-03 10:57:26
+  -- * - **** ---
+  - ** ---------- [config]
+  - ** ---------- .> app:         girder_worker:0x7ff88d82a610
+  - ** ---------- .> transport:   amqp://guest:**@localhost:5672//
+  - ** ---------- .> results:     amqp://
+  - *** --- * --- .> concurrency: 4 (prefork)
+  -- ******* ---- .> task events: OFF (enable -E to monitor tasks in this worker)
+  --- ***** -----
+   -------------- [queues]
+                  .> celery           exchange=celery(direct) key=celery
+
+
+  [tasks]
+    . girder_worker.docker.tasks.docker_run
+    . girder_worker.run
+    **. tech_journal_tasks.tasks.processGithub**
+
+
+
 
 Generate Folder Structure
 ++++++++++++++++++++++++++
@@ -114,3 +200,5 @@ links will take you to the correct pages.
     :alt: License
 
 .. _`Read The Docs`: http://girder.readthedocs.io/en/latest/installation.html
+.. _Girder_Worker: https://github.com/girder/girder_worker
+.. _RabbitMQ: https://www.rabbitmq.com/download.html
