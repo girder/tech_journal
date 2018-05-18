@@ -1,0 +1,26 @@
+
+#headerBar
+.Wrapper
+  .Content
+    .Content
+      div(align="center")
+        font(size="+1")
+          strong Edit Disclaimers
+      br
+      select#disclaimerChoice
+        option(val="new") New Disclaimer
+      .discEdit
+        form#mainForm(data-validate="parsley", name="mainForm", method="POST", action="")
+          textarea#discName
+          table(width="100%", border="1")
+            tbody
+              tr
+                td(valign="top", style="width: 100px;")
+                  div(align="right")
+                    strong#disclaimerName Disclaimer Text:
+                td
+                  #mainPage(style="height:200px")
+              tr
+                td
+                td
+                  input(type="submit", value="Save >>>")

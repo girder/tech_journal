@@ -116,12 +116,20 @@ var SubmitView = View.extend({
                 this.$('#pageContent').html(SubmitViewTemplate({ info: { info: {}, parInfo: {} } }));
                 restRequest({
                     type: 'GET',
-                    path: 'journal/categories'
+                    path: 'journal/categories?tag=categories'
                 }).done((resp) => {
                     for (var key in resp) {
                         this.$('#treeWrapper').html(this.$('#treeWrapper').html() + CategoryTemplate({'catName': resp[key]['key'], 'values': resp[key]['value']}));
                     }
-                    return this;
+                    restRequest({
+                        type: 'GET',
+                        path: `journal/disclaimers?tag=disclaimer`
+                    }).done((disclaimerResp) => {
+                        for (var disc in disclaimerResp) {
+                            this.$('#disclaimer').append('<option>' + disc + '</option>');
+                        }
+                        return this;
+                    });
                 }); // End getting of OTJ Collection value setting
             }); // End getting of OTJ Collection value setting
         }
@@ -169,7 +177,8 @@ var SubmitView = View.extend({
             'comments': comments,
             'permission': hasPermission,
             'CorpCLA': corpCLAVal,
-            'targetIssue': this.itemId
+            'targetIssue': this.itemId,
+            'disclaimer': this.$('#disclaimer').val().trim()
         };
         if (this.newRevision) {
             subData.revisionNotes = this.$('#revisionEntry').val().trim();

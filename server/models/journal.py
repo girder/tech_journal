@@ -42,9 +42,6 @@ class Journal(AccessControlledModel):
         else:
             return setting['value']
 
-    def removeObj(self, key):
-        self.remove(self.findOne({'key': key}))
-
     def getAllByTag(self, tag, default='__default__'):
         """
         Retrieve a setting by its key.
@@ -79,6 +76,9 @@ class Journal(AccessControlledModel):
         setting['tag'] = tag
 
         return self.save(setting)
+
+    def removeObj(self, key):
+        self.remove(self.findOne({'key': key}))
 
     def getDefault(self, key):
         """

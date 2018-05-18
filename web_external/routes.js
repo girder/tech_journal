@@ -10,6 +10,7 @@ import { Layout } from 'girder/constants';
 // Import views from plugin
 import submitView from './pages/submit/submit';
 import editView from './pages/submit/editSubmission';
+import ManageDisclaimerView from './pages/admin/manageDisclaimers';
 import submissionView from './views/view';
 import approvalView from './views/manageApproval';
 import downloadView from './views/download';
@@ -103,6 +104,10 @@ router.route('plugins/journal/admin/journal/:id', 'editJournal', function (id) {
 });
 // Help pages
 
+// Admin page to set the content of each disclaimer
+router.route('plugins/journal/admin/disclaimer', '', function () {
+    testUserAccess(ManageDisclaimerView, {}, true, true);
+});
 // Admin page to set the content of each help page
 router.route('plugins/journal/admin/help', 'adminHelp', function () {
     testUserAccess(manageHelpView, {}, true, true);
