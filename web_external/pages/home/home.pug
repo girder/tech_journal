@@ -24,9 +24,6 @@ mixin issueFilter(info)
           for item in info.issues
             +issueFilter(item)
       .MainContent
-        #noResultElement(style="display:none;")
-          b.
-            Your search did not match any items.
         #infoElement
           br
           span(style="font-weight:bold")
@@ -38,6 +35,9 @@ mixin issueFilter(info)
           |  software that can later be integrated into the OSEHRA open source platform.
           br
           .hidable
+        #noResultElement(style="display:none;")
+          b.
+            Your search did not match any items.
         .SearchResultsHeader
         .searchResults
         #showMoreResults
