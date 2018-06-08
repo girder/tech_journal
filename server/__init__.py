@@ -240,7 +240,7 @@ class TechJournal(Resource):
                                                             user=self.getCurrentUser()
                                                             ))
                     if len(submissionInfo):
-                        submission['currentRevision'] = submissionInfo[-1]
+                        submission['currentRevision'] = submissionInfo[0]
                     if "curation" in submission:
                         if submission['curation']['status'] != "REQUESTED":
                             totalData.append(submission)

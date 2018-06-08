@@ -11,7 +11,7 @@ import { Layout } from 'girder/constants';
 import submitView from './pages/submit/submit';
 import editView from './pages/submit/editSubmission';
 import ManageDisclaimerView from './pages/admin/manageDisclaimers';
-import submissionView from './views/view';
+import submissionView from './pages/view/view';
 import approvalView from './views/manageApproval';
 import downloadView from './views/download';
 import manageJournalView from './views/manageJournal';

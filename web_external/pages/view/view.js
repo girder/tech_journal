@@ -4,8 +4,8 @@ import router from 'girder/router';
 import { getCurrentUser } from 'girder/auth';
 import { restRequest } from 'girder/rest';
 
-import MenuBarView from './menuBar.js';
-import SubmissionViewTemplate from '../templates/journal_view.pug';
+import MenuBarView from '../../views/menuBar.js';
+import SubmissionViewTemplate from './journal_view.pug';
 
 var submissionView = View.extend({
 
@@ -33,6 +33,9 @@ var submissionView = View.extend({
                 }
             });
             this.updateComments('no');
+        },
+        'click .clickable-row': function (event) {
+            router.navigate(`plugins/journal/view/${event.target.parentNode.dataset.href}`, {trigger: true});
         },
         'keyup #commentText': function (event) {
             var charsLeft = 1200 - this.$('#commentText').val().length;
