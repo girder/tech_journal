@@ -1,5 +1,15 @@
 mixin revisionOption(value,selectedRev)
-  option.revisionOption(value=value._id) #{value.name}
+  tr(class=selectedRev, data-href=value._id)
+    td.
+      #{value.name}
+    td.
+      #{value.creatorId}
+    td.
+      #{value.created}
+    td.
+      #{value.meta.certification_level}
+    td.
+      #{value.description}
 
 mixin searchLink(value,type)
   a(href='#?query="'+type+'":["'+ value+ '"]') #{value}
@@ -61,14 +71,6 @@ if 'downloadStatistics' in info.revision
               each item in info.revision.meta.tags
                 +searchLink(item,'tags')
                 |,
-            if info.otherRevisions
-              li Current revision:
-                select#revisionSelector
-                  for value in info.otherRevisions
-                    selected= ""
-                    if value === info.revision._id
-                      selected = "selected=''"
-                    +revisionOption(value,selected)
             li License: #{info.revision.meta["source-license"]}
             if info.parent.meta.grant
               li Grant: #{info.parent.meta.grant}
@@ -95,6 +97,9 @@ if 'downloadStatistics' in info.revision
           br
           .title.
             #{info.parent.name}
+          .revision
+            center
+              b #{info.revision.name}
           .authors
             each item in info.revision.meta.authors
               +searchLink(item,'authors')
@@ -114,6 +119,35 @@ if 'downloadStatistics' in info.revision
               | #{info.revision.description}
           .abstract.
             #{info.parent.description}
+          div
+            table#revisionTable(width="100%")
+              tr
+                td
+                  div(align="center")
+                    strong.
+                      Revision Version
+                td
+                  div(align="center")
+                    strong.
+                      Submitted By
+                td
+                  div(align="center")
+                    strong.
+                      Submission Date
+                td
+                  div(align="center")
+                    strong.
+                      Certified
+                td
+                  div(align="center")
+                    strong.
+                      Notes
+              if info.otherRevisions
+                for value in info.otherRevisions
+                  - selected="clickable-row"
+                  if value._id === info.revision._id
+                    - selected="selected"
+                  +revisionOption(value,selected)
           h4 Comments
           #commentsContainer
             #commentsDiv
