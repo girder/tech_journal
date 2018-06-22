@@ -283,23 +283,36 @@ class TechJournal(Resource):
         Description('Get submissions matching a certain set of parameters by JSON')
         .responseClass('Collection')
         .param('id', "The ID of the Journal (collection) to pull from", paramType='path')
-        .param('query', "A JSON object to filter the objects over", required=True)
+        .param('query', "A JSON object to filter the objects over", required=False)
         .errorResponse('Test error.')
         .errorResponse('Read access was denied on the issue.', 403)
         )
     def getFilteredSubmissions(self, collection, params):
         user = self.getCurrentUser()
-        filterParams = json.loads(params["query"])
         totalData = list()
-        issues = list(self.model('folder').childFolders(parentType='collection',
-                                                        parent=collection,
-                                                        user=user
-                                                        ))
+        filterParams = json.loads(params["query"])
+        if "issueId" in filterParams:
+            issues = [self.model('folder').load(filterParams['issueId'],
+                                                user=user
+                                                )]
+            del filterParams['issueId']
+        else:
+            issues = list(self.model('folder').childFolders(parentType='collection',
+                                                            parent=collection,
+                                                            user=user
+                                                            ))
+        textArg = None
+        if "text" in filterParams:
+            textArg = filterParams['text']
+            del filterParams['text']
         for issue in issues:
-            testInfo = list(self.model('folder').childFolders(parentType='folder',
-                                                              parent=issue,
-                                                              user=user
-                                                              ))
+            if textArg:
+                testInfo = list(self.model('folder').textSearch(textArg, user=user))
+            else:
+                testInfo = list(self.model('folder').childFolders(parentType='folder',
+                                                                  parent=issue,
+                                                                  user=user,
+                                                                  ))
             for submission in testInfo:
                 # ===================================================
                 # Complicated search to "or" and "and" query objects
@@ -338,7 +351,6 @@ class TechJournal(Resource):
                     # If not found already, add it to the returned information
                     if submission not in totalData:
                         totalData.append(submission)
-
         totalData = sorted(totalData, reverse=True, key=lambda submission: submission['updated'])
         return totalData
 
