@@ -264,6 +264,10 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
             "parentCollection":"folder",
             "creatorId" : ObjectId("579f725a82290968da666b16"),
             "parentId":inputObject["_id"],
+            "downloadStatistics" : {
+                "completed" : 0,
+                "views" : row[5]
+            },
             "public" : True,
             "curation" : {
               "status":"APPROVED",
@@ -361,6 +365,11 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
           inputRevision["description"] = revision[4]
           inputRevision["created"] = revision[3]
           print inputRevision['name']
+          # Capture the download and view information
+          cur.execute("SELECT * FROM statistics_download WHERE item_id="+ str(revision[0]))
+          allDownloads = cur.fetchall()
+          inputRevision['downloadStatistics']['completed'] = len(allDownloads)
+
           result = foldersDB.insert_one(inputRevision)
           # ====================================================
           # Capture all objects within each revision
