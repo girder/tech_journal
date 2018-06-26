@@ -15,7 +15,7 @@ var EditIssueView = View.extend({
                     issueDescription: this.$('#issueDescription')[0].value,
                     'paperDue': $('.datepicker')[0].value,
                     'decision': $('.datepicker')[1].value,
-                    'publicatioN': $('.datepicker')[2].value
+                    'publication': $('.datepicker')[2].value
                 };
                 if (this.update) {
                     this._updateIssue(values);
@@ -98,7 +98,16 @@ var EditIssueView = View.extend({
                 url: `folder/${jrnResp._id}/metadata`,
                 data: JSON.stringify(issueDateData)
             }).done((metaResp) => {
-
+                restRequest({
+                    type: 'POST',
+                    url: `group/`,
+                    data: {
+                        'name': `${issueData.issueName}_editors`,
+                        'description': `Editors for the issue with id of ${jrnResp._id}`,
+                        'public': false
+                    }
+                }).done((grpRep) => {
+                });
             });
         });
     },

@@ -62,6 +62,7 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
     usersDB = client.girder.user
     itemDB = client.girder.item
     fileDB = client.girder.file
+    groupDB = client.girder.group
     collectionDB = client.girder.collection
     journalCollectionDB = client.girder.journal_collection;
     cur.execute("SELECT * FROM user")
@@ -205,11 +206,25 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
       inputObject["meta"]["publication"] = str(row[4])
       inputObject["meta"]["__issue__"] = True
       result = foldersDB.insert_one(inputObject)
+
+      # Create groups for each issue
+      for val in ["editors", "members"]:
+        inputGroup = {
+          "_id" : ObjectId(),
+          "updated" : datetime.now(),
+          "name" : "%s_%s" % (inputObject["name"],val),
+          "created" : datetime.now(),
+          "creatorId" : ObjectId("579f725a82290968da666b16"),
+          "requests" : [ ],
+          "public" : False,
+          "description" : "Group %s for issue %s " % (val, inputObject["name"])
+        }
+        result = groupDB.insert_one(inputGroup)
       print inputObject["name"]
       issueDictionary[folder_id] = inputObject
     # ====================================================
     # Bring over all Folders and all revisions within those folders for
-    # each issue above  
+    # each issue above
     #
     # +---------------
     #| Field          |
@@ -390,7 +405,6 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
           inputRevision["meta"]["has_reviews"] = metaDataQuery(cur, revision[0],"38")
           inputRevision["meta"]["categories"] = metaDataQuery(cur, revision[0],"18")
           inputRevision["meta"]["disclaimer"] = metaDataQuery(cur, revision[0],"20")
-          
           inputRevision["name"] = "Revision " + str(revision[2])
           inputRevision["_id"] = ObjectId()
           inputRevision["description"] = revision[4]
@@ -429,7 +443,7 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
                   newassetPath = ''
                   newChecksum = ''
                   p = subprocess.Popen("/usr/bin/sha512sum "+prevAssetLoc, stdout=subprocess.PIPE, shell=True)
-                  (output, err) = p.communicate() 
+                  (output, err) = p.communicate()
                   p_status = p.wait()
                   (newChecksum, oldpath)=output.split('  ')
                   newAssetDir = os.path.join(assetStore,newChecksum[0:2],newChecksum[2:4])
@@ -454,7 +468,7 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
                                      "folderId":inputRevision["_id"],
                                      "size":bitstream[4],
                                      "created" : bitstream[8]
-                  } 
+                  }
                   result = itemDB.insert_one(inputBitStream)
                   # Take item and generate file for each one
                   inputFile = { "_id" : ObjectId(),
