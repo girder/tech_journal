@@ -301,18 +301,16 @@ class TechJournal(Resource):
                                                             parent=collection,
                                                             user=user
                                                             ))
-        textArg = None
+        textArg = ""
         if "text" in filterParams:
-            textArg = filterParams['text']
+            textArg = {"$text": {"$search": filterParams['text']}}
             del filterParams['text']
         for issue in issues:
-            if textArg:
-                testInfo = list(self.model('folder').textSearch(textArg, user=user))
-            else:
-                testInfo = list(self.model('folder').childFolders(parentType='folder',
-                                                                  parent=issue,
-                                                                  user=user,
-                                                                  ))
+            testInfo = list(self.model('folder').childFolders(parentType='folder',
+                                                              parent=issue,
+                                                              user=user,
+                                                              filters=textArg
+                                                              ))
             for submission in testInfo:
                 # ===================================================
                 # Complicated search to "or" and "and" query objects
