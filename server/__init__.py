@@ -74,7 +74,7 @@ def validateSettings(event):
 def checkValue(infoList, filterParams, category, value):
     if 'meta' in infoList:
         if "categories" in infoList['meta'].keys():
-            if value in infoList['meta']["categories"]:
+            if str(value) in infoList['meta']["categories"]:
                 return True
     if category in infoList:
         if type(infoList[category]) == list:
@@ -90,6 +90,8 @@ class TechJournal(Resource):
 
     def checkSubmission(self, filterParams, submission, searchObj, targetVal, category):
         keyMatch = False
+        if category == "creatorId":
+            targetVal = ObjectId(targetVal)
         if searchObj in submission["meta"].keys():
             keyMatch = keyMatch or checkValue(submission["meta"],
                                               filterParams[category],
@@ -112,6 +114,8 @@ class TechJournal(Resource):
                 for key in filterParams[category]:
                     searchObj = category
                     targetVal = key
+                    if category == "creatorId":
+                        targetVal = ObjectId(targetVal)
                     if re.match("has.*code", key):
                         searchObj = key
                         targetVal = "true"
@@ -212,11 +216,11 @@ class TechJournal(Resource):
         parentInfo['issue'] = self.model('folder').load(parentInfo['parentId'],
                                                         user=self.getCurrentUser(),
                                                         force=True)
-        parentInfo['submitter'] = self.model('user').load(folder['creatorId'],
-                                                          user=self.getCurrentUser(),
-                                                          force=True)
         currentInfo = self.model('folder').load(folder['_id'],
                                                 user=self.getCurrentUser(), force=True)
+        currentInfo['submitter'] = self.model('user').load(currentInfo['creatorId'],
+                                                           user=self.getCurrentUser(),
+                                                           force=True)
         otherRevs = list(self.model('folder').childFolders(parentType='folder', parent=parentInfo,
                                                            user=self.getCurrentUser()))
         for rev in otherRevs:
@@ -341,6 +345,8 @@ class TechJournal(Resource):
                             targetVal = "true"
                         if category == "License":
                             searchObj = "source-license"
+                        if category == "creatorId":
+                            targetVal = ObjectId(targetVal)
                         foundMatch = self.checkSubmission(filterParams,
                                                           submission,
                                                           searchObj,

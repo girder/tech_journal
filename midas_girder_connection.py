@@ -11,6 +11,7 @@ import MySQLdb
 import sys
 import os
 
+userDictionary = {}
 licenseDict = {
  "0": "Not Defined",
  "1": "Apache 2.0",
@@ -21,6 +22,12 @@ licenseDict = {
  "6": "BSD",
  "": "Not Defined"
 }
+
+def checkUser(userObj):
+    if userObj in userDictionary.keys():
+        return userDictionary[userObj]["_id"]
+    else:
+        return userObj
 
 def metaDataQuery(cur, entryNo, fieldNo):
     cur.execute("SELECT * FROM metadatavalue WHERE itemrevision_id="+ str(entryNo)+" and metadata_id=" + str(fieldNo))
@@ -49,7 +56,6 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
     cur = db.cursor()
 
     issueDictionary = {}
-    userDictionary = {}
     # Prep Mongo client for insertion
     client = MongoClient('localhost', 27017)
     foldersDB = client.girder.folder
@@ -179,7 +185,7 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
       issueDictionary[folder_id] = inputObject
     # ====================================================
     # Bring over all Folders and all revisions within those folders for
-    # each issue above  
+    # each issue above
     #
     # +---------------
     #| Field          |
@@ -216,10 +222,6 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
                        "targetIssue":"5a295c0782290926a05fef5c"
                      }
                     }
-      #if row[9] in userDictionary.keys():
-      #  inputObject["creatorId"] = userDictionary[row[9]]["_id"]
-      #else:
-      #  inputObject["creatorId"] = row[9]
       cur.execute("SELECT * FROM item2folder where item_id=" + str(row[0]))
       itemConnection = cur.fetchall()
 
@@ -262,7 +264,7 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
               "groups" : [ ]
             },
             "parentCollection":"folder",
-            "creatorId" : ObjectId("579f725a82290968da666b16"),
+            "creatorId" : checkUser(revision[5]),
             "parentId":inputObject["_id"],
             "downloadStatistics" : {
                 "completed" : 0,
@@ -280,7 +282,6 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
             }
           }
           if revision[5] in userDictionary.keys():
-            inputRevision["creatorId"] = userDictionary[revision[5]]["_id"]
             inputRevision["access"]["users"].append( {
                   "flags" : [ ],
                   "id" : userDictionary[revision[5]]["_id"],
@@ -288,7 +289,6 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
                 })
             #inputRevision["meta"]["authors"] = [userDictionary[revision[5]]["firstName"] + " " + userDictionary[revision[5]]["lastName"]]
           else:
-            inputRevision["creatorId"] = row[9]
             inputRevision["access"]["users"].append( {
                   "flags" : [ ],
                   "id" : row[9],
@@ -359,7 +359,7 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
           inputRevision["meta"]["certification_level"] = metaDataQuery(cur, revision[0],"32")
           inputRevision["meta"]["has_reviews"] = metaDataQuery(cur, revision[0],"38")
           inputRevision["meta"]["categories"] = metaDataQuery(cur, revision[0],"18")
-          
+
           inputRevision["name"] = "Revision " + str(revision[2])
           inputRevision["_id"] = ObjectId()
           inputRevision["description"] = revision[4]
@@ -398,7 +398,7 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
                   newassetPath = ''
                   newChecksum = ''
                   p = subprocess.Popen("/usr/bin/sha512sum "+prevAssetLoc, stdout=subprocess.PIPE, shell=True)
-                  (output, err) = p.communicate() 
+                  (output, err) = p.communicate()
                   p_status = p.wait()
                   (newChecksum, oldpath)=output.split('  ')
                   newAssetDir = os.path.join(assetStore,newChecksum[0:2],newChecksum[2:4])
@@ -423,7 +423,7 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
                                      "folderId":inputRevision["_id"],
                                      "size":bitstream[4],
                                      "created" : bitstream[8]
-                  } 
+                  }
                   result = itemDB.insert_one(inputBitStream)
                   # Take item and generate file for each one
                   inputFile = { "_id" : ObjectId(),

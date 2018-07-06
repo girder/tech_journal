@@ -64,7 +64,7 @@
               ul#userOptionsList
                 li
                   // TODO: implement this route
-                  a.submm(href='#?query="creatorId":"'+user.id+'"') My Publications
+                  a.submm(href='#?query="creatorId":["'+user.id+'"]') My Publications
                 li
                   a.submm(href='/#useraccount/' + user.id + '/info') Edit Profile
           if user.attributes.admin
