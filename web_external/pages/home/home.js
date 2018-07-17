@@ -7,6 +7,8 @@ import HomeTemplate from './home.pug';
 import IndexEntryViewTemplate from '../../templates/journal_index_entry.pug';
 import CategoryTemplate from './home_categoryTemplate.pug';
 
+var magicTerms = ['authors', 'institution', 'creatorId', 'tags'];
+
 const HomePage = View.extend({
     events: {
         'click #search_button': function (event) {
@@ -55,10 +57,10 @@ const HomePage = View.extend({
             if (!$.isEmptyObject(query.collection)) {
                 this.collectionID = query.collection;
             }
-            this.buildSearch(this.collectionID, 0);
+            this.render('', this.collectionID, 0);
         }); // End getting of OTJ Collection value setting
     },
-    render: function (subData, searchVal, collection, startIndex) {
+    render: function (searchVal, collection, startIndex) {
         var pendingSubs = 0;
         restRequest({
             type: 'GET',
@@ -69,28 +71,7 @@ const HomePage = View.extend({
                 url: `journal/${this.defaultJournal}/pending?`
             }).done((pendRsp) => {
                 pendingSubs = pendRsp.length;
-                if (!this.$('.searchResults').length) {
-                    this.$el.html(HomeTemplate({info: { 'issues': jrnResp }}));
-                }
-                // Check to see if we blank the existing submissions or not
-                if (startIndex === 0) {
-                    this.$('.searchResults').html('');
-                }
-                var submissions = subData;
-                // Check to see if we need the "See more files" link
-                if (startIndex + 20 > subData.length) {
-                    this.$('#showMoreResults').hide();
-                } else {
-                    submissions = subData.slice(startIndex, startIndex + 20);
-                    this.$('#showMoreResults').show();
-                }
-                // Check to see if we have to add the "No results" message
-                if (subData.length === 0) {
-                    this.$('#noResultElement').show();
-                } else {
-                    this.$('#noResultElement').hide();
-                    this.$('.searchResults').html(this.$('.searchResults').html() + IndexEntryViewTemplate({info: {'submissions': submissions}}));
-                }
+                this.$el.html(HomeTemplate({info: { 'issues': jrnResp }}));
                 new MenuBarView({ // eslint-disable-line no-new
                     el: this.$el,
                     parentView: this,
@@ -105,6 +86,17 @@ const HomePage = View.extend({
                         for (var key in resp) {
                             this.$('#treeWrapper').html(this.$('#treeWrapper').html() + CategoryTemplate({'catName': resp[key]['key'], 'values': resp[key]['value']}));
                         }
+                        // Put URL hash additions into text box as "magic" terms
+                        if (window.location.hash && !window.location.hash.includes('dialog')) {
+                            var queryString = decodeURI(window.location.hash.substring(8));
+                            if (queryString.indexOf('category') !== -1) {
+                                var categoryVal = queryString.substring(13, queryString.length - 2);
+                                this.$(`.filterOption[val=${categoryVal}]`)[0].checked = true;
+                            } else if ($('#live_search').val().indexOf(queryString) === -1) {
+                                $('#live_search').val($('#live_search').val() + queryString);
+                            }
+                        }
+                        this.buildSearch(this.collectionID, 0);
                     }); // End getting of OTJ Collection value setting
                 }
             });
@@ -121,18 +113,8 @@ const HomePage = View.extend({
         *
         */
         var queryString = '';
-        if (window.location.hash && !window.location.hash.includes('dialog')) {
-            queryString += decodeURI(window.location.hash.substring(8));
-        }
-
         var searchText = $('#live_search').val();
-        if (searchText !== undefined && searchText !== '') {
-            if (queryString !== '') {
-                queryString += ',';
-            }
-            searchText = searchText.replace(/"/g, '&quot;');
-            queryString += `"text": "${searchText}"`;
-        }
+        queryString += this.findSearchTerms(searchText, queryString);
         var issueId = $('.issueSelected').attr('key');
         if (issueId !== undefined && issueId !== '' && issueId !== '*') {
             if (queryString !== '') {
@@ -164,8 +146,67 @@ const HomePage = View.extend({
             type: 'GET',
             url: `journal/${collection}/search?query={` + encodeURIComponent(queryString) + '}'
         }).done((jrnResp) => {
-            this.render(jrnResp, $('#live_search').val(), collection, startIndex);
+            // Check to see if we blank the existing submissions or not
+            if (startIndex === 0) {
+                this.$('.searchResults').html('');
+            }
+            var submissions = jrnResp;
+            // Check to see if we need the "See more files" link
+            if (startIndex + 20 > jrnResp.length) {
+                this.$('#showMoreResults').hide();
+            } else {
+                submissions = jrnResp.slice(startIndex, startIndex + 20);
+                this.$('#showMoreResults').show();
+            }
+            // Check to see if we have to add the "No results" message
+            if (jrnResp.length === 0) {
+                this.$('#noResultElement').show();
+            } else {
+                this.$('#noResultElement').hide();
+                this.$('.searchResults').html(this.$('.searchResults').html() + IndexEntryViewTemplate({info: {'submissions': submissions}}));
+            }
         });
+    },
+    findSearchTerms: function (searchText, queryString) {
+        var terms = [];
+        if (searchText !== undefined && searchText !== '') {
+            if (queryString !== '') {
+                queryString += ',';
+            }
+
+            var inQuotes = false;
+            var tmpStr = '';
+            for (var i = 0; i < searchText.length; i++) {
+                if (searchText.charAt(i) === ' ') {
+                    if (!inQuotes) {
+                        terms.push(tmpStr);
+                        tmpStr = '';
+                    }
+                } else if (searchText.charAt(i) === '\'' || searchText.charAt(i) === '"') {
+                    inQuotes = !inQuotes;
+                }
+                tmpStr += searchText.charAt(i);
+            }
+            terms.push(tmpStr);
+            terms.forEach(function (searchVal) {
+                var magicFound = false;
+                magicTerms.forEach(function (termVal) {
+                    if (searchVal.indexOf(termVal) !== -1) {
+                        magicFound = true;
+                    }
+                });
+                if (queryString !== '') {
+                    queryString += ',';
+                }
+                if (magicFound) {
+                    queryString += searchVal;
+                } else {
+                    searchVal = searchVal.replace(/"/g, '&quot;');
+                    queryString += `"text": "${searchVal}"`;
+                }
+            });
+        }
+        return queryString;
     }
 });
 
