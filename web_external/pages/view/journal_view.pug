@@ -3,7 +3,7 @@ mixin revisionOption(value,selectedRev)
     td.
       #{value.name}
     td.
-      #{value.creatorId}
+      #{value.submitter.firstName} #{value.submitter.lastName}
     td.
       #{value.created}
     td.
@@ -110,9 +110,9 @@ if 'downloadStatistics' in info.revision
             span(style="font-weight:bold;color:red;")
               | This article is waiting for approval
           .journal.
-            Submitted to: #{info.parent.baseParentId}
+            Submitted to: #{info.parent.issue.name}
           .submittedby.
-            Submitted by #{info.parent.creatorId} on #{info.parent.created}
+            Submitted by #{info.parent.submitter.firstName} #{info.parent.submitter.lastName} on #{info.parent.created}
           if info.revision.description
             h4 Revision Notes
             .abstract(style="text-align: justify")

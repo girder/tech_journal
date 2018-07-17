@@ -209,10 +209,20 @@ class TechJournal(Resource):
     def getSubmissionDetails(self, folder, params):
         parentInfo = self.model('folder').load(folder['parentId'],
                                                user=self.getCurrentUser(), force=True)
+        parentInfo['issue'] = self.model('folder').load(parentInfo['parentId'],
+                                                        user=self.getCurrentUser(),
+                                                        force=True)
+        parentInfo['submitter'] = self.model('user').load(folder['creatorId'],
+                                                          user=self.getCurrentUser(),
+                                                          force=True)
         currentInfo = self.model('folder').load(folder['_id'],
                                                 user=self.getCurrentUser(), force=True)
         otherRevs = list(self.model('folder').childFolders(parentType='folder', parent=parentInfo,
                                                            user=self.getCurrentUser()))
+        for rev in otherRevs:
+            rev['submitter'] = self.model('user').load(rev['creatorId'],
+                                                       user=self.getCurrentUser(),
+                                                       force=True)
         return (currentInfo, parentInfo, otherRevs)
 
     @access.public(scope=TokenScope.DATA_READ)
