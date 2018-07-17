@@ -146,6 +146,7 @@ class TechJournal(Resource):
         self.route('PUT', (':id', 'comments'), self.updateComments)
         self.route('PUT', ('setting',), self.setJournalSettings)
         self.route('GET', ('setting',), self.getJournalSettings)
+        self.route('POST', ('feedback',), self.sendFeedBack)
         # APIs for categories
         self.route('POST', ('category',), self.addJournalObj)
         self.route('PUT', ('category',), self.updateJournalObj)
@@ -636,6 +637,23 @@ class TechJournal(Resource):
             field='downloadStatistics.views',
             amount=1
         )
+
+    @access.public
+    @describeRoute(
+        Description('Send feedback email to admins')
+        .param('body', 'A JSON object containing the feedback.  Am object \
+                        with three params: title, where, summary',
+               paramType='body')
+        .errorResponse('Test error.')
+        .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def sendFeedBack(self, params):
+        metadata = self.getBodyJson()
+        subject = "Website Feedback from %s" % metadata['title']
+        emailTemplate = 'tech_journal_feedback.mako'
+        html = mail_utils.renderTemplate(emailTemplate, metadata)
+        mail_utils.sendEmail(toAdmins=True, subject=subject, text=html)
+        return 'Success'
 
 
 def load(info):
