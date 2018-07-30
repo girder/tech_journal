@@ -83,14 +83,14 @@ if 'downloadStatistics' in info.revision
                 a(href="#plugins/journal/submission/"+info.revision._id+"/revision") New Revision
               if (user.attributes.admin)
                 li
-                  a(href="#plugins/journal/submission/"+info.revision._id+"/edit") Edit Resource
-                li
-                  a Delete Resource
-                if info.parent.meta.prevRevis
+                  a(href="#plugins/journal/submission/"+info.revision._id+"/edit") Edit current revision
+                if info.otherRevisions.length > 1
                   li
-                    a Delete Current revision
+                    a#deleteRevision Delete Current revision
                 li
-                  a Manage Reviews
+                  a#deleteSubmission Delete publication
+                li
+                  a#manageReviews Manage Reviews
 
       .MainContent
         #publication

@@ -8,7 +8,7 @@
         form#submitForm.genericForm(data-validate="parsley", method="POST", action="")
           table(width="100%")
             tbody
-              if info.NR
+              if info.NR || info.info.description
                 tr
                   td
                     .submission
@@ -18,6 +18,17 @@
                 tr
                   td
                     textarea#revisionEntry.bigInput.parsley-validated(name="revNotes", required)
+                      if info.info.description && !info.NR
+                        | #{info.info.description}
+                tr
+                  td
+                    .submission
+                      .title Revision Version
+                tr
+                  td
+                    textarea#revisionName.bigInput.parsley-validated(name="revVersion")
+                      if info.info.name && !info.NR
+                        | #{info.info.name}
               tr
                 td
                   .submission

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import View from 'girder/views/View';
 import router from 'girder/router';
 import events from 'girder/events';
@@ -28,7 +29,6 @@ var SubmitView = View.extend({
             }
         },
         'click #authorAdd': function (event) {
-            console.log(event);
             event.preventDefault();
             this.$('#authors').append(SubmitAuthorEntryTemplate({info: {info: '1'}}));
         },
@@ -46,7 +46,7 @@ var SubmitView = View.extend({
             this.targetIssueID = event.currentTarget.target;
             restRequest({
                 type: 'GET',
-                path: `folder/${this.targetIssueID}`
+                url: `folder/${this.targetIssueID}`
             }).done((resp) => {
                 this.$('#issueDetails').append(issueDetailsTemplate({info: resp}));
             });
@@ -61,7 +61,7 @@ var SubmitView = View.extend({
             this.newSub = true;
             restRequest({
                 type: 'GET',
-                path: 'journal/setting',
+                url: 'journal/setting',
                 data: {
                     list: JSON.stringify([
                         'tech_journal.default_journal'
@@ -70,7 +70,7 @@ var SubmitView = View.extend({
             }).done((resp) => {
                 restRequest({
                     type: 'GET',
-                    path: `journal/${resp['tech_journal.default_journal']}/openissues`
+                    url: `journal/${resp['tech_journal.default_journal']}/openissues`
                 }).done((jrnResp) => {
                     this.render(jrnResp, 1);
                 });
@@ -102,7 +102,7 @@ var SubmitView = View.extend({
             this.itemId = subResp;
             restRequest({
                 type: 'GET',
-                path: `folder/${this.itemId}`
+                url: `folder/${this.itemId}`
             }).done((resp) => {
                 if (this.newSub) {
                     issueInfo = {};
@@ -116,14 +116,14 @@ var SubmitView = View.extend({
                 this.$('#pageContent').html(SubmitViewTemplate({ info: { info: {}, parInfo: {} } }));
                 restRequest({
                     type: 'GET',
-                    path: 'journal/categories?tag=categories'
+                    url: 'journal/categories?tag=categories'
                 }).done((resp) => {
                     for (var key in resp) {
                         this.$('#treeWrapper').html(this.$('#treeWrapper').html() + CategoryTemplate({'catName': resp[key]['key'], 'values': resp[key]['value']}));
                     }
                     restRequest({
                         type: 'GET',
-                        path: `journal/disclaimers?tag=disclaimer`
+                        url: `journal/disclaimers?tag=disclaimer`
                     }).done((disclaimerResp) => {
                         for (var disc in disclaimerResp) {
                             this.$('#disclaimer').append('<option>' + disc + '</option>');
@@ -186,7 +186,7 @@ var SubmitView = View.extend({
         }
         restRequest({
             type: 'POST',
-            path: 'folder',
+            url: 'folder',
             data: {
                 parentId: this.user.id,
                 parentType: 'user',
@@ -203,7 +203,7 @@ var SubmitView = View.extend({
         // if new submission, generate first "revision" folder inside of generated folder
         restRequest({
             type: 'POST',
-            path: 'folder',
+            url: 'folder',
             data: {
                 parentId: parentId,
                 parentType: 'folder',
@@ -213,7 +213,7 @@ var SubmitView = View.extend({
         }).done((resp) => {
             restRequest({
                 type: 'PUT',
-                path: `journal/${resp._id}/metadata`,
+                url: `journal/${resp._id}/metadata`,
                 contentType: 'application/json',
                 data: JSON.stringify(subData),
                 error: null

@@ -1,5 +1,7 @@
+import $ from 'jquery';
 import View from 'girder/views/View';
 import router from 'girder/router';
+import events from 'girder/events';
 import { restRequest } from 'girder/rest';
 
 import MenuBarView from '../../views/menuBar.js';
@@ -18,20 +20,28 @@ var editView = View.extend({
             event.preventDefault();
             restRequest({
                 type: 'PUT',
-                path: `folder/${this.parentId}`,
+                url: `folder/${this.parentId}`,
                 data: {
                     parentType: 'folder',
                     name: this.$('#titleEntry').val().trim(),
                     description: this.$('#abstractEntry').val().trim()
                 },
-                error: null
-            }).done((resp) => {
-                if (this.newRevision) {
-                    this._generateNewRevision();
-                } else {
-                    this._updateSubmission(this.itemId);
-                    router.navigate(`#plugins/journal/submission/${this.itemId}/upload/edit`,
-                        {trigger: true});
+                error: (resp) => {
+                    events.trigger('g:alert', {
+                        icon: 'ok',
+                        text: resp.message,
+                        type: 'warning',
+                        timeout: 4000
+                    });
+                },
+                success: (resp) => {
+                    if (this.newRevision) {
+                        this._generateNewRevision();
+                    } else {
+                        this._updateSubmission(this.itemId);
+                        router.navigate(`#plugins/journal/submission/${this.itemId}/upload/edit`,
+                            {trigger: true});
+                    }
                 }
             });
         },
@@ -59,7 +69,7 @@ var editView = View.extend({
         this.itemId = subResp;
         restRequest({
             type: 'GET',
-            path: `journal/${this.itemId}/details`
+            url: `journal/${this.itemId}/details`
         }).done((resp) => {
             this.parentId = resp[1]._id;
             this.$el.html(SubmitViewTemplate({info: {info: resp[0], 'parInfo': resp[1], 'NR': this.newRevision}}));
@@ -72,7 +82,7 @@ var editView = View.extend({
             $(`.CLAPermission[value=${resp[0].meta.CorpCLA}]`).prop('checked', 'checked');
             restRequest({
                 type: 'GET',
-                path: 'journal/categories?tag=categories'
+                url: 'journal/categories?tag=categories'
             }).done((catResp) => {
                 for (var key in catResp) {
                     this.$('#treeWrapper').html(this.$('#treeWrapper').html() + CategoryTemplate({'catName': catResp[key]['key'], 'values': catResp[key]['value']}));
@@ -82,7 +92,7 @@ var editView = View.extend({
                 }
                 restRequest({
                     type: 'GET',
-                    path: `journal/disclaimers?tag=disclaimer`
+                    url: `journal/disclaimers?tag=disclaimer`
                 }).done((disclaimerResp) => {
                     for (var disc in disclaimerResp) {
                         var selected = '';
@@ -129,19 +139,22 @@ var editView = View.extend({
         return subData;
     },
     _generateNewRevision: function () {
+        var revisionName = this.$('#revisionName').val().trim();
         var targetUrl = '#plugins/journal/submission/';
-        // if new submission, generate first "revision" folder inside of generated folder
         restRequest({
             type: 'GET',
             path: `folder/${this.parentId}/details`
         }).done((resp) => {
+            if (revisionName === '') {
+                revisionName = 'Revision ' + ++resp.nFolders;
+            }
             restRequest({
                 type: 'POST',
-                path: 'folder',
+                url: 'folder',
                 data: {
                     parentId: this.parentId,
                     parentType: 'folder',
-                    name: 'Revision ' + ++resp.nFolders,
+                    name: revisionName,
                     description: this.$('#revisionEntry').val().trim()
                 },
                 error: null
@@ -154,7 +167,7 @@ var editView = View.extend({
     _updateSubmission: function (itemID) {
         restRequest({
             type: 'PUT',
-            path: `journal/${itemID}/metadata`,
+            url: `journal/${itemID}/metadata`,
             contentType: 'application/json',
             data: JSON.stringify(this._captureSubmissionInformation()),
             error: null
