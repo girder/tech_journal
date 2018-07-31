@@ -15,6 +15,13 @@ import CategoryTemplate from '../home/home_categoryTemplate.pug';
 
 var SubmitView = View.extend({
     events: {
+        'click .disclaimerRad': function (event) {
+            this.$('.viewMain').hide();
+            var disclaimerAgree = $('.disclaimerRad:checked').val();
+            if (disclaimerAgree === 'agree') {
+                this.$('.viewMain').show();
+            }
+        },
         'click .issueGen': function (event) {
             this.parentID = event.currentTarget.target;
             this.render(event.currentTarget.target, 2);
@@ -53,6 +60,17 @@ var SubmitView = View.extend({
         },
         'click #closeDetails': function (event) {
             this.$(event.currentTarget.parentElement).remove();
+        },
+        'click .filterOption': function (event) {
+            if (this.$('.filterOption:checked').length > 0) {
+                this.$('.filterOption').each(function (index, val) {
+                    val.required = false;
+                });
+            } else {
+                this.$('.filterOption').each(function (index, val) {
+                    val.required = true;
+                });
+            }
         }
     },
     initialize: function (id) {
@@ -70,9 +88,15 @@ var SubmitView = View.extend({
             }).done((resp) => {
                 restRequest({
                     type: 'GET',
-                    url: `journal/${resp['tech_journal.default_journal']}/openissues`
-                }).done((jrnResp) => {
-                    this.render(jrnResp, 1);
+                    url: `collection/${resp['tech_journal.default_journal']}`
+                }).done((parResp) => {
+                    restRequest({
+                        type: 'GET',
+                        url: `journal/${resp['tech_journal.default_journal']}/openissues`
+                    }).done((jrnResp) => {
+                        jrnResp['parentName'] = parResp['name'];
+                        this.render(jrnResp, 1);
+                    });
                 });
             }); // End getting of OTJ Collection value setting
         } else {
@@ -113,7 +137,11 @@ var SubmitView = View.extend({
                     issueInfo.NR = this.newRevision;
                     this.parentID = issueInfo.parentID;
                 }
-                this.$('#pageContent').html(SubmitViewTemplate({ info: { info: {}, parInfo: {} } }));
+                this.$('#pageContent').html(SubmitViewTemplate({ 'info': { info: {}, parInfo: {} },
+                    'disclaimer': 'You are licensing your work to OSEHRA Inc. under the Creative Commons Attribution License Version 3.0.',
+                    'titleText': 'Create Submission'
+                }));
+                this.$('.viewMain').hide();
                 restRequest({
                     type: 'GET',
                     url: 'journal/categories?tag=categories'
@@ -200,6 +228,10 @@ var SubmitView = View.extend({
     },
     _findUploadTarget: function (parentId, subData) {
         var targetUrl = '#plugins/journal/submission/';
+        var revisionName = $('#revisionTitle').val().trim();
+        if (revisionName === '') {
+            revisionName = 'Revision 1';
+        }
         // if new submission, generate first "revision" folder inside of generated folder
         restRequest({
             type: 'POST',
@@ -207,7 +239,7 @@ var SubmitView = View.extend({
             data: {
                 parentId: parentId,
                 parentType: 'folder',
-                name: 'Revision 1'
+                name: revisionName
             },
             error: null
         }).done((resp) => {

@@ -448,7 +448,7 @@ class TechJournal(Resource):
                 'authors': folder['meta']['authors'],
                 'abstract': parentFolder['description']}
         subject = ''
-        if folder['name'] == 'Revision 1':
+        if self.model('folder').countFolders(parentFolder) == 1:
             subject = 'New Submission'
             params['sendEmail'] = True
             emailTemplate = 'tech_journal_new_submission.mako'

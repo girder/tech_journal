@@ -1,10 +1,10 @@
 #headerBar
-mixin issueEntry(info)
+mixin issueEntry(info, parName)
   tr
     td
-      | #{info.name}
+      | #{parName}
     td
-      | #{info.description}
+      a.issueGen(target=info._id) #{info.name}
     td
       | #{info.daysLeft}
     td
@@ -23,7 +23,7 @@ mixin issueEntry(info)
           | Don't know how to submit your paper? Visit the
           a(href="#help") help page
           | or download an
-          a example
+          a(href="") example
           br
           br
           table(width="70%", border="0")
@@ -42,9 +42,8 @@ mixin issueEntry(info)
                   div(align="left")
                     strong Actions
               tr
-                td(height="1", colspan="4")
-                  hr
+                hr
               each item in info
-                +issueEntry(item)
+                +issueEntry(item, info.parentName)
         .clear
         .Footer
