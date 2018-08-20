@@ -56,6 +56,10 @@ class Webroot(WebrootBase):
         }
 
 
+def sortByDate(elem):
+    return elem['created']
+
+
 def validateSettings(event):
     key, val = event.info['key'], event.info['value']
 
@@ -147,6 +151,7 @@ class TechJournal(Resource):
         self.route('PUT', ('setting',), self.setJournalSettings)
         self.route('GET', ('setting',), self.getJournalSettings)
         self.route('POST', ('feedback',), self.sendFeedBack)
+        self.route('DELETE', (':id',), self.deleteObject)
         # APIs for categories
         self.route('POST', ('category',), self.addJournalObj)
         self.route('PUT', ('category',), self.updateJournalObj)
@@ -171,7 +176,20 @@ class TechJournal(Resource):
         issues = list(self.model('folder').childFolders(parentType='collection',
                                                         parent=collection,
                                                         user=self.getCurrentUser()))
+        issues.sort(key=sortByDate)
         return issues
+
+    @access.public(scope=TokenScope.DATA_WRITE)
+    @loadmodel(model='folder', level=AccessType.WRITE)
+    @describeRoute(
+        Description('Delete a given object')
+        .responseClass('folder')
+        .param('id', 'The ID of the object to delete', paramType='path')
+        .errorResponse('Test error.')
+        .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def deleteObject(self, folder, params):
+        return self.model('folder').remove(folder)
 
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)
@@ -196,6 +214,7 @@ class TechJournal(Resource):
                                                          '%Y-%m-%dT%H:%M:%S.%fZ')
             if dateofIssue > datetime.datetime.now():
                 activeIssues.append(issue)
+        activeIssues.sort(key=sortByDate)
         return activeIssues
 
     @access.public(scope=TokenScope.DATA_READ)
@@ -219,6 +238,7 @@ class TechJournal(Resource):
                                                 user=self.getCurrentUser(), force=True)
         otherRevs = list(self.model('folder').childFolders(parentType='folder', parent=parentInfo,
                                                            user=self.getCurrentUser()))
+        otherRevs.sort(key=sortByDate)
         for rev in otherRevs:
             rev['submitter'] = self.model('user').load(rev['creatorId'],
                                                        user=self.getCurrentUser(),
@@ -356,6 +376,8 @@ class TechJournal(Resource):
                                                             ))
                     # Grab the last object as its most current revision
                     if len(submissionInfo):
+                        submissionInfo = sorted(submissionInfo,
+                                                key=lambda submission: submission['updated'])
                         submission['currentRevision'] = submissionInfo[-1]
                     # If not found already, add it to the returned information
                     if submission not in totalData:
