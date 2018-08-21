@@ -1,9 +1,19 @@
+mixin disclaimerEntry(text)
+  #disclaimerList
+  pre #{text}
+  form#disclaimerForm(data-validate="parsley", name="mainForm", method="POST", action="")
+    input#PubClaYes.parsley-validated.disclaimerRad(type="radio", value="agree", name="cla", required)
+    label(for="PubClaYes") I grant the license
+    input#PubClaNo.parsley-validated.disclaimerRad(type="radio", value="no", name="cla", required)
+    label(for="PubClaNo") I do NOT grant the license
 
 #headerBar
 .Wrapper
   .Content
+    #journalLicense
+      +disclaimerEntry(disclaimer)
     .viewMain
-      h3 Manage Submission
+      h3 #{titleText}
       #submission
         form#submitForm.genericForm(data-validate="parsley", method="POST", action="")
           table(width="100%")
@@ -20,15 +30,6 @@
                     textarea#revisionEntry.bigInput.parsley-validated(name="revNotes", required)
                       if info.info.description && !info.NR
                         | #{info.info.description}
-                tr
-                  td
-                    .submission
-                      .title Revision Version
-                tr
-                  td
-                    textarea#revisionName.bigInput.parsley-validated(name="revVersion")
-                      if info.info.name && !info.NR
-                        | #{info.info.name}
               tr
                 td
                   .submission
@@ -43,6 +44,17 @@
                   textarea#titleEntry.smallInput.parsley-validated(name="title", data-rangelength="[1-200]", required)
                     if info.parInfo.name
                       | #{info.parInfo.name}
+              tr
+                td
+                  .submission
+                    .title Revision Title
+                    .caption.
+                      Specific version title(if any)
+              tr
+                td
+                  textarea#revisionTitle.bigInput.parsley-validated(name="revTitle")
+                    if info.info.name && !info.NR
+                      | #{info.info.name}
               tr
                 td
                   .submission

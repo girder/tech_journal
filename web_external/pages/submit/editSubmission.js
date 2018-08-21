@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import View from 'girder/views/View';
 import router from 'girder/router';
-import events from 'girder/events';
+// import events from 'girder/events';
 import { restRequest } from 'girder/rest';
 
 import MenuBarView from '../../views/menuBar.js';
@@ -12,6 +12,17 @@ import CategoryTemplate from '../home/home_categoryTemplate.pug';
 
 var editView = View.extend({
     events: {
+        'click .filterOption': function (event) {
+            if (this.$('.filterOption:checked').length > 0) {
+                this.$('.filterOption').each(function (index, val) {
+                    val.required = false;
+                });
+            } else {
+                this.$('.filterOption').each(function (index, val) {
+                    val.required = true;
+                });
+            }
+        },
         'click .issueGen': function (event) {
             this.parentID = event.currentTarget.target;
             this.render(event.currentTarget.target);
@@ -26,22 +37,33 @@ var editView = View.extend({
                     name: this.$('#titleEntry').val().trim(),
                     description: this.$('#abstractEntry').val().trim()
                 },
-                error: (resp) => {
-                    events.trigger('g:alert', {
-                        icon: 'ok',
-                        text: resp.message,
-                        type: 'warning',
-                        timeout: 4000
-                    });
-                },
-                success: (resp) => {
-                    if (this.newRevision) {
-                        this._generateNewRevision();
-                    } else {
+                error: null
+            }).done((resp) => {
+                if (this.newRevision) {
+                    this._generateNewRevision();
+                } else {
+                    if (this.$('#revisionTitle').length > 0) {
+                        var revisionName = this.$('#revisionTitle').val().trim();
+                    }
+                    var revisionDescription = '';
+                    if (this.$('#revisionEntry').length > 0) {
+                        revisionDescription = this.$('#revisionEntry').val().trim();
+                    }
+                    restRequest({
+                        type: 'PUT',
+                        url: `folder/${this.itemId}`,
+                        data: {
+                            parentType: 'folder',
+                            parentId: this.parentId,
+                            name: revisionName,
+                            description: revisionDescription
+                        },
+                        error: null
+                    }).done((resp) => {
                         this._updateSubmission(this.itemId);
                         router.navigate(`#plugins/journal/submission/${this.itemId}/upload/edit`,
                             {trigger: true});
-                    }
+                    });
                 }
             });
         },
@@ -72,7 +94,7 @@ var editView = View.extend({
             url: `journal/${this.itemId}/details`
         }).done((resp) => {
             this.parentId = resp[1]._id;
-            this.$el.html(SubmitViewTemplate({info: {info: resp[0], 'parInfo': resp[1], 'NR': this.newRevision}}));
+            this.$el.html(SubmitViewTemplate({info: {info: resp[0], 'parInfo': resp[1], 'NR': this.newRevision}, 'titleText': 'Edit Submission'}));
             new MenuBarView({ // eslint-disable-line no-new
                 el: this.$el,
                 parentView: this,
@@ -80,6 +102,7 @@ var editView = View.extend({
             });
             $(`.subPermission[value=${resp[0].meta.permission}]`).prop('checked', 'checked');
             $(`.CLAPermission[value=${resp[0].meta.CorpCLA}]`).prop('checked', 'checked');
+            this.$('#journalLicense').hide();
             restRequest({
                 type: 'GET',
                 url: 'journal/categories?tag=categories'
