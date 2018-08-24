@@ -418,7 +418,7 @@ class TechJournal(Resource):
         targetFolder = self.model('folder').load(parentFolder['meta']['targetIssue'], force=True)
         movedFolder = self.model('folder').move(parentFolder, targetFolder, 'folder')
         data = {'name': folder['name']}
-        text = mail_utils.renderTemplate('technical_journal_new_submission.mako', data)
+        text = mail_utils.renderTemplate('tech_journal_new_submission.mako', data)
         mail_utils.sendEmail(toAdmins=True,
                              subject='New Submission - Pending Approval',
                              text=text)
