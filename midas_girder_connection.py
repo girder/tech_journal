@@ -12,7 +12,7 @@ import sys
 import os
 
 licenseDict = {
- "0": "Not Defined",
+ "0": "Public Domain",
  "1": "Apache 2.0",
  "2": "Public Domain",
  "3": "Other",

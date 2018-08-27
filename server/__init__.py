@@ -505,8 +505,8 @@ class TechJournal(Resource):
                                     girder_result_hooks=[GirderUploadToItem(str(newItem['_id'])), ])
             else:
                 raise RestException('The repository doesn\'t exist or the URL is invalid.')
-        for key in ['related', 'copyright', 'grant', 'comments', 'source-license',
-                    'source-license-text', 'attribution-policy', 'targetIssue']:
+        for key in ['related', 'copyright', 'grant', 'comments',
+                    'attribution-policy', 'targetIssue']:
             if key in metadata.keys():
                 parentMetaData[key] = metadata.pop(key)
         parentFolder = self.model('folder').load(folder['parentId'],
