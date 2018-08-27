@@ -146,6 +146,7 @@ var uploadView = View.extend({
         this.$('input[type=submit]').attr('disabled',
             !this.$('#acceptRights').is(':checked') ||
             !this.$('#acceptLicense').is(':checked') ||
+            !this.$('#licenseChoice').val() ||
             (
                 this.$('#acceptAttributionPolicy').is(':visible') &&
                 !this.$('#acceptAttributionPolicy').is(':checked')
@@ -251,14 +252,14 @@ var uploadView = View.extend({
         });
     },
     _checkForm: function (license) {
-        if (license === '1' && this.$('#acceptLicense').is(':checked')) {
+        if (license === 'Apache 2.0' && this.$('#acceptLicense').is(':checked')) {
             this.$('#acceptAttributionPolicy').show();
             this.$('#acceptAttributionPolicyLabel').show();
         } else {
             this.$('#acceptAttributionPolicy').hide();
             this.$('#acceptAttributionPolicyLabel').hide();
         }
-        if (license === '3' && this.$('#acceptLicense').is(':checked')) {
+        if (license === 'Other' && this.$('#acceptLicense').is(':checked')) {
             this.$('#otherLicenseInput').show();
             this.$('#otherLicenseInputLabel').show();
         } else {
