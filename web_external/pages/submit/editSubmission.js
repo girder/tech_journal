@@ -162,7 +162,7 @@ var editView = View.extend({
         return subData;
     },
     _generateNewRevision: function () {
-        var revisionName = this.$('#revisionName').val().trim();
+        var revisionName = this.$('#revisionTitle').val().trim();
         var targetUrl = '#plugins/journal/submission/';
         restRequest({
             type: 'GET',
