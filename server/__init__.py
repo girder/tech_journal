@@ -382,7 +382,8 @@ class TechJournal(Resource):
                     # If not found already, add it to the returned information
                     if submission not in totalData:
                         totalData.append(submission)
-        totalData = sorted(totalData, reverse=True, key=lambda submission: submission['updated'])
+        totalData = sorted(totalData, reverse=True,
+                           key=lambda submission: submission['currentRevision']['updated'])
         return totalData
 
     @access.public(scope=TokenScope.DATA_READ)
