@@ -19,8 +19,10 @@ mixin searchEntry(info,approveLink)
               a.resourceLink(href="#plugins/journal/view/"+ info.currentRevision._id)
             span.ResultTitle.
               #{info.name}
+          .ResultLicense.
+            License: #{info.currentRevision.meta["source-license"]}
           .ResultAuthors.
-            #{info.meta.authors}
+            #{info.currentRevision.meta.authors}
           .ResultDescription.
             #{info.description}
 

@@ -19,7 +19,7 @@ licenseDict = {
  "4": "GPL",
  "5": "LGPL",
  "6": "BSD",
- "": "Not Defined"
+ "": "Public Domain"
 }
 
 def metaDataQuery(cur, entryNo, fieldNo):
@@ -41,6 +41,8 @@ def metaDataQuery(cur, entryNo, fieldNo):
                     retArray.append(res[2])
             return retArray
         return returnVal[2]
+    if fieldNo == "34":
+        return licenseDict['']
     return ""
 
 def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
