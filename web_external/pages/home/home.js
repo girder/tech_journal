@@ -86,16 +86,20 @@ const HomePage = View.extend({
                         for (var key in resp) {
                             this.$('#treeWrapper').html(this.$('#treeWrapper').html() + CategoryTemplate({'catName': resp[key]['key'], 'values': resp[key]['value']}));
                         }
+                        var issueVal = '*';
                         // Put URL hash additions into text box as "magic" terms
                         if (window.location.hash && !window.location.hash.includes('dialog')) {
                             var queryString = decodeURI(window.location.hash.substring(8));
                             if (queryString.indexOf('category') !== -1) {
                                 var categoryVal = queryString.substring(13, queryString.length - 2);
                                 this.$(`.filterOption[val=${categoryVal}]`)[0].checked = true;
+                            } else if (window.location.hash.indexOf('issueId') !== -1) {
+                                issueVal = window.location.hash.split('=')[1];
                             } else if ($('#live_search').val().indexOf(queryString) === -1) {
-                                $('#live_search').val($('#live_search').val() + queryString);
+                                this.$('#live_search').val($('#live_search').val() + queryString);
                             }
                         }
+                        this.$(`.issueButton[key='${issueVal}']`).addClass(' issueSelected');
                         this.buildSearch(this.collectionID, 0);
                     }); // End getting of OTJ Collection value setting
                 }
