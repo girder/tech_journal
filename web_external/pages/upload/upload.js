@@ -125,11 +125,14 @@ var uploadView = View.extend({
                 for (var index in itemResp) {
                     this.$('#uploadTable').append(UploadEntryTemplate({info: itemResp[index]}));
                     this.$('#uploadQuestions').show();
-                    $('#acceptRights').prop('checked', 'checked');
-                    $('#acceptLicense').prop('checked', 'checked');
-                    $('#licenseChoice').val(resp[0].meta['source-license']);
-                    $('#otherLicenseInput').val(resp[0].meta['source-license-text']);
+                    this.$('#acceptRights').prop('checked', 'checked');
+                    this.$('#acceptLicense').prop('checked', 'checked');
+                    this.$('#acceptAttributionPolicy').prop('checked', 'checked');
+                    this.$('#licenseChoice').val(resp[0].meta['source-license']);
+                    this.$('#otherLicenseInput').val(resp[0].meta['source-license-text']);
                 }
+                this._checkForm(resp[0].meta['source-license']);
+                this.submitCheck();
             });
         });
     },
