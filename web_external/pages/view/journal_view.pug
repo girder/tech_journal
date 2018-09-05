@@ -109,8 +109,9 @@ if 'downloadStatistics' in info.revision
           unless info.revision.curation.status === "APPROVED"
             span(style="font-weight:bold;color:red;")
               | This article is waiting for approval
-          .journal.
-            Submitted to: #{info.parent.issue.name}
+          .journal
+            | Submitted to:
+            a(href="#?issueId=" + info.parent.issue._id) #{info.parent.issue.name}
           .submittedby.
             Submitted by #{info.parent.submitter.firstName} #{info.parent.submitter.lastName} on #{info.parent.created}
           if info.revision.description

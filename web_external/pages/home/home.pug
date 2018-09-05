@@ -18,7 +18,7 @@ mixin issueFilter(info)
           #treeWrapper
             include ./journal_main_code_filter.pug
             include ./journal_main_license_filter.pug
-          .issueButton.issueSelected(key="*")
+          .issueButton(key="*")
             .issueTitle(qtipconditional="All", style="word-wrap: break-word")
               | All Issues
           for item in info.issues
