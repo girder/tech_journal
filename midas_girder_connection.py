@@ -125,7 +125,7 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
                     "lastName":user[4],
                     "public":True,
                     "emailVerified":False,
-                    "login":user[5],
+                    "login":"%s.%s" % (user[1],user[4]) ,
                     "email":user[5]
                   }
       usersDB.insert_one(inputUser)
