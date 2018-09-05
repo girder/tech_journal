@@ -13,15 +13,7 @@ import CategoryTemplate from '../home/home_categoryTemplate.pug';
 var editView = View.extend({
     events: {
         'click .filterOption': function (event) {
-            if (this.$('.filterOption:checked').length > 0) {
-                this.$('.filterOption').each(function (index, val) {
-                    val.required = false;
-                });
-            } else {
-                this.$('.filterOption').each(function (index, val) {
-                    val.required = true;
-                });
-            }
+            this._checkCategories();
         },
         'click .issueGen': function (event) {
             this.parentID = event.currentTarget.target;
@@ -113,6 +105,7 @@ var editView = View.extend({
                 for (var catIndx in resp[0].meta.categories) {
                     this.$(`.filterOption[val=${resp[0].meta.categories[catIndx]}]`).attr('checked', true);
                 }
+                this._checkCategories();
                 restRequest({
                     type: 'GET',
                     url: `journal/disclaimers?tag=disclaimer`
@@ -128,6 +121,17 @@ var editView = View.extend({
                 });
             });
         }); // End getting of OTJ Collection value setting
+    },
+    _checkCategories() {
+        if (this.$('.filterOption:checked').length > 0) {
+            this.$('.filterOption').each(function (index, val) {
+                val.required = false;
+            });
+        } else {
+            this.$('.filterOption').each(function (index, val) {
+                val.required = true;
+            });
+        }
     },
     _captureSubmissionInformation() {
         var authors = [];
