@@ -21,11 +21,12 @@ licenseDict = {
  "6": "BSD",
  "": "Public Domain"
 }
+discDictionary = {'': {'name': ''}}
 
 def metaDataQuery(cur, entryNo, fieldNo):
     cur.execute("SELECT * FROM metadatavalue WHERE itemrevision_id="+ str(entryNo)+" and metadata_id=" + str(fieldNo))
     returnVal =  cur.fetchone()
-    if returnVal:
+    if returnVal and returnVal[2]:
         if fieldNo == "34":
             return licenseDict[returnVal[2].strip()]
         if fieldNo == "18":
@@ -40,6 +41,8 @@ def metaDataQuery(cur, entryNo, fieldNo):
                 if res:
                     retArray.append(res[2])
             return retArray
+        if fieldNo == "20" and int(returnVal[2]) > 0:
+          return discDictionary[int(returnVal[2])]['key']
         return returnVal[2]
     if fieldNo == "34":
         return licenseDict['']
@@ -60,6 +63,7 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
     itemDB = client.girder.item
     fileDB = client.girder.file
     collectionDB = client.girder.collection
+    journalCollectionDB = client.girder.journal_collection;
     cur.execute("SELECT * FROM user")
     allusers = cur.fetchall()
     if not assetStoreDB.count({"root":assetStore}):
@@ -150,6 +154,30 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
     # | readerLicense     |
     # +-------------------+
     # ====================================================
+
+    # =====================================================
+    # Import the existing disclaimers and ensure that they
+    # can be found with by the submissions later
+    # +---------------+------------+
+    # | Field         | Type       |
+    # +---------------+------------+
+    # | disclaimer_id | bigint(20) |
+    # | name          | text       |
+    # | description   | text       |
+    # +---------------+------------+
+    #=====================================================
+
+    cur.execute("SELECT * FROM journal_disclaimer")
+    allDisc = cur.fetchall()
+    for disc in allDisc:
+      inputDisc = { "_id":ObjectId(),
+                    "tag":"disclaimer",
+                    "key":disc[1],
+                    "value":disc[2]
+                  }
+      journalCollectionDB.insert_one(inputDisc)
+      discDictionary[disc[0]] = inputDisc
+    # End Disclaimers
     cur.execute("SELECT * from journal_folder")
     allIssues = cur.fetchall()
     for row in allIssues:
@@ -361,6 +389,7 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
           inputRevision["meta"]["certification_level"] = metaDataQuery(cur, revision[0],"32")
           inputRevision["meta"]["has_reviews"] = metaDataQuery(cur, revision[0],"38")
           inputRevision["meta"]["categories"] = metaDataQuery(cur, revision[0],"18")
+          inputRevision["meta"]["disclaimer"] = metaDataQuery(cur, revision[0],"20")
           
           inputRevision["name"] = "Revision " + str(revision[2])
           inputRevision["_id"] = ObjectId()
