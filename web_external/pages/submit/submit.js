@@ -139,7 +139,7 @@ var SubmitView = View.extend({
                 }
                 this.$('#pageContent').html(SubmitViewTemplate({ 'info': { info: {}, parInfo: {} },
                     'disclaimer': 'You are licensing your work to OSEHRA Inc. under the Creative Commons Attribution License Version 3.0.',
-                    'titleText': 'Create Submission'
+                    'titleText': 'Create Publication'
                 }));
                 this.$('.viewMain').hide();
                 restRequest({
