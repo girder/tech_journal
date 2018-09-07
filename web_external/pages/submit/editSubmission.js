@@ -86,7 +86,11 @@ var editView = View.extend({
             url: `journal/${this.itemId}/details`
         }).done((resp) => {
             this.parentId = resp[1]._id;
-            this.$el.html(SubmitViewTemplate({info: {info: resp[0], 'parInfo': resp[1], 'NR': this.newRevision}, 'titleText': 'Edit Submission'}));
+            var titleText = 'Edit current revision';
+            if (this.newRevision) {
+                titleText = 'Create revision';
+            }
+            this.$el.html(SubmitViewTemplate({info: {info: resp[0], 'parInfo': resp[1], 'NR': this.newRevision}, 'titleText': titleText}));
             new MenuBarView({ // eslint-disable-line no-new
                 el: this.$el,
                 parentView: this,
