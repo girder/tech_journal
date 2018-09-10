@@ -19,6 +19,7 @@ import EditIssueView from './views/editIssue';
 import EditJournalView from './views/editJournal';
 import manageHelpView from './views/manageHelp';
 import FeedBackView from './views/feedback';
+import EditGroupUsersView from './views/groupUsers.js';
 
 // Clear all of the existing routes, which will always added by Girder
 Backbone.history.handlers = [];
@@ -81,6 +82,16 @@ router.route('plugins/journal/view/:id', 'submissionView', function (id) {
 // Page for admin to see submissions for approval
 router.route('plugins/journal/approval', 'approvalView', function () {
     testUserAccess(approvalView, {}, true, true);
+});
+
+// Page for admin to see users for elevation (editors and managers)
+router.route('plugins/journal/admin/groupusers/:id/journal', 'approvalView', function (id) {
+    testUserAccess(EditGroupUsersView, {id: id, type: 'collection'}, true, true);
+});
+
+// Page for admin to see users for elevation (editors and managers)
+router.route('plugins/journal/admin/groupusers/:id/issue', 'approvalView', function (id) {
+    testUserAccess(EditGroupUsersView, {id: id, type: 'folder'}, true, true);
 });
 
 // Download page for each submission
