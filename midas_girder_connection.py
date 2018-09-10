@@ -21,6 +21,28 @@ licenseDict = {
  "6": "BSD",
  "": "Public Domain"
 }
+typeDict = {
+  "0": "GENERAL",
+  "1": "PUBLICATION",
+  "2": "TUTORIAL",
+  "3": "SOFTWARE",
+  "4": "PLUGIN",
+  "5": "DATASET",
+  "": "GENERAL"
+}
+
+filetypeDict = {
+  "1": "THUMBNAIL",
+  "2": "SOURCECODE",
+  "8": "TESTING_SOURCECODE",
+  "3": "PAPER",
+  "4": "DATA",
+  "5": "MISC",
+  "6": "GITHUB",
+  "7": "TECHNICAL",
+  "": "MISC"
+}
+
 discDictionary = {'': {'name': ''}}
 
 def metaDataQuery(cur, entryNo, fieldNo):
@@ -29,6 +51,8 @@ def metaDataQuery(cur, entryNo, fieldNo):
     if returnVal and returnVal[2]:
         if fieldNo == "34":
             return licenseDict[returnVal[2].strip()]
+        if fieldNo == "41":
+            return typeDict[returnVal[2].strip()]
         if fieldNo == "18":
             retArray = []
             # 18 is the list of categories, which has mixed data for languages and VistA packages
@@ -46,6 +70,9 @@ def metaDataQuery(cur, entryNo, fieldNo):
         return returnVal[2]
     if fieldNo == "34":
         return licenseDict['']
+    if fieldNo == "41":
+        return typeDict['']
+
     return ""
 
 def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
@@ -447,7 +474,7 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
                                      "baseParentType":"collection",
                                      "name":bitstream[2],
                                      "meta": {
-                                         "type":bitstream[9]
+                                         "type":filetypeDict(bitstream[9])
                                      },
                                      "baseParentId" : ObjectId(baseParent),
                                      "creatorId":inputRevision["creatorId"],
