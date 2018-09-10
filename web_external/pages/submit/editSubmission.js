@@ -1,14 +1,20 @@
+import $ from 'jquery';
 import View from 'girder/views/View';
 import router from 'girder/router';
+// import events from 'girder/events';
 import { restRequest } from 'girder/rest';
 
 import MenuBarView from '../../views/menuBar.js';
 import SubmitViewTemplate from './journal_submit.pug';
 import SubmitAuthorEntryTemplate from './journal_author_entry.pug';
 import SubmitTagEntryTemplate from './journal_tag_entry.pug';
+import CategoryTemplate from '../home/home_categoryTemplate.pug';
 
 var editView = View.extend({
     events: {
+        'click .filterOption': function (event) {
+            this._checkCategories();
+        },
         'click .issueGen': function (event) {
             this.parentID = event.currentTarget.target;
             this.render(event.currentTarget.target);
@@ -17,7 +23,7 @@ var editView = View.extend({
             event.preventDefault();
             restRequest({
                 type: 'PUT',
-                path: `folder/${this.parentId}`,
+                url: `folder/${this.parentId}`,
                 data: {
                     parentType: 'folder',
                     name: this.$('#titleEntry').val().trim(),
@@ -28,9 +34,28 @@ var editView = View.extend({
                 if (this.newRevision) {
                     this._generateNewRevision();
                 } else {
-                    this._updateSubmission(this.itemId);
-                    router.navigate(`#plugins/journal/submission/${this.itemId}/upload/edit`,
-                        {trigger: true});
+                    if (this.$('#revisionTitle').length > 0) {
+                        var revisionName = this.$('#revisionTitle').val().trim();
+                    }
+                    var revisionDescription = '';
+                    if (this.$('#revisionEntry').length > 0) {
+                        revisionDescription = this.$('#revisionEntry').val().trim();
+                    }
+                    restRequest({
+                        type: 'PUT',
+                        url: `folder/${this.itemId}`,
+                        data: {
+                            parentType: 'folder',
+                            parentId: this.parentId,
+                            name: revisionName,
+                            description: revisionDescription
+                        },
+                        error: null
+                    }).done((resp) => {
+                        this._updateSubmission(this.itemId);
+                        router.navigate(`#plugins/journal/submission/${this.itemId}/upload/edit`,
+                            {trigger: true});
+                    });
                 }
             });
         },
@@ -58,10 +83,14 @@ var editView = View.extend({
         this.itemId = subResp;
         restRequest({
             type: 'GET',
-            path: `journal/${this.itemId}/details`
+            url: `journal/${this.itemId}/details`
         }).done((resp) => {
             this.parentId = resp[1]._id;
-            this.$el.html(SubmitViewTemplate({info: {info: resp[0], 'parInfo': resp[1], 'NR': this.newRevision}}));
+            var titleText = 'Edit current revision';
+            if (this.newRevision) {
+                titleText = 'Create revision';
+            }
+            this.$el.html(SubmitViewTemplate({info: {info: resp[0], 'parInfo': resp[1], 'NR': this.newRevision}, 'titleText': titleText}));
             new MenuBarView({ // eslint-disable-line no-new
                 el: this.$el,
                 parentView: this,
@@ -69,8 +98,44 @@ var editView = View.extend({
             });
             $(`.subPermission[value=${resp[0].meta.permission}]`).prop('checked', 'checked');
             $(`.CLAPermission[value=${resp[0].meta.CorpCLA}]`).prop('checked', 'checked');
-            return this;
+            this.$('#journalLicense').hide();
+            restRequest({
+                type: 'GET',
+                url: 'journal/categories?tag=categories'
+            }).done((catResp) => {
+                for (var key in catResp) {
+                    this.$('#treeWrapper').html(this.$('#treeWrapper').html() + CategoryTemplate({'catName': catResp[key]['key'], 'values': catResp[key]['value']}));
+                }
+                for (var catIndx in resp[0].meta.categories) {
+                    this.$(`.filterOption[val=${resp[0].meta.categories[catIndx]}]`).attr('checked', true);
+                }
+                this._checkCategories();
+                restRequest({
+                    type: 'GET',
+                    url: `journal/disclaimers?tag=disclaimer`
+                }).done((disclaimerResp) => {
+                    for (var disc in disclaimerResp) {
+                        var selected = '';
+                        if (disc === resp[0].meta.disclaimer) {
+                            selected = 'selected="selected"';
+                        }
+                        this.$('#disclaimer').append('<option ' + selected + '>' + disc + '</option>');
+                    }
+                    return this;
+                });
+            });
         }); // End getting of OTJ Collection value setting
+    },
+    _checkCategories() {
+        if (this.$('.filterOption:checked').length > 0) {
+            this.$('.filterOption').each(function (index, val) {
+                val.required = false;
+            });
+        } else {
+            this.$('.filterOption').each(function (index, val) {
+                val.required = true;
+            });
+        }
     },
     _captureSubmissionInformation() {
         var authors = [];
@@ -85,6 +150,12 @@ var editView = View.extend({
         this.$('#tags input').each(function (index, val) {
             tags.push(val.value.trim());
         });
+        var categories = [];
+        this.$('.filterOption').each(function (index, val) {
+            if (val.checked) {
+                categories.push(val.attributes['val'].value);
+            }
+        });
         var subData = {
             'institution': this.$('#institutionEntry').val().trim(),
             'related': this.$('#relatedEntry').val().trim(),
@@ -92,24 +163,29 @@ var editView = View.extend({
             'copyright': this.$('#copyrightEntry').val().trim(),
             'grant': this.$('#grantEntry').val().trim(),
             'authors': authors,
-            'tags': tags
+            'tags': tags,
+            'categories': categories,
+            'disclaimer': this.$('#disclaimer').val().trim()
         };
         return subData;
     },
     _generateNewRevision: function () {
+        var revisionName = this.$('#revisionTitle').val().trim();
         var targetUrl = '#plugins/journal/submission/';
-        // if new submission, generate first "revision" folder inside of generated folder
         restRequest({
             type: 'GET',
             path: `folder/${this.parentId}/details`
         }).done((resp) => {
+            if (revisionName === '') {
+                revisionName = 'Revision ' + ++resp.nFolders;
+            }
             restRequest({
                 type: 'POST',
-                path: 'folder',
+                url: 'folder',
                 data: {
                     parentId: this.parentId,
                     parentType: 'folder',
-                    name: 'Revision ' + ++resp.nFolders,
+                    name: revisionName,
                     description: this.$('#revisionEntry').val().trim()
                 },
                 error: null
@@ -122,7 +198,7 @@ var editView = View.extend({
     _updateSubmission: function (itemID) {
         restRequest({
             type: 'PUT',
-            path: `journal/${itemID}/metadata`,
+            url: `journal/${itemID}/metadata`,
             contentType: 'application/json',
             data: JSON.stringify(this._captureSubmissionInformation()),
             error: null

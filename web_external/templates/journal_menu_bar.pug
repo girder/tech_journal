@@ -59,14 +59,14 @@
             | New Publication
         if user
           li#profileLink
-            a(href='#user/' + user.id) My Profile
+            a(href='/#user/' + user.id) My Profile
             #userOptionsDiv
               ul#userOptionsList
                 li
                   // TODO: implement this route
                   a.submm(href='#?query="creatorId":"'+user.id+'"') My Publications
                 li
-                  a.submm(href='#useraccount/' + user.id + '/info') Edit Profile
+                  a.submm(href='/#useraccount/' + user.id + '/info') Edit Profile
           if user.attributes.admin
             li#adminLink
               a(href="") Admin
@@ -75,19 +75,18 @@
                   li
                     a.submm(href='#plugins/journal/admin') Journals
                   li
-                    a.submm(href='#users') Users
+                    a.submm(href='/#users') Users
                   li
-                    a.submm.
+                    a.submm(href='#admin/categories').
                       Categories
                   li
-                    a.submm.
-                      Disclaimers
+                    a.submm(href='#plugins/journal/admin/disclaimer') Disclaimers
                   li
                     a.submm(href='#plugins/journal/admin/help') Help & About
                   li
-                    a.submm(href='#plugins/journal/config') Config
+                    a.submm(href='/#plugins/tech_journal/config') Config
                   li
-                    a.submm.
+                    .submm.
                       Review Questions
         li#helpLink
           a(href="#help")
@@ -111,7 +110,7 @@
                   | Waiting Approval : #{approvalNum}
 
       .HeaderSearch.nav.navbar-nav.navbar-right
-        input#live_search.panelsBackground(type="text", placeholder=searchVal, autocomplete="off", autocorrect="off", autocapitalize="off")
+        input#live_search.panelsBackground(type="text", value=searchVal, autocomplete="off", autocorrect="off", autocapitalize="off")
         input#live_search_value(type="hidden", value="init")
         #searchloading(style="display:none")
         input#search_button(type="button", value="Search")

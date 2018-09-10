@@ -11,7 +11,7 @@ mixin searchEntry(info,approveLink)
             span.CertifiedLevel(style="color:green")
         td(style="vertical-align: top;")
           .ResultSubDescription.
-                statistics
+              Downloaded #{info.currentRevision.downloadStatistics["completed"]} times, viewed #{info.currentRevision.downloadStatistics["views"]} times
           .ResultTop
             if approveLink
               a.resourceLink(href="#plugins/journal/submission/"+ info.currentRevision._id+"/approve")
@@ -19,8 +19,10 @@ mixin searchEntry(info,approveLink)
               a.resourceLink(href="#plugins/journal/view/"+ info.currentRevision._id)
             span.ResultTitle.
               #{info.name}
+          .ResultLicense.
+            License: #{info.currentRevision.meta["source-license"]}
           .ResultAuthors.
-            #{info.meta.authors}
+            #{info.currentRevision.meta.authors}
           .ResultDescription.
             #{info.description}
 

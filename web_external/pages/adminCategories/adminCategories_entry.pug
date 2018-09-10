@@ -1,0 +1,26 @@
+mixin addVal(entryName)
+  li.categoryObj
+    |#{entryName}
+.TreeEntry
+  h4 #{name}
+  a.AddRootLink (Add root Category)
+  a.DeleteRootLink (Delete Tree)
+  #categoryTree.categoryTree
+    ul.categoryList
+      for entry in values
+        +addVal(entry)
+  .AddCategory(style="display:none;")
+    b
+      a.deleteCategory(style="display:none;") Delete selected (
+        span.ParentName
+        | ) Category
+    br
+    b Add a Child Category
+    form#addNewChildCategory(method="POST")
+      input(type="text", name="newChildCategory")
+      input(type="submit", value="Save")
+  .AddRootCategory(style="display:none;")
+    b Add a category choice:
+    form#addRootCategoryForm(method="POST")
+      input(type="text", name="newCategory")
+      input(type="submit", value="Save")

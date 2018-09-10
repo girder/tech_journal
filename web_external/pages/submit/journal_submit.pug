@@ -1,14 +1,24 @@
+mixin disclaimerEntry(text)
+  #disclaimerList
+  pre #{text}
+  form#disclaimerForm(data-validate="parsley", name="mainForm", method="POST", action="")
+    input#PubClaYes.parsley-validated.disclaimerRad(type="radio", value="agree", name="cla", required)
+    label(for="PubClaYes") I grant the license
+    input#PubClaNo.parsley-validated.disclaimerRad(type="radio", value="no", name="cla", required)
+    label(for="PubClaNo") I do NOT grant the license
 
 #headerBar
 .Wrapper
   .Content
+    #journalLicense
+      +disclaimerEntry(disclaimer)
     .viewMain
-      h3 Manage Submission
+      h3 #{titleText}
       #submission
         form#submitForm.genericForm(data-validate="parsley", method="POST", action="")
           table(width="100%")
             tbody
-              if info.NR
+              if info.NR || info.info.description
                 tr
                   td
                     .submission
@@ -18,6 +28,8 @@
                 tr
                   td
                     textarea#revisionEntry.bigInput.parsley-validated(name="revNotes", required)
+                      if info.info.description && !info.NR
+                        | #{info.info.description}
               tr
                 td
                   .submission
@@ -32,6 +44,17 @@
                   textarea#titleEntry.smallInput.parsley-validated(name="title", data-rangelength="[1-200]", required)
                     if info.parInfo.name
                       | #{info.parInfo.name}
+              tr
+                td
+                  .submission
+                    .title Revision Title
+                    .caption.
+                      Specific version title(if any)
+              tr
+                td
+                  textarea#revisionTitle.bigInput.parsley-validated(name="revTitle")
+                    if info.info.name && !info.NR
+                      | #{info.info.name}
               tr
                 td
                   .submission
@@ -88,12 +111,12 @@
               tr
                 td
                   select#typeEntry.parsely-validated(required, name="type")
-                    option(value="0") General
-                    option(value="1") Publication
-                    option(value="2") Tutorial
-                    option(value="3") Software
-                    option(value="4") Plugin
-                    option(value="5") Dataset
+                    option(value="GENERAL") General
+                    option(value="PUBLICATION") Publication
+                    option(value="TUTORIAL") Tutorial
+                    option(value="SOFTWARE") Software
+                    option(value="PLUGIN") Plugin
+                    option(value="DATASET") Dataset
               tr
                 td
                   .submission
@@ -104,6 +127,7 @@
                       Please select one or multiple categories
               tr
                 td
+                  #treeWrapper
               tr
                 td
                   .submission
@@ -148,8 +172,8 @@
                   textarea#grantEntry.smallInput(name="grant", style="width:400px;")
                   br
                   span Select a disclaimer:
-                  select(name="disclaimer")
-                    //+addDisclaimer()
+                  select#disclaimer
+                    option None
               tr
                 td
                   br

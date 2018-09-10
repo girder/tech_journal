@@ -13,9 +13,9 @@ var ManageHelpView = View.extend({
             event.preventDefault();
             // save Content to show on other pages
             this._saveHelp([
-                { key: 'main', value: this.HelpEditor.val() },
-                { key: 'about', value: this.AboutEditor.val() },
-                { key: 'faq', value: this.FAQEditor.val() }
+                { key: 'main', value: this.HelpEditor.val(), 'tag': 'help' },
+                { key: 'about', value: this.AboutEditor.val(), 'tag': 'help' },
+                { key: 'faq', value: this.FAQEditor.val(), 'tag': 'help' }
             ]);
         }
     },

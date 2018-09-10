@@ -1,10 +1,21 @@
+
+mixin disclaimerEntry(text)
+  #disclaimerList
+  pre #{text}
+  form#disclaimer(data-validate="parsley", name="mainForm", method="POST", action="")
+    input#PubClaYes.parsley-validated.disclaimerRad(type="radio", value="agree", name="cla", required)
+    label(for="PubClaYes") Agree
+    input#PubClaNo.parsley-validated.disclaimerRad(type="radio", value="no", name="cla", required)
+    label(for="PubClaNo") Disagree
+
 #headerBar
 .Wrapper
   .Content
+    #disclaimer
+      +disclaimerEntry(disclaimer)
+    a(href="#plugins/journal/view/"+parent) Back to article
     #downloadContent
       h3 Download
-      a(href="#plugins/journal/view/"+parent) Back to article
-      br
       br
       ul
         if paperDownloadUrl

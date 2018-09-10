@@ -1,0 +1,29 @@
+#headerBar
+.Wrapper
+  .Content
+    .viewMain
+      h3 Manage Editors
+      table#editorListTable.tablesorter(style="width:500px")
+        thead
+          tr
+            th(width="80%") Member
+            th Actions
+        tbody
+      h4 Add new editor
+      .invitationSearchEditor
+        .searchInvitationLoading(style="display:none")
+      hr
+      h3 Manage Members
+      table#memberListTable.tablesorter(style="width:500px")
+        thead
+          tr
+            th(width="80%") Member
+            th Actions
+        tbody
+      h4 Add new member
+      .invitationSearchMember
+        .searchInvitationLoading(style="display:none")
+    .noGroup(style="display:none;")
+      h3 Sorry
+      h4 No groups were found.  Please create them manually.
+      a(href='#plugins/journal/admin') Back

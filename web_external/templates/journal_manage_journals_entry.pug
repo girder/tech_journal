@@ -1,17 +1,17 @@
 mixin issueEntry(item)
   li
     | Issue: #{item.name}
-    a(href="") Issue Editors
+    a(href="#plugins/journal/admin/groupusers/"+item._id+"/issue") Issue Editors
     | ,
     a(href="#plugins/journal/admin/issue/"+item._id+"/edit") Edit
 
 each journalItem in parentInfo
   li
-    h5 #{journalItem.name}  
-      a() Journal Editors and Members
-      | ,  
+    h5 #{journalItem.name}
+      a(href="#plugins/journal/admin/groupusers/"+journalItem._id+"/journal") Journal Editors and Members
+      | ,
       a(href="#plugins/journal/admin/journal/"+journalItem._id) Manage Journal
-      | , 
+      | ,
       a(href="#plugins/journal/admin/issue/"+ journalItem._id+"/new") Create Issue
     ul
       each issueItem in issueInfo

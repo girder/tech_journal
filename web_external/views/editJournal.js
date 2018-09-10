@@ -46,19 +46,30 @@ var EditJournalView = View.extend({
         }
         restRequest({
             type: 'POST',
-            path: 'collection',
+            url: 'collection',
             data: {
                 name: journalData.issueName,
                 description: journalData.issueDescription,
                 public: publicJournal
             }
         }).done((jrnResp) => {
+            ['editors', 'members'].forEach(function (val) {
+                restRequest({
+                    type: 'POST',
+                    url: 'group',
+                    data: {
+                        name: `${journalData.issueName}_${val}`,
+                        description: '',
+                        public: false
+                    }
+                });
+            });
         });
     },
     _getCurrentInfo: function (journalData) {
         restRequest({
             type: 'GET',
-            path: `collection/${journalData.id}`
+            url: `collection/${journalData.id}`
         }).done((jrnInfo) => {
             this.render({info: jrnInfo});
         });

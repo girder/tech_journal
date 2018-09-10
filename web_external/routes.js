@@ -10,7 +10,8 @@ import { Layout } from 'girder/constants';
 // Import views from plugin
 import submitView from './pages/submit/submit';
 import editView from './pages/submit/editSubmission';
-import submissionView from './views/view';
+import ManageDisclaimerView from './pages/admin/manageDisclaimers';
+import submissionView from './pages/view/view';
 import approvalView from './views/manageApproval';
 import downloadView from './views/download';
 import manageJournalView from './views/manageJournal';
@@ -18,6 +19,7 @@ import EditIssueView from './views/editIssue';
 import EditJournalView from './views/editJournal';
 import manageHelpView from './views/manageHelp';
 import FeedBackView from './views/feedback';
+import EditGroupUsersView from './views/groupUsers.js';
 
 // Clear all of the existing routes, which will always added by Girder
 Backbone.history.handlers = [];
@@ -26,6 +28,12 @@ Backbone.history.handlers = [];
 import HomePage from './pages/home/home';
 router.route('', 'home', function (query) {
     testUserAccess(HomePage, query, false, false);
+});
+
+// adminCategories page
+import adminCategoriesPage from './pages/adminCategories/adminCategories';
+router.route('admin/categories', 'adminCategories', function () {
+    testUserAccess(adminCategoriesPage, {}, false, false);
 });
 
 // Submission related pages
@@ -76,9 +84,19 @@ router.route('plugins/journal/approval', 'approvalView', function () {
     testUserAccess(approvalView, {}, true, true);
 });
 
+// Page for admin to see users for elevation (editors and managers)
+router.route('plugins/journal/admin/groupusers/:id/journal', 'approvalView', function (id) {
+    testUserAccess(EditGroupUsersView, {id: id, type: 'collection'}, true, true);
+});
+
+// Page for admin to see users for elevation (editors and managers)
+router.route('plugins/journal/admin/groupusers/:id/issue', 'approvalView', function (id) {
+    testUserAccess(EditGroupUsersView, {id: id, type: 'folder'}, true, true);
+});
+
 // Download page for each submission
 router.route('plugins/journal/view/:id/download', 'submissionDownload', function (id) {
-    testUserAccess(downloadView, {id: id}, false, false);
+    testUserAccess(downloadView, {id: id}, true, false);
 });
 // View to manage (or create) a Journal
 router.route('plugins/journal/admin', 'manageJournalView', function () {
@@ -97,6 +115,10 @@ router.route('plugins/journal/admin/journal/:id', 'editJournal', function (id) {
 });
 // Help pages
 
+// Admin page to set the content of each disclaimer
+router.route('plugins/journal/admin/disclaimer', '', function () {
+    testUserAccess(ManageDisclaimerView, {}, true, true);
+});
 // Admin page to set the content of each help page
 router.route('plugins/journal/admin/help', 'adminHelp', function () {
     testUserAccess(manageHelpView, {}, true, true);
@@ -138,6 +160,8 @@ function testUserAccess(view, args, needsUser, needsAdmin) {
     if (userFlag && adminFlag) {
         events.trigger('g:navigateTo', view, args, {layout: Layout.EMPTY});
     } else {
-        window.location.href = '#?dialog=login';
+        if (window.location.toString().indexOf('dialog') === -1) {
+            window.location.href = window.location + '?dialog=login';
+        }
     }
 }

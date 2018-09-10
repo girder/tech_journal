@@ -15,15 +15,15 @@ mixin issueFilter(info)
       .Panel.box
         h2.FilterH3 Filters:
         #FiltersPanel
-          .issueButton.issueSelected(key="*")
+          #treeWrapper
+            include ./journal_main_code_filter.pug
+            include ./journal_main_license_filter.pug
+          .issueButton(key="*")
             .issueTitle(qtipconditional="All", style="word-wrap: break-word")
               | All Issues
           for item in info.issues
             +issueFilter(item)
       .MainContent
-        #noResultElement(style="display:none;")
-          b.
-            Your search did not match any items.
         #infoElement
           br
           span(style="font-weight:bold")
@@ -35,6 +35,9 @@ mixin issueFilter(info)
           |  software that can later be integrated into the OSEHRA open source platform.
           br
           .hidable
+        #noResultElement(style="display:none;")
+          b.
+            Your search did not match any items.
         .SearchResultsHeader
         .searchResults
         #showMoreResults

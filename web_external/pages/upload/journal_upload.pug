@@ -11,14 +11,14 @@
         You can also upload a logo which will be shown on the article's page
       select#typeFile
         option
-        option(value=1) Thumbnail (Logo)
-        option(value=2) Source Code
-        option(value=3) Paper
-        option(value=4) Data
-        option(value=5) Other
-        option(value=6) Github Repository
-        option(value=7) Major Technique paper for reference
-        option(value=8) Testing Code
+        option(value="THUMBNAIL") Thumbnail (Logo)
+        option(value="SOURCECODE") Source Code
+        option(value="PAPER") Paper
+        option(value="DATA") Data
+        option(value="MISC") Other
+        option(value="GITHUB") Github Repository
+        option(value="TECHNICAL") Major Technique paper for reference
+        option(value="TESTING_SOURCECODE") Testing Code
       br
       br
       #uploadContentBlock
@@ -51,12 +51,13 @@
         label(for="acceptLicense", style='display:inline;')
           | I certify that all source code files/repositories uploaded here are under
           select#licenseChoice
-            option(value=1) Apache 2
-            option(value=2) Public Domain
-            option(value=4) GPL (Any Version)
-            option(value=5) LGPL (Any Version)
-            option(value=6) BSD
-            option(value=3) Other
+            option
+            option(value="Apache 2.0") Apache 2.0
+            option(value="Public Domain") Public Domain
+            option(value="GPL") GPL (Any Version)
+            option(value="LGPL") LGPL (Any Version)
+            option(value="BSD") BSD
+            option(value="Other") Other
           | license
         br
         label#otherLicenseInputLabel(for="otherLicenseInput", style='display:none;')

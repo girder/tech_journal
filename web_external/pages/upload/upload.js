@@ -1,5 +1,6 @@
 import View from 'girder/views/View';
 import router from 'girder/router';
+import events from 'girder/events';
 import FolderModel from 'girder/models/FolderModel';
 import UploadWidget from 'girder/views/widgets/UploadWidget';
 import { getCurrentUser } from 'girder/auth';
@@ -10,7 +11,6 @@ import MenuBarView from '../../views/menuBar.js';
 import UploadViewTemplate from './journal_upload.pug';
 import UploadEntryTemplate from './journal_upload_entry.pug';
 
-var fileTypes = ['', 'Thumbnail', 'Source', 'Paper', 'Data', 'Other', 'Github', 'Reference', 'Testing'];
 var uploadView = View.extend({
     events: {
         'submit #curateduploadForm': function (event) {
@@ -34,7 +34,7 @@ var uploadView = View.extend({
 
         'change #typeFile': function (event) {
             event.preventDefault();
-            if (event.target.value === '6') {
+            if (event.target.value === 'GITHUB') {
                 $('#githubContentBlock').show();
             } else {
                 $('#githubContentBlock').hide();
@@ -51,10 +51,17 @@ var uploadView = View.extend({
             var subData = {'github': $('#github').val()};
             restRequest({
                 type: 'PUT',
-                path: `folder/${this.parentId}/metadata`,
+                path: `journal/${this.parentId}/metadata`,
                 contentType: 'application/json',
                 data: JSON.stringify(subData),
                 error: null
+            }).fail((respMD) => {
+                events.trigger('g:alert', {
+                    icon: 'ok',
+                    text: 'The repository doesn\'t exist or the URL is invalid.',
+                    type: 'warning',
+                    timeout: 4000
+                });
             }).done((respMD) => {
                 this.$('#uploadTable').append(UploadEntryTemplate({info: {'name': subData.github, '_id': 'github', 'meta': {'type': 6}}}));
                 this.$('#uploadQuestions').show();
@@ -74,7 +81,7 @@ var uploadView = View.extend({
         // Change function for updating the submissions licensing and submit status
         'change #acceptLicense': function (event) {
             var license = this.$('#licenseChoice').val();
-            this.$('#hiddenSourceLicense').attr('value', this.$('#licenseChoice').is(':checked') ? license : 0);
+            this.$('#hiddenSourceLicense').attr('value', this.$('#licenseChoice').is(':checked') ? license : 'Not Defined');
             this._checkForm(license);
             var acceptAttributionPolicyIsSelected = $('#acceptAttributionPolicy').is(':visible') && $('#acceptAttributionPolicy').is(':checked');
             this.$('#hiddenAttributionPolicy').attr('value', acceptAttributionPolicyIsSelected ? 1 : 0);
@@ -83,7 +90,7 @@ var uploadView = View.extend({
 
         'change #licenseChoice': function (event) {
             var license = this.$('#licenseChoice').val();
-            this.$('#hiddenSourceLicense').attr('value', this.$('#acceptLicense').is(':checked') ? license : '0');
+            this.$('#hiddenSourceLicense').attr('value', this.$('#acceptLicense').is(':checked') ? license : 0);
             this._checkForm(license);
             var acceptAttributionPolicyIsSelected = this.$('#acceptAttributionPolicy').is(':visible') && this.$('#acceptAttributionPolicy').is(':checked');
             this.$('#hiddenAttributionPolicy').attr('value', acceptAttributionPolicyIsSelected ? 1 : 0);
@@ -117,11 +124,14 @@ var uploadView = View.extend({
                 for (var index in itemResp) {
                     this.$('#uploadTable').append(UploadEntryTemplate({info: itemResp[index]}));
                     this.$('#uploadQuestions').show();
-                    $('#acceptRights').prop('checked', 'checked');
-                    $('#acceptLicense').prop('checked', 'checked');
-                    $('#licenseChoice').val(resp[0].meta['source-license']);
-                    $('#otherLicenseInput').val(resp[0].meta['source-license-text']);
+                    this.$('#acceptRights').prop('checked', 'checked');
+                    this.$('#acceptLicense').prop('checked', 'checked');
+                    this.$('#acceptAttributionPolicy').prop('checked', 'checked');
+                    this.$('#licenseChoice').val(resp[0].meta['source-license']);
+                    this.$('#otherLicenseInput').val(resp[0].meta['source-license-text']);
                 }
+                this._checkForm(resp[0].meta['source-license']);
+                this.submitCheck();
             });
         });
     },
@@ -138,6 +148,7 @@ var uploadView = View.extend({
         this.$('input[type=submit]').attr('disabled',
             !this.$('#acceptRights').is(':checked') ||
             !this.$('#acceptLicense').is(':checked') ||
+            !this.$('#licenseChoice').val() ||
             (
                 this.$('#acceptAttributionPolicy').is(':visible') &&
                 !this.$('#acceptAttributionPolicy').is(':checked')
@@ -164,7 +175,7 @@ var uploadView = View.extend({
             // upload the information to the submission value
             // show the information in the table
             var subData = {
-                'type': fileTypes[this.$('#typeFile').val().trim()]
+                'type': this.$('#typeFile').val().trim()
             };
             restRequest({
                 type: 'GET',
@@ -210,11 +221,19 @@ var uploadView = View.extend({
     _approveSubmission: function (subData) {
         restRequest({
             type: 'PUT',
-            path: `journal/${this.parentId}/approve`,
+            path: `journal/${this.parentId}/metadata`,
             contentType: 'application/json',
-            data: JSON.stringify(subData)
+            data: JSON.stringify(subData),
+            error: null
         }).done((respMD) => {
-            router.navigate(`#plugins/journal/view/${this.parentId}`, {trigger: true});
+            restRequest({
+                type: 'PUT',
+                path: `journal/${this.parentId}/approve`,
+                contentType: 'application/json',
+                data: JSON.stringify(subData)
+            }).done((respMD) => {
+                router.navigate(`#plugins/journal/view/${this.parentId}`, {trigger: true});
+            });
         });
     },
     _appendData: function (subData) {
@@ -235,14 +254,14 @@ var uploadView = View.extend({
         });
     },
     _checkForm: function (license) {
-        if (license === '1' && this.$('#acceptLicense').is(':checked')) {
+        if (license === 'Apache 2.0' && this.$('#acceptLicense').is(':checked')) {
             this.$('#acceptAttributionPolicy').show();
             this.$('#acceptAttributionPolicyLabel').show();
         } else {
             this.$('#acceptAttributionPolicy').hide();
             this.$('#acceptAttributionPolicyLabel').hide();
         }
-        if (license === '3' && this.$('#acceptLicense').is(':checked')) {
+        if (license === 'Other' && this.$('#acceptLicense').is(':checked')) {
             this.$('#otherLicenseInput').show();
             this.$('#otherLicenseInputLabel').show();
         } else {

@@ -42,7 +42,21 @@ class Journal(AccessControlledModel):
         else:
             return setting['value']
 
-    def set(self, key, value):
+    def getAllByTag(self, tag, default='__default__'):
+        """
+        Retrieve a setting by its key.
+        :param key: The key identifying the setting.
+        :type key: str
+        :param default: If no such setting exists, returns this value instead.
+        :returns: The value, or the default value if the key is not found.
+        """
+        objectList = self.find({'tag': tag})
+        values = {}
+        for setting in objectList:
+            values[setting["key"]] = setting
+        return values
+
+    def set(self, key, value, tag='setting'):
         """
         Save a setting. If a setting for this key already exists, this will
         replace the existing value.
@@ -59,8 +73,12 @@ class Journal(AccessControlledModel):
             }
         else:
             setting['value'] = value
+        setting['tag'] = tag
 
         return self.save(setting)
+
+    def removeObj(self, key):
+        self.remove(self.findOne({'key': key}))
 
     def getDefault(self, key):
         """
