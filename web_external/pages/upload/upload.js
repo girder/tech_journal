@@ -11,7 +11,6 @@ import MenuBarView from '../../views/menuBar.js';
 import UploadViewTemplate from './journal_upload.pug';
 import UploadEntryTemplate from './journal_upload_entry.pug';
 
-var fileTypes = ['', 'Thumbnail', 'Source', 'Paper', 'Data', 'Other', 'Github', 'Reference', 'Testing'];
 var uploadView = View.extend({
     events: {
         'submit #curateduploadForm': function (event) {
@@ -35,7 +34,7 @@ var uploadView = View.extend({
 
         'change #typeFile': function (event) {
             event.preventDefault();
-            if (event.target.value === '6') {
+            if (event.target.value === 'GITHUB') {
                 $('#githubContentBlock').show();
             } else {
                 $('#githubContentBlock').hide();
@@ -176,7 +175,7 @@ var uploadView = View.extend({
             // upload the information to the submission value
             // show the information in the table
             var subData = {
-                'type': fileTypes[this.$('#typeFile').val().trim()]
+                'type': this.$('#typeFile').val().trim()
             };
             restRequest({
                 type: 'GET',

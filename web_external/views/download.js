@@ -26,7 +26,7 @@ var downloadView = View.extend({
                 path: `item?folderId=${this.parentId}`
             }).done((itemResp) => {
                 for (var index in itemResp) {
-                    if (itemResp[index].meta.type === 'Paper') {
+                    if (itemResp[index].meta.type === 'PAPER') {
                         this.paperItem = itemResp[index];
                     }
                 }
