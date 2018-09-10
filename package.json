@@ -34,5 +34,8 @@
   "bugs": {
     "url": "https://github.com/girder/tech_journal/issues"
   },
-  "homepage": "https://github.com/girder/tech_journal#readme"
+  "homepage": "https://github.com/girder/tech_journal#readme",
+  "babel": {
+    "presets": ["@babel/preset-env"]
+  }
 }
