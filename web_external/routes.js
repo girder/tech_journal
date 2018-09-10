@@ -85,7 +85,7 @@ router.route('plugins/journal/approval', 'approvalView', function () {
 
 // Download page for each submission
 router.route('plugins/journal/view/:id/download', 'submissionDownload', function (id) {
-    testUserAccess(downloadView, {id: id}, false, false);
+    testUserAccess(downloadView, {id: id}, true, false);
 });
 // View to manage (or create) a Journal
 router.route('plugins/journal/admin', 'manageJournalView', function () {
@@ -149,6 +149,8 @@ function testUserAccess(view, args, needsUser, needsAdmin) {
     if (userFlag && adminFlag) {
         events.trigger('g:navigateTo', view, args, {layout: Layout.EMPTY});
     } else {
-        window.location.href = '#?dialog=login';
+        if (window.location.toString().indexOf('dialog') === -1) {
+            window.location.href = window.location + '?dialog=login';
+        }
     }
 }
