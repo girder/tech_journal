@@ -77,6 +77,7 @@ var editView = View.extend({
     initialize: function (id) {
         this.newRevision = id.NR;
         this.newSub = false;
+        this.approve = id.approve;
         this.render(id.id);
     },
     render: function (subResp) {
@@ -89,6 +90,9 @@ var editView = View.extend({
             var titleText = 'Edit current revision';
             if (this.newRevision) {
                 titleText = 'Create revision';
+            }
+            if (this.approve) {
+                titleText = 'Approve Submission';
             }
             this.$el.html(SubmitViewTemplate({info: {info: resp[0], 'parInfo': resp[1], 'NR': this.newRevision}, 'titleText': titleText}));
             new MenuBarView({ // eslint-disable-line no-new
@@ -107,8 +111,9 @@ var editView = View.extend({
                     this.$('#treeWrapper').html(this.$('#treeWrapper').html() + CategoryTemplate({'catName': catResp[key]['key'], 'values': catResp[key]['value']}));
                 }
                 for (var catIndx in resp[0].meta.categories) {
-                    this.$(`.filterOption[val=${resp[0].meta.categories[catIndx]}]`).attr('checked', true);
+                    this.$(`.filterOption[val='${resp[0].meta.categories[catIndx]}']`).attr('checked', true);
                 }
+                this.$(`.typeOption[value=${resp[0].meta.type}]`).attr('selected', true);
                 this._checkCategories();
                 restRequest({
                     type: 'GET',
