@@ -92,6 +92,33 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
     groupDB = client.girder.group
     collectionDB = client.girder.collection
     journalCollectionDB = client.girder.journal_collection;
+    # =============================================
+    # Import and create all category lists
+    # =============================================
+    # +-------------+--------------+
+    # | Field       | Type         |
+    # +-------------+--------------+
+    # | category_id | bigint(20)   |
+    # | parent_id   | bigint(20)   |
+    # | name        | varchar(255) |
+    # +-------------+--------------+
+    cur.execute("SELECT * FROM journal_category")
+    allcats = cur.fetchall()
+    catValueDict = {}  # Dictionary of name -> values
+    catNumDict = {}    # Dictionary of num -> name
+    for catObj in allcats:
+      if catObj[1] == -1:  # Those marked with -1 are category topics
+        catValueDict[catObj[2]] = []
+        catNumDict[catObj[0]] = catObj[2]
+      else:
+        # use both dicts to append the value to the correct entry
+        catValueDict[ catNumDict[ catObj[1] ] ].append(catObj[2])
+    for val in catDict:
+      inCatObj = { "_id" : ObjectId(),
+                    "tag" : "categories",
+                    "value" : catValueDict[val],
+                    "key" : val }
+      journalCollectionDB.insert_one(inCatObj)
     cur.execute("SELECT * FROM user")
     allusers = cur.fetchall()
     if not assetStoreDB.count({"root":assetStore}):
