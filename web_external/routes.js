@@ -46,10 +46,10 @@ router.route('plugins/journal/submission/:id/new', 'submissionInfo', function (i
 });
 // Pass through the revision view to eliminate the need to pick an issue
 router.route('plugins/journal/submission/:id/edit', 'submissionInfo', function (id) {
-    testUserAccess(editView, {id: id, NR: false}, true, false);
+    testUserAccess(editView, {id: id, NR: false, approve: false}, true, false);
 });
 router.route('plugins/journal/submission/:id/revision', 'submissionInfo', function (id) {
-    testUserAccess(editView, {id: id, NR: true}, true, false);
+    testUserAccess(editView, {id: id, NR: true, approve: false}, true, false);
 });
 
 router.route('plugins/journal/submission/:id/approve', 'submissionInfo', function (id) {

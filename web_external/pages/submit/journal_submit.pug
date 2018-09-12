@@ -111,12 +111,12 @@ mixin disclaimerEntry(text)
               tr
                 td
                   select#typeEntry.parsely-validated(required, name="type")
-                    option(value="GENERAL") General
-                    option(value="PUBLICATION") Publication
-                    option(value="TUTORIAL") Tutorial
-                    option(value="SOFTWARE") Software
-                    option(value="PLUGIN") Plugin
-                    option(value="DATASET") Dataset
+                    option.typeOption(value="GENERAL") General
+                    option.typeOption(value="PUBLICATION") Publication
+                    option.typeOption(value="TUTORIAL") Tutorial
+                    option.typeOption(value="SOFTWARE") Software
+                    option.typeOption(value="PLUGIN") Plugin
+                    option.typeOption(value="DATASET") Dataset
               tr
                 td
                   .submission
@@ -167,9 +167,13 @@ mixin disclaimerEntry(text)
                   br
                   span Copyright holder:
                   textarea#copyrightEntry.smallInput(name="copyright", style="width:400px;")
+                    if info.parInfo.meta
+                      | #{info.parInfo.meta.copyright}
                   br
                   span Grant/Tracking number:
                   textarea#grantEntry.smallInput(name="grant", style="width:400px;")
+                    if info.parInfo.meta
+                      | #{info.parInfo.meta.grant}
                   br
                   span Select a disclaimer:
                   select#disclaimer
