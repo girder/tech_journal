@@ -113,7 +113,7 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
       else:
         # use both dicts to append the value to the correct entry
         catValueDict[ catNumDict[ catObj[1] ] ].append(catObj[2])
-    for val in catDict:
+    for val in catValueDict:
       inCatObj = { "_id" : ObjectId(),
                     "tag" : "categories",
                     "value" : catValueDict[val],
