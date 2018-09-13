@@ -1,6 +1,6 @@
 import View from 'girder/views/View';
 import router from 'girder/router';
-import { restRequest } from 'girder/rest';
+import { restRequest, apiRoot } from 'girder/rest';
 
 import MenuBarView from '../../views/menuBar.js';
 import HomeTemplate from './home.pug';
@@ -167,7 +167,7 @@ const HomePage = View.extend({
                 this.$('#noResultElement').show();
             } else {
                 this.$('#noResultElement').hide();
-                this.$('.searchResults').html(this.$('.searchResults').html() + IndexEntryViewTemplate({info: {'submissions': submissions}}));
+                this.$('.searchResults').html(this.$('.searchResults').html() + IndexEntryViewTemplate({info: {'submissions': submissions}, root: apiRoot}));
             }
         });
     },

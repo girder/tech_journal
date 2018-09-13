@@ -3,7 +3,7 @@ import View from 'girder/views/View';
 import router from 'girder/router';
 import events from 'girder/events';
 import { getCurrentUser } from 'girder/auth';
-import { restRequest } from 'girder/rest';
+import { restRequest, apiRoot } from 'girder/rest';
 
 import MenuBarView from '../../views/menuBar.js';
 import SubmissionViewTemplate from './journal_view.pug';
@@ -97,13 +97,22 @@ var submissionView = View.extend({
         this.parentId = totalDetails[1]._id;
         this.otherRevisions = totalDetails[2];
         this.currentRevision = totalDetails[0];
-        this.$el.html(SubmissionViewTemplate({ user: this.currentUser, info: { 'revision': totalDetails[0], 'parent': totalDetails[1], 'otherRevisions': totalDetails[2] } }));
-        new MenuBarView({ // eslint-disable-line no-new
-            el: this.$el,
-            parentView: this
+        restRequest({
+            type: 'GET',
+            url: `journal/${totalDetails[0]._id}/logo`
+        }).done((resp) => {
+            var logoURL = '';
+            if (resp.length > 0) {
+                logoURL = `${apiRoot}/${resp}`;
+            }
+            this.$el.html(SubmissionViewTemplate({ user: this.currentUser, info: { 'revision': totalDetails[0], 'parent': totalDetails[1], 'otherRevisions': totalDetails[2] }, logo: logoURL }));
+            new MenuBarView({ // eslint-disable-line no-new
+                el: this.$el,
+                parentView: this
+            });
+            this.$(`.revisionOption[value=${totalDetails[0]._id}]`).prop('selected', true);
+            return this;
         });
-        this.$(`.revisionOption[value=${totalDetails[0]._id}]`).prop('selected', true);
-        return this;
     },
     updateComments: function (send) {
         restRequest({
