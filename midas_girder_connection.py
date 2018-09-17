@@ -463,6 +463,8 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
           inputRevision["_id"] = ObjectId()
           inputRevision["description"] = revision[4]
           inputRevision["created"] = revision[3]
+          if inputRevision["created"] == None:
+            inputRevision["created"] = row[2]
           print inputRevision['name']
           # Capture the download and view information
           cur.execute("SELECT * FROM statistics_download WHERE item_id="+ str(revision[0]))
