@@ -107,6 +107,11 @@ if 'downloadStatistics' in info.revision
               |,
           .institution
             +searchLink(info.revision.meta.institution,"institution")
+          center
+            br
+            img.ResultLogo(src=logo)
+            br
+            br
           unless info.revision.curation.status === "APPROVED"
             span(style="font-weight:bold;color:red;")
               | This article is waiting for approval

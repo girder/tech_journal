@@ -144,6 +144,7 @@ class TechJournal(Resource):
         self.route('GET', (':id', 'openissues',), self.getFilteredIssues)
         self.route('GET', (':id', 'details'), self.getSubmissionDetails)
         self.route('GET', (':id', 'search'), self.getFilteredSubmissions)
+        self.route('GET', (':id', 'logo'), self.getLogo)
         self.route('PUT', (':id', 'metadata'), self.setSubmissionMetadata)
         self.route('PUT', (':id', 'finalize'), self.finalizeSubmission)
         self.route('PUT', (':id', 'approve'), self.approveSubmission)
@@ -378,6 +379,8 @@ class TechJournal(Resource):
                     if len(submissionInfo):
                         submissionInfo = sorted(submissionInfo,
                                                 key=lambda submission: submission['updated'])
+                        submissionInfo[-1]['logo'] = self.getLogo(id=submissionInfo[-1]['_id'],
+                                                                  params=params)
                         submission['currentRevision'] = submissionInfo[-1]
                     # If not found already, add it to the returned information
                     if submission not in totalData:
@@ -397,6 +400,20 @@ class TechJournal(Resource):
     def getAllJournals(self, params):
         user = self.getCurrentUser()
         return list(self.model('collection').textSearch('__journal__', user=user))
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+        Description('Get logo associated with submission')
+        .param('id', "The ID of the foder to aquire logo for", paramType='path')
+        .errorResponse('Read access was denied on the issue.', 403)
+        )
+    def getLogo(self, folder, params):
+        thumbURL = ""
+        for fileObj in self.model('folder').childItems(folder, user=self.getCurrentUser()):
+            if fileObj['meta']['type'] == "THUMBNAIL":
+                thumbURL = "item/%s/download?contentDisposition=inline" % fileObj['_id']
+        return thumbURL
 
     @access.user(scope=TokenScope.DATA_READ)
     @loadmodel(model='folder', level=AccessType.WRITE)

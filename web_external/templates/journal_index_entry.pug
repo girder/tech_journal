@@ -3,9 +3,12 @@ mixin searchEntry(info,approveLink)
     table(style="width:99%;")
       tr
         td(style="width:100px;height:98px;vertical-align: middle;text-align: center;")
-          //img(class="ResultLogo" src="/journal/journal/view/logo/?revisionId=id&size=64")
+          if info.currentRevision.logo
+            img.ResultLogo.thumbnail(src=root+"/"+info.currentRevision.logo)
+          else
+            img.ResultLogo.thumbnail
           //img(class="ResultLogo" src="/journal/privateModules/journal/public/images/journal.gif")
-          .CertifiedWrapper
+          .CertifiedWrapper(style="display:none")
             //img(style='border:none;' src="/journal/privateModules/journal/public/images/check.gif")
             | Certified
             span.CertifiedLevel(style="color:green")
