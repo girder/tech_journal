@@ -110,7 +110,7 @@ var SubmitView = View.extend({
     render: function (subResp, state) {
         if (Array.isArray(subResp)) {
             subResp.forEach(function (obj) {
-                obj.daysLeft = obj.daysLeft = Math.round((new Date(obj.meta.paperDue).valueOf() -
+                obj.daysLeft = Math.round((new Date(obj.meta.paperDue).valueOf() -
                     Date.now()) / 1000 / 60 / 60 / 24);
             });
         }

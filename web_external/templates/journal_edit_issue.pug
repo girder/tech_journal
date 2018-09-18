@@ -50,33 +50,13 @@
             tr
               td(width="25%", style="vertical-align: top;")
                 div(align="right")
-                  strong Paperdue date:
+                  strong Issue End date:
               td
                 - var paperDue=''
                 if info.meta
                   - paperDue=info.meta.paperDue
                 input.datepicker.picker__input.parsley-validated(type="date", data-type="dateIso", required, name="paperdue_date", value=paperDue, placeholder="Select a date.")
                 input(type="hidden", name="paperdue_date_submit")
-            tr
-              td(width="25%", style="vertical-align: top;")
-                div(align="right")
-                  strong Decision date:
-              td
-                - var decision=''
-                if info.meta
-                  - decision=info.meta.decision
-                input.datepicker.picker__input(type="date", data-type="dateIso", required, value=decision, name="decision_date")
-                input(type="hidden", name="decision_date_submit")
-            tr
-              td(width="25%", style="vertical-align: top;")
-                div(align="right")
-                  strong Publication date
-              td
-                - var publication=''
-                if info.meta
-                  - publication=info.meta.publication
-                input.datepicker.picker__input.parsley-validated(type="date", data-type="dateIso", required, name="publication_date", value=publication, placeholder="Select a date.")
-                input(type="hidden", name="publication_date_submit")
             tr
               td(width="25%", style="vertical-align: top;")
                 div(align="right")
