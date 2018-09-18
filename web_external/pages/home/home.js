@@ -54,9 +54,6 @@ const HomePage = View.extend({
             this.defaultJournal = resp['tech_journal.default_journal'];
             this.collectionID = this.defaultJournal;
             this.querystring = '*';
-            if (!$.isEmptyObject(query.collection)) {
-                this.collectionID = query.collection;
-            }
             this.render('', this.collectionID, 0);
         }); // End getting of OTJ Collection value setting
     },
@@ -192,23 +189,30 @@ const HomePage = View.extend({
                 tmpStr += searchText.charAt(i);
             }
             terms.push(tmpStr);
+            var collectionID = this.collectionID;
             terms.forEach(function (searchVal) {
-                var magicFound = false;
-                magicTerms.forEach(function (termVal) {
-                    if (searchVal.indexOf(termVal) !== -1) {
-                        magicFound = true;
-                    }
-                });
-                if (queryString !== '') {
-                    queryString += ',';
-                }
-                if (magicFound) {
-                    queryString += searchVal;
+                console.log(searchVal);
+                if (searchVal.indexOf('collection') !== -1) {
+                    collectionID = searchVal.split(':')[1];
                 } else {
-                    searchVal = searchVal.replace(/"/g, '&quot;');
-                    queryString += `"text": "${searchVal}"`;
+                    var magicFound = false;
+                    magicTerms.forEach(function (termVal) {
+                        if (searchVal.indexOf(termVal) !== -1) {
+                            magicFound = true;
+                        }
+                    });
+                    if (queryString !== '') {
+                        queryString += ',';
+                    }
+                    if (magicFound) {
+                        queryString += searchVal;
+                    } else {
+                        searchVal = searchVal.replace(/"/g, '&quot;');
+                        queryString += `"text": "${searchVal}"`;
+                    }
                 }
             });
+            this.collectionID = collectionID;
         }
         return queryString;
     }
