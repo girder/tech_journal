@@ -20,6 +20,7 @@ import EditJournalView from './views/editJournal';
 import manageHelpView from './views/manageHelp';
 import FeedBackView from './views/feedback';
 import EditGroupUsersView from './views/groupUsers.js';
+import userView from './pages/user/user.js';
 
 // Clear all of the existing routes, which will always added by Girder
 Backbone.history.handlers = [];
@@ -39,6 +40,11 @@ router.route('admin/categories', 'adminCategories', function () {
 // Submission related pages
 router.route('submission/new', 'submissionInfo', function () {
     testUserAccess(submitView, {id: 'new'}, true, false);
+});
+
+// user profile page
+router.route('plugins/user/:id/edit', 'submissionInfo', function (id) {
+    testUserAccess(userView, {id: id}, true, false);
 });
 
 router.route('plugins/journal/submission/:id/new', 'submissionInfo', function (id) {

@@ -185,7 +185,12 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
                     "public":True,
                     "emailVerified":False,
                     "login":"%s.%s" % (user[1],user[4]) ,
-                    "email":user[5]
+                    "email":user[5],
+                    "notificationStatus": {
+                        'NewSubmissionEmail': user[19],
+                        'NewReviewsEmail': user[20],
+                        'NewCommentEmail': user[21],
+                    }
                   }
       usersDB.insert_one(inputUser)
       userDictionary[user[0]] = inputUser
