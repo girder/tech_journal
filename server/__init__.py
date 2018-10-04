@@ -30,6 +30,7 @@ from girder.api import access
 from girder.constants import AccessType, TokenScope
 from girder.models.model_base import ValidationException
 from girder.models.folder import Folder
+from girder.models.user import User
 from girder.utility import mail_utils
 from girder.utility.model_importer import ModelImporter
 from girder.utility.plugin_utilities import getPluginDir, registerPluginWebroot
@@ -153,6 +154,7 @@ class TechJournal(Resource):
         self.route('GET', ('setting',), self.getJournalSettings)
         self.route('POST', ('feedback',), self.sendFeedBack)
         self.route('DELETE', (':id',), self.deleteObject)
+        self.route('PUT', ('user',), self.updateUser)
         # APIs for categories
         self.route('POST', ('category',), self.addJournalObj)
         self.route('PUT', ('category',), self.updateJournalObj)
@@ -191,6 +193,21 @@ class TechJournal(Resource):
     )
     def deleteObject(self, folder, params):
         return self.model('folder').remove(folder)
+
+    @access.public(scope=TokenScope.DATA_WRITE)
+    @describeRoute(
+        Description('Save user info beyond default')
+        .responseClass('folder')
+        .param('body', 'A JSON object containing the user object to update',
+               paramType='body')
+        .errorResponse('Test error.')
+        .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def updateUser(self, params):
+        user = self.getBodyJson()
+        existing = self.model('user').load(user['_id'], user=self.getCurrentUser())
+        existing['notificationStatus'] = user['notificationStatus']
+        return self.model('user').save(existing)
 
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)
@@ -720,4 +737,5 @@ def load(info):
                 'tech_journal',
                 techJournal._onPageView)
     Folder().exposeFields(level=AccessType.READ, fields='downloadStatistics')
+    User().exposeFields(level=AccessType.READ, fields='notificationStatus')
     registerPluginWebroot(Webroot(), info['name'])
