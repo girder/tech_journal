@@ -13,9 +13,7 @@ var EditIssueView = View.extend({
             if (event.originalEvent.explicitOriginalTarget.defaultValue === 'Create >>') {
                 var values = {issueName: this.$('#issueName')[0].value,
                     issueDescription: this.$('#issueDescription')[0].value,
-                    'paperDue': $('.datepicker')[0].value,
-                    'decision': $('.datepicker')[1].value,
-                    'publication': $('.datepicker')[2].value
+                    'paperDue': $('.datepicker')[0].value
                 };
                 if (this.update) {
                     this._updateIssue(values);
