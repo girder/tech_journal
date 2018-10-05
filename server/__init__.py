@@ -152,6 +152,7 @@ class TechJournal(Resource):
         self.route('PUT', (':id', 'comments'), self.updateComments)
         self.route('PUT', ('setting',), self.setJournalSettings)
         self.route('GET', ('setting',), self.getJournalSettings)
+        self.route('GET', ('licenses',), self.getJournalLicenses)
         self.route('POST', ('feedback',), self.sendFeedBack)
         self.route('DELETE', (':id',), self.deleteObject)
         self.route('PUT', ('user',), self.updateUser)
@@ -627,6 +628,15 @@ class TechJournal(Resource):
             except ValueError:
                 raise RestException('List was not a valid JSON list.')
             return {k: getFunc(k, **funcParams) for k in keys}
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @describeRoute(
+        Description('get the journal licenses')
+        .errorResponse()
+        .errorResponse('Read access was denied on the issue.', 403)
+        )
+    def getJournalLicenses(self, params):
+        return constants.TechJournalLicenseDefault.licenseDict
 
     # -----------------------------------------------
     #  Add Journal Setting manipulation APIs

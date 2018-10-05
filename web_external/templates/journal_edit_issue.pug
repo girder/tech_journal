@@ -1,3 +1,6 @@
+mixin licenseOption(name, val)
+  option(value=val) #{name}
+
 #headerBar
 .Wrapper
   .Content
@@ -31,22 +34,32 @@
                   strong License (Publisher):
               td(width="75%")
                 |Set license to
-                select (name="licensemenu", onchange="ChangeAuthorLicense(this.value)")
+                select#licensemenu(name="licensemenu")
+                  option Choose...
+                  +licenseOption("publisherLicense", licenses["publisherLicense"])
+
                 br
                 |or modify the following text
                 br
                 textarea#publishLicense(name="publishLicense")
+                  if info.meta
+                    | #{info.meta.publisherLicense}
             tr
               td(width="25%", style="vertical-align: top;")
                 div(align="right")
                   strong License (Author):
               td(width="75%")
                 |Set license to
-                select (name="copyrightmenu", onchange="ChangeReaderLicense(this.value)")
+                select#copyrightmenu(name="copyrightmenu")
+                  option Choose...
+                  for item in Object.keys(licenses["readerLicenses"])
+                    +licenseOption(item, licenses["readerLicenses"][item])
                 br
                 |or modify the following text
                 br
                 textarea#authorLicense(name="authorLicense")
+                  if info.meta
+                    | #{info.meta.authorLicense}
             tr
               td(width="25%", style="vertical-align: top;")
                 div(align="right")
@@ -67,4 +80,7 @@
               td
               td
                 input(type="submit", value=" << Cancel", name="data[Admin][cancel]")
-                input(type="submit", value="Create >>", name="data[Admin][add]")
+                if info.meta
+                  input(type="submit", value="Update >>", name="data[Admin][add]")
+                else
+                  input(type="submit", value="Create >>", name="data[Admin][add]")
