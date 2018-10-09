@@ -156,6 +156,8 @@ class TechJournal(Resource):
         self.route('POST', ('feedback',), self.sendFeedBack)
         self.route('DELETE', (':id',), self.deleteObject)
         self.route('PUT', ('user',), self.updateUser)
+        self.route('GET', (':id', "citation", ":type"), self.printCitation)
+
         # APIs for categories
         self.route('POST', ('category',), self.addJournalObj)
         self.route('PUT', ('category',), self.updateJournalObj)
@@ -637,6 +639,28 @@ class TechJournal(Resource):
         )
     def getJournalLicenses(self, params):
         return constants.TechJournalLicenseDefault.licenseDict
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+        Description('get citation for an object')
+        .param('id', 'The ID of the folder.', paramType='path')
+        .param('type', 'Type of citation to generate', paramType='path')
+        .errorResponse()
+        .errorResponse('Read access was denied on the issue.', 403)
+        )
+    def printCitation(self, folder, type, params):
+        folder['parent'] = self.model('folder').load(folder['parentId'],
+                                                     user=self.getCurrentUser(), force=True)
+        templateInfo = {
+            'authors': folder['meta']['authors'],
+            'name': folder['parent']['name'],
+            'description': folder['parent']['description'],
+            'institution': folder['meta']['institution'],
+            'date_year': folder['created'].year,
+            'date_mon': folder['created'].month,
+        }
+        return constants.TechJournalCitations.templates[type].substitute(templateInfo)
 
     # -----------------------------------------------
     #  Add Journal Setting manipulation APIs
