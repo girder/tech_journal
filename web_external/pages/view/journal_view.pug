@@ -57,6 +57,13 @@ if 'downloadStatistics' in info.revision
               li
                 a(href=info.revision.meta.github) GitHub
         h4 Export citation:
+          ul
+            li
+              select#exportCitType(name="exportType")
+                option.citOption(value="bibtex") Bibtext
+                option.citOption(value="xml") XML
+              input.exportCit(type="submit", value="Export")
+            textarea.citationDisplay
         h4 Statistics:
           ul
             li Views: #{viewCount}

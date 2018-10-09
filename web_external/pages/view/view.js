@@ -75,6 +75,15 @@ var submissionView = View.extend({
         'change #revisionSelector': function (event) {
             router.navigate(`#plugins/journal/view/${this.$('.revisionOption:selected').val()}`,
                 {trigger: true});
+        },
+        'click .exportCit': function (event) {
+            this.$('.citationDisplay').text('');
+            restRequest({
+                type: 'GET',
+                url: `journal/${this.displayId}/citation/${this.$('.citOption:selected').val()}`
+            }).done((citationText) => {
+                this.$('.citationDisplay').text(citationText);
+            });
         }
     },
     initialize: function (subId) {
