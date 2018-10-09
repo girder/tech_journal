@@ -10,6 +10,7 @@ import shutil
 import MySQLdb
 import sys
 import os
+from server import constants
 
 licenseDict = {
  "0": "Not Defined",
@@ -261,8 +262,8 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
       inputObject["_id"] = ObjectId()
       inputObject["description"] = row[7]
       inputObject["meta"]["paperDue"] = str(row[2])
-      inputObject["meta"]["decision"] = str(row[3])
-      inputObject["meta"]["publication"] = str(row[4])
+      inputObject["meta"]["authorLicense"] = str(row[10])
+      inputObject["meta"]["publisherLicense"] = str(row[11])
       inputObject["meta"]["__issue__"] = True
       result = foldersDB.insert_one(inputObject)
 
