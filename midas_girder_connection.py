@@ -320,10 +320,10 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
                        "targetIssue":"5a295c0782290926a05fef5c"
                      }
                     }
-      #if row[9] in userDictionary.keys():
-      #  inputObject["creatorId"] = userDictionary[row[9]]["_id"]
-      #else:
-      #  inputObject["creatorId"] = row[9]
+      if row[9] in userDictionary.keys():
+          inputObject["creatorId"] = ObjectId(userDictionary[row[9]]["_id"])
+      else:
+          inputObject["creatorId"] = ObjectId()
       cur.execute("SELECT * FROM item2folder where item_id=" + str(row[0]))
       itemConnection = cur.fetchall()
 
