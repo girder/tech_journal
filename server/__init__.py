@@ -498,6 +498,10 @@ class TechJournal(Resource):
         mail_utils.sendEmail(toAdmins=True, subject=subject, text=html)
         folder['curation'] = DEFAULTS
         folder['public'] = True
+        folder['downloadStatistics'] = {
+            'views': 0,
+            'completed': 0
+        }
         parentFolder['curation'] = DEFAULTS
         parentFolder['public'] = True
         self.model('folder').save(parentFolder)
