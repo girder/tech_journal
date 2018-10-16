@@ -37,7 +37,7 @@ from girder.utility.plugin_utilities import getPluginDir, registerPluginWebroot
 from girder.utility.webroot import WebrootBase
 from girder import events
 from girder_worker_utils.transforms.girder_io import GirderUploadToItem
-from tech_journal_tasks.tasks import processGithub
+from tech_journal_tasks.tasks import processGithub, surveySubmission
 from . import constants
 
 
@@ -150,6 +150,7 @@ class TechJournal(Resource):
         self.route('PUT', (':id', 'finalize'), self.finalizeSubmission)
         self.route('PUT', (':id', 'approve'), self.approveSubmission)
         self.route('PUT', (':id', 'comments'), self.updateComments)
+        self.route('GET', (':id', 'survey'), self.getSurvey)
         self.route('PUT', ('setting',), self.setJournalSettings)
         self.route('GET', ('setting',), self.getJournalSettings)
         self.route('GET', ('licenses',), self.getJournalLicenses)
@@ -435,6 +436,23 @@ class TechJournal(Resource):
                 thumbURL = "item/%s/download?contentDisposition=inline" % fileObj['_id']
         return thumbURL
 
+    @access.public(scope=TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+        Description('Get survey results associated with submission')
+        .param('id', "The ID of the folder to aquire logo for", paramType='path')
+        .errorResponse('Read access was denied on the issue.', 403)
+        )
+    def getSurvey(self, folder, params):
+        foundText = ""
+        parentFolder = self.model('folder').load(folder['parentId'], force=True)
+        for fileObj in self.model('folder').childItems(parentFolder, user=self.getCurrentUser()):
+            print fileObj
+            if fileObj['name'] == "Survey Result":
+                downLoadObj = self.model('item').fileList(fileObj).next()[1]()
+                foundText = downLoadObj.next()
+        return unicode(foundText, errors='ignore')
+
     @access.user(scope=TokenScope.DATA_READ)
     @loadmodel(model='folder', level=AccessType.WRITE)
     @describeRoute(
@@ -457,7 +475,8 @@ class TechJournal(Resource):
         movedFolder = self.model('folder').move(parentFolder, targetFolder, 'folder')
         data = {'name': folder['name'],
                 'authors': folder['meta']['authors'],
-                'abstract': parentFolder['description']}
+                'abstract': parentFolder['description'],
+                'id': folder['_id']}
         text = mail_utils.renderTemplate('tech_journal_approval.mako', data)
         mail_utils.sendEmail(toAdmins=True,
                              subject='New Submission - Pending Approval',
@@ -465,6 +484,12 @@ class TechJournal(Resource):
         movedFolder['curation'] = DEFAULTS
         parentFolder['public'] = False
         self.model('folder').save(movedFolder)
+        newItem = self.model("item").createItem(name="Survey Result",
+                                                creator=self.getCurrentUser(),
+                                                folder=movedFolder,
+                                                description="Result of simple pattern match")
+        surveySubmission.delay(folder,
+                               girder_result_hooks=[GirderUploadToItem(str(newItem['_id'])), ])
         return movedFolder
 
     @access.user(scope=TokenScope.DATA_READ)
