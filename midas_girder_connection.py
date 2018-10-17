@@ -321,10 +321,6 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
                        "targetIssue":"5a295c0782290926a05fef5c"
                      }
                     }
-      if row[9] in userDictionary.keys():
-          inputObject["creatorId"] = ObjectId(userDictionary[row[9]]["_id"])
-      else:
-          inputObject["creatorId"] = ObjectId()
       cur.execute("SELECT * FROM item2folder where item_id=" + str(row[0]))
       itemConnection = cur.fetchall()
 
@@ -465,6 +461,13 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
           inputRevision["meta"]["has_reviews"] = metaDataQuery(cur, revision[0],"38")
           inputRevision["meta"]["categories"] = metaDataQuery(cur, revision[0],"18")
           inputRevision["meta"]["disclaimer"] = metaDataQuery(cur, revision[0],"20")
+          userVal = metaDataQuery(cur, revision[0],"15")
+          if userVal in userDictionary.keys():
+              inputRevision["creatorId"] = ObjectId(userDictionary[userVal]["_id"])
+          elif revision[5] in userDictionary.keys():
+              inputRevision["creatorId"] = ObjectId(userDictionary[revision[5]]["_id"])
+          else:
+              inputRevision["creatorId"] = ObjectId()
           inputRevision["name"] = "Revision " + str(revision[2])
           inputRevision["_id"] = ObjectId()
           inputRevision["description"] = revision[4]
