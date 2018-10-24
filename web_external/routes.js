@@ -166,8 +166,8 @@ function testUserAccess(view, args, needsUser, needsAdmin) {
     if (userFlag && adminFlag) {
         events.trigger('g:navigateTo', view, args, {layout: Layout.EMPTY});
     } else {
-        if (window.location.toString().indexOf('dialog') === -1) {
-            window.location.href = window.location + '?dialog=login';
+        if (!user) {
+            window.location.href = '#?dialog=login';
         }
     }
 }

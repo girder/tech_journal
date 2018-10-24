@@ -13,7 +13,7 @@ var MenuBarView = View.extend({
                 type: 'DELETE',
                 path: 'user/authentication'
             }).done((resp) => {
-                window.location.reload();
+                window.location.href = '';
             });
         },
         'mouseenter #profileLink': function (event) {
