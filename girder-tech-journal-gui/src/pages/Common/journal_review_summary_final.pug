@@ -1,0 +1,23 @@
+table.reviewTable
+  thead
+    tr
+      th Topic
+      th Level
+      th Comments
+  tbody
+    for list in review.questions.topics
+      tr
+        td
+          a.topicEntry #{list.name}
+        for question in list.questions
+          td
+            input(type="text", size="1", disabled="disabled", value=question.value[0])
+          td
+            textarea(disabled="disabled") #{question.commentValue}
+    tr
+      td Recommended Certification Level
+      td(colspan="2") #{review.questions.list.certificationLevel}
+  tfoot
+    tr#summaryProgress
+      td(colspan=3)
+        progress(value=review.done, max="100")

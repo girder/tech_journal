@@ -1,0 +1,16 @@
+table.reviewTable
+  thead
+    tr
+      th Topic
+      th Completed
+  tbody
+    for list in review.questions.topics
+      tr
+        td
+          a.topicEntry #{list.name}
+        td
+          input(type="checkbox", disabled="disabled", checked=list.done)
+  tfoot
+    tr#summaryProgress
+      td(colspan=3)
+        progress(value=review.done, max=100)

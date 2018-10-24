@@ -1,0 +1,20 @@
+#newTopic
+  h3 #{type} Topic
+  form#addTopicForm(action="", method="post")
+    input(type="hidden", name="oldtopic")
+    input(type="hidden", name="selectedlist", value="")
+    label(for="topicname") Name:
+    textarea#topicText(style="width:270px;", name="topicname").
+      #{text}
+    label(for="topicdescription") Description:
+    textarea(style="width:270px;", name="topicdescription").
+      #{description}
+    if type === "Edit"
+      input#updateTopic(type="button", value="Update")
+      input#cancelNewList(type="button", value="Cancel")
+      input#deleteList(type="button", value="Delete")
+
+    else
+      input(type="submit", value="Save")
+      input#cancelNewList(type="button", value="Cancel")
+      input#deleteList(type="button", value="Delete")

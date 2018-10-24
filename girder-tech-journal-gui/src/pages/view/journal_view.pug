@@ -28,6 +28,49 @@ mixin existingComment(commentInfo)
       span.commentText
         | #{commentInfo.text}
 
+mixin PeerReviewDisplay(review, revision, index)
+  p
+    a(href="#review/"+revision._id+"/peer/"+index) Peer Review by #{review.user.firstName} #{review.user.lastName}
+  table.reviewTable
+    thead
+      th Topic
+      th Completed
+    tbody
+      for topic in review.questions.topics
+        tr
+          td #{topic.name}
+          td
+            input(type="checkbox", checked=topic.done, disabled)
+    tfoot
+    tfoot
+      tr#summaryProgress
+        td(colspan="3")
+          progress(value=review.done, max="100")
+
+mixin FinalReviewDisplay(review, revision, index)
+  p
+    a(href="#review/"+revision._id+"/final/"+index) Final Review by #{review.user.firstName} #{review.user.lastName}
+  table.reviewTable
+    thead
+      th Topic
+      th Level
+      th Comment
+    tbody
+      for topic in review.questions.topics
+        tr
+          td #{topic.name}
+          for val in topic.questions
+            td #{val.value}
+            td #{val.commentValue}
+    tfoot
+      tr#summaryProgress
+        td(colspan="3")
+          progress(value=review.done, max="100")
+    tbody
+      tr
+        td Recommended Certification Level
+        td review.questions.list.certificationLevel
+    tfoot
 mixin deleteCommentConfirmation()
   #deleteCommentConfirmation
     div(style="float:right; margin-top:20px")
@@ -98,7 +141,7 @@ if 'downloadStatistics' in info.revision
                 li
                   a#deleteSubmission Delete publication
                 li
-                  a#manageReviews Manage Reviews
+                  a#manageReviews(href="#review/manage/"+info.revision._id) Manage Reviews
 
       .MainContent
         #publication
@@ -154,6 +197,27 @@ if 'downloadStatistics' in info.revision
                     if value._id === info.revision._id
                       - selected="selected"
                     +revisionOption(value,selected,info.parent)
+          if info.revision.meta.reviews
+            h4 Reviews (Phase: #{info.revision.meta.revisionPhase})
+            - var reviewType = "Completed"
+            if  info.revision.meta.revisionPhase
+              - var reviewType = info.revision.meta.revisionPhase.toLowerCase()
+            #reviewDisplay(width="100%")
+              .peer
+              .final
+            - var isComplete = reviewType == "completed"
+            unless isComplete
+              unless info.revision.meta.reviews[reviewType].reviews.length > 0
+                | There is no review at this time.
+              unless user
+                | To submit one, please
+                a#loginToComment(href='#?dialog=login') Login
+                |  or
+                a#registerToComment(href='#?dialog=register') register
+                |  to add a review
+              else
+                unless isComplete
+                  a(href="#review/"+ info.revision._id+ "/" + info.revision.meta.revisionPhase.toLowerCase() +"/new") Review this publication!
           h4 Comments
           #commentsContainer
             #commentsDiv

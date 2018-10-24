@@ -1,0 +1,11 @@
+- var phases = ['peer','final','Completed']
+h4 Current Review Phase: #{revisionPhase}
+div
+  | Set Revision phase to: 
+  select#reviewPhase
+    for phase in phases
+      if phase === reviewPhase
+        option(val=phase, selected) #{phase}
+      else
+        option(val=phase) #{phase}
+  input#savePhase(value="Change", type="button")

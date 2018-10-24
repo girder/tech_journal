@@ -10,6 +10,7 @@ import shutil
 import MySQLdb
 import sys
 import os
+import json
 from server import constants
 
 licenseDict = {
@@ -31,6 +32,11 @@ typeDict = {
   "5": "DATASET",
   "": "GENERAL"
 }
+submissionTypeDict = {
+  "0": "",
+  "1": "core",
+  "2": "certified",
+}
 
 filetypeDict = {
   "1": "THUMBNAIL",
@@ -44,8 +50,27 @@ filetypeDict = {
   "": "MISC"
 }
 
-discDictionary = {'': {'name': ''}}
+reviewData = {
+  "1":"Peer",
+  "2":"Final",
+  "3":"Completed",
 
+}
+discDictionary = {'': {'name': ''}}
+def processPeerReview(review):
+        # determine what topics are "done"
+        totalQs = 0
+        nonAnswered = 0
+        for topic in review["topics"]:
+            questions = review["topics"][topic]["questions"]
+            review["topics"][topic]["done"] = True;
+            for question in questions:
+                totalQs += 1
+                if not len(questions[question]['value']):
+                    nonAnswered += 1
+                    review["topics"][topic]['done'] = False;
+        review["done"] = ((totalQs - nonAnswered) / totalQs)  * 100
+        return review
 def metaDataQuery(cur, entryNo, fieldNo):
     cur.execute("SELECT * FROM metadatavalue WHERE itemrevision_id="+ str(entryNo)+" and metadata_id=" + str(fieldNo))
     returnVal =  cur.fetchone()
@@ -53,7 +78,9 @@ def metaDataQuery(cur, entryNo, fieldNo):
         if fieldNo == "34":
             return licenseDict[returnVal[2].strip()]
         if fieldNo == "41":
-            return typeDict[returnVal[2].strip()]
+            return submissionTypeDict[returnVal[2].strip()]
+        if fieldNo == "35":
+            return reviewData[returnVal[2].strip()]
         if fieldNo == "18":
             retArray = []
             # 18 is the list of categories, which has mixed data for languages and VistA packages
@@ -72,7 +99,9 @@ def metaDataQuery(cur, entryNo, fieldNo):
     if fieldNo == "34":
         return licenseDict['']
     if fieldNo == "41":
-        return typeDict['']
+        return submissionTypeDict['0']
+    if fieldNo == "35":
+        return reviewData["1"]
 
     return ""
 
@@ -182,7 +211,7 @@ def ReadAll(userId, prevAssetDir, baseParent=None, assetStore=None,):
                     "status":"disabled",
                     "firstName":user[1],
                     "created":user[9],
-                    "admin":user[7],
+                    "admin":True if user[7] == 1 else False,
                     "lastName":user[4],
                     "public":True,
                     "emailVerified":False,
@@ -240,6 +269,86 @@ def ReadAll(userId, prevAssetDir, baseParent=None, assetStore=None,):
       journalCollectionDB.insert_one(inputDisc)
       discDictionary[disc[0]] = inputDisc
     # End Disclaimers
+    # Start review transition
+    # import Current review question lists
+    #+-----------------+--------------+
+    #| Field           | Type         |
+    #+-----------------+--------------+
+    #| questionlist_id | int(11)      |
+    #| category_id     | int(11)      |
+    #| type            | int(11)      |
+    #| name            | varchar(512) |
+    #| description     | text         |
+    #+-----------------+--------------+
+    cur.execute("SELECT * from reviewosehra_questionlist;")
+    allQLists = cur.fetchall()
+    for qList in allQLists:
+      cur.execute("select * from journal_category where category_id=" + str(qList[1]))
+      res = cur.fetchone()
+      if res:
+          catType = str(res[2])
+      else:
+          catType = "Default"
+      qListFormat = {
+          "done": 0,
+          "questions": {
+              "list": {
+                  "category_id": catType,
+                  "comment": "",
+                  "description": qList[4],
+                  "name": qList[3],
+                  "type":'peer' if qList[2] == 1 else 'final'
+              },
+              "review_id": "",
+              "revision_id": "",
+              "topics": {}
+          },
+          "type": 'peer' if qList[2] == 1 else 'final',
+          'user': ""
+      }
+      #+-----------------+--------------+
+      #| Field           | Type         |
+      #+-----------------+--------------+
+      #| topic_id        | int(11)      |
+      #| questionlist_id | int(11)      |
+      #| position        | int(11)      |
+      #| name            | varchar(512) |
+      #| description     | text         |
+      #+-----------------+--------------+
+      cur.execute("SELECT * from reviewosehra_topic where questionlist_id=%s;" % qList[0])
+      qTopics = cur.fetchall()
+      for qTopic in qTopics:
+        qListFormat["questions"]["topics"][str(qTopic[2])] = {
+            "done": False,
+            "attachfile":"",
+            "comment":"",
+            "description":qTopic[4],
+            "name":qTopic[3],
+            "questions":{}
+        }
+        #+-------------+------------+
+        #| Field       | Type       |
+        #+-------------+------------+
+        #| question_id | int(11)    |
+        #| topic_id    | int(11)    |
+        #| position    | int(11)    |
+        #| description | text       |
+        #| comment     | tinyint(4) |
+        #| attachfile  | tinyint(4) |
+        #+-------------+------------+
+        cur.execute("SELECT * from reviewosehra_question where topic_id=%s" % qTopic[0])
+        allQuestions = cur.fetchall()
+        for question in allQuestions:
+         qListFormat["questions"]["topics"][str(qTopic[2])]['questions'][str(question[0])] = {
+            "description": question[3],
+            'comment':question[4],
+            'commentValue':'',
+            'attachfile':question[5],
+            'attachfileValue':'',
+            'value': [],
+        }
+      qListDict = {"key": qList[3], "tag": "questionList", 'value':qListFormat}
+      journalCollectionDB.insert_one(qListDict)
     cur.execute("SELECT * from journal_folder")
     allIssues = cur.fetchall()
     submissionNumber = 0
@@ -457,7 +566,8 @@ def ReadAll(userId, prevAssetDir, baseParent=None, assetStore=None,):
           inputRevision["meta"]["tags"] = metaDataQuery(cur, revision[0],"21").split(" --- ")
           inputRevision["meta"]["copyright"] = metaDataQuery(cur, revision[0],"19")
           inputRevision["meta"]["grant"] = metaDataQuery(cur, revision[0],"23")
-          inputRevision["meta"]["type"] = metaDataQuery(cur, revision[0],"41")
+          inputRevision["meta"]["type"] = typeDict[str(row[4])]
+          inputRevision["meta"]["osehra_core"] = metaDataQuery(cur, revision[0],"41")
           inputRevision["meta"]["github"] = metaDataQuery(cur, revision[0],"36")
           inputRevision["meta"]["has_code"] = metaDataQuery(cur, revision[0],"37")
           inputRevision["meta"]["has_test_code"] = metaDataQuery(cur, revision[0],"40")
@@ -466,6 +576,7 @@ def ReadAll(userId, prevAssetDir, baseParent=None, assetStore=None,):
           inputRevision["meta"]["has_reviews"] = metaDataQuery(cur, revision[0],"38")
           inputRevision["meta"]["categories"] = metaDataQuery(cur, revision[0],"18")
           inputRevision["meta"]["disclaimer"] = metaDataQuery(cur, revision[0],"20")
+          inputRevision["meta"]["revisionPhase"] = metaDataQuery(cur, revision[0],"35")
           userVal = metaDataQuery(cur, revision[0],"15")
           if userVal in userDictionary.keys():
               inputRevision["creatorId"] = ObjectId(userDictionary[userVal]["_id"])
@@ -484,7 +595,39 @@ def ReadAll(userId, prevAssetDir, baseParent=None, assetStore=None,):
           cur.execute("SELECT * FROM statistics_download WHERE item_id="+ str(revision[0]))
           allDownloads = cur.fetchall()
           inputRevision['downloadStatistics']['completed'] = len(allDownloads)
-
+          # Capture reviews for submissions
+          #+---------------+
+          #| Field         |
+          #+---------------+
+          #| review_id     |
+          #| revision_id   |
+          #| user_id       |
+          #| type          |
+          #| content       |
+          #| cache_summary |
+          #| complete      |
+          #+---------------+
+          cur.execute("select * from reviewosehra_review where revision_id="+str(revision[0]))
+          allreviews = cur.fetchall()
+          totalReview = {
+              'peer': {"template" : {},
+                       "reviews" : []},
+              'final': {"template" : {},
+                       "reviews" : []}
+          }
+          for review in allreviews:
+            if review[3] == 1:
+               reviewJSON = processPeerReview(json.loads(review[4]))
+            else:
+               reviewJSON = json.loads(review[4])
+            incomingReview = {
+              'user': userDictionary[review[2]],
+              'questions': reviewJSON,
+              'type': 'peer' if review[3] == 1 else 'final',
+              'done': review[6]
+            }
+            totalReview[incomingReview['type']]["reviews"].append(incomingReview);
+          inputRevision["meta"]['reviews'] = totalReview
           result = foldersDB.insert_one(inputRevision)
           revisionNumber += 1
           # ====================================================

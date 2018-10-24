@@ -1,0 +1,34 @@
+if type === "peer"
+  - var reviewOptions = {'10':"Low",'11':"Med",'12':"Hi",'13':"N/A"}
+else
+  - var reviewOptions = {'0':'0','1':'1','2':'2','3':'3','4':'4',}
+
+mixin topicQuestion(index, question)
+  .questionObject(value=index)
+    .selectMultipleWrapper
+      select.questionVal(multiple, size=4)
+        for i in Object.keys(reviewOptions)
+          if question.value.indexOf(i) !== -1
+            option(value=i, selected) #{reviewOptions[i]}
+          else
+            option(value=i) #{reviewOptions[i]}
+    span.questionDescription #{question.description}
+    .commentWrapper
+      table
+        tr
+          td(style="width:100px") Comment
+          if question.comment
+            td
+              textarea.questionComment #{question.commentValue}
+    if question.attachfile === "1"
+      .uploadWrapper
+        table
+          tr
+            td(style="vertical-align: top;width:100px;") Attachment:
+            td
+              label.downloadButton.fileinput-button
+                a.fileNameUploaded
+              input.fileItemId(type="hidden", value="")
+
+for question in Object.keys(questionList)
+  +topicQuestion(question, questionList[question])

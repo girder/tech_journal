@@ -1,26 +1,19 @@
 import $ from 'jquery';
 import View from '@girder/core/views/View';
 import router from '@girder/core/router';
-import events from '@girder/core/events';
 import { getCurrentUser } from '@girder/core/auth';
 import { restRequest, apiRoot } from '@girder/core/rest';
 
 import MenuBarView from '../../views/menuBar.js';
 import SubmissionViewTemplate from './journal_view.pug';
+import PeerReviewSummary from '../Common/journal_review_summary_peer.pug';
+import FinalReviewSummary from '../Common/journal_review_summary_final.pug';
 
 var submissionView = View.extend({
 
     events: {
         'click #downloadLink': function (event) {
             router.navigate(`#view/${this.revisionId}/download`, {trigger: true});
-        },
-        'click #manageReviews': function (event) {
-            events.trigger('g:alert', {
-                icon: 'ok',
-                text: 'Reviews are not available yet.',
-                type: 'warning',
-                timeout: 4000
-            });
         },
         'click #deleteRevision': function (event) {
             var confirmRes = confirm('There is no way to un-delete a revision.  Are you sure you want to proceed?'); // eslint-disable-line no-alert
@@ -72,6 +65,11 @@ var submissionView = View.extend({
         'click .clickable-row': function (event) {
             router.navigate(`view/${event.target.parentNode.dataset.submission}/${event.target.parentNode.dataset.href}`, {trigger: true});
         },
+        'click #showHidden': function (event) {
+            event.preventDefault();
+            this.$('#reviewDisplay').find('.peer').show();
+            this.$('#showHidden').hide();
+        },
         'keyup #commentText': function (event) {
             var charsLeft = 1200 - this.$('#commentText').val().length;
             $('.commentLengthRemaining').text(`${charsLeft} characters remaining.`);
@@ -99,7 +97,7 @@ var submissionView = View.extend({
             url: `journal/submission/${this.displayId}/revision`
         }).done((revisionsResp) => {
             revisions = revisionsResp;
-
+            console.log(revisions);
             restRequest({
                 method: 'GET',
                 url: `journal/submission/${this.displayId}`
@@ -151,19 +149,35 @@ var submissionView = View.extend({
                 },
                 logo: logoURL
             }));
+            this.$('#reviewDisplay').find('.peer').empty();
+            this.$('#reviewDisplay').find('.final').empty();
             new MenuBarView({ // eslint-disable-line no-new
                 el: this.$('#headerBar'),
                 parentView: this
             });
+            var review = {};
             this.$(`.revisionOption[value=${currentRev._id}]`).prop('selected', true);
+            if (currentRev.meta.revisionPhase === 'final') {
+                this.$('#reviewDisplay').find('.peer').hide();
+                this.$('#reviewDisplay').append(`<a id='showHidden'> Show Hidden Reviews</a>`);
+            }
 
+            for (var index in currentRev.meta.reviews.peer.reviews) {
+                review = currentRev.meta.reviews.peer.reviews[index];
+                this.$('#reviewDisplay').find('.peer').append(`<a href="#review/${currentRev._id}/peer/${index}"> Peer Review by ${review.user.firstName} ${review.user.lastName}</a>`);
+                this.$('#reviewDisplay').find('.peer').append(PeerReviewSummary({'review': review}));
+            }
+            for (index in currentRev.meta.reviews.final.reviews) {
+                review = currentRev.meta.reviews.final.reviews[index];
+                this.$('#reviewDisplay .final').append(`<a href="#review/${currentRev._id}/final/${index}"> Final Review by ${review.user.firstName} ${review.user.lastName}</a>`);
+                this.$('#reviewDisplay .final').append(FinalReviewSummary({'review': review}));
+            }
             // Replace the URL with one showing both the submission and revision
             // IDs.
             router.navigate(`view/${submission.meta.submissionNumber}/${this.currentRevision.meta.revisionNumber}`, {
                 trigger: false,
                 replace: true
-            });
-
+            }, this);
             return this;
         });
     },

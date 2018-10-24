@@ -24,4 +24,8 @@ form#configForm.genericForm(method="POST", action='')
       | Old Website URL
     input#old_url(type='text', name='oldWebsiteUrl')
   div
+    label(for='test')
+      | Use Review infrastructure
+    input#use_review(type='checkbox', name='useReview')
+  div
     input(type='submit', value='Save Configuration')

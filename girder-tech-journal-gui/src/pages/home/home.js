@@ -10,6 +10,8 @@ import CategoryTemplate from './home_categoryTemplate.pug';
 
 import PlaceholderLogoURL from '@/assets/journal.gif';
 
+import CertificationLogoURL from '@/assets/check.gif';
+
 var magicTerms = ['authors', 'institution', 'creatorId', 'tags'];
 
 const HomePage = View.extend({
@@ -77,7 +79,7 @@ const HomePage = View.extend({
                     parentView: this,
                     pendingSubNum: pendingSubs
                 });
-                if (this.$('#treeWrapper').find('.treeEntry').length < 3) {
+                if (this.$('#treeWrapper').find('.treeEntry').length < 5) {
                     restRequest({
                         method: 'GET',
                         url: 'journal/categories?tag=categories'
@@ -172,7 +174,10 @@ const HomePage = View.extend({
                 this.$('.searchResults').html(this.$('.searchResults').html() + IndexEntryViewTemplate({
                     info: {'submissions': submissions},
                     root: apiRoot,
-                    defaultLogo: PlaceholderLogoURL
+                    logos: {
+                        'default': PlaceholderLogoURL,
+                        'certified': CertificationLogoURL
+                    }
                 }));
             }
         });

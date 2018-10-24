@@ -6,11 +6,12 @@ mixin searchEntry(info,approveLink)
           if info.currentRevision.logo
             img.ResultLogo.thumbnail(src=root+"/"+info.currentRevision.logo)
           else
-            img.ResultLogo(src=defaultLogo)
-          .CertifiedWrapper(style="display:none")
-            //img(style='border:none;' src="/journal/privateModules/journal/public/images/check.gif")
-            | Certified
-            span.CertifiedLevel(style="color:green")
+            img.ResultLogo(src=logos['default'])
+          if info.currentRevision.meta.certification_level
+            .CertifiedWrapper
+              img(style='border:none;', src=logos['certified'])
+              | Certified
+              span.CertifiedLevel(style="color:green") (Level #{info.currentRevision.meta.certification_level})
         td(style="vertical-align: top;")
           if (info.currentRevision.downloadStatistics)
             .ResultSubDescription.

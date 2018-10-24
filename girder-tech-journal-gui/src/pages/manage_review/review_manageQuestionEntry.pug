@@ -1,0 +1,11 @@
+mixin addQuestion(value)
+  .questionElement
+    textarea(style="width: 100%;").
+      #{value.description}
+    a.mvUp Move Upwards
+    a.mvDn Move Downwards
+    a.EditQes Edit Question
+    br
+
+for object in questions
+  +addQuestion(object)

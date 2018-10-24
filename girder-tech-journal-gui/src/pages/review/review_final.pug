@@ -1,0 +1,42 @@
+#headerBar
+.Wrapper
+  .Content
+    .viewMain
+      h2 Review an Article
+      h3 Title: #{name}
+      .abstract #{description}
+      h3 Final Review
+      .abstract.
+        A Final Review is a necessary confirmation that all required procedures have been executed
+        and the submission is complete. The topics and questions for the Final Review each
+        correspond to one column of the Certification Standard Matrix and is what will determine
+        the Certification level for the submission.
+      include journal_osehraMatrix.pug
+      br
+      #reviewWrapper
+        table
+          tr
+            td#tdLeftPanel
+              #divLeftPanel
+                h4#descriptionQuestionList
+                h4 Summary
+                #summaryTable
+                h4 Comments
+                textarea#globalComment #{review.questions.list.comment}
+                h4 Recommended Certification Level
+                  select#certificationLevel
+                    for i in ['1','2','3','4']
+                      if review.questions.list.certificationLevel === i
+                        option(value=i, selected) #{i}
+                      else
+                        option(value=i) #{i}
+                if user
+                  if (review['user'] === user) || (user.attributes.admin)
+                    input#saveReview(type="button", value="Save")
+            td#tdRightPanel
+              #divRightPanel
+                h4 Topics
+                  select#listTopics
+                    for list in review.questions.topics
+                      option #{list.name}
+                #templateQuestions

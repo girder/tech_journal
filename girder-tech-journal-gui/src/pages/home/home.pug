@@ -6,7 +6,6 @@ mixin issueFilter(info)
     .issueDetails
       a.issuePage(href='') Show Details
       a(href="") Submit a new article
-
 #headerBar
 
 .Wrapper
@@ -18,6 +17,8 @@ mixin issueFilter(info)
           #treeWrapper
             include ./journal_main_code_filter.pug
             include ./journal_main_license_filter.pug
+            include ./journal_main_review_filter.pug
+            include ./journal_main_OV_filter.pug
           .issueButton(key="*")
             .issueTitle(qtipconditional="All", style="word-wrap: break-word")
               | All Issues

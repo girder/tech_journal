@@ -80,6 +80,22 @@ def checkValue(infoList, filterParams, category, value):
 
 class TechJournal(Resource):
 
+    def findReviews(self, reviewType, reviewTemplates, revisionData):
+        # First filter review types, i.e. a list of  only peer review templates\
+        reviewTemplateList = []
+        for template in reviewTemplates:
+            if reviewTemplates[template]['value']["questions"]["list"]["type"] == reviewType:
+                reviewTemplateList.append(reviewTemplates[template]['value'])
+        # Go through each review template checking category vs submission list
+        for template in reviewTemplateList:
+            if template["questions"]["list"]["category_id"] == "Default":
+                reviewTemplate = template
+                break
+        for review in reviewTemplateList:
+            if review["questions"]["list"]["category_id"] in revisionData["meta"]["categories"]:
+                reviewTemplate = review
+        return reviewTemplate
+
     def checkSubmission(self, filterParams, submission, searchObj, targetVal, category):
         keyMatch = [False, -1]
         if searchObj in submission["meta"].keys():
@@ -112,6 +128,10 @@ class TechJournal(Resource):
                         targetVal = "true"
                     if category == "License":
                         searchObj = "source-license"
+                    elif category == "Certified":
+                        searchObj = "certification_level"
+                    elif category == "OSEHRA VistA":
+                        searchObj = "osehra_core"
                     if searchObj in revision["meta"].keys():
                         revisionMatch[0] = revisionMatch[0] or checkValue(
                             revision["meta"],
@@ -142,6 +162,7 @@ class TechJournal(Resource):
         self.route('GET', (':id', 'search'), self.getFilteredSubmissions)
         self.route('GET', (':id', 'logo'), self.getLogo)
         self.route('PUT', (':id', 'metadata'), self.setSubmissionMetadata)
+        self.route('PUT', (':id', 'review'), self.updateReviews)
         self.route('PUT', (':id', 'finalize'), self.finalizeSubmission)
         self.route('PUT', (':id', 'approve'), self.approveSubmission)
         self.route('PUT', (':id', 'comments'), self.updateComments)
@@ -171,6 +192,36 @@ class TechJournal(Resource):
         self.route('PUT', ('disclaimer',), self.updateJournalObj)
         self.route('GET', ('disclaimers',), self.getJournalObjs)
         self.route('DELETE', ('disclaimer',), self.rmJournalObj)
+
+        # APIs for getting of review question lists
+        self.route('GET', ('questions',), self.getQuestions)
+        self.route('PUT', ('questions',), self.setQuestions)
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @describeRoute(
+        Description('get the total amount of review questions')
+        .param('qType', 'Name of review list to acquire', required=False)
+        .errorResponse('Read access was denied on the issue.', 403)
+        )
+    def getQuestions(self, params):
+        qLists = ModelImporter.model('journal', 'tech_journal').getAllByTag('questionList')
+        if 'qType' in params:
+            qLists = {k: v for (k, v) in qLists.iteritems() if k == params['qType']}
+        return qLists
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @describeRoute(
+        Description('create/update a set of review questions')
+        .param('body', 'A JSON object containing the QuestionList object to update',
+               paramType='body')
+        .errorResponse('Test error.')
+        .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def setQuestions(self, params):
+        questionJSON = self.getBodyJson()
+        ModelImporter.model('journal', 'tech_journal').set(key=questionJSON['key'],
+                                                           value=questionJSON['value'],
+                                                           tag='questionList')
 
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)
@@ -298,7 +349,11 @@ class TechJournal(Resource):
         .errorResponse('Read access was denied on the issue.', 403)
     )
     def getRevisions(self, folder, params):
-        revisions = list(self.model('folder').childFolders(folder, 'folder'))
+        info = self.model('folder').load(folder['_id'],
+                                         user=self.getCurrentUser(),
+                                         level=AccessType.ADMIN,
+                                         force=True)
+        revisions = list(self.model('folder').childFolders(info, 'folder'))
         revisions.sort(key=sortByDate)
         for rev in revisions:
             rev['submitter'] = self.model('user').load(
@@ -405,6 +460,8 @@ class TechJournal(Resource):
                     if len(submissionInfo):
                         submission['currentRevision'] = submissionInfo[0]
                     if "curation" in submission:
+                        print submission['curation']
+                        print submission['lowername']
                         if submission['curation']['status'] != "REQUESTED":
                             totalData.append(submission)
         totalData = sorted(totalData, reverse=True, key=lambda submission: submission['updated'])
@@ -494,6 +551,10 @@ class TechJournal(Resource):
                             targetVal = "true"
                         if category == "License":
                             searchObj = "source-license"
+                        elif category == "Certified":
+                            searchObj = "certification_level"
+                        elif category == "OSEHRA VistA":
+                            searchObj = "osehra_core"
                         foundMatch = self.checkSubmission(filterParams,
                                                           submission,
                                                           searchObj,
@@ -622,6 +683,25 @@ class TechJournal(Resource):
             'enabled': False,
             'status': 'APPROVED'}
         parentFolder = self.model('folder').load(folder['parentId'], force=True)
+        getFunc = getattr(ModelImporter.model('journal', 'tech_journal'), 'get')
+        if getFunc("tech_journal.use_review", {}):
+            # Use the folder's information to find review objects to
+            reviewObjects = ModelImporter.model('journal',
+                                                'tech_journal').getAllByTag("questionList")
+            folder['meta']['reviews'] = {
+                'peer': {"template": {},
+                         "reviews": []},
+                'final': {"template": {},
+                          "reviews": []}
+            }
+            folder['meta']['revisionPhase'] = "peer"
+
+            folder['meta']['reviews']['peer']['template'] = self.findReviews('peer',
+                                                                             reviewObjects,
+                                                                             folder)
+            folder['meta']['reviews']['final']['template'] = self.findReviews('final',
+                                                                              reviewObjects,
+                                                                              folder)
         if not (parentFolder['parentId'] == parentFolder['meta']['targetIssue']):
             targetFolder = self.model('folder').load(parentFolder['meta']['targetIssue'],
                                                      force=True)
@@ -655,9 +735,41 @@ class TechJournal(Resource):
         }
         parentFolder['curation'] = DEFAULTS
         parentFolder['public'] = True
+
+        # Add appropriate Reviews to
         self.model('folder').save(parentFolder)
         self.model('folder').save(folder)
         return folder
+
+    @access.user(scope=TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+        Description('Set metadata for a submission. Most stays on each revision,\
+                    but others go to the parent folder')
+        .param('id', 'The ID of the folder.', paramType='path')
+        .param('body', 'A JSON object containing the Review metadata to update',
+               paramType='body')
+        .errorResponse('Test error.')
+        .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def updateReviews(self, params, folder):
+        metadata = self.getBodyJson()
+        parentFolder = self.model('folder').load(folder['parentId'],
+                                                 user=self.getCurrentUser(),
+                                                 force=True)
+        self.model('folder').setMetadata(folder, metadata)
+        data = {'name': parentFolder['name'],
+                'reviewer': ""}
+        subject = "New Review: %s" % parentFolder['name']
+        emailTemplate = 'tech_journal_new_review.mako'
+        html = mail_utils.renderTemplate(emailTemplate, data)
+        sendEmails(
+            User().find({
+                'notificationStatus.NewReviewsEmail': {'$ne': False}
+            }),
+            subject,
+            html
+        )
 
     @access.user(scope=TokenScope.DATA_READ)
     @loadmodel(model='folder', level=AccessType.READ)
@@ -964,4 +1076,5 @@ def load(info):
     events.bind('_queueEmails', 'tech_journal._queueEmails', _queueEmails)
 
     Folder().exposeFields(level=AccessType.READ, fields='downloadStatistics')
+    Folder().exposeFields(level=AccessType.READ, fields='certified')
     User().exposeFields(level=AccessType.READ, fields='notificationStatus')

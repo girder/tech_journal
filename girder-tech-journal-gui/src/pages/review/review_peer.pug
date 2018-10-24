@@ -1,0 +1,43 @@
+#headerBar
+.Wrapper
+  .Content
+    .viewMain
+      h2 Review an Article
+      h3 Title: #{name}
+      .abstract #{description}
+      h3 Peer Review
+      .abstract.
+        A peer review is an attestation by a fellow developer or community member that contributed
+        software is useful and of high quality. The goal is to ensure that it has a demonstrable
+        and useful function, that it is licensed correctly, that it installs correctly and easily,
+        that it is documented, that it is tested and that the tests cover a reasonable portion of the
+        code. Please use the topics and questions below as guides as you go through your review.
+      include journal_osehraMatrix.pug
+      br
+      #reviewWrapper
+        table
+          tr
+            td#tdLeftPanel
+              #divLeftPanel
+                h4#descriptionQuestionList
+                h4 Summary
+                #summaryTable
+                h4 Comments
+                textarea#globalComment #{review.questions.list.comment}
+                h4 Recommended Certification Level
+                  select#certificationLevel
+                    for i in ['1','2','3','4']
+                      if review.questions.list.certificationLevel === i
+                        option(value=i, selected) #{i}
+                      else
+                        option(value=i) #{i}
+                if user
+                  if (review['user'] === user) || (user.attributes.admin)
+                    input#saveReview(type="button", value="Save")
+            td#tdRightPanel
+              #divRightPanel
+                h4 Topics
+                  select#listTopics
+                    for list in review.questions.topics
+                      option(value=list.name) #{list.name}
+                #templateQuestions
