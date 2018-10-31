@@ -21,6 +21,7 @@ import manageHelpView from './views/manageHelp';
 import FeedBackView from './views/feedback';
 import EditGroupUsersView from './views/groupUsers.js';
 import userView from './pages/user/user.js';
+import surveyView from './pages/survey/survey.js';
 
 // Clear all of the existing routes, which will always added by Girder
 Backbone.history.handlers = [];
@@ -78,6 +79,9 @@ router.route('plugins/journal/submission/:id/upload/revision', 'uploadFiles', fu
 });
 router.route('plugins/journal/submission/:id/upload/edit', 'uploadFiles', function (id) {
     testUserAccess(uploadView, {id: id, newSub: false, NR: false}, true, false);
+});
+router.route('plugins/journal/submission/:id/survey', 'uploadFiles', function (id) {
+    testUserAccess(surveyView, {id: id}, true, true);
 });
 
 // Page to view each individual submission
