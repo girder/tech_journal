@@ -28,7 +28,8 @@ var SubmitView = View.extend({
         },
         'submit #submitForm': function (event) {
             event.preventDefault();
-            if (this.newSub || this.newRevision) {
+            var catCheck = this._checkCategories();
+            if ((this.newSub || this.newRevision) && catCheck) {
                 this._createSubmission({
                     'subName': this.$('#titleEntry').val().trim(),
                     'subDescription': this.$('#abstractEntry').val().trim()
@@ -60,17 +61,6 @@ var SubmitView = View.extend({
         },
         'click #closeDetails': function (event) {
             this.$(event.currentTarget.parentElement).remove();
-        },
-        'click .filterOption': function (event) {
-            if (this.$('.filterOption:checked').length > 0) {
-                this.$('.filterOption').each(function (index, val) {
-                    val.required = false;
-                });
-            } else {
-                this.$('.filterOption').each(function (index, val) {
-                    val.required = true;
-                });
-            }
         }
     },
     initialize: function (id) {
@@ -225,6 +215,18 @@ var SubmitView = View.extend({
         }).done((resp) => {
             this._findUploadTarget(resp._id, subData);
         });
+    },
+    _checkCategories() {
+        if (this.$('.filterOption:checked').length === 0) {
+            events.trigger('g:alert', {
+                icon: 'fail',
+                text: 'Please select one or more category',
+                type: 'danger',
+                timeout: 4000
+            });
+            return false;
+        }
+        return true;
     },
     _findUploadTarget: function (parentId, subData) {
         var targetUrl = '#plugins/journal/submission/';

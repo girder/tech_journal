@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import View from 'girder/views/View';
 import router from 'girder/router';
-// import events from 'girder/events';
+import events from 'girder/events';
 import { restRequest } from 'girder/rest';
 
 import MenuBarView from '../../views/menuBar.js';
@@ -12,52 +12,52 @@ import CategoryTemplate from '../home/home_categoryTemplate.pug';
 
 var editView = View.extend({
     events: {
-        'click .filterOption': function (event) {
-            this._checkCategories();
-        },
         'click .issueGen': function (event) {
             this.parentID = event.currentTarget.target;
             this.render(event.currentTarget.target);
         },
         'submit #submitForm': function (event) {
             event.preventDefault();
-            restRequest({
-                type: 'PUT',
-                url: `folder/${this.parentId}`,
-                data: {
-                    parentType: 'folder',
-                    name: this.$('#titleEntry').val().trim(),
-                    description: this.$('#abstractEntry').val().trim()
-                },
-                error: null
-            }).done((resp) => {
-                if (this.newRevision) {
-                    this._generateNewRevision();
-                } else {
-                    if (this.$('#revisionTitle').length > 0) {
-                        var revisionName = this.$('#revisionTitle').val().trim();
+            var catCheck = this._checkCategories();
+            if (catCheck) {
+                restRequest({
+                    type: 'PUT',
+                    url: `folder/${this.parentId}`,
+                    data: {
+                        parentType: 'folder',
+                        name: this.$('#titleEntry').val().trim(),
+                        description: this.$('#abstractEntry').val().trim()
+                    },
+                    error: null
+                }).done((resp) => {
+                    if (this.newRevision) {
+                        this._generateNewRevision();
+                    } else {
+                        if (this.$('#revisionTitle').length > 0) {
+                            var revisionName = this.$('#revisionTitle').val().trim();
+                        }
+                        var revisionDescription = '';
+                        if (this.$('#revisionEntry').length > 0) {
+                            revisionDescription = this.$('#revisionEntry').val().trim();
+                        }
+                        restRequest({
+                            type: 'PUT',
+                            url: `folder/${this.itemId}`,
+                            data: {
+                                parentType: 'folder',
+                                parentId: this.parentId,
+                                name: revisionName,
+                                description: revisionDescription
+                            },
+                            error: null
+                        }).done((resp) => {
+                            this._updateSubmission(this.itemId);
+                            router.navigate(`#plugins/journal/submission/${this.itemId}/upload/edit`,
+                                {trigger: true});
+                        });
                     }
-                    var revisionDescription = '';
-                    if (this.$('#revisionEntry').length > 0) {
-                        revisionDescription = this.$('#revisionEntry').val().trim();
-                    }
-                    restRequest({
-                        type: 'PUT',
-                        url: `folder/${this.itemId}`,
-                        data: {
-                            parentType: 'folder',
-                            parentId: this.parentId,
-                            name: revisionName,
-                            description: revisionDescription
-                        },
-                        error: null
-                    }).done((resp) => {
-                        this._updateSubmission(this.itemId);
-                        router.navigate(`#plugins/journal/submission/${this.itemId}/upload/edit`,
-                            {trigger: true});
-                    });
-                }
-            });
+                });
+            }
         },
         'click #authorAdd': function (event) {
             event.preventDefault();
@@ -132,15 +132,16 @@ var editView = View.extend({
         }); // End getting of OTJ Collection value setting
     },
     _checkCategories() {
-        if (this.$('.filterOption:checked').length > 0) {
-            this.$('.filterOption').each(function (index, val) {
-                val.required = false;
+        if (this.$('.filterOption:checked').length === 0) {
+            events.trigger('g:alert', {
+                icon: 'fail',
+                text: 'Please select one or more category',
+                type: 'danger',
+                timeout: 4000
             });
-        } else {
-            this.$('.filterOption').each(function (index, val) {
-                val.required = true;
-            });
+            return false;
         }
+        return true;
     },
     _captureSubmissionInformation() {
         var authors = [];
