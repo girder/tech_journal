@@ -8,22 +8,21 @@ import editIssueTemplate from '../templates/journal_edit_issue.pug';
 var EditIssueView = View.extend({
 
     events: {
-        'submit #issueForm': function (event) {
-            event.preventDefault();
-            if ((event.originalEvent.explicitOriginalTarget.defaultValue === 'Create >>') ||
-               (event.originalEvent.explicitOriginalTarget.defaultValue === 'Update >>')) {
-                var values = {issueName: this.$('#issueName')[0].value,
-                    issueDescription: this.$('#issueDescription')[0].value,
-                    'paperDue': $('.datepicker')[0].value,
-                    'publisherLicense': this.$('#publishLicense').val(),
-                    'authorLicense': this.$('#authorLicense').val()
-                };
-                if (this.update) {
-                    this._updateIssue(values);
-                } else {
-                    this._createIssue(values);
-                }
+        'click #dataFormSubmit': function (event) {
+            var values = {issueName: this.$('#issueName')[0].value,
+                issueDescription: this.$('#issueDescription')[0].value,
+                'paperDue': $('.datepicker')[0].value,
+                'publisherLicense': this.$('#publishLicense').val(),
+                'authorLicense': this.$('#authorLicense').val()
+            };
+            if (this.update) {
+                this._updateIssue(values);
+            } else {
+                this._createIssue(values);
             }
+            router.navigate('#plugins/journal/admin', {trigger: true});
+        },
+        'click #dataFormCancel': function (event) {
             router.navigate('#plugins/journal/admin', {trigger: true});
         },
         'change #licensemenu': function (event) {

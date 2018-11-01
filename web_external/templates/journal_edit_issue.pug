@@ -79,8 +79,8 @@ mixin licenseOption(name, val)
             tr
               td
               td
-                input(type="submit", value=" << Cancel", name="data[Admin][cancel]")
+                input#dataFormCancel(type="button", value=" << Cancel")
                 if info.meta
-                  input(type="submit", value="Update >>", name="data[Admin][add]")
+                  input#dataFormSubmit(type="button", value="Update >>", name="data[Admin][add]")
                 else
-                  input(type="submit", value="Create >>", name="data[Admin][add]")
+                  input#dataFormSubmit(type="button", value="Create >>", name="data[Admin][add]")
