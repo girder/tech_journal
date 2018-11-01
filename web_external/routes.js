@@ -65,7 +65,7 @@ router.route('plugins/journal/submission/:id/approve', 'submissionInfo', functio
 // Listing page of Journal
 import JournalListPage from './pages/journalList/journalList';
 router.route('journals', 'journalList', function () {
-    testUserAccess(JournalListPage, {}, true, true);
+    testUserAccess(JournalListPage, {}, false, false);
 });
 
 import uploadView from './pages/upload/upload';
