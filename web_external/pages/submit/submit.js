@@ -220,7 +220,7 @@ var SubmitView = View.extend({
         if (this.$('.filterOption:checked').length === 0) {
             events.trigger('g:alert', {
                 icon: 'fail',
-                text: 'Please select one or more category',
+                text: 'Please select one or more categories',
                 type: 'danger',
                 timeout: 4000
             });
