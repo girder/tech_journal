@@ -1,5 +1,6 @@
 #headerBar
 
+#g-journal-settings-error-message
 .Wrapper
   .Content
     #uploadView.viewMain
@@ -9,7 +10,8 @@
         Note that the handle will only be activated when the article is accepted for publication
         The purpose of this page is to upload the documents and datasets related to your article
         You can also upload a logo which will be shown on the article's page
-      select#typeFile
+      label(for="typeFile") What type of file do you want to upload?
+      select#typeFile(name="typeFile")
         option
         option(value="THUMBNAIL") Thumbnail (Logo)
         option(value="SOURCECODE") Source Code
