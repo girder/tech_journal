@@ -10,6 +10,7 @@ import shutil
 import MySQLdb
 import sys
 import os
+from server import constants
 
 licenseDict = {
  "0": "Not Defined",
@@ -92,6 +93,33 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
     groupDB = client.girder.group
     collectionDB = client.girder.collection
     journalCollectionDB = client.girder.journal_collection;
+    # =============================================
+    # Import and create all category lists
+    # =============================================
+    # +-------------+--------------+
+    # | Field       | Type         |
+    # +-------------+--------------+
+    # | category_id | bigint(20)   |
+    # | parent_id   | bigint(20)   |
+    # | name        | varchar(255) |
+    # +-------------+--------------+
+    cur.execute("SELECT * FROM journal_category")
+    allcats = cur.fetchall()
+    catValueDict = {}  # Dictionary of name -> values
+    catNumDict = {}    # Dictionary of num -> name
+    for catObj in allcats:
+      if catObj[1] == -1:  # Those marked with -1 are category topics
+        catValueDict[catObj[2]] = []
+        catNumDict[catObj[0]] = catObj[2]
+      else:
+        # use both dicts to append the value to the correct entry
+        catValueDict[ catNumDict[ catObj[1] ] ].append(catObj[2])
+    for val in catValueDict:
+      inCatObj = { "_id" : ObjectId(),
+                    "tag" : "categories",
+                    "value" : catValueDict[val],
+                    "key" : val }
+      journalCollectionDB.insert_one(inCatObj)
     cur.execute("SELECT * FROM user")
     allusers = cur.fetchall()
     if not assetStoreDB.count({"root":assetStore}):
@@ -158,7 +186,12 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
                     "public":True,
                     "emailVerified":False,
                     "login":"%s.%s" % (user[1],user[4]) ,
-                    "email":user[5]
+                    "email":user[5],
+                    "notificationStatus": {
+                        'NewSubmissionEmail': user[19],
+                        'NewReviewsEmail': user[20],
+                        'NewCommentEmail': user[21],
+                    }
                   }
       usersDB.insert_one(inputUser)
       userDictionary[user[0]] = inputUser
@@ -229,8 +262,8 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
       inputObject["_id"] = ObjectId()
       inputObject["description"] = row[7]
       inputObject["meta"]["paperDue"] = str(row[2])
-      inputObject["meta"]["decision"] = str(row[3])
-      inputObject["meta"]["publication"] = str(row[4])
+      inputObject["meta"]["authorLicense"] = str(row[10])
+      inputObject["meta"]["publisherLicense"] = str(row[11])
       inputObject["meta"]["__issue__"] = True
       result = foldersDB.insert_one(inputObject)
 
@@ -288,10 +321,6 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
                        "targetIssue":"5a295c0782290926a05fef5c"
                      }
                     }
-      #if row[9] in userDictionary.keys():
-      #  inputObject["creatorId"] = userDictionary[row[9]]["_id"]
-      #else:
-      #  inputObject["creatorId"] = row[9]
       cur.execute("SELECT * FROM item2folder where item_id=" + str(row[0]))
       itemConnection = cur.fetchall()
 
@@ -432,10 +461,19 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
           inputRevision["meta"]["has_reviews"] = metaDataQuery(cur, revision[0],"38")
           inputRevision["meta"]["categories"] = metaDataQuery(cur, revision[0],"18")
           inputRevision["meta"]["disclaimer"] = metaDataQuery(cur, revision[0],"20")
+          userVal = metaDataQuery(cur, revision[0],"15")
+          if userVal in userDictionary.keys():
+              inputRevision["creatorId"] = ObjectId(userDictionary[userVal]["_id"])
+          elif revision[5] in userDictionary.keys():
+              inputRevision["creatorId"] = ObjectId(userDictionary[revision[5]]["_id"])
+          else:
+              inputRevision["creatorId"] = ObjectId()
           inputRevision["name"] = "Revision " + str(revision[2])
           inputRevision["_id"] = ObjectId()
           inputRevision["description"] = revision[4]
           inputRevision["created"] = revision[3]
+          if inputRevision["created"] == None:
+            inputRevision["created"] = row[2]
           print inputRevision['name']
           # Capture the download and view information
           cur.execute("SELECT * FROM statistics_download WHERE item_id="+ str(revision[0]))

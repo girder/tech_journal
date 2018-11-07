@@ -30,13 +30,14 @@ from girder.api import access
 from girder.constants import AccessType, TokenScope
 from girder.models.model_base import ValidationException
 from girder.models.folder import Folder
+from girder.models.user import User
 from girder.utility import mail_utils
 from girder.utility.model_importer import ModelImporter
 from girder.utility.plugin_utilities import getPluginDir, registerPluginWebroot
 from girder.utility.webroot import WebrootBase
 from girder import events
 from girder_worker_utils.transforms.girder_io import GirderUploadToItem
-from tech_journal_tasks.tasks import processGithub
+from tech_journal_tasks.tasks import processGithub, surveySubmission
 from . import constants
 
 
@@ -144,14 +145,20 @@ class TechJournal(Resource):
         self.route('GET', (':id', 'openissues',), self.getFilteredIssues)
         self.route('GET', (':id', 'details'), self.getSubmissionDetails)
         self.route('GET', (':id', 'search'), self.getFilteredSubmissions)
+        self.route('GET', (':id', 'logo'), self.getLogo)
         self.route('PUT', (':id', 'metadata'), self.setSubmissionMetadata)
         self.route('PUT', (':id', 'finalize'), self.finalizeSubmission)
         self.route('PUT', (':id', 'approve'), self.approveSubmission)
         self.route('PUT', (':id', 'comments'), self.updateComments)
+        self.route('GET', (':id', 'survey'), self.getSurvey)
         self.route('PUT', ('setting',), self.setJournalSettings)
         self.route('GET', ('setting',), self.getJournalSettings)
+        self.route('GET', ('licenses',), self.getJournalLicenses)
         self.route('POST', ('feedback',), self.sendFeedBack)
         self.route('DELETE', (':id',), self.deleteObject)
+        self.route('PUT', ('user',), self.updateUser)
+        self.route('GET', (':id', "citation", ":type"), self.printCitation)
+
         # APIs for categories
         self.route('POST', ('category',), self.addJournalObj)
         self.route('PUT', ('category',), self.updateJournalObj)
@@ -190,6 +197,21 @@ class TechJournal(Resource):
     )
     def deleteObject(self, folder, params):
         return self.model('folder').remove(folder)
+
+    @access.public(scope=TokenScope.DATA_WRITE)
+    @describeRoute(
+        Description('Save user info beyond default')
+        .responseClass('folder')
+        .param('body', 'A JSON object containing the user object to update',
+               paramType='body')
+        .errorResponse('Test error.')
+        .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def updateUser(self, params):
+        user = self.getBodyJson()
+        existing = self.model('user').load(user['_id'], user=self.getCurrentUser())
+        existing['notificationStatus'] = user['notificationStatus']
+        return self.model('user').save(existing)
 
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)
@@ -378,6 +400,8 @@ class TechJournal(Resource):
                     if len(submissionInfo):
                         submissionInfo = sorted(submissionInfo,
                                                 key=lambda submission: submission['updated'])
+                        submissionInfo[-1]['logo'] = self.getLogo(id=submissionInfo[-1]['_id'],
+                                                                  params=params)
                         submission['currentRevision'] = submissionInfo[-1]
                     # If not found already, add it to the returned information
                     if submission not in totalData:
@@ -397,6 +421,37 @@ class TechJournal(Resource):
     def getAllJournals(self, params):
         user = self.getCurrentUser()
         return list(self.model('collection').textSearch('__journal__', user=user))
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+        Description('Get logo associated with submission')
+        .param('id', "The ID of the foder to aquire logo for", paramType='path')
+        .errorResponse('Read access was denied on the issue.', 403)
+        )
+    def getLogo(self, folder, params):
+        thumbURL = ""
+        for fileObj in self.model('folder').childItems(folder, user=self.getCurrentUser()):
+            if fileObj['meta']['type'] == "THUMBNAIL":
+                thumbURL = "item/%s/download?contentDisposition=inline" % fileObj['_id']
+        return thumbURL
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+        Description('Get survey results associated with submission')
+        .param('id', "The ID of the folder to aquire logo for", paramType='path')
+        .errorResponse('Read access was denied on the issue.', 403)
+        )
+    def getSurvey(self, folder, params):
+        foundText = ""
+        parentFolder = self.model('folder').load(folder['parentId'], force=True)
+        for fileObj in self.model('folder').childItems(parentFolder, user=self.getCurrentUser()):
+            print fileObj
+            if fileObj['name'] == "Survey Result":
+                downLoadObj = self.model('item').fileList(fileObj).next()[1]()
+                foundText = downLoadObj.next()
+        return unicode(foundText, errors='ignore')
 
     @access.user(scope=TokenScope.DATA_READ)
     @loadmodel(model='folder', level=AccessType.WRITE)
@@ -420,7 +475,8 @@ class TechJournal(Resource):
         movedFolder = self.model('folder').move(parentFolder, targetFolder, 'folder')
         data = {'name': folder['name'],
                 'authors': folder['meta']['authors'],
-                'abstract': parentFolder['description']}
+                'abstract': parentFolder['description'],
+                'id': folder['_id']}
         text = mail_utils.renderTemplate('tech_journal_approval.mako', data)
         mail_utils.sendEmail(toAdmins=True,
                              subject='New Submission - Pending Approval',
@@ -428,6 +484,12 @@ class TechJournal(Resource):
         movedFolder['curation'] = DEFAULTS
         parentFolder['public'] = False
         self.model('folder').save(movedFolder)
+        newItem = self.model("item").createItem(name="Survey Result",
+                                                creator=self.getCurrentUser(),
+                                                folder=movedFolder,
+                                                description="Result of simple pattern match")
+        surveySubmission.delay(folder,
+                               girder_result_hooks=[GirderUploadToItem(str(newItem['_id'])), ])
         return movedFolder
 
     @access.user(scope=TokenScope.DATA_READ)
@@ -463,6 +525,10 @@ class TechJournal(Resource):
         mail_utils.sendEmail(toAdmins=True, subject=subject, text=html)
         folder['curation'] = DEFAULTS
         folder['public'] = True
+        folder['downloadStatistics'] = {
+            'views': 0,
+            'completed': 0
+        }
         parentFolder['curation'] = DEFAULTS
         parentFolder['public'] = True
         self.model('folder').save(parentFolder)
@@ -594,6 +660,37 @@ class TechJournal(Resource):
                 raise RestException('List was not a valid JSON list.')
             return {k: getFunc(k, **funcParams) for k in keys}
 
+    @access.public(scope=TokenScope.DATA_READ)
+    @describeRoute(
+        Description('get the journal licenses')
+        .errorResponse()
+        .errorResponse('Read access was denied on the issue.', 403)
+        )
+    def getJournalLicenses(self, params):
+        return constants.TechJournalLicenseDefault.licenseDict
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+        Description('get citation for an object')
+        .param('id', 'The ID of the folder.', paramType='path')
+        .param('type', 'Type of citation to generate', paramType='path')
+        .errorResponse()
+        .errorResponse('Read access was denied on the issue.', 403)
+        )
+    def printCitation(self, folder, type, params):
+        folder['parent'] = self.model('folder').load(folder['parentId'],
+                                                     user=self.getCurrentUser(), force=True)
+        templateInfo = {
+            'authors': folder['meta']['authors'],
+            'name': folder['parent']['name'],
+            'description': folder['parent']['description'],
+            'institution': folder['meta']['institution'],
+            'date_year': folder['created'].year,
+            'date_mon': folder['created'].month,
+        }
+        return constants.TechJournalCitations.templates[type].substitute(templateInfo)
+
     # -----------------------------------------------
     #  Add Journal Setting manipulation APIs
     #  Used for both Categories and Disclaimers
@@ -708,4 +805,5 @@ def load(info):
                 'tech_journal',
                 techJournal._onPageView)
     Folder().exposeFields(level=AccessType.READ, fields='downloadStatistics')
+    User().exposeFields(level=AccessType.READ, fields='notificationStatus')
     registerPluginWebroot(Webroot(), info['name'])

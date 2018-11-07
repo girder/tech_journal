@@ -145,8 +145,7 @@ var uploadView = View.extend({
     },
 
     submitCheck: function () {
-        this.$('input[type=submit]').attr('disabled',
-            !this.$('#acceptRights').is(':checked') ||
+        var isDisabled = !this.$('#acceptRights').is(':checked') ||
             !this.$('#acceptLicense').is(':checked') ||
             !this.$('#licenseChoice').val() ||
             (
@@ -156,8 +155,8 @@ var uploadView = View.extend({
             (
                 this.$('#otherLicenseInput').is(':visible') &&
                 !this.$('#otherLicenseInput').val()
-            )
-        );
+            );
+        this.$('input[type=submit]').attr('disabled', isDisabled);
     },
     _uploadFiles: function (data) {
         // taken from HierarchyWidget.js

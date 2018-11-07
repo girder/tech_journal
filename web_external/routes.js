@@ -20,6 +20,8 @@ import EditJournalView from './views/editJournal';
 import manageHelpView from './views/manageHelp';
 import FeedBackView from './views/feedback';
 import EditGroupUsersView from './views/groupUsers.js';
+import userView from './pages/user/user.js';
+import surveyView from './pages/survey/survey.js';
 
 // Clear all of the existing routes, which will always added by Girder
 Backbone.history.handlers = [];
@@ -41,15 +43,20 @@ router.route('submission/new', 'submissionInfo', function () {
     testUserAccess(submitView, {id: 'new'}, true, false);
 });
 
+// user profile page
+router.route('plugins/user/:id/edit', 'submissionInfo', function (id) {
+    testUserAccess(userView, {id: id}, true, false);
+});
+
 router.route('plugins/journal/submission/:id/new', 'submissionInfo', function (id) {
     testUserAccess(submitView, {id: id}, true, false);
 });
 // Pass through the revision view to eliminate the need to pick an issue
 router.route('plugins/journal/submission/:id/edit', 'submissionInfo', function (id) {
-    testUserAccess(editView, {id: id, NR: false}, true, false);
+    testUserAccess(editView, {id: id, NR: false, approve: false}, true, false);
 });
 router.route('plugins/journal/submission/:id/revision', 'submissionInfo', function (id) {
-    testUserAccess(editView, {id: id, NR: true}, true, false);
+    testUserAccess(editView, {id: id, NR: true, approve: false}, true, false);
 });
 
 router.route('plugins/journal/submission/:id/approve', 'submissionInfo', function (id) {
@@ -58,7 +65,7 @@ router.route('plugins/journal/submission/:id/approve', 'submissionInfo', functio
 // Listing page of Journal
 import JournalListPage from './pages/journalList/journalList';
 router.route('journals', 'journalList', function () {
-    testUserAccess(JournalListPage, {}, true, true);
+    testUserAccess(JournalListPage, {}, false, false);
 });
 
 import uploadView from './pages/upload/upload';
@@ -72,6 +79,9 @@ router.route('plugins/journal/submission/:id/upload/revision', 'uploadFiles', fu
 });
 router.route('plugins/journal/submission/:id/upload/edit', 'uploadFiles', function (id) {
     testUserAccess(uploadView, {id: id, newSub: false, NR: false}, true, false);
+});
+router.route('plugins/journal/submission/:id/survey', 'uploadFiles', function (id) {
+    testUserAccess(surveyView, {id: id}, true, true);
 });
 
 // Page to view each individual submission
@@ -160,8 +170,9 @@ function testUserAccess(view, args, needsUser, needsAdmin) {
     if (userFlag && adminFlag) {
         events.trigger('g:navigateTo', view, args, {layout: Layout.EMPTY});
     } else {
-        if (window.location.toString().indexOf('dialog') === -1) {
-            window.location.href = window.location + '?dialog=login';
+        if (!user) {
+            window.history.back();
+            window.location += '?dialog=login';
         }
     }
 }

@@ -3,6 +3,7 @@ import { getCurrentUser } from 'girder/auth';
 import { restRequest } from 'girder/rest';
 
 import MenuBarViewTemplate from '../templates/journal_menu_bar.pug';
+import '../pages/register/RegisterView';
 
 var MenuBarView = View.extend({
 
@@ -12,7 +13,7 @@ var MenuBarView = View.extend({
                 type: 'DELETE',
                 path: 'user/authentication'
             }).done((resp) => {
-                window.location.reload();
+                window.location.reload(true);
             });
         },
         'mouseenter #profileLink': function (event) {

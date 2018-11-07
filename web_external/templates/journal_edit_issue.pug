@@ -1,3 +1,6 @@
+mixin licenseOption(name, val)
+  option(value=val) #{name}
+
 #headerBar
 .Wrapper
   .Content
@@ -31,26 +34,36 @@
                   strong License (Publisher):
               td(width="75%")
                 |Set license to
-                select (name="licensemenu", onchange="ChangeAuthorLicense(this.value)")
+                select#licensemenu(name="licensemenu")
+                  option Choose...
+                  +licenseOption("publisherLicense", licenses["publisherLicense"])
+
                 br
                 |or modify the following text
                 br
                 textarea#publishLicense(name="publishLicense")
+                  if info.meta
+                    | #{info.meta.publisherLicense}
             tr
               td(width="25%", style="vertical-align: top;")
                 div(align="right")
                   strong License (Author):
               td(width="75%")
                 |Set license to
-                select (name="copyrightmenu", onchange="ChangeReaderLicense(this.value)")
+                select#copyrightmenu(name="copyrightmenu")
+                  option Choose...
+                  for item in Object.keys(licenses["readerLicenses"])
+                    +licenseOption(item, licenses["readerLicenses"][item])
                 br
                 |or modify the following text
                 br
                 textarea#authorLicense(name="authorLicense")
+                  if info.meta
+                    | #{info.meta.authorLicense}
             tr
               td(width="25%", style="vertical-align: top;")
                 div(align="right")
-                  strong Paperdue date:
+                  strong Issue End date:
               td
                 - var paperDue=''
                 if info.meta
@@ -60,31 +73,14 @@
             tr
               td(width="25%", style="vertical-align: top;")
                 div(align="right")
-                  strong Decision date:
-              td
-                - var decision=''
-                if info.meta
-                  - decision=info.meta.decision
-                input.datepicker.picker__input(type="date", data-type="dateIso", required, value=decision, name="decision_date")
-                input(type="hidden", name="decision_date_submit")
-            tr
-              td(width="25%", style="vertical-align: top;")
-                div(align="right")
-                  strong Publication date
-              td
-                - var publication=''
-                if info.meta
-                  - publication=info.meta.publication
-                input.datepicker.picker__input.parsley-validated(type="date", data-type="dateIso", required, name="publication_date", value=publication, placeholder="Select a date.")
-                input(type="hidden", name="publication_date_submit")
-            tr
-              td(width="25%", style="vertical-align: top;")
-                div(align="right")
                   strong Private:
               td
                 input#privateIssue(type="checkbox", value="1", name="defaultpolicy")
             tr
               td
               td
-                input(type="submit", value=" << Cancel", name="data[Admin][cancel]")
-                input(type="submit", value="Create >>", name="data[Admin][add]")
+                input#dataFormCancel(type="button", value=" << Cancel")
+                if info.meta
+                  input#dataFormSubmit(type="button", value="Update >>", name="data[Admin][add]")
+                else
+                  input#dataFormSubmit(type="button", value="Create >>", name="data[Admin][add]")
