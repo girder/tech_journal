@@ -171,7 +171,8 @@ function testUserAccess(view, args, needsUser, needsAdmin) {
         events.trigger('g:navigateTo', view, args, {layout: Layout.EMPTY});
     } else {
         if (!user) {
-            window.location.href = '#?dialog=login';
+            window.history.back();
+            window.location += '?dialog=login';
         }
     }
 }
