@@ -33,28 +33,10 @@ from girder.models.folder import Folder
 from girder.models.user import User
 from girder.utility import mail_utils
 from girder.utility.model_importer import ModelImporter
-from girder.utility.plugin_utilities import getPluginDir, registerPluginWebroot
-from girder.utility.webroot import WebrootBase
 from girder import events
 from girder_worker_utils.transforms.girder_io import GirderUploadToItem
 from tech_journal_tasks.tasks import processGithub, surveySubmission
 from . import constants
-
-
-class Webroot(WebrootBase):
-    """
-    The webroot endpoint simply serves the main index HTML file.
-    """
-    def __init__(self, templatePath=None):
-        if not templatePath:
-            templatePath = os.path.join(getPluginDir(), 'tech_journal', 'server', 'webroot.mako')
-        super(Webroot, self).__init__(templatePath)
-
-        self.vars = {
-            'apiRoot': '/api/v1',
-            'staticRoot': '/static',
-            'title': 'Technical Journal'
-        }
 
 
 def sortByDate(elem):
@@ -793,10 +775,12 @@ def load(info):
     techJournal = TechJournal()
     events.bind('model.setting.validate', 'journalMain', validateSettings)
     info['apiRoot'].journal = techJournal
-    print os.path.join(info['pluginRootDir'], 'dist', 'js')
-    info['config']['/tech_journal_js'] = {
+    info['config']['/tech_journal'] = {
         'tools.staticdir.on': True,
-        'tools.staticdir.dir': os.path.join(info['pluginRootDir'], 'dist', 'js')
+        'tools.staticdir.dir': os.path.join(
+            info['pluginRootDir'], 'girder-tech-journal-gui', 'dist'),
+        'tools.staticdir.index': 'index.html'
+
     }
     # Bind REST events
     events.bind('rest.get.folder/:id/download.after',
@@ -807,4 +791,3 @@ def load(info):
                 techJournal._onPageView)
     Folder().exposeFields(level=AccessType.READ, fields='downloadStatistics')
     User().exposeFields(level=AccessType.READ, fields='notificationStatus')
-    registerPluginWebroot(Webroot(), info['name'])
