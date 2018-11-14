@@ -1,4 +1,5 @@
 const path = require('path');
+const process = require('process');
 const webpack = require('webpack');
 
 module.exports = {
@@ -10,8 +11,8 @@ module.exports = {
     port: 8081,
     proxy: {
       '/api/v1': {
-        // Assume Girder API is running here in development
-        target: 'http://127.0.0.1:8080',
+        // Girder API must be running here in development
+        target: process.env.API_HOST || 'http://127.0.0.1:8080',
         changeOrigin: true,
       },
     },
