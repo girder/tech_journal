@@ -63,7 +63,7 @@
             #userOptionsDiv
               ul#userOptionsList
                 li
-                  a.submm(href='#?query="creatorId":"'+user.id+'"') My Publications
+                  a.submm(href='#?query="creatorId":["'+user.id+'"]') My Publications
                 li
                   a.submm(href='#plugins/user/' + user.id + '/edit') Edit Profile
           if user.attributes.admin

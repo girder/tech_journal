@@ -82,6 +82,8 @@ def checkValue(infoList, filterParams, category, value):
             if value in infoList['meta']["categories"]:
                 return True
     if category in infoList:
+        if category == "creatorId":
+            value = ObjectId(value)
         if type(infoList[category]) == list:
             if (value in infoList[category]):
                 return True
@@ -447,7 +449,6 @@ class TechJournal(Resource):
         foundText = ""
         parentFolder = self.model('folder').load(folder['parentId'], force=True)
         for fileObj in self.model('folder').childItems(parentFolder, user=self.getCurrentUser()):
-            print fileObj
             if fileObj['name'] == "Survey Result":
                 downLoadObj = self.model('item').fileList(fileObj).next()[1]()
                 foundText = downLoadObj.next()
