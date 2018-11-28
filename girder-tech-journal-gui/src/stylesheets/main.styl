@@ -1,14 +1,14 @@
 /** Define global attributes */
 body
   border none
-  font  83%/1.4 arial, helvetica, sans-serif
+  font  100%/1.4 arial, helvetica, sans-serif
   margin  0
   padding  0
   text-align  left
   width  100%
   height  100%
   min-width  800px
-  background-color  #D4D4D4
+  background-color  #f9f9f9
 
 /*
 Colors
@@ -68,7 +68,7 @@ div .graytext
   background-repeat no-repeat
   background-position top left
   border none
-  margin none
+  margin 0
 
 /*submission */
 #submission input textarea
@@ -167,102 +167,86 @@ div .graytext
   width  100%
   height  2px
 
+#headerBar
+  border-top 4px solid #d6d6d6
+
 /* menu */
 #topbar
-  background-color  #FFDB70
-  background-image  -webkit-gradient(linear, left top, left bottom, from(#eaca67), to(#FFDB70))
-  background-image  -moz-linear-gradient(center top, #eaca67 0, #FFDB70 100%)
-  -webkit-box-shadow  #666 0 0 3px
-  box-shadow  #666 0 0 3px
-  -moz-box-shadow  0 0 3px #666
-  -moz-border-radius  0 0 2px 2px
-  -webkit-border-radius  0 0 2px 2px
-  -khtml-border-radius  0 0 2px 2px
-  border-radius  0 0 2px 2px
+  background-color white
+  border-radius 3px
+  box-shadow 0 3px 7px rgba(0,0,0,.1)
   position relative
   font-weight bold
-  padding  0p
-  height  26px
-  padding-right 3px
-  background-repeat no-repeat
-  background-position bottom left
+  height 42px
+  padding 0
   margin-bottom  15px
+  &:after
+    content ''
+    clear both
+    display table
 
 .nav
+  font-size 14px
   list-style  none
+  height 100%
   margin  0
   padding  0
   font-family  Arial, Helvetica, sans-serif
   z-index  100
   position  relative
-  top  0
-  
-  ul
-    list-style  none
-    margin  0
-    padding  0
-    li
-      a
-        padding-right  20px
-        width  110px
-        white-space  nowrap
-        background-image  none
-        border-top-width  0
-        border-right-width  1px
-        border-bottom-width  1px
-        border-left-width  1px
-        border-top-style  solid
-        border-right-style  solid
-        border-bottom-style  solid
-        border-left-style  solid
 
-  li
-    float  left
-    margin  0
-    padding  0
-    position  relative
-    border-left 1px solid grey
+  & > li
+    border-right 1px solid #ececec
+    height 100%
+    float left
+    margin 0
+    padding 0
+    position relative
     /*opacity  0.5*/
+    &:hover
+      background #f5f7fb
+      & > a
+        background none
+        border-bottom 4px solid #005dae
     a
-      display  block
-      text-decoration  none
-      margin  none
-      padding-top  3px
-      padding-right  13px
-      padding-bottom  3px
-      padding-left  13px
+      display flex
+      justify-content center
+      text-decoration none
+      height 100%
+      margin 0
+      padding 0 16px
+      align-items center
+      font  bold Arial, Helvetica, sans-serif
+      color  #444444
       link, :active, :visited
         display  block
         text-decoration  none
-        margin  none
-        padding-top  3px
-        padding-right  13px
-        padding-bottom  3px
-        padding-left  13px
-      font  bold Arial, Helvetica, sans-serif
-      color  #444444
-      &:hover
-        display block
-        color  #7094FF
-    a.submm
-      background-color  #FFDB70 /* background of the menu*/
-      background-image  none
-      
+        margin 0
     ul
-      list-style  none
-      margin  none
-      position  absolute
-      left  -1px
       display none
-      top  24px
-      -webkit-box-shadow  #666 0 0 3px
-      box-shadow  #666 0 0 3px
+      list-style none
+      margin 0
+      padding 0
+      position absolute
+      left 0
+      top 100%
+      box-shadow  0 3px 10px rgba(0,0,0,.1)
       background  #FFFFFF
-      a
-        border-color  grey
-        :hover
-          background  #ccc
-          color  #000
+      li
+        background #005dae
+        border-bottom 1px solid #003f75
+        display block
+        height auto
+        a
+          background none
+          color white
+          display flex
+          align-items center
+          justify-content left
+          padding 10px 16px
+          white-space  nowrap
+        &:hover
+          background #006cca
 #submm
   background-color  #FFFFFF
   background-image  none
@@ -284,31 +268,22 @@ a
 
 #menu
   position  relative
-  background #7094FF
-  background-image  -webkit-gradient(linear, left top, left bottom, from(#5578dc), to(#7094FF))
-  background-image  -moz-linear-gradient(center top, #5578dc 0, #7094FF 100%)
-  // filter  progid DXImageTransform.Microsoft.gradient(startColorstr='#5578dc', endColorstr='#7094FF')
-  -webkit-box-shadow  #666 0 0 3px
-  box-shadow  #666 0 0 3px
-  -moz-box-shadow  0 0 3px #666
-  height 55px
-  margin  none
-  padding none
+  margin  0
+  padding 15px 0 8px
   border  none
+  &:after
+    content ""
+    clear both
+    display table
 
   #title
-    position  absolute
-    font-size  80%
-    left  60px
-    top  37px
-    width  300px
-    color  #DFE1EB
+    float left
+    font-size  24px
+    color  #acaeb7
+    padding 10px
 
 #topmenu
-  position  absolute
-  left  10px
-  top  3px
-  width  200px
+  float left
   a
     font-weight  bold
     text-decoration  none
@@ -347,8 +322,18 @@ a
   padding-right  5px
   font-weight  bold
   text-decoration  none
-  font-size  100%
-  color  #EEEEEE
+  #loginForm
+    font-size 11px
+    #logout
+      background #005dae
+      border-radius 3px
+      color white
+      float right
+      font-size 8px
+      margin-left 10px
+      padding 3px 5px
+      &:hover
+        background #006cca
   input
     color  #777777
   a
@@ -359,10 +344,14 @@ a
     font-weight  bold
     text-decoration  none
     top  -8px
-
   .login
     position relative
     border  none
+
+.secondaryNav
+  clear right
+  float right
+  padding 10px 5px
 /*-------------------------------------------------
 HEADER
 -------------------------------------------------*/
@@ -374,7 +363,7 @@ HEADER
   margin-bottom  10px
 
 li#browseLink
-  border  none!important
+  //border  none!important
 
 
 #activem
@@ -384,8 +373,11 @@ div.Header
   padding 0 30px
   /* Search bar */
   div.HeaderSearch
-    padding-left  35px
+    display flex
+    align-items center
+    padding-right 16px
     float right
+    height 100%
     position relative
 
     a#advancedSearchLink
@@ -397,8 +389,11 @@ div.Header
     input#live_search
       font-size  12px
       opacity  0.9
+      background #efefef
+      box-shadow inset 0 0 5px rgba(0,0,0,.1)
       border none
-      padding  6px 10px 5px 24px
+      padding  6px 10px 5px
+      margin-right 10px
       width  150px
       position relative
       -moz-border-radius  0 0 0 6px
@@ -411,8 +406,7 @@ div.Header
     margin  0 auto
     max-width  1100px
     min-width  800px
-    padding  none
-    height  70px
+    padding  0
 
 
 /* Header bottom size */
@@ -420,7 +414,7 @@ div.Header
     margin  0 auto
     max-width  1100px
     min-width  800px
-    padding  none
+    padding 0
     height  22px
 
 /* Logo */
@@ -462,8 +456,8 @@ div.HeaderMenu
   ul
     display  block
     list-style-type  disc
-    margin  none
-    padding  none
+    margin 0
+    padding 0
     position  relative
 
     li
@@ -511,7 +505,6 @@ div.Wrapper
   margin  0 auto
   max-width  1100px
   min-width  800px
-  padding  0 30px 30px
 
 
 /*-------------------------------------------------
@@ -621,8 +614,8 @@ a.closeButton
 
 /** Reset default css value */
 dl
-  margin none
-  padding  none
+  margin 0
+  padding 0
 
 dt
 
@@ -712,7 +705,7 @@ ul.parsley-error-list
   font-size  11px
   margin  2px
   list-style-type none
-  padding  none
+  padding 0
   li
     line-height  11px
 
