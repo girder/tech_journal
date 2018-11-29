@@ -96,15 +96,10 @@ var submissionView = View.extend({
             type: 'GET',
             url: `journal/${this.displayId}/details`
         }).done((totalDetails) => {
-            this.render(totalDetails);
+            this.render(...totalDetails);
         }); // End getting of parentData
     },
-    render: function (totalDetails) {
-        // Extract values by name from totalDetails.
-        const currentRev = totalDetails[0];
-        let submission = totalDetails[1];
-        const otherRevs = totalDetails[2];
-
+    render: function (currentRev, submission, otherRevs) {
         submission.meta.comments.sort(function (a, b) {
             if (a.index > b.index) return -1;
             if (a.index < b.index) return 1;
@@ -118,18 +113,18 @@ var submissionView = View.extend({
 
         restRequest({
             type: 'GET',
-            url: `journal/${totalDetails[0]._id}/logo`
+            url: `journal/${currentRev._id}/logo`
         }).done((resp) => {
             var logoURL = '';
             if (resp.length > 0) {
                 logoURL = `${apiRoot}/${resp}`;
             }
-            this.$el.html(SubmissionViewTemplate({ user: this.currentUser, info: { 'revision': totalDetails[0], 'parent': totalDetails[1], 'otherRevisions': totalDetails[2] }, logo: logoURL }));
+            this.$el.html(SubmissionViewTemplate({ user: this.currentUser, info: { 'revision': currentRev, 'parent': submission, 'otherRevisions': otherRevs }, logo: logoURL }));
             new MenuBarView({ // eslint-disable-line no-new
                 el: this.$el,
                 parentView: this
             });
-            this.$(`.revisionOption[value=${totalDetails[0]._id}]`).prop('selected', true);
+            this.$(`.revisionOption[value=${currentRev._id}]`).prop('selected', true);
 
             // Replace the URL with one showing both the submission and revision
             // IDs.
