@@ -65,7 +65,7 @@ var submissionView = View.extend({
             this.updateComments('no');
         },
         'click .clickable-row': function (event) {
-            router.navigate(`view/${this.displayId}/${event.target.parentNode.dataset.href}`, {trigger: true});
+            router.navigate(`view/${event.target.parentNode.dataset.submission}/${event.target.parentNode.dataset.href}`, {trigger: true});
         },
         'keyup #commentText': function (event) {
             var charsLeft = 1200 - this.$('#commentText').val().length;
@@ -142,7 +142,7 @@ var submissionView = View.extend({
 
             // Replace the URL with one showing both the submission and revision
             // IDs.
-            router.navigate(`view/${this.parentId}/${this.currentRevision._id}`, {
+            router.navigate(`view/${submission.meta.number}/${this.currentRevision.meta.number}`, {
               trigger: false,
               replace: true
             });

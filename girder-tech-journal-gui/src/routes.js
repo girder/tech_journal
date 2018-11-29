@@ -6,6 +6,7 @@ import router from 'girder/router';
 import events from 'girder/events';
 import { getCurrentUser } from 'girder/auth';
 import { Layout } from 'girder/constants';
+import { restRequest } from 'girder/rest';
 
 // Import views from plugin
 import submitView from './pages/submit/submit';
@@ -86,9 +87,18 @@ router.route('plugins/journal/submission/:id/survey', 'uploadFiles', function (i
 
 // Page to view each individual submission
 router.route('view/:submission(/:revision)', 'submissionView', function (submission, revision) {
-    testUserAccess(submissionView, {
-      id: submission,
-      revId: revision
+    restRequest({
+      type: 'GET',
+      url: 'journal/translate',
+      data: {
+        submission: submission,
+        revision: revision
+      }
+    }).done((ids) => {
+      testUserAccess(submissionView, {
+        id: ids.submission,
+        revId: ids.revision
+      });
     });
 });
 

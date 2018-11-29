@@ -23,11 +23,14 @@ import datetime
 import re
 import urllib
 from bson.objectid import ObjectId
+import pymongo
 
 from girder.api.describe import Description, describeRoute
 from girder.api.rest import Resource, RestException, filtermodel, loadmodel
 from girder.api import access
 from girder.constants import AccessType, TokenScope
+from girder.external.mongodb_proxy import MongoProxy
+from girder.models import getDbConnection
 from girder.models.model_base import ValidationException
 from girder.models.folder import Folder
 from girder.models.user import User
@@ -145,6 +148,8 @@ class TechJournal(Resource):
 
         self.route('GET', ('submission', ':id'), self.getSubmission)
         self.route('GET', ('submission', ':id', 'revision'), self.getRevisions)
+
+        self.route('GET', ('translate',), self.translate)
 
         # APIs for categories
         self.route('POST', ('category',), self.addJournalObj)
@@ -302,6 +307,37 @@ class TechJournal(Resource):
                                                        force=True)
         return list(revisions)
 
+    @access.public(scope=TokenScope.DATA_READ)
+    @describeRoute(
+        Description('Translate submission and/or revision numbers to a Girder IDs')
+        .param('submission', 'The number of the submission', paramType='query')
+        .param('revision', 'The number of the revision', paramType='query', required=False)
+        .errorResponse('Test error.')
+        .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def translate(self, params):
+        submission = params['submission']
+        revision = params.get('revision')
+
+        db = getDbConnection()
+        coll = MongoProxy(db.get_database()['folder'])
+
+        result = {};
+
+        doc = coll.find_one({'meta.number': submission})
+        if doc:
+            result['submission'] = doc['_id']
+
+            if revision:
+                id = doc['_id']
+                doc = coll.find_one({'parentId': ObjectId(id), 'meta.number': revision})
+
+                if doc:
+                    result['revision'] = doc['_id']
+                else:
+                    result = None
+
+        return result or None
 
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)
