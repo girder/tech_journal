@@ -142,7 +142,7 @@ var submissionView = View.extend({
 
             // Replace the URL with one showing both the submission and revision
             // IDs.
-            router.navigate(`view/${submission.meta.number}/${this.currentRevision.meta.number}`, {
+            router.navigate(`view/${submission.meta.submissionNumber}/${this.currentRevision.meta.revisionNumber}`, {
               trigger: false,
               replace: true
             });

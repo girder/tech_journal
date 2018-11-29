@@ -324,13 +324,13 @@ class TechJournal(Resource):
 
         result = {};
 
-        doc = coll.find_one({'meta.number': submission})
+        doc = coll.find_one({'meta.submissionNumber': submission})
         if doc:
             result['submission'] = doc['_id']
 
             if revision:
                 id = doc['_id']
-                doc = coll.find_one({'parentId': ObjectId(id), 'meta.number': revision})
+                doc = coll.find_one({'parentId': ObjectId(id), 'meta.revisionNumber': revision})
 
                 if doc:
                     result['revision'] = doc['_id']
