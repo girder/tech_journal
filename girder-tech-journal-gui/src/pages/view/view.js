@@ -65,7 +65,7 @@ var submissionView = View.extend({
             this.updateComments('no');
         },
         'click .clickable-row': function (event) {
-            router.navigate(`plugins/journal/view/${event.target.parentNode.dataset.href}`, {trigger: true});
+            router.navigate(`view/${this.displayId}/${event.target.parentNode.dataset.href}`, {trigger: true});
         },
         'keyup #commentText': function (event) {
             var charsLeft = 1200 - this.$('#commentText').val().length;
@@ -91,12 +91,26 @@ var submissionView = View.extend({
         this.displayId = subId.id;
         this.revisionId = subId.revId;
 
+        let revisions;
+
         this.currentUser = getCurrentUser();
         restRequest({
             type: 'GET',
-            url: `journal/${this.displayId}/details`
-        }).done((totalDetails) => {
-            this.render(...totalDetails);
+            url: `journal/submission/${this.displayId}/revision`
+        }).done((revisionsResp) => {
+            revisions = revisionsResp;
+
+            restRequest({
+              type: 'GET',
+              url: `journal/submission/${this.displayId}`
+            }).done((submission) => {
+              if (!this.revisionId) {
+                  this.render(revisions[0], submission, revisions);
+              } else {
+                  const revision = revisions.find(d => d._id === this.revisionId);
+                  this.render(revision, submission, revisions);
+              }
+            });
         }); // End getting of parentData
     },
     render: function (currentRev, submission, otherRevs) {

@@ -143,6 +143,9 @@ class TechJournal(Resource):
         self.route('PUT', ('user',), self.updateUser)
         self.route('GET', (':id', "citation", ":type"), self.printCitation)
 
+        self.route('GET', ('submission', ':id'), self.getSubmission)
+        self.route('GET', ('submission', ':id', 'revision'), self.getRevisions)
+
         # APIs for categories
         self.route('POST', ('category',), self.addJournalObj)
         self.route('PUT', ('category',), self.updateJournalObj)
@@ -250,6 +253,55 @@ class TechJournal(Resource):
                                                        user=self.getCurrentUser(),
                                                        force=True)
         return (currentInfo, parentInfo, otherRevs)
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+        Description('Get details of a submission')
+        .param('id', 'The ID of the submission', paramType='path')
+        .errorResponse('Test error.')
+        .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def getSubmission(self, folder, params):
+        info = self.model('folder').load(folder['_id'],
+                                               user=self.getCurrentUser(), force=True)
+        info['issue'] = self.model('folder').load(info['parentId'],
+                                                        user=self.getCurrentUser(),
+                                                        force=True)
+        info['submitter'] = self.model('user').load(folder['creatorId'],
+                                                          user=self.getCurrentUser(),
+                                                          force=True)
+
+        return info
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+        Description('Get all revisions of a submission')
+        .param('id', 'The ID of the submission', paramType='path')
+        .errorResponse('Test error.')
+        .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def getRevisions(self, folder, params):
+        info = self.model('folder').load(folder['_id'],
+                                               user=self.getCurrentUser(), force=True)
+        # info['issue'] = self.model('folder').load(info['parentId'],
+                                                        # user=self.getCurrentUser(),
+                                                        # force=True)
+        # info['submitter'] = self.model('user').load(folder['creatorId'],
+                                                          # user=self.getCurrentUser(),
+                                                          # force=True)
+
+        print info
+        print self.model('folder')
+        revisions = list(self.model('folder').childFolders(folder, 'folder'))
+        revisions.sort(key=sortByDate)
+        for rev in revisions:
+            rev['submitter'] = self.model('user').load(rev['creatorId'],
+                                                       user=self.getCurrentUser(),
+                                                       force=True)
+        return list(revisions)
+
 
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)
