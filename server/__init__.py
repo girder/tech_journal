@@ -33,6 +33,7 @@ from girder.external.mongodb_proxy import MongoProxy
 from girder.models import getDbConnection
 from girder.models.model_base import ValidationException
 from girder.models.folder import Folder
+from girder.models.setting import Setting
 from girder.models.user import User
 from girder.utility import mail_utils
 from girder.utility.model_importer import ModelImporter
@@ -148,6 +149,8 @@ class TechJournal(Resource):
 
         self.route('GET', ('submission', ':id'), self.getSubmission)
         self.route('GET', ('submission', ':id', 'revision'), self.getRevisions)
+        self.route('POST', ('submission', 'number'), self.getNewSubmissionNumber)
+        self.route('POST', ('submission', ':submission', 'number'), self.getNewRevisionNumber)
 
         self.route('GET', ('translate',), self.translate)
 
@@ -306,6 +309,44 @@ class TechJournal(Resource):
                                                        user=self.getCurrentUser(),
                                                        force=True)
         return list(revisions)
+
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @describeRoute(
+        Description('Generate a new submission number')
+        .errorResponse('Test error.')
+        .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def getNewSubmissionNumber(self, params):
+        s = Setting()
+
+        nextNum = s.get('technical_journal.submission')
+        if nextNum is None:
+            nextNum = 1000
+
+        s.set('technical_journal.submission', nextNum + 1)
+
+        return nextNum
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @describeRoute(
+        Description('Generate a new revision number')
+        .param('submission', 'The submission number for which to generate a new revision number', paramType='path')
+        .errorResponse('Test error.')
+        .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def getNewRevisionNumber(self, submission, params):
+        s = Setting()
+
+        key = 'technical_journal.submission.%s' % (submission)
+
+        nextNum = s.get(key)
+        if nextNum is None:
+            nextNum = 1
+
+        s.set(key, nextNum + 1)
+
+        return nextNum
 
     @access.public(scope=TokenScope.DATA_READ)
     @describeRoute(
