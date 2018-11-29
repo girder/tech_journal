@@ -85,6 +85,13 @@ router.route('plugins/journal/submission/:id/survey', 'uploadFiles', function (i
 });
 
 // Page to view each individual submission
+router.route('view/:submission(/:revision)', 'submissionView', function (submission, revision) {
+    testUserAccess(submissionView, {
+      id: submission,
+      revId: revision
+    });
+});
+
 router.route('plugins/journal/view/:id', 'submissionView', function (id) {
     testUserAccess(submissionView, {id: id}, false, false);
 });

@@ -89,6 +89,8 @@ var submissionView = View.extend({
     },
     initialize: function (subId) {
         this.displayId = subId.id;
+        this.revisionId = subId.revId;
+
         this.currentUser = getCurrentUser();
         restRequest({
             type: 'GET',
@@ -98,15 +100,22 @@ var submissionView = View.extend({
         }); // End getting of parentData
     },
     render: function (totalDetails) {
-        totalDetails[1].meta.comments.sort(function (a, b) {
+        // Extract values by name from totalDetails.
+        const currentRev = totalDetails[0];
+        let submission = totalDetails[1];
+        const otherRevs = totalDetails[2];
+
+        submission.meta.comments.sort(function (a, b) {
             if (a.index > b.index) return -1;
             if (a.index < b.index) return 1;
             if (a.index === b.index) return 0;
         });
-        this.currentComments = totalDetails[1].meta.comments;
-        this.parentId = totalDetails[1]._id;
-        this.otherRevisions = totalDetails[2];
-        this.currentRevision = totalDetails[0];
+        this.currentComments = submission.meta.comments;
+
+        this.parentId = submission._id;
+        this.otherRevisions = otherRevs;
+        this.currentRevision = currentRev;
+
         restRequest({
             type: 'GET',
             url: `journal/${totalDetails[0]._id}/logo`
@@ -121,6 +130,14 @@ var submissionView = View.extend({
                 parentView: this
             });
             this.$(`.revisionOption[value=${totalDetails[0]._id}]`).prop('selected', true);
+
+            // Replace the URL with one showing both the submission and revision
+            // IDs.
+            router.navigate(`view/${this.parentId}/${this.currentRevision._id}`, {
+              trigger: false,
+              replace: true
+            });
+
             return this;
         });
     },
