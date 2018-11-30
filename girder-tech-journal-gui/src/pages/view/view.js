@@ -12,7 +12,7 @@ var submissionView = View.extend({
 
     events: {
         'click #downloadLink': function (event) {
-            router.navigate(`#plugins/journal/view/${this.displayId}/download`, {trigger: true});
+            router.navigate(`#plugins/journal/view/${this.revisionId}/download`, {trigger: true});
         },
         'click #manageReviews': function (event) {
             events.trigger('g:alert', {
@@ -24,14 +24,14 @@ var submissionView = View.extend({
         },
         'click #deleteRevision': function (event) {
             var confirmRes = confirm('There is no way to un-delete a revision.  Are you sure you want to proceed?'); // eslint-disable-line no-alert
-            var displayedObj = this.displayId;
+            var displayedObj = this.revisionId;
             if (confirmRes) {
                 this.otherRevisions = this.otherRevisions.filter(function (obj) {
                     return obj['_id'] !== displayedObj;
                 });
                 restRequest({
                     type: 'DELETE',
-                    url: `journal/${this.displayId}`
+                    url: `journal/${this.revisionId}`
                 }).done((resp) => {
                     router.navigate(`#plugins/journal/view/${this.otherRevisions.slice(-1).pop()['_id']}`, {trigger: true});
                 });
