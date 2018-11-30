@@ -120,8 +120,6 @@ var submissionView = View.extend({
         restRequest({
             type: 'GET',
             path: `journal/${this.revisionId}/details`
-        }).done((details) => {
-          console.log('details', details);
         });
 
         submission.meta.comments.sort(function (a, b) {
