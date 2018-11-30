@@ -115,6 +115,7 @@ var submissionView = View.extend({
     },
     render: function (currentRev, submission, otherRevs) {
         this.submission = submission;
+        this.revisionId = currentRev._id;
 
         restRequest({
             type: 'GET',
