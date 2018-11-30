@@ -22,7 +22,7 @@ var editView = View.extend({
             if (catCheck) {
                 restRequest({
                     type: 'PUT',
-                    url: `folder/${this.parentId}`,
+                    url: `folder/${this.parent._id}`,
                     data: {
                         parentType: 'folder',
                         name: this.$('#titleEntry').val().trim(),
@@ -45,7 +45,7 @@ var editView = View.extend({
                             url: `folder/${this.itemId}`,
                             data: {
                                 parentType: 'folder',
-                                parentId: this.parentId,
+                                parentId: this.parent._id,
                                 name: revisionName,
                                 description: revisionDescription
                             },
@@ -86,7 +86,7 @@ var editView = View.extend({
             type: 'GET',
             url: `journal/${this.itemId}/details`
         }).done((resp) => {
-            this.parentId = resp[1]._id;
+            this.parent = resp[1];
             var titleText = 'Edit current revision';
             if (this.newRevision) {
                 titleText = 'Create revision';
@@ -180,33 +180,43 @@ var editView = View.extend({
         var targetUrl = '#plugins/journal/submission/';
         restRequest({
             type: 'GET',
-            path: `folder/${this.parentId}/details`
+            path: `folder/${this.parent._id}/details`
         }).done((resp) => {
             if (revisionName === '') {
                 revisionName = 'Revision ' + ++resp.nFolders;
             }
+
             restRequest({
-                type: 'POST',
-                url: 'folder',
-                data: {
-                    parentId: this.parentId,
-                    parentType: 'folder',
-                    name: revisionName,
-                    description: this.$('#revisionEntry').val().trim()
-                },
-                error: null
-            }).done((resp) => {
-                this._updateSubmission(resp._id);
-                router.navigate(`${targetUrl}${resp._id}/upload/revision`, {trigger: true});
+              type: 'POST',
+              path: `journal/submission/${this.parent.meta.submissionNumber}/number`,
+            }).done((newRevisionNum) => {
+                restRequest({
+                    type: 'POST',
+                    url: 'folder',
+                    data: {
+                        parentId: this.parent._id,
+                        parentType: 'folder',
+                        name: revisionName,
+                        description: this.$('#revisionEntry').val().trim()
+                    },
+                    error: null
+                }).done((resp) => {
+                    let submissionInfo = this._captureSubmissionInformation();
+                    submissionInfo.revisionNumber = JSON.stringify(newRevisionNum);
+
+                    this._updateSubmission(resp._id, submissionInfo);
+                    router.navigate(`${targetUrl}${resp._id}/upload/revision`, {trigger: true});
+                });
             });
+
         });
     },
-    _updateSubmission: function (itemID) {
+    _updateSubmission: function (itemID, submissionInfo) {
         restRequest({
             type: 'PUT',
             url: `journal/${itemID}/metadata`,
             contentType: 'application/json',
-            data: JSON.stringify(this._captureSubmissionInformation()),
+            data: JSON.stringify(submissionInfo),
             error: null
         }).done((respMD) => {
         });

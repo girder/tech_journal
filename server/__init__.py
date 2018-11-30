@@ -685,7 +685,7 @@ class TechJournal(Resource):
             else:
                 raise RestException('The repository doesn\'t exist or the URL is invalid.')
         for key in ['related', 'copyright', 'grant', 'comments',
-                    'attribution-policy', 'targetIssue']:
+                    'attribution-policy', 'targetIssue', 'submissionNumber']:
             if key in metadata.keys():
                 parentMetaData[key] = metadata.pop(key)
         parentFolder = self.model('folder').load(folder['parentId'],

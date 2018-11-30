@@ -183,38 +183,55 @@ var SubmitView = View.extend({
                 categories.push(val.attributes['val'].value);
             }
         });
-        var subData = {
-            'institution': this.$('#institutionEntry').val().trim(),
-            'related': this.$('#relatedEntry').val().trim(),
-            'type': this.$('#typeEntry').val().trim(),
-            'copyright': this.$('#copyrightEntry').val().trim(),
-            'grant': this.$('#grantEntry').val().trim(),
-            'authors': authors,
-            'tags': tags,
-            'categories': categories,
-            'comments': comments,
-            'permission': hasPermission,
-            'CorpCLA': corpCLAVal,
-            'targetIssue': this.itemId,
-            'disclaimer': this.$('#disclaimer').val().trim()
-        };
-        if (this.newRevision) {
-            subData.revisionNotes = this.$('#revisionEntry').val().trim();
-            subData.previousRevision = this.itemId;
-        }
+
+        let newSubmissionNum;
         restRequest({
+          type: 'POST',
+          path: 'journal/submission/number'
+        }).done((num) => {
+          newSubmissionNum = num;
+
+          restRequest({
             type: 'POST',
-            url: 'folder',
-            data: {
-                parentId: this.user.id,
-                parentType: 'user',
-                name: inData.subName,
-                description: inData.subDescription
-            },
-            error: null
-        }).done((resp) => {
-            this._findUploadTarget(resp._id, subData);
-        });
+            path: `journal/submission/${newSubmissionNum}/number`
+          }).done((newRevisionNum) => {
+              var subData = {
+                  'institution': this.$('#institutionEntry').val().trim(),
+                  'related': this.$('#relatedEntry').val().trim(),
+                  'type': this.$('#typeEntry').val().trim(),
+                  'copyright': this.$('#copyrightEntry').val().trim(),
+                  'grant': this.$('#grantEntry').val().trim(),
+                  'authors': authors,
+                  'tags': tags,
+                  'categories': categories,
+                  'comments': comments,
+                  'permission': hasPermission,
+                  'CorpCLA': corpCLAVal,
+                  'targetIssue': this.itemId,
+                  'disclaimer': this.$('#disclaimer').val().trim(),
+                  'submissionNumber': `${newSubmissionNum}`,
+                  'revisionNumber': `${newRevisionNum}`
+              };
+              if (this.newRevision) {
+                  subData.revisionNotes = this.$('#revisionEntry').val().trim();
+                  subData.previousRevision = this.itemId;
+              }
+              restRequest({
+                  type: 'POST',
+                  url: 'folder',
+                  data: {
+                      parentId: this.user.id,
+                      parentType: 'user',
+                      name: inData.subName,
+                      description: inData.subDescription
+                  },
+                  error: null
+              }).done((resp) => {
+                  this._findUploadTarget(resp._id, subData);
+              });
+          });
+        })
+
     },
     _checkCategories() {
         if (this.$('.filterOption:checked').length === 0) {
