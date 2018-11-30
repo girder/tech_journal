@@ -119,7 +119,21 @@ router.route('plugins/journal/admin/groupusers/:id/issue', 'approvalView', funct
 
 // Download page for each submission
 router.route('view/:id/download', 'submissionDownload', function (id) {
-    testUserAccess(downloadView, {id: id}, true, false);
+    restRequest({
+        type: 'GET',
+        url: `folder/${id}`
+    }).done((revision) => {
+        restRequest({
+            type: 'GET',
+            url: `folder/${revision.parentId}`
+        }).done((submission) => {
+            testUserAccess(downloadView, {
+              id: id,
+              submissionNumber: submission.meta.submissionNumber,
+              revisionNumber: revision.meta.revisionNumber
+            }, true, false);
+        });
+    });
 });
 // View to manage (or create) a Journal
 router.route('plugins/journal/admin', 'manageJournalView', function () {

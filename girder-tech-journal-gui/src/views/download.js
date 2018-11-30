@@ -16,6 +16,8 @@ var downloadView = View.extend({
     },
     initialize: function (subId) {
         this.parentId = subId.id;
+        this.submissionNumber = subId.submissionNumber;
+        this.revisionNumber = subId.revisionNumber;
         restRequest({
             type: 'GET',
             path: `folder/${this.parentId}`
@@ -48,7 +50,9 @@ var downloadView = View.extend({
             var displayObj = {
                 parent: this.parentId,
                 parentDownloadUrl: parentDownloadUrl,
-                paperDownloadUrl: paperDownloadUrl
+                paperDownloadUrl: paperDownloadUrl,
+                submissionNumber: this.submissionNumber,
+                revisionNumber: this.revisionNumber,
             };
             if (Object.keys(resp).indexOf(this.parent.meta.disclaimer) !== -1) {
                 displayObj['disclaimer'] = resp[this.parent.meta.disclaimer]['value'];

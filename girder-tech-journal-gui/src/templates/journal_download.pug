@@ -13,7 +13,7 @@ mixin disclaimerEntry(text)
   .Content
     #disclaimer
       +disclaimerEntry(disclaimer)
-    a(href="#plugins/journal/view/"+parent) Back to article
+    a(href=`#view/${submissionNumber}/${revisionNumber}`) Back to article
     #downloadContent
       h3 Download
       br
