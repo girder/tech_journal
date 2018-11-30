@@ -118,7 +118,7 @@ router.route('plugins/journal/admin/groupusers/:id/issue', 'approvalView', funct
 });
 
 // Download page for each submission
-router.route('plugins/journal/view/:id/download', 'submissionDownload', function (id) {
+router.route('view/:id/download', 'submissionDownload', function (id) {
     testUserAccess(downloadView, {id: id}, true, false);
 });
 // View to manage (or create) a Journal

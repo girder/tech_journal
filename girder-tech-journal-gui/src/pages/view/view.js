@@ -12,7 +12,7 @@ var submissionView = View.extend({
 
     events: {
         'click #downloadLink': function (event) {
-            router.navigate(`#plugins/journal/view/${this.revisionId}/download`, {trigger: true});
+            router.navigate(`#view/${this.revisionId}/download`, {trigger: true});
         },
         'click #manageReviews': function (event) {
             events.trigger('g:alert', {
