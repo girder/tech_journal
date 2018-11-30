@@ -161,7 +161,7 @@ var submissionView = View.extend({
     updateComments: function (send) {
         restRequest({
             type: 'PUT',
-            url: `journal/${this.displayId}/comments?sendEmail=${send}`,
+            url: `journal/${this.revisionId}/comments?sendEmail=${send}`,
             contentType: 'application/json',
             data: JSON.stringify({'comments': this.currentComments}),
             error: null

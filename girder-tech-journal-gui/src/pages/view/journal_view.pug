@@ -190,7 +190,5 @@ if 'downloadStatistics' in info.revision
                 for comment in info.parent.meta.comments
                   if comment.name
                     +existingComment(comment)
-                .commentsBottomMessage
-                  script(type="text/javascript").
-                   $(".commentsBottomMessage").text($(".aComment").length +" comments on this item")
+                .commentsBottomMessage #{info.parent.meta.comments.length} comments on this item
               .commentPaginateWrapper
