@@ -102,10 +102,6 @@ router.route('view/:submission(/:revision)', 'submissionView', function (submiss
     });
 });
 
-router.route('plugins/journal/view/:id', 'submissionView', function (id) {
-    testUserAccess(submissionView, {id: id}, false, false);
-});
-
 // Page for admin to see submissions for approval
 router.route('plugins/journal/approval', 'approvalView', function () {
     testUserAccess(approvalView, {}, true, true);
