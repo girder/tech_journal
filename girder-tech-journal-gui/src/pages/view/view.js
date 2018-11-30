@@ -76,11 +76,6 @@ var submissionView = View.extend({
             var charsLeft = 1200 - this.$('#commentText').val().length;
             $('.commentLengthRemaining').text(`${charsLeft} characters remaining.`);
         },
-
-        'change #revisionSelector': function (event) {
-            router.navigate(`#plugins/journal/view/${this.$('.revisionOption:selected').val()}`,
-                {trigger: true});
-        },
         'click .exportCit': function (event) {
             this.$('.citationDisplay').text('');
             restRequest({
