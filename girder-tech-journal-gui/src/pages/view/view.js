@@ -114,6 +114,13 @@ var submissionView = View.extend({
         }); // End getting of parentData
     },
     render: function (currentRev, submission, otherRevs) {
+        restRequest({
+            type: 'GET',
+            path: `journal/${this.revisionId}/details`
+        }).done((details) => {
+          console.log('details', details);
+        });
+
         submission.meta.comments.sort(function (a, b) {
             if (a.index > b.index) return -1;
             if (a.index < b.index) return 1;
