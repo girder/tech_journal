@@ -33,7 +33,12 @@ var submissionView = View.extend({
                     type: 'DELETE',
                     url: `journal/${this.revisionId}`
                 }).done((resp) => {
-                    router.navigate(`#plugins/journal/view/${this.otherRevisions.slice(-1).pop()['_id']}`, {trigger: true});
+                    restRequest({
+                        type: 'GET',
+                        path: `folder/${this.otherRevisions.slice(-1).pop()['_id']}`
+                    }).done((revision) => {
+                        router.navigate(`#view/${this.submission.meta.submissionNumber}/${revision.meta.revisionNumber}`, {trigger: true});
+                    })
                 });
             }
         },
@@ -114,6 +119,8 @@ var submissionView = View.extend({
         }); // End getting of parentData
     },
     render: function (currentRev, submission, otherRevs) {
+        this.submission = submission;
+
         restRequest({
             type: 'GET',
             path: `journal/${this.revisionId}/details`
