@@ -105,7 +105,7 @@ var submissionView = View.extend({
               url: `journal/submission/${this.displayId}`
             }).done((submission) => {
               if (!this.revisionId) {
-                  this.render(revisions[0], submission, revisions);
+                  this.render(revisions[revisions.length-1], submission, revisions);
               } else {
                   const revision = revisions.find(d => d._id === this.revisionId);
                   this.render(revision, submission, revisions);
