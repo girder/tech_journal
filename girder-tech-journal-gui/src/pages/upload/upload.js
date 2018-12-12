@@ -217,40 +217,39 @@ var uploadView = View.extend({
         }
     },
 
-    _approveSubmission: function (subData) {
+    _sendSubmission: function (subData, mode) {
         restRequest({
             type: 'PUT',
             path: `journal/${this.parentId}/metadata`,
             contentType: 'application/json',
-            data: JSON.stringify(subData),
+            data: mode === 'approve' ? JSON.stringify(subData) : undefined,
             error: null
         }).done((respMD) => {
             restRequest({
                 type: 'PUT',
-                path: `journal/${this.parentId}/approve`,
-                contentType: 'application/json',
-                data: JSON.stringify(subData)
+                url: `journal/${this.parentId}/${mode}`,
+                contentType: 'application/json'
             }).done((respMD) => {
-                router.navigate(`#plugins/journal/view/${this.parentId}`, {trigger: true});
+                restRequest({
+                    type: 'GET',
+                    url: `folder/${this.parentId}`
+                }).done((folder) => {
+                  restRequest({
+                    type: 'GET',
+                    url: `folder/${folder.parentId}`
+                  }).done((parentFolder) => {
+                    router.navigate(`#view/${parentFolder.meta.submissionNumber}/${folder.meta.revisionNumber}`, {trigger: true});
+                  });
+                });
             });
         });
     },
+
+    _approveSubmission: function (subData) {
+        this._sendSubmission(subData, 'approve');
+    },
     _appendData: function (subData) {
-        restRequest({
-            type: 'PUT',
-            path: `journal/${this.parentId}/metadata`,
-            contentType: 'application/json',
-            data: JSON.stringify(subData),
-            error: null
-        }).done((respMD) => {
-            restRequest({
-                type: 'PUT',
-                path: `journal/${this.parentId}/finalize`,
-                contentType: 'application/json'
-            }).done((respMD) => {
-                router.navigate(`#plugins/journal/view/${this.parentId}`, {trigger: true});
-            });
-        });
+        this._sendSubmission(subData, 'finalize');
     },
     _checkForm: function (license) {
         if (license === 'Apache 2.0' && this.$('#acceptLicense').is(':checked')) {

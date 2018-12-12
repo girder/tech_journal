@@ -49,6 +49,23 @@ jobs:
           paths: npm_cache
           key: npm-{{ arch }}-{{ checksum "girder/package.json" }}-{{ checksum "girder/plugins/tech_journal/plugin.json" }}
 
+      - restore_cache:
+          key: npm-{{ arch }}-{{ checksum "girder/plugins/tech_journal/girder-tech-journal-gui/package.json" }}
+      - run:
+          name: Install tech journal web client dependencies
+          command: npm install
+          working_directory: girder/plugins/tech_journal/girder-tech-journal-gui
+          environment:
+            - npm_config_cache: /home/circleci/project/npm_cache_external
+      - save_cache:
+          paths: npm_cache_external
+          key: npm-{{ arch }}-{{ checksum "girder/plugins/tech_journal/girder-tech-journal-gui/package.json" }}
+
+      - run:
+          name: Build tech journal web client
+          command: npm run build
+          working_directory: girder/plugins/tech_journal/girder-tech-journal-gui
+
       - run:
           name: Create Girder build directory
           command: mkdir girder_build

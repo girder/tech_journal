@@ -23,38 +23,24 @@ import datetime
 import re
 import urllib
 from bson.objectid import ObjectId
+import pymongo
 
 from girder.api.describe import Description, describeRoute
 from girder.api.rest import Resource, RestException, filtermodel, loadmodel
 from girder.api import access
 from girder.constants import AccessType, TokenScope
+from girder.external.mongodb_proxy import MongoProxy
+from girder.models import getDbConnection
 from girder.models.model_base import ValidationException
 from girder.models.folder import Folder
+from girder.models.setting import Setting
 from girder.models.user import User
 from girder.utility import mail_utils
 from girder.utility.model_importer import ModelImporter
-from girder.utility.plugin_utilities import getPluginDir, registerPluginWebroot
-from girder.utility.webroot import WebrootBase
 from girder import events
 from girder_worker_utils.transforms.girder_io import GirderUploadToItem
 from tech_journal_tasks.tasks import processGithub, surveySubmission
 from . import constants
-
-
-class Webroot(WebrootBase):
-    """
-    The webroot endpoint simply serves the main index HTML file.
-    """
-    def __init__(self, templatePath=None):
-        if not templatePath:
-            templatePath = os.path.join(getPluginDir(), 'tech_journal', 'server', 'webroot.mako')
-        super(Webroot, self).__init__(templatePath)
-
-        self.vars = {
-            'apiRoot': '/api/v1',
-            'staticRoot': '/static',
-            'title': 'Technical Journal'
-        }
 
 
 def sortByDate(elem):
@@ -160,6 +146,13 @@ class TechJournal(Resource):
         self.route('DELETE', (':id',), self.deleteObject)
         self.route('PUT', ('user',), self.updateUser)
         self.route('GET', (':id', "citation", ":type"), self.printCitation)
+
+        self.route('GET', ('submission', ':id'), self.getSubmission)
+        self.route('GET', ('submission', ':id', 'revision'), self.getRevisions)
+        self.route('POST', ('submission', 'number'), self.getNewSubmissionNumber)
+        self.route('POST', ('submission', ':submission', 'number'), self.getNewRevisionNumber)
+
+        self.route('GET', ('translate',), self.translate)
 
         # APIs for categories
         self.route('POST', ('category',), self.addJournalObj)
@@ -268,6 +261,124 @@ class TechJournal(Resource):
                                                        user=self.getCurrentUser(),
                                                        force=True)
         return (currentInfo, parentInfo, otherRevs)
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+        Description('Get details of a submission')
+        .param('id', 'The ID of the submission', paramType='path')
+        .errorResponse('Test error.')
+        .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def getSubmission(self, folder, params):
+        info = self.model('folder').load(folder['_id'],
+                                               user=self.getCurrentUser(), force=True)
+        info['issue'] = self.model('folder').load(info['parentId'],
+                                                        user=self.getCurrentUser(),
+                                                        force=True)
+        info['submitter'] = self.model('user').load(folder['creatorId'],
+                                                          user=self.getCurrentUser(),
+                                                          force=True)
+
+        return info
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+        Description('Get all revisions of a submission')
+        .param('id', 'The ID of the submission', paramType='path')
+        .errorResponse('Test error.')
+        .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def getRevisions(self, folder, params):
+        info = self.model('folder').load(folder['_id'],
+                                               user=self.getCurrentUser(), force=True)
+        # info['issue'] = self.model('folder').load(info['parentId'],
+                                                        # user=self.getCurrentUser(),
+                                                        # force=True)
+        # info['submitter'] = self.model('user').load(folder['creatorId'],
+                                                          # user=self.getCurrentUser(),
+                                                          # force=True)
+
+        print info
+        print self.model('folder')
+        revisions = list(self.model('folder').childFolders(folder, 'folder'))
+        revisions.sort(key=sortByDate)
+        for rev in revisions:
+            rev['submitter'] = self.model('user').load(rev['creatorId'],
+                                                       user=self.getCurrentUser(),
+                                                       force=True)
+        return list(revisions)
+
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @describeRoute(
+        Description('Generate a new submission number')
+        .errorResponse('Test error.')
+        .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def getNewSubmissionNumber(self, params):
+        s = Setting()
+
+        nextNum = s.get('technical_journal.submission')
+        if nextNum is None:
+            nextNum = 1000
+
+        s.set('technical_journal.submission', nextNum + 1)
+
+        return nextNum
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @describeRoute(
+        Description('Generate a new revision number')
+        .param('submission', 'The submission number for which to generate a new revision number', paramType='path')
+        .errorResponse('Test error.')
+        .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def getNewRevisionNumber(self, submission, params):
+        s = Setting()
+
+        key = 'technical_journal.submission.%s' % (submission)
+
+        nextNum = s.get(key)
+        if nextNum is None:
+            nextNum = 1
+
+        s.set(key, nextNum + 1)
+
+        return nextNum
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @describeRoute(
+        Description('Translate submission and/or revision numbers to a Girder IDs')
+        .param('submission', 'The number of the submission', paramType='query')
+        .param('revision', 'The number of the revision', paramType='query', required=False)
+        .errorResponse('Test error.')
+        .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def translate(self, params):
+        submission = params['submission']
+        revision = params.get('revision')
+
+        db = getDbConnection()
+        coll = MongoProxy(db.get_database()['folder'])
+
+        result = {};
+
+        doc = coll.find_one({'meta.submissionNumber': submission})
+        if doc:
+            result['submission'] = doc['_id']
+
+            if revision:
+                id = doc['_id']
+                doc = coll.find_one({'parentId': ObjectId(id), 'meta.revisionNumber': revision})
+
+                if doc:
+                    result['revision'] = doc['_id']
+                else:
+                    result = None
+
+        return result or None
 
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)
@@ -574,7 +685,7 @@ class TechJournal(Resource):
             else:
                 raise RestException('The repository doesn\'t exist or the URL is invalid.')
         for key in ['related', 'copyright', 'grant', 'comments',
-                    'attribution-policy', 'targetIssue']:
+                    'attribution-policy', 'targetIssue', 'submissionNumber']:
             if key in metadata.keys():
                 parentMetaData[key] = metadata.pop(key)
         parentFolder = self.model('folder').load(folder['parentId'],
@@ -793,6 +904,13 @@ def load(info):
     techJournal = TechJournal()
     events.bind('model.setting.validate', 'journalMain', validateSettings)
     info['apiRoot'].journal = techJournal
+    info['config']['/tech_journal'] = {
+        'tools.staticdir.on': True,
+        'tools.staticdir.dir': os.path.join(
+            info['pluginRootDir'], 'girder-tech-journal-gui', 'dist'),
+        'tools.staticdir.index': 'index.html'
+
+    }
     # Bind REST events
     events.bind('rest.get.folder/:id/download.after',
                 'tech_journal',
@@ -802,4 +920,3 @@ def load(info):
                 techJournal._onPageView)
     Folder().exposeFields(level=AccessType.READ, fields='downloadStatistics')
     User().exposeFields(level=AccessType.READ, fields='notificationStatus')
-    registerPluginWebroot(Webroot(), info['name'])

@@ -6,6 +6,7 @@ import router from 'girder/router';
 import events from 'girder/events';
 import { getCurrentUser } from 'girder/auth';
 import { Layout } from 'girder/constants';
+import { restRequest } from 'girder/rest';
 
 // Import views from plugin
 import submitView from './pages/submit/submit';
@@ -85,8 +86,20 @@ router.route('plugins/journal/submission/:id/survey', 'uploadFiles', function (i
 });
 
 // Page to view each individual submission
-router.route('plugins/journal/view/:id', 'submissionView', function (id) {
-    testUserAccess(submissionView, {id: id}, false, false);
+router.route('view/:submission(/:revision)', 'submissionView', function (submission, revision) {
+    restRequest({
+      type: 'GET',
+      url: 'journal/translate',
+      data: {
+        submission: submission,
+        revision: revision
+      }
+    }).done((ids) => {
+      testUserAccess(submissionView, {
+        id: ids.submission,
+        revId: ids.revision
+      });
+    });
 });
 
 // Page for admin to see submissions for approval
@@ -105,8 +118,22 @@ router.route('plugins/journal/admin/groupusers/:id/issue', 'approvalView', funct
 });
 
 // Download page for each submission
-router.route('plugins/journal/view/:id/download', 'submissionDownload', function (id) {
-    testUserAccess(downloadView, {id: id}, true, false);
+router.route('view/:id/download', 'submissionDownload', function (id) {
+    restRequest({
+        type: 'GET',
+        url: `folder/${id}`
+    }).done((revision) => {
+        restRequest({
+            type: 'GET',
+            url: `folder/${revision.parentId}`
+        }).done((submission) => {
+            testUserAccess(downloadView, {
+              id: id,
+              submissionNumber: submission.meta.submissionNumber,
+              revisionNumber: revision.meta.revisionNumber
+            }, true, false);
+        });
+    });
 });
 // View to manage (or create) a Journal
 router.route('plugins/journal/admin', 'manageJournalView', function () {

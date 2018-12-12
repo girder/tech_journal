@@ -1,5 +1,5 @@
-mixin revisionOption(value,selectedRev)
-  tr(class=selectedRev, data-href=value._id)
+mixin revisionOption(value,selectedRev,submission)
+  tr(class=selectedRev, data-href=value.meta.revisionNumber data-submission=submission.meta.submissionNumber)
     td.
       #{value.name}
     td.
@@ -161,7 +161,7 @@ if 'downloadStatistics' in info.revision
                   - selected="clickable-row"
                   if value._id === info.revision._id
                     - selected="selected"
-                  +revisionOption(value,selected)
+                  +revisionOption(value,selected,info.parent)
           h4 Comments
           #commentsContainer
             #commentsDiv
@@ -190,7 +190,5 @@ if 'downloadStatistics' in info.revision
                 for comment in info.parent.meta.comments
                   if comment.name
                     +existingComment(comment)
-                .commentsBottomMessage
-                  script(type="text/javascript").
-                   $(".commentsBottomMessage").text($(".aComment").length +" comments on this item")
+                .commentsBottomMessage #{info.parent.meta.comments.length} comments on this item
               .commentPaginateWrapper

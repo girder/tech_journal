@@ -12,7 +12,7 @@ var submissionView = View.extend({
 
     events: {
         'click #downloadLink': function (event) {
-            router.navigate(`#plugins/journal/view/${this.displayId}/download`, {trigger: true});
+            router.navigate(`#view/${this.revisionId}/download`, {trigger: true});
         },
         'click #manageReviews': function (event) {
             events.trigger('g:alert', {
@@ -24,16 +24,21 @@ var submissionView = View.extend({
         },
         'click #deleteRevision': function (event) {
             var confirmRes = confirm('There is no way to un-delete a revision.  Are you sure you want to proceed?'); // eslint-disable-line no-alert
-            var displayedObj = this.displayId;
+            var displayedObj = this.revisionId;
             if (confirmRes) {
                 this.otherRevisions = this.otherRevisions.filter(function (obj) {
                     return obj['_id'] !== displayedObj;
                 });
                 restRequest({
                     type: 'DELETE',
-                    url: `journal/${this.displayId}`
+                    url: `journal/${this.revisionId}`
                 }).done((resp) => {
-                    router.navigate(`#plugins/journal/view/${this.otherRevisions.slice(-1).pop()['_id']}`, {trigger: true});
+                    restRequest({
+                        type: 'GET',
+                        path: `folder/${this.otherRevisions.slice(-1).pop()['_id']}`
+                    }).done((revision) => {
+                        router.navigate(`#view/${this.submission.meta.submissionNumber}/${revision.meta.revisionNumber}`, {trigger: true});
+                    })
                 });
             }
         },
@@ -65,16 +70,11 @@ var submissionView = View.extend({
             this.updateComments('no');
         },
         'click .clickable-row': function (event) {
-            router.navigate(`plugins/journal/view/${event.target.parentNode.dataset.href}`, {trigger: true});
+            router.navigate(`view/${event.target.parentNode.dataset.submission}/${event.target.parentNode.dataset.href}`, {trigger: true});
         },
         'keyup #commentText': function (event) {
             var charsLeft = 1200 - this.$('#commentText').val().length;
             $('.commentLengthRemaining').text(`${charsLeft} characters remaining.`);
-        },
-
-        'change #revisionSelector': function (event) {
-            router.navigate(`#plugins/journal/view/${this.$('.revisionOption:selected').val()}`,
-                {trigger: true});
         },
         'click .exportCit': function (event) {
             this.$('.citationDisplay').text('');
@@ -89,45 +89,79 @@ var submissionView = View.extend({
     },
     initialize: function (subId) {
         this.displayId = subId.id;
+        this.revisionId = subId.revId;
+
+        let revisions;
+
         this.currentUser = getCurrentUser();
         restRequest({
             type: 'GET',
-            url: `journal/${this.displayId}/details`
-        }).done((totalDetails) => {
-            this.render(totalDetails);
+            url: `journal/submission/${this.displayId}/revision`
+        }).done((revisionsResp) => {
+            revisions = revisionsResp;
+
+            restRequest({
+              type: 'GET',
+              url: `journal/submission/${this.displayId}`
+            }).done((submission) => {
+              if (!this.revisionId) {
+                  this.render(revisions[revisions.length-1], submission, revisions);
+              } else {
+                  const revision = revisions.find(d => d._id === this.revisionId);
+                  this.render(revision, submission, revisions);
+              }
+            });
         }); // End getting of parentData
     },
-    render: function (totalDetails) {
-        totalDetails[1].meta.comments.sort(function (a, b) {
+    render: function (currentRev, submission, otherRevs) {
+        this.submission = submission;
+        this.revisionId = currentRev._id;
+
+        restRequest({
+            type: 'GET',
+            path: `journal/${this.revisionId}/details`
+        });
+
+        submission.meta.comments.sort(function (a, b) {
             if (a.index > b.index) return -1;
             if (a.index < b.index) return 1;
             if (a.index === b.index) return 0;
         });
-        this.currentComments = totalDetails[1].meta.comments;
-        this.parentId = totalDetails[1]._id;
-        this.otherRevisions = totalDetails[2];
-        this.currentRevision = totalDetails[0];
+        this.currentComments = submission.meta.comments;
+
+        this.parentId = submission._id;
+        this.otherRevisions = otherRevs;
+        this.currentRevision = currentRev;
+
         restRequest({
             type: 'GET',
-            url: `journal/${totalDetails[0]._id}/logo`
+            url: `journal/${currentRev._id}/logo`
         }).done((resp) => {
             var logoURL = '';
             if (resp.length > 0) {
                 logoURL = `${apiRoot}/${resp}`;
             }
-            this.$el.html(SubmissionViewTemplate({ user: this.currentUser, info: { 'revision': totalDetails[0], 'parent': totalDetails[1], 'otherRevisions': totalDetails[2] }, logo: logoURL }));
+            this.$el.html(SubmissionViewTemplate({ user: this.currentUser, info: { 'revision': currentRev, 'parent': submission, 'otherRevisions': otherRevs }, logo: logoURL }));
             new MenuBarView({ // eslint-disable-line no-new
                 el: this.$el,
                 parentView: this
             });
-            this.$(`.revisionOption[value=${totalDetails[0]._id}]`).prop('selected', true);
+            this.$(`.revisionOption[value=${currentRev._id}]`).prop('selected', true);
+
+            // Replace the URL with one showing both the submission and revision
+            // IDs.
+            router.navigate(`view/${submission.meta.submissionNumber}/${this.currentRevision.meta.revisionNumber}`, {
+              trigger: false,
+              replace: true
+            });
+
             return this;
         });
     },
     updateComments: function (send) {
         restRequest({
             type: 'PUT',
-            url: `journal/${this.displayId}/comments?sendEmail=${send}`,
+            url: `journal/${this.revisionId}/comments?sendEmail=${send}`,
             contentType: 'application/json',
             data: JSON.stringify({'comments': this.currentComments}),
             error: null
