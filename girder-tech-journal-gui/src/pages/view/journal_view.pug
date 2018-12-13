@@ -126,7 +126,7 @@ if 'downloadStatistics' in info.revision
             | Submitted to:
             a(href="#?issueId=" + info.parent.issue._id) #{info.parent.issue.name}
           .submittedby.
-            Submitted by #{info.parent.submitter.firstName} #{info.parent.submitter.lastName} on #{info.parent.created}
+            Submitted by #{info.revision.submitter.firstName} #{info.revision.submitter.lastName} on #{info.parent.created}
           if info.revision.description
             h4 Revision Notes
             .abstract(style="text-align: justify")

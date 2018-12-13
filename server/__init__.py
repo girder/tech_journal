@@ -276,9 +276,6 @@ class TechJournal(Resource):
         info['issue'] = self.model('folder').load(info['parentId'],
                                                         user=self.getCurrentUser(),
                                                         force=True)
-        info['submitter'] = self.model('user').load(folder['creatorId'],
-                                                          user=self.getCurrentUser(),
-                                                          force=True)
 
         return info
 
@@ -293,15 +290,6 @@ class TechJournal(Resource):
     def getRevisions(self, folder, params):
         info = self.model('folder').load(folder['_id'],
                                                user=self.getCurrentUser(), force=True)
-        # info['issue'] = self.model('folder').load(info['parentId'],
-                                                        # user=self.getCurrentUser(),
-                                                        # force=True)
-        # info['submitter'] = self.model('user').load(folder['creatorId'],
-                                                          # user=self.getCurrentUser(),
-                                                          # force=True)
-
-        print info
-        print self.model('folder')
         revisions = list(self.model('folder').childFolders(folder, 'folder'))
         revisions.sort(key=sortByDate)
         for rev in revisions:
