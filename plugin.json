@@ -2,5 +2,10 @@
     "name": "Tech Journal plugin",
     "description": "An attempt to generate a plug in for a Tech Journal module",
     "version": "0.0.1",
-    "dependencies": ["curation"]
+    "dependencies": ["curation"],
+    "webpack": {
+        "main": {
+            "plugin":"web_client/main.js"
+        }
+    }
 }
