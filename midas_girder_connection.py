@@ -76,7 +76,7 @@ def metaDataQuery(cur, entryNo, fieldNo):
 
     return ""
 
-def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
+def ReadAll(userId, prevAssetDir, baseParent=None, assetStore=None,):
     # Query items from MySQL
     db = MySQLdb.connect(user="root", passwd="root",db="otj")
     cur = db.cursor()
@@ -91,6 +91,7 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
     itemDB = client.girder.item
     fileDB = client.girder.file
     groupDB = client.girder.group
+    settingDB = client.girder.setting
     collectionDB = client.girder.collection
     journalCollectionDB = client.girder.journal_collection;
     # =============================================
@@ -135,10 +136,10 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
       inputAssetStoreQuery = assetStoreDB.find({"root":assetStore})
       inputAssetStore = inputAssetStoreQuery.next()
     if not baseParent:
-      inputCollection = {"creatorId" : ObjectId("579f725a82290968da666b16"),
+      inputCollection = {"creatorId" : ObjectId(userId),
                      "public":True,
                      "created" : datetime.now(),
-                     "access" : { "users" : [ { "flags" : [ ], "id" : ObjectId("579f725a82290968da666b16"), "level" : 2 } ], "groups" : [ ] }, "creatorId" : ObjectId("579f725a82290968da666b16"),
+                     "access" : { "users" : [ { "flags" : [ ], "id" : ObjectId(userId), "level" : 2 } ], "groups" : [ ] }, "creatorId" : ObjectId(userId),
                      "size" : 0,
                      "name": "Migrated OTJ",
                      "_id": ObjectId(),
@@ -241,15 +242,16 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
     # End Disclaimers
     cur.execute("SELECT * from journal_folder")
     allIssues = cur.fetchall()
+    submissionNumber = 0
     for row in allIssues:
-      inputObject = {"creatorId" : ObjectId("579f725a82290968da666b16"),
+      inputObject = {"creatorId" : ObjectId(userId),
                      "baseParentType" : "collection",
                      "baseParentId" : ObjectId(baseParent),
                      "parentCollection":"collection",
                      "parentId":ObjectId(baseParent),
                      "public":True,
                      "created" : datetime.now(),
-                     "access" : { "users" : [ { "flags" : [ ], "id" : ObjectId("579f725a82290968da666b16"), "level" : 2 } ], "groups" : [ ] }, "creatorId" : ObjectId("579f725a82290968da666b16"),
+                     "access" : { "users" : [ { "flags" : [ ], "id" : ObjectId(userId), "level" : 2 } ], "groups" : [ ] }, "creatorId" : ObjectId(userId),
                      "size" : 0,
                      "meta" : {}
                     }
@@ -274,7 +276,7 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
           "updated" : datetime.now(),
           "name" : "%s_%s" % (inputObject["name"],val),
           "created" : datetime.now(),
-          "creatorId" : ObjectId("579f725a82290968da666b16"),
+          "creatorId" : ObjectId(userId),
           "requests" : [ ],
           "public" : False,
           "description" : "Group %s for issue %s " % (val, inputObject["name"])
@@ -318,7 +320,8 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
                      "meta": {
                        "comments":[],
                        "related":"",
-                       "targetIssue":"5a295c0782290926a05fef5c"
+                       "targetIssue":"5a295c0782290926a05fef5c",
+                       "submissionNumber":str(submissionNumber)
                      }
                     }
       cur.execute("SELECT * FROM item2folder where item_id=" + str(row[0]))
@@ -332,6 +335,7 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
       inputObject["updated"] = row[2]
       print inputObject["name"]
       result = foldersDB.insert_one(inputObject)
+      submissionNumber += 1
       # ====================================================
       # Capture each revision that matches an object from above
       #| itemrevision_id
@@ -345,7 +349,7 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
       # ====================================================
       cur.execute("SELECT * FROM itemrevision WHERE item_id="+ str(row[0]))
       allrevisions = cur.fetchall()
-
+      revisionNumber = 0
       for revision in allrevisions:
           inputRevision =   {
             "updated" :datetime.now(),
@@ -356,14 +360,14 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
               "users" : [
                 {
                   "flags" : [ ],
-                  "id" : ObjectId("579f725a82290968da666b16"),
+                  "id" : ObjectId(userId),
                   "level" : 2
                 }
               ],
               "groups" : [ ]
             },
             "parentCollection":"folder",
-            "creatorId" : ObjectId("579f725a82290968da666b16"),
+            "creatorId" : ObjectId(userId),
             "parentId":inputObject["_id"],
             "downloadStatistics" : {
                 "completed" : 0,
@@ -377,7 +381,8 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
             "meta": {
               "CorpCLA":"yes",
               "permission":"yes",
-              "type":0
+              "type":0,
+              "revisionNumber":str(revisionNumber)
             }
           }
           if revision[5] in userDictionary.keys():
@@ -481,6 +486,7 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
           inputRevision['downloadStatistics']['completed'] = len(allDownloads)
 
           result = foldersDB.insert_one(inputRevision)
+          revisionNumber += 1
           # ====================================================
           # Capture all objects within each revision
           # ====================================================
@@ -549,7 +555,10 @@ def ReadAll( prevAssetDir, baseParent=None, assetStore=None,):
                                 "size":bitstream[4]}
                   print inputFile['name']
                   result = fileDB.insert_one(inputFile)
-
+    settingDB.insert_one({"_id":ObjectId(),
+                          "key":"technical_journal.submission",
+                          "value":submissionNumber
+                        })
 
 
 if __name__ == '__main__':
@@ -558,5 +567,6 @@ if __name__ == '__main__':
     parser.add_argument('-ci','--collID', required=False, default=None)
     parser.add_argument('-ar','--assetRoot', required=False, default=None)
     parser.add_argument('-pa','--prevAsset', required=True, default=None)
+    parser.add_argument('-u','--user', required=True, default=None)
     result = parser.parse_args()
-    ReadAll(result.prevAsset, result.collID,result.assetRoot)
+    ReadAll(result.user, result.prevAsset, result.collID,result.assetRoot)
