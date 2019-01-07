@@ -79,6 +79,33 @@ def checkValue(infoList, filterParams, category, value):
     return False
 
 
+def format_journal(journal):
+    return {
+        'id': journal['_id'],
+        'name': journal['name'],
+        'links': {
+            'girder': '/collection/{}'.format(journal['_id']),
+            'issues': '/journal/zzz/journals/{}/issues'.format(journal['_id'])
+        }
+    }
+
+
+def format_issue(rec):
+    id = rec['_id']
+    name = rec['name']
+    journal = rec['parentId']
+
+    return {
+        'id': id,
+        'name': name,
+        'links': {
+            'girder': '/folder/{}'.format(id),
+            'journal': '/journal/zzz/journals/{}'.format(journal),
+            'submissions': '/journal/zzz/journals/{}/submissions'.format(id)
+        }
+    }
+
+
 class TechJournal(Resource):
 
     def checkSubmission(self, filterParams, submission, searchObj, targetVal, category):
@@ -164,6 +191,43 @@ class TechJournal(Resource):
         self.route('PUT', ('disclaimer',), self.updateJournalObj)
         self.route('GET', ('disclaimers',), self.getJournalObjs)
         self.route('DELETE', ('disclaimer',), self.rmJournalObj)
+
+        # Temporary new API
+        self.route('GET', ('zzz', 'journals'), self.get_journals)
+        self.route('GET', ('zzz', 'journals', ':id'), self.get_journal)
+        self.route('GET', ('zzz', 'journals', ':id', 'issues'), self.get_journal_issues)
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @describeRoute(
+        Description('Get all Journals')
+        .errorResponse('Read access was denied on the journals.', 403)
+    )
+    def get_journals(self, params):
+        collections = self.model('collection').textSearch('__journal__', user=self.getCurrentUser())
+
+        return map(format_journal, collections)
+
+    @access.public(TokenScope.DATA_READ)
+    @loadmodel(model='collection', level=AccessType.READ)
+    @describeRoute(
+        Description('Get a Journal by ID')
+        .param('id', 'The Journal ID', paramType='path')
+        .errorResponse('Read access was denied on this journal.', 403)
+    )
+    def get_journal(self, collection, params):
+        return format_journal(collection)
+
+
+    @access.public(TokenScope.DATA_READ)
+    @loadmodel(model='collection', level=AccessType.READ)
+    @describeRoute(
+        Description('Get all issues from a journal')
+        .param('id', 'The journal ID', paramType='path')
+        .errorResponse('Read access was denied on this journal.', 403)
+    )
+    def get_journal_issues(self, collection, params):
+        issues = self.model('folder').childFolders(collection, 'collection', user=self.getCurrentUser())
+        return map(format_issue, issues)
 
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)

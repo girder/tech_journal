@@ -57,51 +57,54 @@ const HomePage = View.extend({
             this.render('', this.collectionID, 0);
         }); // End getting of OTJ Collection value setting
     },
-    render: function (searchVal, collection, startIndex) {
-        var pendingSubs = 0;
-        restRequest({
+    render: async function (searchVal, collection, startIndex) {
+        const jrnResp = await restRequest({
             type: 'GET',
-            url: `journal/${collection}/issues`
-        }).done((jrnResp) => {
-            restRequest({
-                type: 'GET',
-                url: `journal/${this.defaultJournal}/pending?`
-            }).done((pendRsp) => {
-                pendingSubs = pendRsp.length;
-                this.$el.html(HomeTemplate({info: { 'issues': jrnResp }}));
-                new MenuBarView({ // eslint-disable-line no-new
-                    el: this.$el,
-                    parentView: this,
-                    searchBoxVal: searchVal,
-                    pendingSubNum: pendingSubs
-                });
-                if (this.$('#treeWrapper').find('.treeEntry').length < 3) {
-                    restRequest({
-                        type: 'GET',
-                        url: 'journal/categories?tag=categories'
-                    }).done((resp) => {
-                        for (var key in resp) {
-                            this.$('#treeWrapper').html(this.$('#treeWrapper').html() + CategoryTemplate({'catName': resp[key]['key'], 'values': resp[key]['value']}));
-                        }
-                        var issueVal = '*';
-                        // Put URL hash additions into text box as "magic" terms
-                        if (window.location.hash && !window.location.hash.includes('dialog')) {
-                            var queryString = decodeURI(window.location.hash.substring(8));
-                            if (queryString.indexOf('category') !== -1) {
-                                var categoryVal = queryString.substring(13, queryString.length - 2);
-                                this.$(`.filterOption[val=${categoryVal}]`)[0].checked = true;
-                            } else if (window.location.hash.indexOf('issueId') !== -1) {
-                                issueVal = window.location.hash.split('=')[1];
-                            } else if ($('#live_search').val().indexOf(queryString) === -1) {
-                                this.$('#live_search').val($('#live_search').val() + queryString);
-                            }
-                        }
-                        this.$(`.issueButton[key='${issueVal}']`).addClass(' issueSelected');
-                        this.buildSearch(this.collectionID, 0);
-                    }); // End getting of OTJ Collection value setting
-                }
-            });
+            url: `journal/zzz/journals/${collection}/issues`
         });
+
+        const pendRsp = await restRequest({
+          type: 'GET',
+          url: `journal/${this.defaultJournal}/pending?`
+        });
+
+        const pendingSubs = pendRsp.length;
+        // const pendingSubs = 10;
+        this.$el.html(HomeTemplate({info: { 'issues': jrnResp }}));
+        new MenuBarView({ // eslint-disable-line no-new
+            el: this.$el,
+            parentView: this,
+            searchBoxVal: searchVal,
+            pendingSubNum: pendingSubs
+        });
+
+        if (this.$('#treeWrapper').find('.treeEntry').length < 3) {
+            const resp = await restRequest({
+                type: 'GET',
+                url: 'journal/categories?tag=categories'
+            });
+
+            for (var key in resp) {
+                this.$('#treeWrapper').html(this.$('#treeWrapper').html() + CategoryTemplate({'catName': resp[key]['key'], 'values': resp[key]['value']}));
+            }
+
+            var issueVal = '*';
+            // Put URL hash additions into text box as "magic" terms
+            if (window.location.hash && !window.location.hash.includes('dialog')) {
+                var queryString = decodeURI(window.location.hash.substring(8));
+                if (queryString.indexOf('category') !== -1) {
+                    var categoryVal = queryString.substring(13, queryString.length - 2);
+                    this.$(`.filterOption[val=${categoryVal}]`)[0].checked = true;
+                } else if (window.location.hash.indexOf('issueId') !== -1) {
+                    issueVal = window.location.hash.split('=')[1];
+                } else if ($('#live_search').val().indexOf(queryString) === -1) {
+                    this.$('#live_search').val($('#live_search').val() + queryString);
+                }
+            }
+            this.$(`.issueButton[key='${issueVal}']`).addClass(' issueSelected');
+            this.buildSearch(this.collectionID, 0);
+        }
+
         return this;
     },
 
