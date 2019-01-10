@@ -352,6 +352,18 @@ a
   clear right
   float right
   padding 10px 5px
+  .navWrapper
+    & > a
+      display inline-block
+      &:after
+        color #c6c6c6
+        content '|'
+        margin 0 4px
+        pointer-events none
+      &:last-of-type
+        &:after
+          content ''
+          margin 0
 /*-------------------------------------------------
 HEADER
 -------------------------------------------------*/
