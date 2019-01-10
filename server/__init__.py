@@ -214,6 +214,7 @@ class TechJournal(Resource):
         self.route('GET', ('zzz', 'journals', ':id', 'issues'), self.get_journal_issues)
 
         self.route('GET', ('zzz', 'issues'), self.get_issues)
+        self.route('GET', ('zzz', 'issues', ':id'), self.get_issue)
 
     @access.public(scope=TokenScope.DATA_READ)
     @describeRoute(
@@ -253,7 +254,7 @@ class TechJournal(Resource):
         Description('Get all issues')
         .param('id', 'The issue ID', required=False)
         .param('journal', 'The associated journal ID', required=False)
-        .errorResponse('Read access was denied on this journal.', 403)
+        .errorResponse('Read access was denied.', 403)
     )
     def get_issues(self, params):
         spec = {'meta.resourceType': 'issue'}
@@ -271,6 +272,19 @@ class TechJournal(Resource):
         issues = list(conn.find(spec))
 
         return map(format_issue, issues)
+
+    @access.public(TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+        Description('Get an Issue by ID')
+        .param('id', 'The issue ID', paramType='path')
+        .errorResponse('Read access was denied on this issue.', 403)
+    )
+    def get_issue(self, folder, params):
+        if folder.get('meta', {}).get('resourceType') != 'issue':
+            raise RestException('ID does not describe an issue')
+
+        return format_issue(folder)
 
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)
