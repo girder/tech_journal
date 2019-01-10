@@ -93,17 +93,33 @@ def format_journal(journal):
 def format_issue(rec):
     id = rec['_id']
     name = rec['name']
-    journal = rec['parentId']
+    journal_id = rec['parentId']
+    author_license = rec['meta'].get('authorLicense')
+    publisher_license = rec['meta'].get('publisherLicense')
+    description = rec['meta'].get('issueDescription')
+    due = rec['meta']['paperDue']
 
     return {
         'id': id,
         'name': name,
+        'journal': journal_id,
+        'authorLicense': author_license,
+        'publisherLicense': publisher_license,
+        'description': description,
+        'paperDue': due,
         'links': {
             'girder': '/folder/{}'.format(id),
-            'journal': '/journal/zzz/journals/{}'.format(journal),
-            'submissions': '/journal/zzz/journals/{}/submissions'.format(id)
+            'journal': '/journal/zzz/journals/{}'.format(journal_id),
+            'submissions': '/journal/zzz/journals/{}/submissions'.format(journal_id),
+            'comments': '/journal/zzz/issues/{}/comments'.format(id)
         }
     }
+
+def mongo_collection(name):
+    db = getDbConnection()
+    coll = MongoProxy(db.get_database()[name])
+
+    return coll
 
 
 class TechJournal(Resource):
@@ -197,6 +213,8 @@ class TechJournal(Resource):
         self.route('GET', ('zzz', 'journals', ':id'), self.get_journal)
         self.route('GET', ('zzz', 'journals', ':id', 'issues'), self.get_journal_issues)
 
+        self.route('GET', ('zzz', 'issues'), self.get_issues)
+
     @access.public(scope=TokenScope.DATA_READ)
     @describeRoute(
         Description('Get all Journals')
@@ -215,8 +233,10 @@ class TechJournal(Resource):
         .errorResponse('Read access was denied on this journal.', 403)
     )
     def get_journal(self, collection, params):
-        return format_journal(collection)
+        if '__journal__' not in collection['description']:
+            raise RestException('ID does not describe a journal')
 
+        return format_journal(collection)
 
     @access.public(TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)
@@ -226,7 +246,30 @@ class TechJournal(Resource):
         .errorResponse('Read access was denied on this journal.', 403)
     )
     def get_journal_issues(self, collection, params):
-        issues = self.model('folder').childFolders(collection, 'collection', user=self.getCurrentUser())
+        return self.get_issues({'journal': collection['_id']})
+
+    @access.public(TokenScope.DATA_READ)
+    @describeRoute(
+        Description('Get all issues')
+        .param('id', 'The issue ID', required=False)
+        .param('journal', 'The associated journal ID', required=False)
+        .errorResponse('Read access was denied on this journal.', 403)
+    )
+    def get_issues(self, params):
+        spec = {'meta.resourceType': 'issue'}
+
+        id = params.get('id')
+        journal = params.get('journal')
+
+        if id:
+            spec['_id'] = ObjectId(id)
+
+        if journal:
+            spec['parentId'] = ObjectId(journal)
+
+        conn = mongo_collection('folder')
+        issues = list(conn.find(spec))
+
         return map(format_issue, issues)
 
     @access.public(scope=TokenScope.DATA_READ)
