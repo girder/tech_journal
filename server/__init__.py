@@ -115,6 +115,40 @@ def format_issue(rec):
         }
     }
 
+
+def format_submission(rec):
+    id = rec['_id']
+    description = rec['description']
+    downloadStatistics = rec['downloadStatistics']
+    name = rec['name']
+    attribution_policy = rec['meta']['attribution-policy']
+    copyright = rec['meta']['copyright']
+    grant = rec['meta']['grant']
+    related = rec['meta']['related']
+    issue = rec['meta']['targetIssue']
+    submissionNumber = rec['meta']['submissionNumber']
+
+    return {
+        'id': id,
+        'name': name,
+        'issue': issue,
+        'description': description,
+        'attributionPolicy': attribution_policy,
+        'copyright': copyright,
+        'grant': grant,
+        'related': related,
+        'issue': issue,
+        'submissionNumber': submissionNumber,
+        'downloadStatistics': downloadStatistics,
+        'links': {
+            'girder': '/folder/{}'.format(id),
+            'issue': '/journal/zzz/issues/{}'.format(issue),
+            'revisions': '/journal/zzz/issues/{}/revisions'.format(id),
+            'comments': '/journal/zzz/issues/{}/comments'.format(id)
+        }
+    }
+
+
 def mongo_collection(name):
     db = getDbConnection()
     coll = MongoProxy(db.get_database()[name])
@@ -215,6 +249,10 @@ class TechJournal(Resource):
 
         self.route('GET', ('zzz', 'issues'), self.get_issues)
         self.route('GET', ('zzz', 'issues', ':id'), self.get_issue)
+        self.route('GET', ('zzz', 'issues', ':id', 'submissions'), self.get_issue_submissions)
+
+        self.route('GET', ('zzz', 'submissions'), self.get_submissions)
+        self.route('GET', ('zzz', 'submissions', ':id'), self.get_submission)
 
     @access.public(scope=TokenScope.DATA_READ)
     @describeRoute(
@@ -285,6 +323,53 @@ class TechJournal(Resource):
             raise RestException('ID does not describe an issue')
 
         return format_issue(folder)
+
+    @access.public(TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+        Description('Get all submissions from an issue')
+        .param('id', 'The issue ID', paramType='path')
+        .errorResponse('Read access was denied on this journal.', 403)
+    )
+    def get_issue_submissions(self, folder, params):
+        return self.get_submissions({'issue': folder['_id']})
+
+    @access.public(TokenScope.DATA_READ)
+    @describeRoute(
+        Description('Get all submissions')
+        .param('id', 'The issue ID', required=False)
+        .param('issue', 'The associated issue ID', required=False)
+        .errorResponse('Read access was denied.', 403)
+    )
+    def get_submissions(self, params):
+        spec = {'meta.resourceType': 'submission'}
+
+        id = params.get('id')
+        issue = params.get('issue')
+
+        if id:
+            spec['_id'] = ObjectId(id)
+
+        if issue:
+            spec['parentId'] = ObjectId(issue)
+
+        conn = mongo_collection('folder')
+        submissions = list(conn.find(spec))
+
+        return map(format_submission, submissions)
+
+    @access.public(TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+        Description('Get a submission by ID')
+        .param('id', 'The submission ID', paramType='path')
+        .errorResponse('Read access was denied on this issue.', 403)
+    )
+    def get_submission(self, folder, params):
+        if folder.get('meta', {}).get('resourceType') != 'submission':
+            raise RestException('ID does not describe an submission')
+
+        return format_submission(folder)
 
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)
