@@ -149,6 +149,49 @@ def format_submission(rec):
     }
 
 
+def format_revision(rec):
+    id = rec['_id']
+    description = rec['description']
+    download_statistics = rec['downloadStatistics']
+    name = rec['name']
+    corp_CLA = rec['meta']['CorpCLA']
+    authors = rec['meta']['authors']
+    categories = rec['meta']['categories']
+    disclaimer = rec['meta']['disclaimer']
+    institution = rec['meta']['institution']
+    notification_email = rec['meta']['notification-email']
+    permission = rec['meta']['permission']
+    revisionNumber = rec['meta']['revisionNumber']
+    source_license = rec['meta']['source-license']
+    source_license_text = rec['meta']['source-license-text']
+    tags = rec['meta']['tags']
+    type = rec['meta']['type']
+    submission = rec['parentId']
+
+    return {
+        'id': id,
+        'name': name,
+        'submission': submission,
+        'description': description,
+        'downloadStatistics': download_statistics,
+        'corpCLA': corp_CLA,
+        'authors': authors,
+        'categories': categories,
+        'disclaimer': disclaimer,
+        'institution': institution,
+        'notificationEmail': notification_email,
+        'permission': permission,
+        'revisionNumber': revisionNumber,
+        'sourceLicense': source_license,
+        'sourceLicenseText': source_license_text,
+        'tags': tags,
+        'type': type,
+        'links': {
+            'girder': '/folder/{}'.format(id),
+            'issue': '/journal/zzz/submissions/{}'.format(submission)
+        }
+    }
+
 def mongo_collection(name):
     db = getDbConnection()
     coll = MongoProxy(db.get_database()[name])
@@ -253,6 +296,10 @@ class TechJournal(Resource):
 
         self.route('GET', ('zzz', 'submissions'), self.get_submissions)
         self.route('GET', ('zzz', 'submissions', ':id'), self.get_submission)
+        self.route('GET', ('zzz', 'submissions', ':id', 'revisions'), self.get_submission_revisions)
+
+        self.route('GET', ('zzz', 'revisions'), self.get_revisions)
+        self.route('GET', ('zzz', 'revisions', ':id'), self.get_revision)
 
     @access.public(scope=TokenScope.DATA_READ)
     @describeRoute(
@@ -370,6 +417,53 @@ class TechJournal(Resource):
             raise RestException('ID does not describe an submission')
 
         return format_submission(folder)
+
+    @access.public(TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+        Description('Get all submissions from an issue')
+        .param('id', 'The issue ID', paramType='path')
+        .errorResponse('Read access was denied on this journal.', 403)
+    )
+    def get_submission_revisions(self, folder, params):
+        return self.get_revisions({'submission': folder['_id']})
+
+    @access.public(TokenScope.DATA_READ)
+    @describeRoute(
+        Description('Get all revisions')
+        .param('id', 'The revision ID', required=False)
+        .param('submission', 'The associated submission ID', required=False)
+        .errorResponse('Read access was denied.', 403)
+    )
+    def get_revisions(self, params):
+        spec = {'meta.resourceType': 'revision'}
+
+        id = params.get('id')
+        submission = params.get('submission')
+
+        if id:
+            spec['_id'] = ObjectId(id)
+
+        if submission:
+            spec['parentId'] = ObjectId(submission)
+
+        conn = mongo_collection('folder')
+        revisions = list(conn.find(spec))
+
+        return map(format_revision, revisions)
+
+    @access.public(TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+        Description('Get a revision by ID')
+        .param('id', 'The revision ID', paramType='path')
+        .errorResponse('Read access was denied on this issue.', 403)
+    )
+    def get_revision(self, folder, params):
+        if folder.get('meta', {}).get('resourceType') != 'revision':
+            raise RestException('ID does not describe a revision')
+
+        return format_revision(folder)
 
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)
