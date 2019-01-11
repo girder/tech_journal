@@ -199,6 +199,34 @@ def mongo_collection(name):
     return coll
 
 
+def _get_revision_files(id):
+   spec = {
+        'meta.resourceType': 'file',
+        'folderId': ObjectId(id)
+   }
+
+   conn = mongo_collection('item')
+   files = list(conn.find(spec))
+
+   return files
+
+
+def _get_revision_file_by_type(id, type):
+    files = _get_revision_files(id)
+    matches = filter(lambda x: x.get('meta', {})['type'] == type, files)
+
+    result = None
+    if len(matches) > 0:
+        result = matches[0]
+
+    return result
+
+
+def _get_revision_files_by_type(id, type):
+    files = _get_revision_files(id)
+    return filter(lambda x: x.get('meta', {})['type'] == type, files)
+
+
 class TechJournal(Resource):
 
     def checkSubmission(self, filterParams, submission, searchObj, targetVal, category):
@@ -300,6 +328,15 @@ class TechJournal(Resource):
 
         self.route('GET', ('zzz', 'revisions'), self.get_revisions)
         self.route('GET', ('zzz', 'revisions', ':id'), self.get_revision)
+        self.route('GET', ('zzz', 'revisions', ':id', 'files'), self.get_revision_files)
+        self.route('GET', ('zzz', 'revisions', ':id', 'thumbnail'), self.get_revision_thumbnail)
+        self.route('GET', ('zzz', 'revisions', ':id', 'paper'), self.get_revision_paper)
+        self.route('GET', ('zzz', 'revisions', ':id', 'github'), self.get_revision_github)
+        self.route('GET', ('zzz', 'revisions', ':id', 'sourcecode'), self.get_revision_sourcecode)
+        self.route('GET', ('zzz', 'revisions', ':id', 'data'), self.get_revision_data)
+        self.route('GET', ('zzz', 'revisions', ':id', 'misc'), self.get_revision_misc)
+        self.route('GET', ('zzz', 'revisions', ':id', 'techniquepaper'), self.get_revision_techniquepaper)
+        self.route('GET', ('zzz', 'revisions', ':id', 'testingcode'), self.get_revision_testingcode)
 
     @access.public(scope=TokenScope.DATA_READ)
     @describeRoute(
@@ -457,13 +494,103 @@ class TechJournal(Resource):
     @describeRoute(
         Description('Get a revision by ID')
         .param('id', 'The revision ID', paramType='path')
-        .errorResponse('Read access was denied on this issue.', 403)
+        .errorResponse('Read access was denied on this revision.', 403)
     )
     def get_revision(self, folder, params):
         if folder.get('meta', {}).get('resourceType') != 'revision':
             raise RestException('ID does not describe a revision')
 
         return format_revision(folder)
+
+    @access.public(TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+        Description('Get all files from a revision')
+        .param('id', 'The revision ID', paramType='path')
+        .errorResponse('Read access was denied on this revision.', 403)
+    )
+    def get_revision_files(self, folder, params):
+        return _get_revision_files(folder['_id'])
+
+    @access.public(TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+        Description('Get the thumbnail file from a revision')
+        .param('id', 'The revision ID', paramType='path')
+        .errorResponse('Read access was denied on this revision.', 403)
+    )
+    def get_revision_thumbnail(self, folder, params):
+        return _get_revision_file_by_type(folder['_id'], 'THUMBNAIL')
+
+    @access.public(TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+        Description('Get the paper from a revision')
+        .param('id', 'The revision ID', paramType='path')
+        .errorResponse('Read access was denied on this revision.', 403)
+    )
+    def get_revision_paper(self, folder, params):
+        return _get_revision_file_by_type(folder['_id'], 'PAPER')
+
+    @access.public(TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+        Description('Get the GitHub release from a revision')
+        .param('id', 'The revision ID', paramType='path')
+        .errorResponse('Read access was denied on this revision.', 403)
+    )
+    def get_revision_github(self, folder, params):
+        return _get_revision_file_by_type(folder['_id'], 'GITHUB')
+
+    @access.public(TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+        Description('Get the source code from a revision')
+        .param('id', 'The revision ID', paramType='path')
+        .errorResponse('Read access was denied on this revision.', 403)
+    )
+    def get_revision_sourcecode(self, folder, params):
+        return _get_revision_files_by_type(folder['_id'], 'SOURCECODE')
+
+    @access.public(TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+        Description('Get the data from a revision')
+        .param('id', 'The revision ID', paramType='path')
+        .errorResponse('Read access was denied on this revision.', 403)
+    )
+    def get_revision_data(self, folder, params):
+        return _get_revision_files_by_type(folder['_id'], 'DATA')
+
+    @access.public(TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+        Description('Get the miscellaneous items from a revision')
+        .param('id', 'The revision ID', paramType='path')
+        .errorResponse('Read access was denied on this revision.', 403)
+    )
+    def get_revision_misc(self, folder, params):
+        return _get_revision_files_by_type(folder['_id'], 'MISC')
+
+    @access.public(TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+        Description('Get the technique papers from a revision')
+        .param('id', 'The revision ID', paramType='path')
+        .errorResponse('Read access was denied on this revision.', 403)
+    )
+    def get_revision_techniquepaper(self, folder, params):
+        return _get_revision_files_by_type(folder['_id'], 'TECHNICAL')
+
+    @access.public(TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+        Description('Get the testing code from a revision')
+        .param('id', 'The revision ID', paramType='path')
+        .errorResponse('Read access was denied on this revision.', 403)
+    )
+    def get_revision_testingcode(self, folder, params):
+        return _get_revision_files_by_type(folder['_id'], 'TESTING_SOURCECODE')
 
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)
