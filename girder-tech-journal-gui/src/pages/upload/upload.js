@@ -116,7 +116,8 @@ var uploadView = View.extend({
             path: `journal/${this.parentId}/details`
         }).done((resp) => {
             this.curRevision = resp[0];
-            this.render();
+            var handleText = `${window.location.origin}${window.location.pathname}#view/${resp[1].meta.submissionNumber}/${resp[0].meta.revisionNumber}`
+            this.render(handleText);
             restRequest({
                 type: 'GET',
                 path: `item?folderId=${this.parentId}`
@@ -135,8 +136,8 @@ var uploadView = View.extend({
             });
         });
     },
-    render: function () {
-        this.$el.html(UploadViewTemplate({user: getCurrentUser(), newRevision: this.newRevision}));
+    render: function (handleText) {
+        this.$el.html(UploadViewTemplate({handleText: handleText, user: getCurrentUser(), newRevision: this.newRevision}));
         new MenuBarView({ // eslint-disable-line no-new
             el: this.$el,
             parentView: this
