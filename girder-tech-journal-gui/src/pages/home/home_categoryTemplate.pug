@@ -4,9 +4,8 @@ mixin catEntry(val)
     a.dynatree-title #{val}
 
 .treeEntry
-  img.toggleButton
   h4 #{catName}
-  #categoryTree--1.categoryTree
+  .categoryTree
     ul.dynatree-container
       for val in values
         +catEntry(val)
