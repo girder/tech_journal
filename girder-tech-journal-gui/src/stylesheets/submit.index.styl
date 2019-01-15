@@ -45,6 +45,8 @@ div#info_title
     background-color  #FFFBF0
     border  1px solid #c0c0c0
 
+p#submission
+  padding-bottom 25px
 
 textarea.smallInput
   width 100%
@@ -62,3 +64,32 @@ textarea.bigInput
 div#newResourceForm
   border 1px solid grey
   width  697px
+
+detailsBG = #fffff8
+
+#issueDetails
+  & > div
+    background detailsBG
+    border 1px solid darken(desaturate(detailsBG,15%),20%)
+    margin-top 20px
+    padding 25px
+    h3
+      margin-top 0
+    pre
+      background darken(desaturate(detailsBG,20%),3%)
+      border 1px solid darken(desaturate(detailsBG,20%),15%)
+      color darken(desaturate(detailsBG,20%),30%)
+    input[type=button]
+      background #cc3d3d
+      border none
+      border-radius 3px
+      color white
+      display block
+      float right
+      padding 3px 6px 4px
+      &:hover
+        background lighten(#cc3d3d,10%)
+    &:after
+      content ''
+      display table
+      clear both
