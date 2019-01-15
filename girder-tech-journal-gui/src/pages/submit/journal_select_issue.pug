@@ -16,30 +16,28 @@ mixin issueEntry(info, parName)
     .Content
       .viewMain
         h3 Choose a journal for your submission
-        #issueDetails
-        #submission
+        p#submission
           | Don't know how to submit your paper? Visit the&nbsp;
           a(href="#help") help page
-          br
-          br
-          table(width="100%", border="0")
-            tbody
+          table#submissionTable(width="100%", border="0")
+            thead
               tr
-                td(width="15%")
+                th(width="15%")
                   div(align="left")
                     strong Journal
-                td(width="50%")
+                th(width="50%")
                   div(align="left")
                     strong Title
-                td(width="10%")
+                th(width="10%")
                   div(align="left")
                     strong Days left
-                td(width="20%")
+                th(width="20%")
                   div(align="left")
                     strong Actions
+            tbody
               tr
-                hr
               each item in info
                 +issueEntry(item, info.parentName)
+        #issueDetails
         .clear
         .Footer
