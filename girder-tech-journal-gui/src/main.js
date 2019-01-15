@@ -3,11 +3,6 @@ import App from 'girder/views/App';
 
 // Import all stylesheets
 import './stylesheets/main.styl';
-import './stylesheets/index.index.styl';
-import './stylesheets/submit.index.styl';
-import './stylesheets/submit.upload.styl';
-import './stylesheets/view.index.styl';
-import './stylesheets/item.comments.styl';
 
 import './routes';
 

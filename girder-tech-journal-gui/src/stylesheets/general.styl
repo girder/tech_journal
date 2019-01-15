@@ -1,0 +1,818 @@
+/** Define global attributes */
+body
+  border none
+  font-family arial, helvetica, sans-serif
+  margin  0
+  padding  0
+  text-align  left
+  width  100%
+  height  100%
+  min-width  800px
+  background-color  #f1f1f1
+
+/*
+Colors
+*/
+
+#footer
+  .text
+    color #999999
+
+  .copyright
+    color #999999
+
+.issn
+  color #999999
+  position relative
+  margin-left 5px
+  float  left
+  width  100px
+  bottom  15px
+
+
+.powered
+  color #999999
+  position relative
+  float  right
+  width  100px
+  bottom  15px
+
+
+div .graytext
+  color #666666
+  border-bottom-color  #DDDDDD
+
+
+/* image in index*/
+.newsimage
+  background white
+  border  1px solid #FFDB70
+  -webkit-box-shadow  #CCC 0 0 2px
+  -moz-box-shadow  0 0 2px #CCC
+  -moz-border-radius  2px
+  -webkit-border-radius  2px
+  -khtml-border-radius  2px
+  border-radius  2px
+  margin-bottom  2px
+  img
+    margin  4px
+    width  63px
+  /* image in index*/
+  padding-bottom 7px
+  width 70px
+  height 63px
+  background-repeat no-repeat
+  background-position top left
+  border none
+  margin 0
+
+/*submission */
+#submission input textarea
+  background-color #FFFBF0
+
+.subcaption
+  text-align  left
+  color  #666666
+
+#step4
+  .title
+    font-weight  bold
+    color  #000000
+  .authors
+    color  #999999
+
+
+/* journal */
+
+.journaltitle
+  color  #777777
+
+
+#journal
+  .introductory
+    color  #666666
+  .dates
+    color  #666666
+  .relatedsites
+    color  #777777
+
+
+/* publication */
+.publication_authors
+  color #666666
+
+
+.publication_footer
+  color #666666
+
+
+#publication
+  .title
+    color  #3366FF /** publication title */
+  .title2
+    color  #3366FF /** publication title */
+  .journal
+    color  #666666
+
+.reviews
+  border-top-color #DDDDDD
+
+.review
+  border-top-color #DDDDDD
+
+.review_header2
+  color  #666666
+
+.review_header
+  color  #666666
+
+.helpful
+  color  #666666
+
+.review_comment
+  color  #666666
+
+/*first bloc in index*/
+.info
+  background #d2d0c2
+  background-repeat no-repeat
+  line-height  12px
+  margin-top 10px
+  margin-left 0
+  margin-right 20px
+  margin-bottom  0
+  padding-top 20px
+  padding-bottom 5px
+  padding-left 10px
+  width 639px
+  background-position top left
+  /*border  1px solid*/
+
+/* background cell (table)*/
+.colortable
+  background-color   #fffaec
+
+.linedivider
+  background-repeat no-repeat
+  span
+    display  none
+  width  100%
+  height  2px
+
+#headerBar
+  border-top 4px solid #d6d6d6
+
+/* menu */
+#topbar
+  background-color white
+  border-radius 3px
+  box-shadow 0 3px 7px rgba(0,0,0,.1)
+  position relative
+  font-weight bold
+  height 42px
+  padding 0
+  margin-bottom  15px
+  &:after
+    content ''
+    clear both
+    display table
+
+.nav
+  font-size 14px
+  list-style  none
+  height 100%
+  margin  0
+  padding  0
+  font-family  Arial, Helvetica, sans-serif
+  z-index  100
+  position  relative
+
+  & > li
+    border-right 1px solid #ececec
+    height 100%
+    float left
+    margin 0
+    padding 0
+    position relative
+    /*opacity  0.5*/
+    &:hover
+      background #f5f7fb
+      & > a
+        background none
+        border-bottom 4px solid primaryColor
+    a
+      display flex
+      justify-content center
+      text-decoration none
+      height 100%
+      margin 0
+      padding 0 16px
+      align-items center
+      font  bold Arial, Helvetica, sans-serif
+      color  #444444
+      link, :active, :visited
+        display  block
+        text-decoration  none
+        margin 0
+    ul
+      display none
+      list-style none
+      margin 0
+      padding 0
+      position absolute
+      left 0
+      top 100%
+      box-shadow  0 3px 10px rgba(0,0,0,.1)
+      background  #FFFFFF
+      li
+        background primaryColor
+        border-bottom 1px solid darken(primaryColor,3%)
+        display block
+        height auto
+        a
+          background none
+          color white
+          display flex
+          align-items center
+          justify-content left
+          padding 10px 16px
+          white-space  nowrap
+        &:hover
+          background #006cca
+#submm
+  background-color  #FFFFFF
+  background-image  none
+
+a
+  hover#submm
+    background-color  #CCCCCC
+    background-image  none
+
+  color  #56758B
+  cursor pointer
+  :visited
+    text-decoration  none
+    border none
+  :active
+    outline  none
+  :focus
+    -moz-outline-style  none
+
+#menu
+  position  relative
+  margin  0
+  padding 15px 0 8px
+  border  none
+  &:after
+    content ""
+    clear both
+    display table
+
+  #title
+    float left
+    font-size  24px
+    color  #acaeb7
+    padding 10px
+
+#topmenu
+  float left
+  a
+    font-weight  bold
+    text-decoration  none
+    top  -18px
+    color  #000000
+    &:hover
+      color  #FFDB70
+  &:hover
+    text-decoration  underline
+
+#about
+  position  absolute
+  z-index  0
+  top  15px
+  left  200px
+
+  .register
+    margin-left  7px
+    padding-left  7px
+    border-left  1px solid grey
+
+  a
+    font-weight  bold
+    text-decoration  none
+    top  -18px
+    color  #000000
+    &:hover
+      color  #DFE1EB
+      text-decoration  underline
+
+
+#toplogin
+  float  right
+  padding-top  7px
+  padding-right  5px
+  font-weight  bold
+  text-decoration  none
+  #loginForm
+    font-size 11px
+    #logout
+      background primaryColor
+      border-radius 3px
+      color white
+      float right
+      font-size 8px
+      margin-left 10px
+      padding 3px 5px 4px
+      &:hover
+        background #006cca
+  input
+    color  #777777
+  a
+    color  #000000
+    :hover
+      color  #FFDB70 /** */
+      text-decoration  underline
+    font-weight  bold
+    text-decoration  none
+    top  -8px
+  .login
+    position relative
+    border  none
+
+.secondaryNav
+  clear right
+  float right
+  padding 10px 5px
+  .navWrapper
+    & > a
+      display inline-block
+      &:after
+        color #c6c6c6
+        content '|'
+        margin 0 4px
+        pointer-events none
+      &:last-of-type
+        &:after
+          content ''
+          margin 0
+/*-------------------------------------------------
+HEADER
+-------------------------------------------------*/
+
+.righttop
+  margin-top  10px
+  float right
+  width 270px
+  margin-bottom  10px
+
+li#browseLink
+  //border  none!important
+
+
+#activem
+  background-position  right bottom
+
+div.Header
+  padding 0 30px
+  /* Search bar */
+  div.HeaderSearch
+    display flex
+    align-items center
+    padding-right 16px
+    float right
+    height 100%
+    position relative
+
+    a#advancedSearchLink
+      position  absolute
+      right  3px
+      bottom  -13px
+      color  #F3F1EC
+
+    input#live_search
+      font-size  12px
+      opacity  0.9
+      background #efefef
+      box-shadow inset 0 0 5px rgba(0,0,0,.1)
+      border none
+      padding  6px 10px 5px
+      margin-right 10px
+      width  150px
+      position relative
+      -moz-border-radius  0 0 0 6px
+      -webkit-border-radius  0 0 0 6px
+      -khtml-border-radius  0 0 0 6px
+      border-radius  0 0 6 0
+
+/* Header top size and baskcground */
+  div.HeaderTopContent
+    margin  0 auto
+    max-width  1100px
+    min-width  800px
+    padding  0
+
+
+/* Header bottom size */
+  div.HeaderBottomContent
+    margin  0 auto
+    max-width  1100px
+    min-width  800px
+    padding 0
+    height  22px
+
+/* Logo */
+  div.HeaderLogo
+    height  82px
+    width  81px
+    margin  5px
+    float left
+    cursor  pointer
+
+/* Text Logo */
+  div.HeaderLogoText
+    font-size  30px
+    height  82px
+    width  400px
+    margin  25px 0 0 10px
+    float left
+    cursor  pointer
+
+/* Rss Image */
+  div.HeaderRss
+    float right
+    margin  35px 15px 0 0
+
+/* Header Menu */
+div.HeaderMenu
+  position  absolute
+  margin  7px
+  font-size  12px
+
+  li
+    a
+      display  block
+      text-decoration  none
+      :hover
+        background-color  #e5e5e5
+        text-decoration none
+
+  ul
+    display  block
+    list-style-type  disc
+    margin 0
+    padding 0
+    position  relative
+
+    li
+      display  block
+      float  left
+      list-style-type  none
+      margin-left  10px
+      padding-left  10px
+      border-left  1px black solid
+      position  relative
+
+      .first
+        display  block
+        float  left
+        list-style-type  none
+        margin-left  0
+        padding-left  0
+        border  none
+
+#searchloading
+  position absolute
+  color #FFFFFF
+  text-decoration none
+  width  12px
+  height  12px
+  top  12px
+  right  7px
+
+.search-category
+  clear  both
+  color  #333BA0
+  font-weight  bold
+  font-size  12px
+  background-color  #F6F9FE
+  line-height  1.5
+
+.search-items
+  background-color  #FFFFFF
+  font-size  12px!important
+
+/*-------------------------------------------------
+WRAPPER (contain content and footer)
+-------------------------------------------------*/
+div.Wrapper
+  margin  0 auto
+  max-width  1100px
+  min-width  800px
+
+
+/*-------------------------------------------------
+MAIN CONTENT
+-------------------------------------------------*/
+
+.Content
+  border-radius 3px
+  overflow hidden
+  position relative
+  color  #000000
+  margin-top 45px
+  width  100%
+  &:after
+    content ''
+    clear both
+    display table
+  .ContentWithLeftPanel,
+  .ContentWithRightPanel,
+  .viewMain
+    background white
+    &:after
+      content ''
+      clear both
+      display table
+    .Panel
+      background #4a4a4a
+      border none
+      color white
+      margin 0
+      padding 22px 30px 30px
+      width 20%
+      h2
+        margin-top 0
+      h4
+        padding-bottom 4px
+        margin-bottom 5px
+      a
+        color #b5ccdc
+      ul
+        list-style none
+        margin 10px 0 15px
+        padding 0
+        li
+          font-size 12px
+          input[type=checkbox]
+            margin-right 7px
+          select,input
+            color #000000
+            &#exportCitType
+              margin-right 5px
+    .MainContent
+      padding 30px
+      width 80%
+      #infoElement
+        height auto
+        box-shadow none
+        font-size 14px
+        overflow-x auto
+        overflow-y auto
+        padding 0 0 30px 0
+  .viewMain
+    padding 30px
+
+  div.ContentWithLeftPanel
+    div.Panel
+      float  left
+    div.MainContent
+      float left
+
+  div.ContentWithRightPanel
+    div.Panel
+      float  right
+    div.MainContent
+      float left
+
+/*-------------------------------------------------
+SEARCH RESULTS BLOCKS
+-------------------------------------------------*/
+
+.searchResults
+  border-top 4px solid #e4e4e4
+  border-bottom 3px solid #e4e4e4
+  padding 0
+  .SearchResultEntry
+    border none
+    border-bottom 1px solid #e4e4e4
+    height auto
+    margin: 0
+    padding 0 15px
+    position relative
+    transition .15s all ease-in-out
+    z-index 1
+    .SearchResultTable
+      width 100%
+      td
+        border none
+        padding 15px 0 20px
+        vertical-align middle
+        &.resultThumbnail
+          text-aign center
+          width 85px
+          .ResultLogo
+            display inline-block
+            margin 0
+        &.resultInfo
+          .ResultDescription
+            height auto
+    &:hover
+      background auto
+      -webkit-box-shadow 0 2px 10px rgba(0,0,0,.2)
+      -moz-box-shadow 0 2px 10px rgba(0,0,0,.2)
+      box-shadow 0 2px 10px rgba(0,0,0,.2)
+      margin-top -2px
+      z-index 99
+
+/*-------------------------------------------------
+FOOTER
+-------------------------------------------------*/
+div.Footer
+  clear  both
+  color  #999999
+  font-size  10px
+  line-height  1.6em
+  padding-top  20px
+  text-align  left
+  width  300px
+  font-family arial, helvetica, sans-serif
+  text-decoration  none
+  margin-left  auto
+  margin-right  auto
+  // text-align  center
+
+/* ------------------------------------------
+LOGIN / REGISTER Modal Dialog
+------------------------------------------*/
+
+.registerInfo
+  display none
+
+form#registerForm
+  margin-left  0!important
+  color black!important
+
+  label
+    color black!important
+  a
+    color black!important
+
+form#loginForm input.globalButton
+  margin-left  0
+
+a.closeButton
+  float right
+
+.TopDynamicBar /* The div that shows/hides. */
+  display none /* starts out hidden */
+  z-index 40000 /* High z-index to ensure it appears above all content */
+
+  .dumbBoxOverlay /* Shades out background when selector is active */
+    position fixed
+    width 100%
+    height 100%
+    background-color black
+    opacity 0.5 /* Sets opacity so it's partly transparent */
+    // -ms-filter "progid DXImageTransform.Microsoft.Alpha(Opacity=50)" /* IE transparency */
+    // filter alpha(opacity=50) /* More IE transparency */
+    z-index 40000
+
+  .vertical-offset /* Fixed position to provide the vertical offset */
+    position fixed
+    top 30%
+    width 100%
+    z-index 40010 /* ensures box appears above overlay */
+
+  .dumbBox /* The actual box, centered in the fixed-position div */
+    width 605px /* Whatever width you want the box to be */
+    position relative
+    margin 0 auto
+    /*Everything below is just visual styling */
+    background-color white
+    padding 10px
+    border 1px solid black
+
+
+
+
+/** Reset default css value */
+dl
+  margin 0
+  padding 0
+
+dt
+
+img
+  border none
+
+li
+  :active
+    outline  none
+  :focus
+    -moz-outline-style  none
+
+/* Default (menu and blocs) */
+.decal
+  margin-left 10px
+
+.decal2
+  margin-left 80px
+
+
+
+.newsdecal
+  margin-left  5px
+
+
+
+
+
+/* avoid creating unecessary gap in IE6 */
+form
+  display inline
+
+
+input textarea select
+  border  1px solid #c0c0c0
+
+
+.required-fields
+  display  none
+
+
+.left
+  float  left
+  width  700px
+
+
+.right
+  line-height  12px
+  float  right
+  margin-right  10px
+  width 270px
+  border-left  1px solid #DAD8D4
+  padding-left  5px
+
+
+#notification
+  position relative
+  left  -23px
+
+.social_networks li
+    padding  4px 0 2px 22px !important
+    margin-left  0
+  position  relative
+  top  -10px
+  left  -23px
+  list-style-type  none
+  list-style-image  none
+
+
+
+
+/*
+Form error*/
+input.parsley-success
+  textarea.parsley-success
+    color  #468847 !important
+    background-color  #DFF0D8 !important
+    border  1px solid #D6E9C6 !important
+
+  textarea.parsley-error
+    color  #B94A48 !important
+    background-color  #F2DEDE !important
+    border  1px solid #EED3D7 !important
+
+
+ul.parsley-error-list
+  font-size  11px
+  margin  2px
+  list-style-type none
+  padding 0
+  li
+    line-height  11px
+
+
+/*
+Submission
+*/
+div#info_title
+  font-size 14px
+  border-bottom 1px solid #BDBDBD
+  width 400px
+
+.info_title
+  font-size 14px
+  border-bottom 1px solid #BDBDBD
+  width 400px
+
+
+#step10 .title
+  position relative
+  font-weight  bold
+  border-bottom  1px solid
+  border-bottom-color #999999
+  a
+    position absolute
+    bottom 1
+    right 0
