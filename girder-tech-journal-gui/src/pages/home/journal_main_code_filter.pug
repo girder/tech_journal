@@ -1,10 +1,14 @@
+- var md5 = require('md5');
+
 .treeEntry
   h4 Code
   .categoryTree
     ul.dynatree-container
       li.filterEntry
-        input.filterOption(val="has_test_code", type="checkbox")
-        a.dynatree-title(href="#") has_test_code
+        - var hash = md5('code' + 'has_test_code');
+        input.filterOption(val="has_test_code", id=hash, type="checkbox")
+        label.dynatree-title(for=hash) has_test_code
       li.filterEntry
-        input.filterOption(val="has_code", type="checkbox")
-        a.dynatree-title(href="#") has_code
+        - var hash = md5('code' + 'has_code');
+        input.filterOption(val="has_code", id=hash, type="checkbox")
+        label.dynatree-title(for=hash) has_code
