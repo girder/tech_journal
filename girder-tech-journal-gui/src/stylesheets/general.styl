@@ -226,7 +226,7 @@ div .graytext
       background  #FFFFFF
       li
         background primaryColor
-        border-bottom 1px solid darken(primaryColor,3%)
+        border-bottom 1px solid darken(primaryColor,20%)
         display block
         height auto
         a
@@ -238,7 +238,7 @@ div .graytext
           padding 10px 16px
           white-space  nowrap
         &:hover
-          background #006cca
+          background darken(primaryColor,20%)
 #submm
   background-color  #FFFFFF
   background-image  none
@@ -248,11 +248,13 @@ a
     background-color  #CCCCCC
     background-image  none
 
-  color  #56758B
+  color  lighten(desaturate(primaryColor,10%),20%)
   cursor pointer
   :visited
     text-decoration  none
     border none
+  :hover
+    color primaryColor
   :active
     outline  none
   :focus
@@ -324,7 +326,7 @@ a
       margin-left 10px
       padding 3px 5px 4px
       &:hover
-        background #006cca
+        background lighten(primaryColor,10%)
   input
     color  #777777
   a
@@ -546,7 +548,7 @@ MAIN CONTENT
         padding-bottom 4px
         margin-bottom 5px
       a
-        color #b5ccdc
+        color lighten(primaryColor,75%)
       ul
         list-style none
         margin 10px 0 15px
