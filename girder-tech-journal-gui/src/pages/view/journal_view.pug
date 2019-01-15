@@ -119,7 +119,9 @@ if 'downloadStatistics' in info.revision
                   |,&nbsp;
               span.institution
                 +searchLink(info.revision.meta.institution,"institution")
-          .logo
+              span(style="background-color: #F2F3F3:")
+                | Please use this identifier to cite or link to this publication:
+                a(href=urlLink) #{urlLink}
             img.ResultLogo(src=logo)
           unless info.revision.curation.status === "APPROVED"
             span(style="font-weight:bold;color:red;")

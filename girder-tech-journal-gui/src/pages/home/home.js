@@ -1,5 +1,6 @@
 import View from 'girder/views/View';
 import router from 'girder/router';
+import Accordion from 'accordion';
 import { restRequest, apiRoot } from 'girder/rest';
 
 import MenuBarView from '../../views/menuBar.js';
@@ -84,6 +85,8 @@ const HomePage = View.extend({
                             this.$('#treeWrapper').html(this.$('#treeWrapper').html() + CategoryTemplate({'catName': resp[key]['key'], 'values': resp[key]['value']}));
                         }
                         var issueVal = '*';
+                        var el = document.querySelector("#treeWrapper")
+                        new Accordion.Accordion(el, {"noTransforms": true});
                         // Put URL hash additions into text box as "magic" terms
                         if (window.location.hash && !window.location.hash.includes('dialog')) {
                             var queryString = decodeURI(window.location.hash.substring(8));

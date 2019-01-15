@@ -1,12 +1,14 @@
+- var md5 = require('md5');
+
 mixin catEntry(val)
   li.filterEntry
-    input.filterOption(val=val, type="checkbox")
-    a.dynatree-title #{val}
+    - var hash = md5('category' + val);
+    input.filterOption(val=val, id=hash, type="checkbox")
+    label.dynatree-title(for=hash) #{val}
 
 .treeEntry
-  img.toggleButton
   h4 #{catName}
-  #categoryTree--1.categoryTree
+  .categoryTree
     ul.dynatree-container
       for val in values
         +catEntry(val)

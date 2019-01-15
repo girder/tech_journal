@@ -447,8 +447,8 @@ class TechJournal(Resource):
         filterParams = json.loads(params["query"])
         if "issueId" in filterParams:
             issues = [self.model('folder').load(filterParams['issueId'],
-                                                user=user
-                                                )]
+                                                user=user,
+                                                force=True)]
             del filterParams['issueId']
         else:
             issues = list(self.model('folder').childFolders(parentType='collection',

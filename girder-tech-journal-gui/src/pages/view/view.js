@@ -121,7 +121,7 @@ var submissionView = View.extend({
             type: 'GET',
             path: `journal/${this.revisionId}/details`
         });
-
+        var urlLink= `${window.location.origin}${window.location.pathname}#view/${submission.meta.submissionNumber}/${currentRev.meta.revisionNumber}`
         submission.meta.comments.sort(function (a, b) {
             if (a.index > b.index) return -1;
             if (a.index < b.index) return 1;
@@ -141,7 +141,15 @@ var submissionView = View.extend({
             if (resp.length > 0) {
                 logoURL = `${apiRoot}/${resp}`;
             }
-            this.$el.html(SubmissionViewTemplate({ user: this.currentUser, info: { 'revision': currentRev, 'parent': submission, 'otherRevisions': otherRevs }, logo: logoURL }));
+            this.$el.html(SubmissionViewTemplate({"urlLink":urlLink,
+                                                  user: this.currentUser,
+                                                  info: {
+                                                      'revision': currentRev,
+                                                      'parent': submission,
+                                                      'otherRevisions': otherRevs
+                                                  },
+                                                  logo: logoURL
+                                                  }));
             new MenuBarView({ // eslint-disable-line no-new
                 el: this.$el,
                 parentView: this
