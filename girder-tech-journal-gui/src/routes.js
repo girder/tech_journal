@@ -19,7 +19,7 @@ import manageJournalView from './views/manageJournal';
 import EditIssueView from './views/editIssue';
 import EditJournalView from './views/editJournal';
 import manageHelpView from './views/manageHelp';
-import FeedBackView from './views/feedback';
+import FeedBackView from './pages/feedback/feedback.js';
 import EditGroupUsersView from './views/groupUsers.js';
 import userView from './pages/user/user.js';
 import surveyView from './pages/survey/survey.js';

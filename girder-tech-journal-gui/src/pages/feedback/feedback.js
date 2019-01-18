@@ -2,8 +2,8 @@ import View from 'girder/views/View';
 import events from 'girder/events';
 import { restRequest } from 'girder/rest';
 
-import MenuBarView from './menuBar.js';
-import FeedbackViewTemplate from '../templates/journal_help_feedback.pug';
+import MenuBarView from '../../views/menuBar.js';
+import FeedbackViewTemplate from './journal_help_feedback.pug';
 
 var FeedbackView = View.extend({
 
