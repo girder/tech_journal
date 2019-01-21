@@ -505,7 +505,7 @@ class TechJournal(Resource):
                                                                   params=params)
                         submission['currentRevision'] = submissionInfo[-1]
                     # If not found already, add it to the returned information
-                    if submission not in totalData:
+                    if (submission not in totalData) and (submission['curation']['status'] != "REQUESTED"):
                         totalData.append(submission)
         totalData = sorted(totalData, reverse=True,
                            key=lambda submission: submission['currentRevision']['updated'])
@@ -568,7 +568,7 @@ class TechJournal(Resource):
             'status': 'REQUESTED'
         }
         folder['curation'] = DEFAULTS
-        folder['public'] = False
+        folder['public'] = True
         self.model('folder').save(folder)
         parentFolder = self.model('folder').load(folder['parentId'], force=True)
         targetFolder = self.model('folder').load(parentFolder['meta']['targetIssue'], force=True)
@@ -582,7 +582,7 @@ class TechJournal(Resource):
                              subject='New Submission - Pending Approval',
                              text=text)
         movedFolder['curation'] = DEFAULTS
-        parentFolder['public'] = False
+        movedFolder['public'] = True
         self.model('folder').save(movedFolder)
         newItem = self.model("item").createItem(name="Survey Result",
                                                 creator=self.getCurrentUser(),

@@ -10,7 +10,6 @@ const ConfigView = View.extend({
         'submit #configForm': function (event) {
             event.preventDefault();
             this.$('#g-journal-settings-error-message').empty();
-
             this._saveSettings([{
                 key: 'tech_journal.admin_email',
                 value: this.$('#admin_email').val().trim()
