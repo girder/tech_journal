@@ -80,7 +80,7 @@ var submissionView = View.extend({
             this.$('.citationDisplay').text('');
             restRequest({
                 type: 'GET',
-                url: `journal/${this.displayId}/citation/${this.$('.citOption:selected').val()}`
+                url: `journal/${this.revisionId}/citation/${this.$('.citOption:selected').val()}`
             }).done((citationText) => {
                 this.$('.citationDisplay').show();
                 this.$('.citationDisplay').text(citationText);
