@@ -338,6 +338,9 @@ class TechJournal(Resource):
         self.route('GET', ('zzz', 'revisions', ':id', 'techniquepaper'), self.get_revision_techniquepaper)
         self.route('GET', ('zzz', 'revisions', ':id', 'testingcode'), self.get_revision_testingcode)
 
+        self.route('GET', ('zzz', 'categories'), self.get_categories)
+        self.route('POST', ('zzz', 'categories'), self.add_category)
+
     @access.public(scope=TokenScope.DATA_READ)
     @describeRoute(
         Description('Get all Journals')
@@ -591,6 +594,22 @@ class TechJournal(Resource):
     )
     def get_revision_testingcode(self, folder, params):
         return _get_revision_files_by_type(folder['_id'], 'TESTING_SOURCECODE')
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @describeRoute(
+        Description('Get all journal categories')
+        .errorResponse('Read access was denied.', 403)
+        )
+    def get_categories(self, params):
+        return ModelImporter.model('journal', 'tech_journal').getAllByTag('categories')
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @describeRoute(
+        Description('Add a new journal category')
+        .errorResponse('Read access was denied.', 403)
+        )
+    def add_category(self, params):
+        ModelImporter.model('journal', 'tech_journal').set(key=params['text'], value=[], tag='categories')
 
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)
