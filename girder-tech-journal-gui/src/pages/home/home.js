@@ -194,7 +194,6 @@ const HomePage = View.extend({
             terms.push(tmpStr);
             var collectionID = this.collectionID;
             terms.forEach(function (searchVal) {
-                console.log(searchVal);
                 if (searchVal.indexOf('collection') !== -1) {
                     collectionID = searchVal.split(':')[1];
                 } else {
@@ -211,6 +210,16 @@ const HomePage = View.extend({
                         queryString += searchVal;
                     } else {
                         searchVal = searchVal.replace(/"/g, '&quot;');
+
+                        // Escape all regex special characters to match
+                        // themselves. This will prevent the search term from
+                        // being used as a regex itself, which is not what we
+                        // want.
+                        searchVal = searchVal.replace('\\', '\\\\');
+                        ['[', '\\\\', '^', '$', '.', '|', '?', '*', '+', '(', ')'].forEach(ch => {
+                          searchVal = searchVal.replace(ch, `\\\\${ch}`);
+                        });
+
                         queryString += `"text": "${searchVal}"`;
                     }
                 }
