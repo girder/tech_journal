@@ -33,6 +33,8 @@ router.route('', 'home', function (query) {
     testUserAccess(HomePage, query, false, false);
 });
 
+router.route('login', 'login', function () {});
+
 // adminCategories page
 import adminCategoriesPage from './pages/adminCategories/adminCategories';
 router.route('admin/categories', 'adminCategories', function () {
@@ -182,6 +184,28 @@ router.route('plugins/journal/help/feedback', 'FeedBackView', function () {
     testUserAccess(FeedBackView, {}, false, false);
 });
 
+
+/*
+ * Hack-tastic fix to force the login to not re-render the page
+ * Keeps track of the old view and navigates to it
+ *
+ * Window.back ensures that the URL is correct for the loaded view
+ *
+ * Sorry * J.Snyder 1/23/2019
+ */
+let target = null;
+events.on('g:login', function () {
+  if (target) {
+    const tmp = target;
+    target = null;
+    events.trigger('g:navigateTo', tmp[0], tmp[1], {layout: Layout.EMPTY});
+    window.history.back();
+    //window.history.pushState(null, '', tmp[2]);
+    return false;
+  }
+});
+
+
 function testUserAccess(view, args, needsUser, needsAdmin) {
     var userFlag  = true;
     var adminFlag = true;
@@ -198,8 +222,10 @@ function testUserAccess(view, args, needsUser, needsAdmin) {
         events.trigger('g:navigateTo', view, args, {layout: Layout.EMPTY});
     } else {
         if (!user) {
-            window.history.back();
-            window.location += '?dialog=login';
+            target = [view,args,window.location.href]
+            //Route to non-rendering page to show log-in window
+            router.navigate('login?dialog=login', { trigger: true });
+            return -1;
         }
     }
 }
