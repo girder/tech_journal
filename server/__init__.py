@@ -82,14 +82,14 @@ def checkValue(infoList, filterParams, category, value):
 class TechJournal(Resource):
 
     def checkSubmission(self, filterParams, submission, searchObj, targetVal, category):
-        keyMatch = False
+        keyMatch = [False, -1]
         if searchObj in submission["meta"].keys():
-            keyMatch = keyMatch or checkValue(submission["meta"],
+            keyMatch[0] = keyMatch[0] or checkValue(submission["meta"],
                                               filterParams[category],
                                               searchObj,
                                               targetVal)
         else:
-            keyMatch = keyMatch or checkValue(submission,
+            keyMatch[0] = keyMatch[0] or checkValue(submission,
                                               filterParams[category],
                                               searchObj,
                                               targetVal)
@@ -100,8 +100,9 @@ class TechJournal(Resource):
                                               user=self.getCurrentUser()
                                               ))
         # If not found in the top level data, search through each revision
-        if not keyMatch:
+        if not keyMatch[0]:
             for revision in revisionInfo:
+                revisionMatch = [False,-1]
                 for key in filterParams[category]:
                     searchObj = category
                     targetVal = key
@@ -111,15 +112,18 @@ class TechJournal(Resource):
                     if category == "License":
                         searchObj = "source-license"
                     if searchObj in revision["meta"].keys():
-                        keyMatch = keyMatch or checkValue(revision["meta"],
+                        revisionMatch[0] = revisionMatch[0] or checkValue(revision["meta"],
                                                           filterParams[category],
                                                           searchObj,
                                                           targetVal)
                     else:
-                        keyMatch = keyMatch or checkValue(revision,
+                        revisionMatch[0] = revisionMatch[0] or checkValue(revision,
                                                           filterParams[category],
                                                           searchObj,
                                                           targetVal)
+                if revisionMatch[0]:
+                    revisionMatch[1] = int(revision["meta"]["revisionNumber"])
+                    keyMatch = revisionMatch
         return keyMatch
 
     def __init__(self):
@@ -469,7 +473,8 @@ class TechJournal(Resource):
                 # ===================================================
                 # Complicated search to "or" and "and" query objects
                 # ===================================================
-                submissionMatch = True
+                # Submission match now tracks the revision number
+                submissionMatch = [True,-1]
                 # Go through each category of the search query
                 for category in filterParams.keys():
                     foundMatch = False
@@ -489,8 +494,9 @@ class TechJournal(Resource):
                                                           searchObj,
                                                           targetVal,
                                                           category) or foundMatch
-                    submissionMatch = foundMatch and submissionMatch
-                if submissionMatch:
+                    submissionMatch[0] = foundMatch[0] and submissionMatch[0]
+                    submissionMatch[1] = foundMatch[1]
+                if submissionMatch[0]:
                     # Find all folders under each submission to capture all revisions
                     submissionInfo = list(self.model('folder')
                                               .childFolders(parentType='folder',
@@ -501,9 +507,15 @@ class TechJournal(Resource):
                     if len(submissionInfo):
                         submissionInfo = sorted(submissionInfo,
                                                 key=lambda submission: submission['updated'])
-                        submissionInfo[-1]['logo'] = self.getLogo(id=submissionInfo[-1]['_id'],
+                        # If revisionVal is not -1, filter revisions to find the one that matched
+                        revisionInfo = submissionInfo[-1]
+                        if not submissionMatch[1] == -1:
+                          for revision in submissionInfo:
+                            if revision['meta']['revisionNumber'] == str(submissionMatch[1]):
+                              revisionInfo = revision
+                        revisionInfo['logo'] = self.getLogo(id=revisionInfo['_id'],
                                                                   params=params)
-                        submission['currentRevision'] = submissionInfo[-1]
+                        submission['currentRevision'] = revisionInfo
                     # If not found already, add it to the returned information
                     if submission not in totalData:
                         totalData.append(submission)

@@ -19,7 +19,7 @@ mixin searchEntry(info,approveLink)
             if approveLink
               a.resourceLink(href="#plugins/journal/submission/"+ info.currentRevision._id+"/approve")
             else
-              a.resourceLink(href="#view/"+ info.meta.submissionNumber)
+              a.resourceLink(href="#view/"+ info.meta.submissionNumber +"/" + info.currentRevision.meta.revisionNumber)
             span.ResultTitle.
               #{info.name}
           .ResultLicense.
