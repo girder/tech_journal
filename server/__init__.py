@@ -461,7 +461,7 @@ class TechJournal(Resource):
                                                             ))
         textArg = ""
         if "text" in filterParams:
-            textArg = {"$text": {"$search": filterParams['text']}}
+            textArg = {"name": {"$regex": filterParams['text'], "$options": "i"}}
             del filterParams['text']
         for issue in issues:
             testInfo = list(self.model('folder').childFolders(parentType='folder',
