@@ -216,6 +216,7 @@ const HomePage = View.extend({
                         // being used as a regex itself, which is not what we
                         // want.
                         searchVal = searchVal.replace('\\', '\\\\');
+                        searchVal = searchVal.replace(' ', '');
                         ['[', '\\\\', '^', '$', '.', '|', '?', '*', '+', '(', ')'].forEach((ch) => {
                             searchVal = searchVal.replace(ch, `\\\\${ch}`);
                         });
