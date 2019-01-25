@@ -9,6 +9,7 @@ import { Layout } from '@girder/core/constants';
 import { restRequest } from '@girder/core/rest';
 
 // Import views from plugin
+import vueComponentView from '@/vueComponentView';
 import submitView from './pages/submit/submit';
 import editView from './pages/submit/editSubmission';
 import ManageDisclaimerView from './pages/admin/manageDisclaimers';
@@ -66,9 +67,9 @@ router.route('plugins/journal/submission/:id/approve', 'submissionInfo', functio
     testUserAccess(editView, {id: id, NR: false, approve: true}, true, true);
 });
 // Listing page of Journal
-import JournalListPage from './pages/journalList/journalList';
-router.route('journals', 'journalList', function () {
-    testUserAccess(JournalListPage, {}, false, false);
+import JournalListPage from '@/pages/JournalListPage.vue';
+router.route('journals', 'JournalListPage', function () {
+    testUserAccess(vueComponentView, {component: JournalListPage}, false, false);
 });
 
 import uploadView from './pages/upload/upload';
