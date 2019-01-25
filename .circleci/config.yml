@@ -69,6 +69,10 @@ jobs:
           name: Lint web application
           command: yarn run lint
           working_directory: girder/plugins/tech_journal/girder-tech-journal-gui
+      - run:
+          name: Lint web application legacy files
+          command: yarn run lint-legacy
+          working_directory: girder/plugins/tech_journal/girder-tech-journal-gui
 
       - run:
           name: Create Girder build directory
