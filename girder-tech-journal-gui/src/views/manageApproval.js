@@ -11,8 +11,8 @@ var manageApprovalView = View.extend({
     },
     initialize: function (options) {
         restRequest({
-            type: 'GET',
-            path: 'journal/setting',
+            method: 'GET',
+            url: 'journal/setting',
             data: {
                 list: JSON.stringify([
                     'tech_journal.default_journal'
@@ -21,8 +21,8 @@ var manageApprovalView = View.extend({
         }).done((resp) => {
             console.log(resp);
             restRequest({
-                type: 'GET',
-                path: `journal/${resp['tech_journal.default_journal']}/pending?`
+                method: 'GET',
+                url: `journal/${resp['tech_journal.default_journal']}/pending?`
             }).done((jrnResp) => {
                 this.render(jrnResp);
             });

@@ -12,8 +12,8 @@ const JournalListPage = View.extend({
     },
     render: function (subData, searchVal) {
         restRequest({
-            type: 'GET',
-            path: 'journal'
+            method: 'GET',
+            url: 'journal'
         }).done((jrnResp) => {
             this.$el.html(JournalListTemplate({
                 info: { 'journals': jrnResp }

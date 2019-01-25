@@ -13,13 +13,13 @@ var manageJournalView = View.extend({
         var allIssues = [];
         this.render();
         restRequest({
-            type: 'GET',
-            path: 'journal'
+            method: 'GET',
+            url: 'journal'
         }).done((resp) => {
             for (var index in resp) {
                 restRequest({
-                    type: 'GET',
-                    path: `journal/${resp[index]._id}/issues`
+                    method: 'GET',
+                    url: `journal/${resp[index]._id}/issues`
                 }).done((jrnResp) => {
                     allIssues = allIssues.concat(jrnResp);
                     this.$('#journalListing').html(ManageJournalsEntryTemplate({ issueInfo: allIssues, parentInfo: resp }));

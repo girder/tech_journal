@@ -22,7 +22,7 @@ var userView = UserAccountView.extend({
             };
             this.user.set({'notificationStatus': params});
             restRequest({
-                type: 'PUT',
+                method: 'PUT',
                 url: 'journal/user',
                 contentType: 'application/json',
                 data: JSON.stringify(this.user),

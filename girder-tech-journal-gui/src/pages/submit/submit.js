@@ -53,7 +53,7 @@ var SubmitView = View.extend({
         'click #showDetails': function (event) {
             this.targetIssueID = event.currentTarget.target;
             restRequest({
-                type: 'GET',
+                method: 'GET',
                 url: `folder/${this.targetIssueID}`
             }).done((resp) => {
                 this.$('#issueDetails').append(issueDetailsTemplate({info: resp}));
@@ -68,7 +68,7 @@ var SubmitView = View.extend({
         if (id.id === 'new') {
             this.newSub = true;
             restRequest({
-                type: 'GET',
+                method: 'GET',
                 url: 'journal/setting',
                 data: {
                     list: JSON.stringify([
@@ -77,11 +77,11 @@ var SubmitView = View.extend({
                 }
             }).done((resp) => {
                 restRequest({
-                    type: 'GET',
+                    method: 'GET',
                     url: `collection/${resp['tech_journal.default_journal']}`
                 }).done((parResp) => {
                     restRequest({
-                        type: 'GET',
+                        method: 'GET',
                         url: `journal/${resp['tech_journal.default_journal']}/openissues`
                     }).done((jrnResp) => {
                         jrnResp['parentName'] = parResp['name'];
@@ -115,7 +115,7 @@ var SubmitView = View.extend({
         } else {
             this.itemId = subResp;
             restRequest({
-                type: 'GET',
+                method: 'GET',
                 url: `folder/${this.itemId}`
             }).done((resp) => {
                 if (this.newSub) {
@@ -133,14 +133,14 @@ var SubmitView = View.extend({
                 }));
                 this.$('.viewMain').hide();
                 restRequest({
-                    type: 'GET',
+                    method: 'GET',
                     url: 'journal/categories?tag=categories'
                 }).done((resp) => {
                     for (var key in resp) {
                         this.$('#treeWrapper').html(this.$('#treeWrapper').html() + CategoryTemplate({'catName': resp[key]['key'], 'values': resp[key]['value']}));
                     }
                     restRequest({
-                        type: 'GET',
+                        method: 'GET',
                         url: `journal/disclaimers?tag=disclaimer`
                     }).done((disclaimerResp) => {
                         for (var disc in disclaimerResp) {
@@ -186,14 +186,14 @@ var SubmitView = View.extend({
 
         let newSubmissionNum;
         restRequest({
-            type: 'POST',
-            path: 'journal/submission/number'
+            method: 'POST',
+            url: 'journal/submission/number'
         }).done((num) => {
             newSubmissionNum = num;
 
             restRequest({
-                type: 'POST',
-                path: `journal/submission/${newSubmissionNum}/number`
+                method: 'POST',
+                url: `journal/submission/${newSubmissionNum}/number`
             }).done((newRevisionNum) => {
                 var subData = {
                     'institution': this.$('#institutionEntry').val().trim(),
@@ -217,7 +217,7 @@ var SubmitView = View.extend({
                     subData.previousRevision = this.itemId;
                 }
                 restRequest({
-                    type: 'POST',
+                    method: 'POST',
                     url: 'folder',
                     data: {
                         parentId: this.user.id,
@@ -252,7 +252,7 @@ var SubmitView = View.extend({
         }
         // if new submission, generate first "revision" folder inside of generated folder
         restRequest({
-            type: 'POST',
+            method: 'POST',
             url: 'folder',
             data: {
                 parentId: parentId,
@@ -262,7 +262,7 @@ var SubmitView = View.extend({
             error: null
         }).done((resp) => {
             restRequest({
-                type: 'PUT',
+                method: 'PUT',
                 url: `journal/${resp._id}/metadata`,
                 contentType: 'application/json',
                 data: JSON.stringify(subData),

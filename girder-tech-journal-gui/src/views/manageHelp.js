@@ -21,8 +21,8 @@ var ManageHelpView = View.extend({
     },
     initialize: function () {
         restRequest({
-            type: 'GET',
-            path: 'journal/setting',
+            method: 'GET',
+            url: 'journal/setting',
             data: {
                 list: JSON.stringify(['main', 'about', 'faq'])
             }
@@ -70,8 +70,8 @@ var ManageHelpView = View.extend({
     },
     _saveHelp: function (inData) {
         restRequest({
-            type: 'PUT',
-            path: 'journal/setting',
+            method: 'PUT',
+            url: 'journal/setting',
             data: {
                 list: JSON.stringify(inData)
             },

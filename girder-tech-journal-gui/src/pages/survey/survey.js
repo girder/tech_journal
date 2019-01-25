@@ -10,7 +10,7 @@ var surveyView = View.extend({
     },
     initialize: function (options) {
         restRequest({
-            type: 'GET',
+            method: 'GET',
             url: `journal/${options.id}/survey`
         }).done((totalDetails) => {
             this.render(totalDetails);

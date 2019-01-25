@@ -21,7 +21,7 @@ var editView = View.extend({
             var catCheck = this._checkCategories();
             if (catCheck) {
                 restRequest({
-                    type: 'PUT',
+                    method: 'PUT',
                     url: `folder/${this.parent._id}`,
                     data: {
                         parentType: 'folder',
@@ -41,7 +41,7 @@ var editView = View.extend({
                             revisionDescription = this.$('#revisionEntry').val().trim();
                         }
                         restRequest({
-                            type: 'PUT',
+                            method: 'PUT',
                             url: `folder/${this.itemId}`,
                             data: {
                                 parentType: 'folder',
@@ -83,7 +83,7 @@ var editView = View.extend({
     render: function (subResp) {
         this.itemId = subResp;
         restRequest({
-            type: 'GET',
+            method: 'GET',
             url: `journal/${this.itemId}/details`
         }).done((resp) => {
             this.parent = resp[1];
@@ -104,7 +104,7 @@ var editView = View.extend({
             $(`.CLAPermission[value=${resp[0].meta.CorpCLA}]`).prop('checked', 'checked');
             this.$('#journalLicense').hide();
             restRequest({
-                type: 'GET',
+                method: 'GET',
                 url: 'journal/categories?tag=categories'
             }).done((catResp) => {
                 for (var key in catResp) {
@@ -116,7 +116,7 @@ var editView = View.extend({
                 this.$(`.typeOption[value=${resp[0].meta.type}]`).attr('selected', true);
                 this._checkCategories();
                 restRequest({
-                    type: 'GET',
+                    method: 'GET',
                     url: `journal/disclaimers?tag=disclaimer`
                 }).done((disclaimerResp) => {
                     for (var disc in disclaimerResp) {
@@ -179,19 +179,19 @@ var editView = View.extend({
         var revisionName = this.$('#revisionTitle').val().trim();
         var targetUrl = '#plugins/journal/submission/';
         restRequest({
-            type: 'GET',
-            path: `folder/${this.parent._id}/details`
+            method: 'GET',
+            url: `folder/${this.parent._id}/details`
         }).done((resp) => {
             if (revisionName === '') {
                 revisionName = 'Revision ' + ++resp.nFolders;
             }
 
             restRequest({
-                type: 'POST',
-                path: `journal/submission/${this.parent.meta.submissionNumber}/number`
+                method: 'POST',
+                url: `journal/submission/${this.parent.meta.submissionNumber}/number`
             }).done((newRevisionNum) => {
                 restRequest({
-                    type: 'POST',
+                    method: 'POST',
                     url: 'folder',
                     data: {
                         parentId: this.parent._id,
@@ -212,7 +212,7 @@ var editView = View.extend({
     },
     _updateSubmission: function (itemID, submissionInfo) {
         restRequest({
-            type: 'PUT',
+            method: 'PUT',
             url: `journal/${itemID}/metadata`,
             contentType: 'application/json',
             data: JSON.stringify(submissionInfo),

@@ -90,7 +90,7 @@ router.route('plugins/journal/submission/:id/survey', 'uploadFiles', function (i
 // Page to view each individual submission
 router.route('view/:submission(/:revision)', 'submissionView', function (submission, revision) {
     restRequest({
-        type: 'GET',
+        method: 'GET',
         url: 'journal/translate',
         data: {
             submission: submission,
@@ -122,11 +122,11 @@ router.route('plugins/journal/admin/groupusers/:id/issue', 'approvalView', funct
 // Download page for each submission
 router.route('view/:id/download', 'submissionDownload', function (id) {
     restRequest({
-        type: 'GET',
+        method: 'GET',
         url: `folder/${id}`
     }).done((revision) => {
         restRequest({
-            type: 'GET',
+            method: 'GET',
             url: `folder/${revision.parentId}`
         }).done((submission) => {
             testUserAccess(downloadView, {

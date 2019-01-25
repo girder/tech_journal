@@ -10,8 +10,8 @@ var MenuBarView = View.extend({
     events: {
         'click #logout': function (event) {
             restRequest({
-                type: 'DELETE',
-                path: 'user/authentication'
+                method: 'DELETE',
+                url: 'user/authentication'
             }).done((resp) => {
                 window.location = '/tech_journal';
             });

@@ -15,14 +15,14 @@ var EditGroupUsersView = View.extend({
             event.preventDefault();
             console.log(event);
             restRequest({
-                type: 'DELETE',
+                method: 'DELETE',
                 url: `group/${this.edId}/member`
             });
         },
         'click .memObj': function (event) {
             event.preventDefault();
             restRequest({
-                type: 'DELETE',
+                method: 'DELETE',
                 url: `group/${this.memId}/member`
             });
         },
@@ -38,7 +38,7 @@ var EditGroupUsersView = View.extend({
     },
     initialize: function (id) {
         restRequest({
-            type: 'GET',
+            method: 'GET',
             url: `${id.type}/${id.id}`
         }).done((jrnInfo) => {
             this.getGroupMembers(jrnInfo);
@@ -83,14 +83,14 @@ var EditGroupUsersView = View.extend({
         this.edId = '';
         this.memInfo = '';
         restRequest({
-            type: 'GET',
+            method: 'GET',
             url: `group/`,
             data: {
                 'text': `"${issueObject.name}_editors"`
             }
         }).done((editInfo) => {
             restRequest({
-                type: 'GET',
+                method: 'GET',
                 url: `group/`,
                 data: {
                     'text': `"${issueObject.name}_members"`
@@ -102,11 +102,11 @@ var EditGroupUsersView = View.extend({
                     this.edId = this.editInfo[0]['_id'];
                     this.memId = this.memInfo[0]['_id'];
                     restRequest({
-                        type: 'GET',
+                        method: 'GET',
                         url: `group/${this.edId}/member`
                     }).done((edMembers) => {
                         restRequest({
-                            type: 'GET',
+                            method: 'GET',
                             url: `group/${this.memId}/member`
                         }).done((members) => {
                             this.render(edMembers, members);
@@ -122,7 +122,7 @@ var EditGroupUsersView = View.extend({
     addEditor(selection) {
         this.$('#editorListTable tbody').append(editGroupUserEntryTemplate({'item': selection}));
         restRequest({
-            type: 'POST',
+            method: 'POST',
             url: `group/${this.edId}/invitation`,
             data: {
                 userId: selection.id,
@@ -134,7 +134,7 @@ var EditGroupUsersView = View.extend({
     addMember(selection) {
         this.$('#memberListTable tbody').append(editGroupUserEntryTemplate({'item': selection}));
         restRequest({
-            type: 'POST',
+            method: 'POST',
             url: `group/${this.memId}/invitation`,
             data: {
                 userId: selection.id,

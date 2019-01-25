@@ -30,8 +30,8 @@ var ManageDisclaimerView = View.extend({
     },
     initialize: function () {
         restRequest({
-            type: 'GET',
-            path: 'journal/disclaimers?tag=disclaimer'
+            method: 'GET',
+            url: 'journal/disclaimers?tag=disclaimer'
         }).done((resp) => {
             this.render(resp);
         });
@@ -59,8 +59,8 @@ var ManageDisclaimerView = View.extend({
     },
     _saveDisclaimer: function (inData) {
         restRequest({
-            type: 'PUT',
-            path: 'journal/disclaimer?tag=disclaimer',
+            method: 'PUT',
+            url: 'journal/disclaimer?tag=disclaimer',
             data: {
                 list: JSON.stringify(inData)
             },

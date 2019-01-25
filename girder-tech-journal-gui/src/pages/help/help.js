@@ -12,8 +12,8 @@ const HelpPage = View.extend({
         const settingKey = settings.settingKey;
 
         restRequest({
-            type: 'GET',
-            path: 'journal/setting',
+            method: 'GET',
+            url: 'journal/setting',
             data: {
                 list: JSON.stringify([settingKey])
             }

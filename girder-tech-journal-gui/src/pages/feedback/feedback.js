@@ -16,8 +16,8 @@ var FeedbackView = View.extend({
             feedbackInfo['summary'] = this.$('#Summary').val();
 
             restRequest({
-                type: 'POST',
-                path: `journal/feedback`,
+                method: 'POST',
+                url: `journal/feedback`,
                 contentType: 'application/json',
                 data: JSON.stringify(feedbackInfo),
                 error: null

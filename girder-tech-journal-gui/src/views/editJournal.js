@@ -45,7 +45,7 @@ var EditJournalView = View.extend({
             journalData.issueDescription = journalData.issueDescription + '\n\r__journal__';
         }
         restRequest({
-            type: 'POST',
+            method: 'POST',
             url: 'collection',
             data: {
                 name: journalData.issueName,
@@ -55,7 +55,7 @@ var EditJournalView = View.extend({
         }).done((jrnResp) => {
             ['editors', 'members'].forEach(function (val) {
                 restRequest({
-                    type: 'POST',
+                    method: 'POST',
                     url: 'group',
                     data: {
                         name: `${journalData.issueName}_${val}`,
@@ -68,7 +68,7 @@ var EditJournalView = View.extend({
     },
     _getCurrentInfo: function (journalData) {
         restRequest({
-            type: 'GET',
+            method: 'GET',
             url: `collection/${journalData.id}`
         }).done((jrnInfo) => {
             this.render({info: jrnInfo});

@@ -19,13 +19,13 @@ var downloadView = View.extend({
         this.submissionNumber = subId.submissionNumber;
         this.revisionNumber = subId.revisionNumber;
         restRequest({
-            type: 'GET',
-            path: `folder/${this.parentId}`
+            method: 'GET',
+            url: `folder/${this.parentId}`
         }).done((resp) => {
             this.parent = resp;
             restRequest({
-                type: 'GET',
-                path: `item?folderId=${this.parentId}`
+                method: 'GET',
+                url: `item?folderId=${this.parentId}`
             }).done((itemResp) => {
                 for (var index in itemResp) {
                     if (itemResp[index].meta.type === 'PAPER') {
@@ -38,8 +38,8 @@ var downloadView = View.extend({
     },
     render: function (paperItem) {
         restRequest({
-            type: 'GET',
-            path: 'journal/disclaimers?tag=disclaimer'
+            method: 'GET',
+            url: 'journal/disclaimers?tag=disclaimer'
         }).done((resp) => {
             var paperDownloadUrl =
                 paperItem && paperItem._id

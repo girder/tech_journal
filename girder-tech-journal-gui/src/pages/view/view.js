@@ -30,12 +30,12 @@ var submissionView = View.extend({
                     return obj['_id'] !== displayedObj;
                 });
                 restRequest({
-                    type: 'DELETE',
+                    method: 'DELETE',
                     url: `journal/${this.revisionId}`
                 }).done((resp) => {
                     restRequest({
-                        type: 'GET',
-                        path: `folder/${this.otherRevisions.slice(-1).pop()['_id']}`
+                        method: 'GET',
+                        url: `folder/${this.otherRevisions.slice(-1).pop()['_id']}`
                     }).done((revision) => {
                         router.navigate(`#view/${this.submission.meta.submissionNumber}/${revision.meta.revisionNumber}`, {trigger: true});
                     });
@@ -79,7 +79,7 @@ var submissionView = View.extend({
         'click .exportCit': function (event) {
             this.$('.citationDisplay').text('');
             restRequest({
-                type: 'GET',
+                method: 'GET',
                 url: `journal/${this.revisionId}/citation/${this.$('.citOption:selected').val()}`
             }).done((citationText) => {
                 this.$('.citationDisplay').show();
@@ -95,13 +95,13 @@ var submissionView = View.extend({
 
         this.currentUser = getCurrentUser();
         restRequest({
-            type: 'GET',
+            method: 'GET',
             url: `journal/submission/${this.displayId}/revision`
         }).done((revisionsResp) => {
             revisions = revisionsResp;
 
             restRequest({
-                type: 'GET',
+                method: 'GET',
                 url: `journal/submission/${this.displayId}`
             }).done((submission) => {
                 if (!this.revisionId) {
@@ -118,8 +118,8 @@ var submissionView = View.extend({
         this.revisionId = currentRev._id;
 
         restRequest({
-            type: 'GET',
-            path: `journal/${this.revisionId}/details`
+            method: 'GET',
+            url: `journal/${this.revisionId}/details`
         });
         var urlLink = `${window.location.origin}${window.location.pathname}#view/${submission.meta.submissionNumber}/${currentRev.meta.revisionNumber}`;
         submission.meta.comments.sort(function (a, b) {
@@ -134,7 +134,7 @@ var submissionView = View.extend({
         this.currentRevision = currentRev;
 
         restRequest({
-            type: 'GET',
+            method: 'GET',
             url: `journal/${currentRev._id}/logo`
         }).done((resp) => {
             var logoURL = '';
@@ -169,7 +169,7 @@ var submissionView = View.extend({
     },
     updateComments: function (send) {
         restRequest({
-            type: 'PUT',
+            method: 'PUT',
             url: `journal/${this.revisionId}/comments?sendEmail=${send}`,
             contentType: 'application/json',
             data: JSON.stringify({'comments': this.currentComments}),
@@ -180,7 +180,7 @@ var submissionView = View.extend({
     },
     deleteSubmission: function () {
         restRequest({
-            type: 'DELETE',
+            method: 'DELETE',
             url: `journal/${this.parentId}`
         }).done((resp) => {
             router.navigate(``, {trigger: true});

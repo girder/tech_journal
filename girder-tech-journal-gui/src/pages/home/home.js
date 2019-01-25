@@ -44,7 +44,7 @@ const HomePage = View.extend({
     },
     initialize: function (query) {
         restRequest({
-            type: 'GET',
+            method: 'GET',
             url: 'journal/setting',
             data: {
                 list: JSON.stringify([
@@ -61,11 +61,11 @@ const HomePage = View.extend({
     render: function (searchVal, collection, startIndex) {
         var pendingSubs = 0;
         restRequest({
-            type: 'GET',
+            method: 'GET',
             url: `journal/${collection}/issues`
         }).done((jrnResp) => {
             restRequest({
-                type: 'GET',
+                method: 'GET',
                 url: `journal/${this.defaultJournal}/pending?`
             }).done((pendRsp) => {
                 pendingSubs = pendRsp.length;
@@ -78,7 +78,7 @@ const HomePage = View.extend({
                 });
                 if (this.$('#treeWrapper').find('.treeEntry').length < 3) {
                     restRequest({
-                        type: 'GET',
+                        method: 'GET',
                         url: 'journal/categories?tag=categories'
                     }).done((resp) => {
                         for (var key in resp) {
@@ -148,7 +148,7 @@ const HomePage = View.extend({
     },
     querySubmissions: function (collection, queryString, startIndex) {
         restRequest({
-            type: 'GET',
+            method: 'GET',
             url: `journal/${collection}/search?query={` + encodeURIComponent(queryString) + '}'
         }).done((jrnResp) => {
             // Check to see if we blank the existing submissions or not
