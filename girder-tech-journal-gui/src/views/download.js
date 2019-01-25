@@ -52,7 +52,7 @@ var downloadView = View.extend({
                 parentDownloadUrl: parentDownloadUrl,
                 paperDownloadUrl: paperDownloadUrl,
                 submissionNumber: this.submissionNumber,
-                revisionNumber: this.revisionNumber,
+                revisionNumber: this.revisionNumber
             };
             if (Object.keys(resp).indexOf(this.parent.meta.disclaimer) !== -1) {
                 displayObj['disclaimer'] = resp[this.parent.meta.disclaimer]['value'];

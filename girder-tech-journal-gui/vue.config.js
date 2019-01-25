@@ -1,6 +1,7 @@
 const path = require('path');
 const process = require('process');
-const webpack = require('webpack');
+const webpack = require('webpack'); // eslint-disable-line import/no-extraneous-dependencies
+const autoprefixer = require('autoprefixer'); // eslint-disable-line import/no-extraneous-dependencies
 
 module.exports = {
   lintOnSave: false,
@@ -61,8 +62,8 @@ module.exports = {
       .tap(options => ({
         ...options,
         ident: 'postcss',
-        plugins: loader => [
-          require('autoprefixer')(),
+        plugins: () => [
+          autoprefixer(),
         ],
       }));
     config.module
@@ -72,8 +73,8 @@ module.exports = {
       .tap(options => ({
         ...options,
         ident: 'postcss',
-        plugins: loader => [
-          require('autoprefixer')(),
+        plugins: () => [
+          autoprefixer(),
         ],
       }));
   },

@@ -90,17 +90,17 @@ router.route('plugins/journal/submission/:id/survey', 'uploadFiles', function (i
 // Page to view each individual submission
 router.route('view/:submission(/:revision)', 'submissionView', function (submission, revision) {
     restRequest({
-      type: 'GET',
-      url: 'journal/translate',
-      data: {
-        submission: submission,
-        revision: revision
-      }
+        type: 'GET',
+        url: 'journal/translate',
+        data: {
+            submission: submission,
+            revision: revision
+        }
     }).done((ids) => {
-      testUserAccess(submissionView, {
-        id: ids.submission,
-        revId: ids.revision
-      });
+        testUserAccess(submissionView, {
+            id: ids.submission,
+            revId: ids.revision
+        });
     });
 });
 
@@ -130,9 +130,9 @@ router.route('view/:id/download', 'submissionDownload', function (id) {
             url: `folder/${revision.parentId}`
         }).done((submission) => {
             testUserAccess(downloadView, {
-              id: id,
-              submissionNumber: submission.meta.submissionNumber,
-              revisionNumber: revision.meta.revisionNumber
+                id: id,
+                submissionNumber: submission.meta.submissionNumber,
+                revisionNumber: revision.meta.revisionNumber
             }, true, false);
         });
     });
@@ -184,7 +184,6 @@ router.route('plugins/journal/help/feedback', 'FeedBackView', function () {
     testUserAccess(FeedBackView, {}, false, false);
 });
 
-
 /*
  * Hack-tastic fix to force the login to not re-render the page
  * Keeps track of the old view and navigates to it
@@ -195,16 +194,15 @@ router.route('plugins/journal/help/feedback', 'FeedBackView', function () {
  */
 let target = null;
 events.on('g:login', function () {
-  if (target) {
-    const tmp = target;
-    target = null;
-    events.trigger('g:navigateTo', tmp[0], tmp[1], {layout: Layout.EMPTY});
-    window.history.back();
-    //window.history.pushState(null, '', tmp[2]);
-    return false;
-  }
+    if (target) {
+        const tmp = target;
+        target = null;
+        events.trigger('g:navigateTo', tmp[0], tmp[1], {layout: Layout.EMPTY});
+        window.history.back();
+        // window.history.pushState(null, '', tmp[2]);
+        return false;
+    }
 });
-
 
 function testUserAccess(view, args, needsUser, needsAdmin) {
     var userFlag  = true;
@@ -222,8 +220,8 @@ function testUserAccess(view, args, needsUser, needsAdmin) {
         events.trigger('g:navigateTo', view, args, {layout: Layout.EMPTY});
     } else {
         if (!user) {
-            target = [view,args,window.location.href]
-            //Route to non-rendering page to show log-in window
+            target = [view, args, window.location.href];
+            // Route to non-rendering page to show log-in window
             router.navigate('login?dialog=login', { trigger: true });
             return -1;
         }

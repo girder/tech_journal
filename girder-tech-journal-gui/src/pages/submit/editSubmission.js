@@ -187,8 +187,8 @@ var editView = View.extend({
             }
 
             restRequest({
-              type: 'POST',
-              path: `journal/submission/${this.parent.meta.submissionNumber}/number`,
+                type: 'POST',
+                path: `journal/submission/${this.parent.meta.submissionNumber}/number`
             }).done((newRevisionNum) => {
                 restRequest({
                     type: 'POST',
@@ -208,7 +208,6 @@ var editView = View.extend({
                     router.navigate(`${targetUrl}${resp._id}/upload/revision`, {trigger: true});
                 });
             });
-
         });
     },
     _updateSubmission: function (itemID, submissionInfo) {

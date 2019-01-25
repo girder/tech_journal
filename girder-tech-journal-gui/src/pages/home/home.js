@@ -85,8 +85,9 @@ const HomePage = View.extend({
                             this.$('#treeWrapper').html(this.$('#treeWrapper').html() + CategoryTemplate({'catName': resp[key]['key'], 'values': resp[key]['value']}));
                         }
                         var issueVal = '*';
-                        var el = document.querySelector("#treeWrapper")
-                        new Accordion.Accordion(el, {"noTransforms": true});
+                        var el = document.querySelector('#treeWrapper');
+                        // eslint-disable-next-line no-new
+                        new Accordion.Accordion(el, {'noTransforms': true});
                         // Put URL hash additions into text box as "magic" terms
                         if (window.location.hash && !window.location.hash.includes('dialog')) {
                             var queryString = decodeURI(window.location.hash.substring(8));
@@ -216,8 +217,8 @@ const HomePage = View.extend({
                         // being used as a regex itself, which is not what we
                         // want.
                         searchVal = searchVal.replace('\\', '\\\\');
-                        ['[', '\\\\', '^', '$', '.', '|', '?', '*', '+', '(', ')'].forEach(ch => {
-                          searchVal = searchVal.replace(ch, `\\\\${ch}`);
+                        ['[', '\\\\', '^', '$', '.', '|', '?', '*', '+', '(', ')'].forEach((ch) => {
+                            searchVal = searchVal.replace(ch, `\\\\${ch}`);
                         });
 
                         queryString += `"text": "${searchVal}"`;

@@ -116,7 +116,7 @@ var uploadView = View.extend({
             path: `journal/${this.parentId}/details`
         }).done((resp) => {
             this.curRevision = resp[0];
-            var handleText = `${window.location.origin}${window.location.pathname}#view/${resp[1].meta.submissionNumber}/${resp[0].meta.revisionNumber}`
+            var handleText = `${window.location.origin}${window.location.pathname}#view/${resp[1].meta.submissionNumber}/${resp[0].meta.revisionNumber}`;
             this.render(handleText);
             restRequest({
                 type: 'GET',
@@ -235,12 +235,12 @@ var uploadView = View.extend({
                     type: 'GET',
                     url: `folder/${this.parentId}`
                 }).done((folder) => {
-                  restRequest({
-                    type: 'GET',
-                    url: `folder/${folder.parentId}`
-                  }).done((parentFolder) => {
-                    router.navigate(`#view/${parentFolder.meta.submissionNumber}/${folder.meta.revisionNumber}`, {trigger: true});
-                  });
+                    restRequest({
+                        type: 'GET',
+                        url: `folder/${folder.parentId}`
+                    }).done((parentFolder) => {
+                        router.navigate(`#view/${parentFolder.meta.submissionNumber}/${folder.meta.revisionNumber}`, {trigger: true});
+                    });
                 });
             });
         });

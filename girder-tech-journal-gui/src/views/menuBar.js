@@ -1,11 +1,9 @@
 import View from 'girder/views/View';
 import { getCurrentUser } from 'girder/auth';
 import { restRequest } from 'girder/rest';
-import { Layout } from 'girder/constants';
-import events from 'girder/events';
+
 import MenuBarViewTemplate from '../templates/journal_menu_bar.pug';
 import '../pages/register/RegisterView';
-import HomePage from '../pages/home/home';
 
 var MenuBarView = View.extend({
 
@@ -15,7 +13,7 @@ var MenuBarView = View.extend({
                 type: 'DELETE',
                 path: 'user/authentication'
             }).done((resp) => {
-                window.location = "/tech_journal";
+                window.location = '/tech_journal';
             });
         },
         'mouseenter #profileLink': function (event) {
