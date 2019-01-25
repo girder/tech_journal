@@ -5,7 +5,7 @@ const webpack = require('webpack');
 module.exports = {
   lintOnSave: false,
 
-  baseUrl: '/tech_journal/',
+  publicPath: '/tech_journal/',
 
   devServer: {
     port: 8081,
