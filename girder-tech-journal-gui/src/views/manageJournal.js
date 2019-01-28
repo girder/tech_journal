@@ -30,7 +30,7 @@ var manageJournalView = View.extend({
     render: function () {
         this.$el.html(ManageJournalsTemplate());
         new MenuBarView({ // eslint-disable-line no-new
-            el: this.$el,
+            el: this.$('#headerBar'),
             parentView: this
         });
         return this;

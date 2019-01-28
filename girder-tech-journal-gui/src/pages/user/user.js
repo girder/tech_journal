@@ -69,7 +69,7 @@ var userView = UserAccountView.extend({
             temporaryToken: this.temporary
         }) + '</div></div>');
         new MenuBarView({ // eslint-disable-line no-new
-            el: this.$el,
+            el: this.$('#headerBar'),
             parentView: this
         });
         this.$('[name="apikeys"]').parent().remove();

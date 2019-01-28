@@ -74,7 +74,7 @@ var EditGroupUsersView = View.extend({
             this.searchWidgetMem.setElement(this.$('.invitationSearchMember')).render();
         }
         new MenuBarView({ // eslint-disable-line no-new
-            el: this.$el,
+            el: this.$('#headerBar'),
             parentView: this
         });
         return this;

@@ -72,7 +72,7 @@ const adminCategoriesPage = View.extend({
             this.$('#treeWrapper').html(this.$('#treeWrapper').html() + adminCategoriesEntryTemplate({'name': subData[key]['key'], 'values': subData[key]['value']}));
         }
         new MenuBarView({ // eslint-disable-line no-new
-            el: this.$el,
+            el: this.$('#headerBar'),
             parentView: this
         });
         return this;

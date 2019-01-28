@@ -139,7 +139,7 @@ var uploadView = View.extend({
     render: function (handleText) {
         this.$el.html(UploadViewTemplate({handleText: handleText, user: getCurrentUser(), newRevision: this.newRevision}));
         new MenuBarView({ // eslint-disable-line no-new
-            el: this.$el,
+            el: this.$('#headerBar'),
             parentView: this
         });
         return this;

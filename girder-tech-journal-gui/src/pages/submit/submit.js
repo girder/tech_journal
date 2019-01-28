@@ -107,7 +107,7 @@ var SubmitView = View.extend({
         this.$el.html(SelectIssueTemplate({info: subResp}));
         var issueInfo;
         new MenuBarView({ // eslint-disable-line no-new
-            el: this.$el,
+            el: this.$('#headerBar'),
             parentView: this
         });
         if (state === 1) {

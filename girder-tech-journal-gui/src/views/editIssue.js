@@ -53,7 +53,7 @@ var EditIssueView = View.extend({
         }).done((licenseInfo) => {
             this.$el.html(editIssueTemplate({info: parentId, licenses: licenseInfo}));
             new MenuBarView({ // eslint-disable-line no-new
-                el: this.$el,
+                el: this.$('#headerBar'),
                 parentView: this
             });
             return this;

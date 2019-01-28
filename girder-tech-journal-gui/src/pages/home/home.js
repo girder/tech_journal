@@ -71,7 +71,7 @@ const HomePage = View.extend({
                 pendingSubs = pendRsp.length;
                 this.$el.html(HomeTemplate({info: { 'issues': jrnResp }}));
                 new MenuBarView({ // eslint-disable-line no-new
-                    el: this.$el,
+                    el: this.$('#headerBar'),
                     parentView: this,
                     searchBoxVal: searchVal,
                     pendingSubNum: pendingSubs

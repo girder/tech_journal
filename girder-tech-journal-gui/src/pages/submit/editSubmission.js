@@ -96,7 +96,7 @@ var editView = View.extend({
             }
             this.$el.html(SubmitViewTemplate({info: {info: resp[0], 'parInfo': resp[1], 'NR': this.newRevision}, 'titleText': titleText}));
             new MenuBarView({ // eslint-disable-line no-new
-                el: this.$el,
+                el: this.$('#headerBar'),
                 parentView: this,
                 searchBoxVal: ''
             });

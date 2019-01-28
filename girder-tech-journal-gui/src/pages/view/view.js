@@ -152,7 +152,7 @@ var submissionView = View.extend({
                 logo: logoURL
             }));
             new MenuBarView({ // eslint-disable-line no-new
-                el: this.$el,
+                el: this.$('#headerBar'),
                 parentView: this
             });
             this.$(`.revisionOption[value=${currentRev._id}]`).prop('selected', true);

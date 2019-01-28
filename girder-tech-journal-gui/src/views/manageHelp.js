@@ -33,7 +33,7 @@ var ManageHelpView = View.extend({
     render: function (existingPages) {
         this.$el.html(manageHelpViewTemplate());
         new MenuBarView({ // eslint-disable-line no-new
-            el: this.$el,
+            el: this.$('#headerBar'),
             parentView: this,
             searchBoxVal: 'Search...'
         });

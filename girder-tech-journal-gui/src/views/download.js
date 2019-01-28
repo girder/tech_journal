@@ -59,7 +59,7 @@ var downloadView = View.extend({
             }
             this.$el.html(DownloadViewTemplate(displayObj));
             new MenuBarView({ // eslint-disable-line no-new
-                el: this.$el,
+                el: this.$('#headerBar'),
                 parentView: this
             });
             if (Object.keys(displayObj).indexOf('disclaimer') !== -1) {

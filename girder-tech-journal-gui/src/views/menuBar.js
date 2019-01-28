@@ -55,7 +55,7 @@ var MenuBarView = View.extend({
         this.render(getCurrentUser());
     },
     render: function (curUser) {
-        this.$('#headerBar').html(MenuBarViewTemplate({ user: curUser, searchVal: this.options.searchBoxVal, approvalNum: this.options.pendingSubNum }));
+        this.$el.html(MenuBarViewTemplate({ user: curUser, searchVal: this.options.searchBoxVal, approvalNum: this.options.pendingSubNum }));
         return this;
     }
 });

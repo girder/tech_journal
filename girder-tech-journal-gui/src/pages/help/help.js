@@ -29,7 +29,7 @@ const HelpPage = View.extend({
             renderMarkdown: renderMarkdown
         }));
         new MenuBarView({ // eslint-disable-line no-new
-            el: this.$el,
+            el: this.$('#headerBar'),
             parentView: this,
             searchBoxVal: 'Search...'
         });
