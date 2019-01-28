@@ -1,6 +1,6 @@
-import View from 'girder/views/View';
-import { restRequest } from 'girder/rest';
-import { renderMarkdown } from 'girder/misc';
+import View from '@girder/core/views/View';
+import { restRequest } from '@girder/core/rest';
+import { renderMarkdown } from '@girder/core/misc';
 
 import MenuBarView from '../../views/menuBar.js';
 import HelpTemplate from './help.pug';

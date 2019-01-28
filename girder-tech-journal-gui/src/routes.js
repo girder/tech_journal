@@ -2,11 +2,11 @@
 
 import Backbone from 'backbone';
 
-import router from 'girder/router';
-import events from 'girder/events';
-import { getCurrentUser } from 'girder/auth';
-import { Layout } from 'girder/constants';
-import { restRequest } from 'girder/rest';
+import router from '@girder/core/router';
+import events from '@girder/core/events';
+import { getCurrentUser } from '@girder/core/auth';
+import { Layout } from '@girder/core/constants';
+import { restRequest } from '@girder/core/rest';
 
 // Import views from plugin
 import submitView from './pages/submit/submit';

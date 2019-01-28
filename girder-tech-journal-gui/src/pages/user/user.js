@@ -1,11 +1,11 @@
 import $ from 'jquery';
-import UserAccountView from 'girder/views/body/UserAccountView';
-import { AccessType } from 'girder/constants';
-import router from 'girder/router';
-import events from 'girder/events';
-import { getCurrentUser } from 'girder/auth';
-import { cancelRestRequests, restRequest } from 'girder/rest';
-import UserAccountTemplate from 'girder/templates/body/userAccount.pug';
+import UserAccountView from '@girder/core/views/body/UserAccountView';
+import { AccessType } from '@girder/core/constants';
+import router from '@girder/core/router';
+import events from '@girder/core/events';
+import { getCurrentUser } from '@girder/core/auth';
+import { cancelRestRequests, restRequest } from '@girder/core/rest';
+import UserAccountTemplate from '@girder/core/templates/body/userAccount.pug';
 
 import MenuBarView from '../../views/menuBar.js';
 import NotificationTabFormTemplate from './journal_notifications_tab.pug';

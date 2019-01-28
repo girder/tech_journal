@@ -1,7 +1,7 @@
-import View from 'girder/views/View';
-import router from 'girder/router';
+import View from '@girder/core/views/View';
+import router from '@girder/core/router';
 import Accordion from 'accordion';
-import { restRequest, apiRoot } from 'girder/rest';
+import { restRequest, apiRoot } from '@girder/core/rest';
 
 import MenuBarView from '../../views/menuBar.js';
 import HomeTemplate from './home.pug';

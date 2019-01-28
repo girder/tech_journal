@@ -1,5 +1,5 @@
-import events from 'girder/events';
-import App from 'girder/views/App';
+import events from '@girder/core/events';
+import App from '@girder/core/views/App';
 
 // Import all stylesheets
 import './stylesheets/main.styl';

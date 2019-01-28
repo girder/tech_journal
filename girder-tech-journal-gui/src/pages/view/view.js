@@ -1,9 +1,9 @@
 import $ from 'jquery';
-import View from 'girder/views/View';
-import router from 'girder/router';
-import events from 'girder/events';
-import { getCurrentUser } from 'girder/auth';
-import { restRequest, apiRoot } from 'girder/rest';
+import View from '@girder/core/views/View';
+import router from '@girder/core/router';
+import events from '@girder/core/events';
+import { getCurrentUser } from '@girder/core/auth';
+import { restRequest, apiRoot } from '@girder/core/rest';
 
 import MenuBarView from '../../views/menuBar.js';
 import SubmissionViewTemplate from './journal_view.pug';

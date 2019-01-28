@@ -1,5 +1,5 @@
-import View from 'girder/views/View';
-import { restRequest, apiRoot } from 'girder/rest';
+import View from '@girder/core/views/View';
+import { restRequest, apiRoot } from '@girder/core/rest';
 
 import MenuBarView from './menuBar.js';
 import DownloadViewTemplate from '../templates/journal_download.pug';

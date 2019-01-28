@@ -1,8 +1,8 @@
-import View from 'girder/views/View';
-import router from 'girder/router';
-import SearchWidget from 'girder/views/widgets/SearchFieldWidget.js';
-import { restRequest } from 'girder/rest';
-// import { getCurrentUser } from 'girder/auth';
+import View from '@girder/core/views/View';
+import router from '@girder/core/router';
+import SearchWidget from '@girder/core/views/widgets/SearchFieldWidget.js';
+import { restRequest } from '@girder/core/rest';
+// import { getCurrentUser } from '@girder/core/auth';
 
 import MenuBarView from './menuBar.js';
 import editGroupUsersTemplate from '../templates/journal_groupusers.pug';

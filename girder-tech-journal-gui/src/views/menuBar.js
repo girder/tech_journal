@@ -1,6 +1,6 @@
-import View from 'girder/views/View';
-import { getCurrentUser } from 'girder/auth';
-import { restRequest } from 'girder/rest';
+import View from '@girder/core/views/View';
+import { getCurrentUser } from '@girder/core/auth';
+import { restRequest } from '@girder/core/rest';
 
 import MenuBarViewTemplate from '../templates/journal_menu_bar.pug';
 import '../pages/register/RegisterView';

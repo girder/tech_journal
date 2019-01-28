@@ -1,7 +1,7 @@
-import View from 'girder/views/View';
-import events from 'girder/events';
-import MarkdownWidget from 'girder/views/widgets/MarkdownWidget';
-import { restRequest } from 'girder/rest';
+import View from '@girder/core/views/View';
+import events from '@girder/core/events';
+import MarkdownWidget from '@girder/core/views/widgets/MarkdownWidget';
+import { restRequest } from '@girder/core/rest';
 
 import MenuBarView from './menuBar.js';
 import manageHelpViewTemplate from '../templates/journal_admin_help.pug';

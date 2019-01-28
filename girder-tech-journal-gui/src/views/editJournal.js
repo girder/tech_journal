@@ -1,6 +1,6 @@
-import View from 'girder/views/View';
-import router from 'girder/router';
-import { restRequest } from 'girder/rest';
+import View from '@girder/core/views/View';
+import router from '@girder/core/router';
+import { restRequest } from '@girder/core/rest';
 
 import MenuBarView from './menuBar.js';
 import editJournalTemplate from '../templates/journal_edit_journal.pug';
