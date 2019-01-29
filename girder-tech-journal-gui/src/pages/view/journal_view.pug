@@ -119,9 +119,9 @@ if 'downloadStatistics' in info.revision
                   |,&nbsp;
               span.institution
                 +searchLink(info.revision.meta.institution,"institution")
-              span(style="background-color: #F2F3F3:")
+              span.identifier
                 | Please use this identifier to cite or link to this publication:
-                a(href=urlLink) #{urlLink}
+                a(href=urlLink)  #{urlLink}
             img.ResultLogo(src=logo)
           unless info.revision.curation.status === "APPROVED"
             span(style="font-weight:bold;color:red;")
@@ -131,12 +131,13 @@ if 'downloadStatistics' in info.revision
             a(href="#?issueId=" + info.parent.issue._id) #{info.parent.issue.name}
             span.submittedby.
               &nbsp;by #{info.revision.submitter.firstName} #{info.revision.submitter.lastName} on #{info.parent.created}
-          if info.revision.description
-            h4 Revision Notes
-            .abstract(style="text-align: justify")
-              | #{info.revision.description}
           .abstract.
             #{info.parent.description}
+          if info.revision.description
+            .revision_notes
+              h4 Revision Notes
+              .abstract(style="text-align: justify")
+                | #{info.revision.description}
           div
             table#revisionTable(width="100%")
               thead
