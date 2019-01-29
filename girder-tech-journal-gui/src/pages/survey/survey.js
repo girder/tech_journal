@@ -20,9 +20,7 @@ var surveyView = View.extend({
         this.$el.html(SurveyViewTemplate({'info': details}));
         new MenuBarView({ // eslint-disable-line no-new
             el: this.$('#headerBar'),
-            parentView: this,
-            searchBoxVal: '',
-            appCount: 0
+            parentView: this
         });
         return this;
     }

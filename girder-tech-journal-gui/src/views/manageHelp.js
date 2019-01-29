@@ -34,8 +34,7 @@ var ManageHelpView = View.extend({
         this.$el.html(manageHelpViewTemplate());
         new MenuBarView({ // eslint-disable-line no-new
             el: this.$('#headerBar'),
-            parentView: this,
-            searchBoxVal: 'Search...'
+            parentView: this
         });
         this.HelpEditor = new MarkdownWidget({
             prefix: 'homepage',

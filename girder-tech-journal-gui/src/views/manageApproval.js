@@ -33,9 +33,7 @@ var manageApprovalView = View.extend({
         this.$('.SearchResults').html(IndexEntryViewTemplate({ info: { 'submissions': subData, approveLink: true } }));
         new MenuBarView({ // eslint-disable-line no-new
             el: this.$('#headerBar'),
-            parentView: this,
-            searchBoxVal: '',
-            appCount: 0
+            parentView: this
         });
         return this;
     }

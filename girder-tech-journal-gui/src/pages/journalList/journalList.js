@@ -20,8 +20,7 @@ const JournalListPage = View.extend({
             }));
             new MenuBarView({ // eslint-disable-line no-new
                 el: this.$el,
-                parentView: this,
-                searchBoxVal: searchVal
+                parentView: this
             });
         });
 

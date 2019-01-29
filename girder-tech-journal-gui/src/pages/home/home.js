@@ -55,10 +55,10 @@ const HomePage = View.extend({
             this.defaultJournal = resp['tech_journal.default_journal'];
             this.collectionID = this.defaultJournal;
             this.querystring = '*';
-            this.render('', this.collectionID, 0);
+            this.render(this.collectionID, 0);
         }); // End getting of OTJ Collection value setting
     },
-    render: function (searchVal, collection, startIndex) {
+    render: function (collection, startIndex) {
         var pendingSubs = 0;
         restRequest({
             method: 'GET',
@@ -73,7 +73,6 @@ const HomePage = View.extend({
                 new MenuBarView({ // eslint-disable-line no-new
                     el: this.$('#headerBar'),
                     parentView: this,
-                    searchBoxVal: searchVal,
                     pendingSubNum: pendingSubs
                 });
                 if (this.$('#treeWrapper').find('.treeEntry').length < 3) {

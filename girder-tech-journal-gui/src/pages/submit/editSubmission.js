@@ -97,8 +97,7 @@ var editView = View.extend({
             this.$el.html(SubmitViewTemplate({info: {info: resp[0], 'parInfo': resp[1], 'NR': this.newRevision}, 'titleText': titleText}));
             new MenuBarView({ // eslint-disable-line no-new
                 el: this.$('#headerBar'),
-                parentView: this,
-                searchBoxVal: ''
+                parentView: this
             });
             $(`.subPermission[value=${resp[0].meta.permission}]`).prop('checked', 'checked');
             $(`.CLAPermission[value=${resp[0].meta.CorpCLA}]`).prop('checked', 'checked');

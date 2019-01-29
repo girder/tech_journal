@@ -38,8 +38,7 @@ var FeedbackView = View.extend({
         this.$el.html(FeedbackViewTemplate());
         new MenuBarView({ // eslint-disable-line no-new
             el: this.$('#headerBar'),
-            parentView: this,
-            searchBoxVal: 'Search...'
+            parentView: this
         });
         return this;
     }

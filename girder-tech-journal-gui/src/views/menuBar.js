@@ -51,11 +51,18 @@ var MenuBarView = View.extend({
         }
     },
     initialize: function (options) {
-        this.options = options;
-        this.render(getCurrentUser());
+        this.searchBoxVal = options.searchBoxVal || '';
+        this.pendingSubNum = options.pendingSubNum || 0;
+
+        this.render();
     },
-    render: function (curUser) {
-        this.$el.html(MenuBarViewTemplate({ user: curUser, searchVal: this.options.searchBoxVal, approvalNum: this.options.pendingSubNum }));
+    render: function () {
+        const curUser = getCurrentUser();
+        this.$el.html(MenuBarViewTemplate({
+            user: curUser,
+            searchVal: this.searchBoxVal,
+            approvalNum: this.pendingSubNum
+        }));
         return this;
     }
 });
