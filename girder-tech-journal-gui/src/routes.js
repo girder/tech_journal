@@ -169,19 +169,37 @@ router.route('plugins/journal/admin/help', 'adminHelp', function () {
 });
 
 // Display page for the Help page of the Journal
-import HelpPage from './pages/help/help';
-router.route('help', 'help', function () {
-    testUserAccess(HelpPage, {title: 'Help', settingKey: 'main'}, false, false);
+import HelpPage from '@/pages/HelpPage.vue';
+router.route('help', 'HelpPage', function () {
+    testUserAccess(vueComponentView, {
+        component: HelpPage,
+        props: {
+            title: 'Help',
+            settingKey: 'main'
+        }
+    }, false, false);
 });
 
 // Display page for the F.A.Q. page of the Journal
-router.route('help/faq', 'helpFaq', function () {
-    testUserAccess(HelpPage, {title: 'Frequently Asked Questions', settingKey: 'faq'}, false, false);
+router.route('help/faq', 'HelpPageFaq', function () {
+    testUserAccess(vueComponentView, {
+        component: HelpPage,
+        props: {
+            title: 'Frequently Asked Questions',
+            settingKey: 'faq'
+        }
+    }, false, false);
 });
 
 // Display page of the About page of the Journal
-router.route('help/about', 'helpAbout', function () {
-    testUserAccess(HelpPage, {title: 'About', settingKey: 'about'}, false, false);
+router.route('help/about', 'HelpPageAbout', function () {
+    testUserAccess(vueComponentView, {
+        component: HelpPage,
+        props: {
+            title: 'About',
+            settingKey: 'about'
+        }
+    }, false, false);
 });
 
 // Display page for a user to submit feedback to Journal Admins
