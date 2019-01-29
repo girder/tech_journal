@@ -10,6 +10,8 @@ import './stylesheets/view.index.styl';
 import './stylesheets/item.comments.styl';
 
 import './routes';
+// Register MenuBarWidget as a global component
+import '@/widgets/MenuBarWidget.vue';
 
 $(() => {
     const gaKey = process.env.GA_KEY;
