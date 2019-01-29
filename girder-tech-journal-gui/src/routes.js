@@ -23,7 +23,6 @@ import manageHelpView from './views/manageHelp';
 import FeedBackView from './pages/feedback/feedback.js';
 import EditGroupUsersView from './views/groupUsers.js';
 import userView from './pages/user/user.js';
-import surveyView from './pages/survey/survey.js';
 
 // Clear all of the existing routes, which will always added by Girder
 Backbone.history.handlers = [];
@@ -84,8 +83,14 @@ router.route('plugins/journal/submission/:id/upload/revision', 'uploadFiles', fu
 router.route('plugins/journal/submission/:id/upload/edit', 'uploadFiles', function (id) {
     testUserAccess(uploadView, {id: id, newSub: false, NR: false}, true, false);
 });
-router.route('plugins/journal/submission/:id/survey', 'uploadFiles', function (id) {
-    testUserAccess(surveyView, {id: id}, true, true);
+import SurveyPage from './pages/SurveyPage.vue';
+router.route('plugins/journal/submission/:id/survey', 'SurveyPage', function (id) {
+    testUserAccess(vueComponentView, {
+        component: SurveyPage,
+        props: {
+            journalId: id
+        }
+    }, true, true);
 });
 
 // Page to view each individual submission
