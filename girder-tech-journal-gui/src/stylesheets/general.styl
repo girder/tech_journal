@@ -545,7 +545,7 @@ MAIN CONTENT
       border none
       color white
       margin 0
-      padding 22px 30px 30px
+      padding 18px 20px 25px
       width 20%
       h2
         margin-top 0
@@ -580,16 +580,15 @@ MAIN CONTENT
     padding 30px
 
   div.ContentWithLeftPanel
-    div.Panel
-      float  left
-    div.MainContent
-      float left
+    display flex
 
   div.ContentWithRightPanel
-    div.Panel
-      float  right
-    div.MainContent
-      float left
+    display flex
+    flex-direction row-reverse
+
+.viewMain
+  h1
+    margin-top 0
 
 /*-------------------------------------------------
 SEARCH RESULTS BLOCKS

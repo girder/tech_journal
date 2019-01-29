@@ -3,8 +3,9 @@
 mixin catEntry(val)
   li.filterEntry
     - var hash = md5('category' + val);
-    input.filterOption(val=val, id=hash, type="checkbox")
-    label.dynatree-title(for=hash) #{val}
+    label.dynatree-title(for=hash)
+        input.filterOption(val=val, id=hash, type="checkbox")
+        | #{val}
 
 .treeEntry
   h4 #{catName}

@@ -17,15 +17,35 @@ ul.dynatree-container
   border none!important
   padding 0!important
 
+#treeWrapper
+  margin-bottom 30px
 
 div.treeEntry
+  overflow hidden
+  transition margin .15s ease-in-out, height .15s ease-in-out
   h4
     margin 0px
-    border 1px solid #ccc
-    padding-left 3px
-    background rgb(255, 255, 255) /* Old browsers */
-    :hover
-      background #eee
+    outline none
+    padding 7px 10px !important
+    background lighten(#4a4a4a, 10%)
+    transition background .15s ease-in-out, color .15s ease-in-out
+    &:after
+      content '\25BC'
+      display block
+      float right
+      font-size 9px
+      margin-top 5px
+  &.open
+    margin-bottom 10px
+    h4
+      background lighten(#4a4a4a, 90%)
+      color darken(white, 70%)
+      &:after
+        content '\25B2'
+.categoryTree
+  margin-bottom 15px
+  label
+    font-weight normal
 
   img.tooggleButton
     position absolute
@@ -37,9 +57,8 @@ div.issueButton
   background white
   border-radius 3px
   height auto
-  margin 5px
+  margin 7px 5px
   cursor pointer
-  height 30px
   background rgb(255, 255, 255) /* Old browsers */
 
   &:hover
@@ -59,10 +78,11 @@ div.issueSelected
 div.issueTitle
   height 100%
   color black
+  font-size 12px
   position relative
   display flex
   align-items center
-  padding 0 15px
+  padding 4px 15px
 
 div.issueSubTitle
   font-size 10px
