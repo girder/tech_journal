@@ -20,7 +20,6 @@ import manageJournalView from './views/manageJournal';
 import EditIssueView from './views/editIssue';
 import EditJournalView from './views/editJournal';
 import manageHelpView from './views/manageHelp';
-import FeedBackView from './pages/feedback/feedback.js';
 import EditGroupUsersView from './views/groupUsers.js';
 import userView from './pages/user/user.js';
 
@@ -186,8 +185,9 @@ router.route('help/about', 'helpAbout', function () {
 });
 
 // Display page for a user to submit feedback to Journal Admins
-router.route('plugins/journal/help/feedback', 'FeedBackView', function () {
-    testUserAccess(FeedBackView, {}, false, false);
+import FeedbackPage from '@/pages/FeedbackPage.vue';
+router.route('plugins/journal/help/feedback', 'FeedbackPage', function () {
+    testUserAccess(vueComponentView, {component: FeedbackPage}, false, false);
 });
 
 /*
