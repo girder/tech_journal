@@ -11,15 +11,16 @@ mixin disclaimerEntry(text)
 #headerBar
 .Wrapper
   .Content
-    #disclaimer
-      +disclaimerEntry(disclaimer)
-    a(href=`#view/${submissionNumber}/${revisionNumber}`) Back to article
-    #downloadContent
-      h3 Download
-      br
-      ul
-        if paperDownloadUrl
+    .viewMain
+      #disclaimer
+        +disclaimerEntry(disclaimer)
+      a(href=`#view/${submissionNumber}/${revisionNumber}`) Back to article
+      #downloadContent
+        h3 Download
+        br
+        ul
+          if paperDownloadUrl
+            li
+              a#paperDownload(href=paperDownloadUrl) Download Paper
           li
-            a#paperDownload(href=paperDownloadUrl) Download Paper
-        li
-          a#fullDownload(href=parentDownloadUrl) Download All
+            a#fullDownload(href=parentDownloadUrl) Download All
