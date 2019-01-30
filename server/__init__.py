@@ -23,7 +23,6 @@ import datetime
 import re
 import urllib
 from bson.objectid import ObjectId
-import pymongo
 
 from girder.api.describe import Description, describeRoute
 from girder.api.rest import Resource, RestException, filtermodel, loadmodel
@@ -84,15 +83,17 @@ class TechJournal(Resource):
     def checkSubmission(self, filterParams, submission, searchObj, targetVal, category):
         keyMatch = [False, -1]
         if searchObj in submission["meta"].keys():
-            keyMatch[0] = keyMatch[0] or checkValue(submission["meta"],
-                                              filterParams[category],
-                                              searchObj,
-                                              targetVal)
+            keyMatch[0] = keyMatch[0] or checkValue(
+                submission["meta"],
+                filterParams[category],
+                searchObj,
+                targetVal)
         else:
-            keyMatch[0] = keyMatch[0] or checkValue(submission,
-                                              filterParams[category],
-                                              searchObj,
-                                              targetVal)
+            keyMatch[0] = keyMatch[0] or checkValue(
+                submission,
+                filterParams[category],
+                searchObj,
+                targetVal)
         # Capture all revisions under each object
         revisionInfo = list(self.model('folder')
                                 .childFolders(parentType='folder',
@@ -102,7 +103,7 @@ class TechJournal(Resource):
         # If not found in the top level data, search through each revision
         if not keyMatch[0]:
             for revision in revisionInfo:
-                revisionMatch = [False,-1]
+                revisionMatch = [False, -1]
                 for key in filterParams[category]:
                     searchObj = category
                     targetVal = key
@@ -112,15 +113,17 @@ class TechJournal(Resource):
                     if category == "License":
                         searchObj = "source-license"
                     if searchObj in revision["meta"].keys():
-                        revisionMatch[0] = revisionMatch[0] or checkValue(revision["meta"],
-                                                          filterParams[category],
-                                                          searchObj,
-                                                          targetVal)
+                        revisionMatch[0] = revisionMatch[0] or checkValue(
+                            revision["meta"],
+                            filterParams[category],
+                            searchObj,
+                            targetVal)
                     else:
-                        revisionMatch[0] = revisionMatch[0] or checkValue(revision,
-                                                          filterParams[category],
-                                                          searchObj,
-                                                          targetVal)
+                        revisionMatch[0] = revisionMatch[0] or checkValue(
+                            revision,
+                            filterParams[category],
+                            searchObj,
+                            targetVal)
                 if revisionMatch[0]:
                     revisionMatch[1] = int(revision["meta"]["revisionNumber"])
                     keyMatch = revisionMatch
@@ -275,11 +278,14 @@ class TechJournal(Resource):
         .errorResponse('Read access was denied on the issue.', 403)
     )
     def getSubmission(self, folder, params):
-        info = self.model('folder').load(folder['_id'],
-                                               user=self.getCurrentUser(), force=True)
-        info['issue'] = self.model('folder').load(info['parentId'],
-                                                        user=self.getCurrentUser(),
-                                                        force=True)
+        info = self.model('folder').load(
+            folder['_id'],
+            user=self.getCurrentUser(),
+            force=True)
+        info['issue'] = self.model('folder').load(
+            info['parentId'],
+            user=self.getCurrentUser(),
+            force=True)
 
         return info
 
@@ -292,16 +298,14 @@ class TechJournal(Resource):
         .errorResponse('Read access was denied on the issue.', 403)
     )
     def getRevisions(self, folder, params):
-        info = self.model('folder').load(folder['_id'],
-                                               user=self.getCurrentUser(), force=True)
         revisions = list(self.model('folder').childFolders(folder, 'folder'))
         revisions.sort(key=sortByDate)
         for rev in revisions:
-            rev['submitter'] = self.model('user').load(rev['creatorId'],
-                                                       user=self.getCurrentUser(),
-                                                       force=True)
+            rev['submitter'] = self.model('user').load(
+                rev['creatorId'],
+                user=self.getCurrentUser(),
+                force=True)
         return list(revisions)
-
 
     @access.public(scope=TokenScope.DATA_READ)
     @describeRoute(
@@ -323,7 +327,8 @@ class TechJournal(Resource):
     @access.public(scope=TokenScope.DATA_READ)
     @describeRoute(
         Description('Generate a new revision number')
-        .param('submission', 'The submission number for which to generate a new revision number', paramType='path')
+        .param('submission', 'The submission number for which to generate a new revision number',
+               paramType='path')
         .errorResponse('Test error.')
         .errorResponse('Read access was denied on the issue.', 403)
     )
@@ -355,7 +360,7 @@ class TechJournal(Resource):
         db = getDbConnection()
         coll = MongoProxy(db.get_database()['folder'])
 
-        result = {};
+        result = {}
 
         doc = coll.find_one({'meta.submissionNumber': submission})
         if doc:
@@ -387,7 +392,7 @@ class TechJournal(Resource):
         issues = list(self.model('folder').childFolders(parentType='collection', parent=collection,
                                                         user=self.getCurrentUser()))
         for issue in issues:
-            if ((str(issue['_id']) == params['filterID']) or (params['filterID'] == '*')):
+            if (str(issue['_id']) == params['filterID']) or (params['filterID'] == '*'):
                 testInfo = list(self.model('folder').childFolders(parentType='folder', parent=issue,
                                                                   user=self.getCurrentUser()))
                 for submission in testInfo:
@@ -435,7 +440,7 @@ class TechJournal(Resource):
         totalData = sorted(totalData, reverse=True, key=lambda submission: submission['updated'])
         return totalData
 
-    @access.public(scope=TokenScope.DATA_READ)
+    @access.public(scope=TokenScope.DATA_READ)  # noqa: C901
     @loadmodel(model='collection', level=AccessType.READ)
     @describeRoute(
         Description('Get submissions matching a certain set of parameters by JSON')
@@ -474,7 +479,7 @@ class TechJournal(Resource):
                 # Complicated search to "or" and "and" query objects
                 # ===================================================
                 # Submission match now tracks the revision number
-                submissionMatch = [True,-1]
+                submissionMatch = [True, -1]
                 # Go through each category of the search query
                 for category in filterParams.keys():
                     foundMatch = False
@@ -510,11 +515,12 @@ class TechJournal(Resource):
                         # If revisionVal is not -1, filter revisions to find the one that matched
                         revisionInfo = submissionInfo[-1]
                         if not submissionMatch[1] == -1:
-                          for revision in submissionInfo:
-                            if revision['meta']['revisionNumber'] == str(submissionMatch[1]):
-                              revisionInfo = revision
-                        revisionInfo['logo'] = self.getLogo(id=revisionInfo['_id'],
-                                                                  params=params)
+                            for revision in submissionInfo:
+                                if revision['meta']['revisionNumber'] == str(submissionMatch[1]):
+                                    revisionInfo = revision
+                        revisionInfo['logo'] = self.getLogo(
+                            id=revisionInfo['_id'],
+                            params=params)
                         submission['currentRevision'] = revisionInfo
                     # If not found already, add it to the returned information
                     if submission not in totalData:
