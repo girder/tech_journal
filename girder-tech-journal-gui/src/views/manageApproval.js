@@ -1,5 +1,5 @@
-import View from 'girder/views/View';
-import { restRequest } from 'girder/rest';
+import View from '@girder/core/views/View';
+import { restRequest } from '@girder/core/rest';
 
 import MenuBarView from './menuBar.js';
 import ApprovalViewTemplate from '../templates/journal_admin_approval.pug';
@@ -11,8 +11,8 @@ var manageApprovalView = View.extend({
     },
     initialize: function (options) {
         restRequest({
-            type: 'GET',
-            path: 'journal/setting',
+            method: 'GET',
+            url: 'journal/setting',
             data: {
                 list: JSON.stringify([
                     'tech_journal.default_journal'
@@ -21,8 +21,8 @@ var manageApprovalView = View.extend({
         }).done((resp) => {
             console.log(resp);
             restRequest({
-                type: 'GET',
-                path: `journal/${resp['tech_journal.default_journal']}/pending?`
+                method: 'GET',
+                url: `journal/${resp['tech_journal.default_journal']}/pending?`
             }).done((jrnResp) => {
                 this.render(jrnResp);
             });
@@ -32,10 +32,8 @@ var manageApprovalView = View.extend({
         this.$el.html(ApprovalViewTemplate({}));
         this.$('.SearchResults').html(IndexEntryViewTemplate({ info: { 'submissions': subData, approveLink: true } }));
         new MenuBarView({ // eslint-disable-line no-new
-            el: this.$el,
-            parentView: this,
-            searchBoxVal: '',
-            appCount: 0
+            el: this.$('#headerBar'),
+            parentView: this
         });
         return this;
     }

@@ -34,8 +34,8 @@ const ConfigView = View.extend({
 
     initialize: function () {
         restRequest({
-            type: 'GET',
-            path: 'journal/setting',
+            method: 'GET',
+            url: 'journal/setting',
             data: {
                 list: JSON.stringify([
                     'tech_journal.admin_email',
@@ -74,8 +74,8 @@ const ConfigView = View.extend({
     },
     _saveSettings: function (settings) {
         restRequest({
-            type: 'PUT',
-            path: 'journal/setting',
+            method: 'PUT',
+            url: 'journal/setting',
             data: {
                 list: JSON.stringify(settings)
             },

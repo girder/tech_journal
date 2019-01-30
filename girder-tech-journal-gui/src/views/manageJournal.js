@@ -1,5 +1,5 @@
-import View from 'girder/views/View';
-import { restRequest } from 'girder/rest';
+import View from '@girder/core/views/View';
+import { restRequest } from '@girder/core/rest';
 
 import MenuBarView from './menuBar.js';
 import ManageJournalsTemplate from '../templates/journal_manage_journals.pug';
@@ -13,13 +13,13 @@ var manageJournalView = View.extend({
         var allIssues = [];
         this.render();
         restRequest({
-            type: 'GET',
-            path: 'journal'
+            method: 'GET',
+            url: 'journal'
         }).done((resp) => {
             for (var index in resp) {
                 restRequest({
-                    type: 'GET',
-                    path: `journal/${resp[index]._id}/issues`
+                    method: 'GET',
+                    url: `journal/${resp[index]._id}/issues`
                 }).done((jrnResp) => {
                     allIssues = allIssues.concat(jrnResp);
                     this.$('#journalListing').html(ManageJournalsEntryTemplate({ issueInfo: allIssues, parentInfo: resp }));
@@ -30,7 +30,7 @@ var manageJournalView = View.extend({
     render: function () {
         this.$el.html(ManageJournalsTemplate());
         new MenuBarView({ // eslint-disable-line no-new
-            el: this.$el,
+            el: this.$('#headerBar'),
             parentView: this
         });
         return this;

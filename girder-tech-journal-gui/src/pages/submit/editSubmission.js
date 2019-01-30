@@ -1,8 +1,8 @@
 import $ from 'jquery';
-import View from 'girder/views/View';
-import router from 'girder/router';
-import events from 'girder/events';
-import { restRequest } from 'girder/rest';
+import View from '@girder/core/views/View';
+import router from '@girder/core/router';
+import events from '@girder/core/events';
+import { restRequest } from '@girder/core/rest';
 
 import MenuBarView from '../../views/menuBar.js';
 import SubmitViewTemplate from './journal_submit.pug';
@@ -21,7 +21,7 @@ var editView = View.extend({
             var catCheck = this._checkCategories();
             if (catCheck) {
                 restRequest({
-                    type: 'PUT',
+                    method: 'PUT',
                     url: `folder/${this.parent._id}`,
                     data: {
                         parentType: 'folder',
@@ -41,7 +41,7 @@ var editView = View.extend({
                             revisionDescription = this.$('#revisionEntry').val().trim();
                         }
                         restRequest({
-                            type: 'PUT',
+                            method: 'PUT',
                             url: `folder/${this.itemId}`,
                             data: {
                                 parentType: 'folder',
@@ -83,7 +83,7 @@ var editView = View.extend({
     render: function (subResp) {
         this.itemId = subResp;
         restRequest({
-            type: 'GET',
+            method: 'GET',
             url: `journal/${this.itemId}/details`
         }).done((resp) => {
             this.parent = resp[1];
@@ -96,15 +96,14 @@ var editView = View.extend({
             }
             this.$el.html(SubmitViewTemplate({info: {info: resp[0], 'parInfo': resp[1], 'NR': this.newRevision}, 'titleText': titleText}));
             new MenuBarView({ // eslint-disable-line no-new
-                el: this.$el,
-                parentView: this,
-                searchBoxVal: ''
+                el: this.$('#headerBar'),
+                parentView: this
             });
             $(`.subPermission[value=${resp[0].meta.permission}]`).prop('checked', 'checked');
             $(`.CLAPermission[value=${resp[0].meta.CorpCLA}]`).prop('checked', 'checked');
             this.$('#journalLicense').hide();
             restRequest({
-                type: 'GET',
+                method: 'GET',
                 url: 'journal/categories?tag=categories'
             }).done((catResp) => {
                 for (var key in catResp) {
@@ -116,7 +115,7 @@ var editView = View.extend({
                 this.$(`.typeOption[value=${resp[0].meta.type}]`).attr('selected', true);
                 this._checkCategories();
                 restRequest({
-                    type: 'GET',
+                    method: 'GET',
                     url: `journal/disclaimers?tag=disclaimer`
                 }).done((disclaimerResp) => {
                     for (var disc in disclaimerResp) {
@@ -179,19 +178,19 @@ var editView = View.extend({
         var revisionName = this.$('#revisionTitle').val().trim();
         var targetUrl = '#plugins/journal/submission/';
         restRequest({
-            type: 'GET',
-            path: `folder/${this.parent._id}/details`
+            method: 'GET',
+            url: `folder/${this.parent._id}/details`
         }).done((resp) => {
             if (revisionName === '') {
                 revisionName = 'Revision ' + ++resp.nFolders;
             }
 
             restRequest({
-              type: 'POST',
-              path: `journal/submission/${this.parent.meta.submissionNumber}/number`,
+                method: 'POST',
+                url: `journal/submission/${this.parent.meta.submissionNumber}/number`
             }).done((newRevisionNum) => {
                 restRequest({
-                    type: 'POST',
+                    method: 'POST',
                     url: 'folder',
                     data: {
                         parentId: this.parent._id,
@@ -208,12 +207,11 @@ var editView = View.extend({
                     router.navigate(`${targetUrl}${resp._id}/upload/revision`, {trigger: true});
                 });
             });
-
         });
     },
     _updateSubmission: function (itemID, submissionInfo) {
         restRequest({
-            type: 'PUT',
+            method: 'PUT',
             url: `journal/${itemID}/metadata`,
             contentType: 'application/json',
             data: JSON.stringify(submissionInfo),

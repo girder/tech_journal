@@ -1,7 +1,7 @@
-import View from 'girder/views/View';
-import events from 'girder/events';
-import MarkdownWidget from 'girder/views/widgets/MarkdownWidget';
-import { restRequest } from 'girder/rest';
+import View from '@girder/core/views/View';
+import events from '@girder/core/events';
+import MarkdownWidget from '@girder/core/views/widgets/MarkdownWidget';
+import { restRequest } from '@girder/core/rest';
 
 import MenuBarView from '../../views/menuBar.js';
 import manageAdminViewTemplate from './journal_admin_disclaimer.pug';
@@ -30,8 +30,8 @@ var ManageDisclaimerView = View.extend({
     },
     initialize: function () {
         restRequest({
-            type: 'GET',
-            path: 'journal/disclaimers?tag=disclaimer'
+            method: 'GET',
+            url: 'journal/disclaimers?tag=disclaimer'
         }).done((resp) => {
             this.render(resp);
         });
@@ -43,9 +43,8 @@ var ManageDisclaimerView = View.extend({
             this.$('#disclaimerChoice').append('<option>' + disc + '</option>');
         }
         new MenuBarView({ // eslint-disable-line no-new
-            el: this.$el,
-            parentView: this,
-            searchBoxVal: 'Search...'
+            el: this.$('#headerBar'),
+            parentView: this
         });
         this.HelpEditor = new MarkdownWidget({
             prefix: 'homepage',
@@ -59,8 +58,8 @@ var ManageDisclaimerView = View.extend({
     },
     _saveDisclaimer: function (inData) {
         restRequest({
-            type: 'PUT',
-            path: 'journal/disclaimer?tag=disclaimer',
+            method: 'PUT',
+            url: 'journal/disclaimer?tag=disclaimer',
             data: {
                 list: JSON.stringify(inData)
             },

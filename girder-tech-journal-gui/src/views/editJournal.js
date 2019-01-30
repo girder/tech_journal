@@ -1,6 +1,6 @@
-import View from 'girder/views/View';
-import router from 'girder/router';
-import { restRequest } from 'girder/rest';
+import View from '@girder/core/views/View';
+import router from '@girder/core/router';
+import { restRequest } from '@girder/core/rest';
 
 import MenuBarView from './menuBar.js';
 import editJournalTemplate from '../templates/journal_edit_journal.pug';
@@ -28,7 +28,7 @@ var EditJournalView = View.extend({
     render: function (journalInfo) {
         this.$el.html(editJournalTemplate(journalInfo));
         new MenuBarView({ // eslint-disable-line no-new
-            el: this.$el,
+            el: this.$('#headerBar'),
             parentView: this
         });
         return this;
@@ -45,7 +45,7 @@ var EditJournalView = View.extend({
             journalData.issueDescription = journalData.issueDescription + '\n\r__journal__';
         }
         restRequest({
-            type: 'POST',
+            method: 'POST',
             url: 'collection',
             data: {
                 name: journalData.issueName,
@@ -55,7 +55,7 @@ var EditJournalView = View.extend({
         }).done((jrnResp) => {
             ['editors', 'members'].forEach(function (val) {
                 restRequest({
-                    type: 'POST',
+                    method: 'POST',
                     url: 'group',
                     data: {
                         name: `${journalData.issueName}_${val}`,
@@ -68,7 +68,7 @@ var EditJournalView = View.extend({
     },
     _getCurrentInfo: function (journalData) {
         restRequest({
-            type: 'GET',
+            method: 'GET',
             url: `collection/${journalData.id}`
         }).done((jrnInfo) => {
             this.render({info: jrnInfo});

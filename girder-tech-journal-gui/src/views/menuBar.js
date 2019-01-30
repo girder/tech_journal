@@ -1,6 +1,6 @@
-import View from 'girder/views/View';
-import { getCurrentUser } from 'girder/auth';
-import { restRequest } from 'girder/rest';
+import View from '@girder/core/views/View';
+import { getCurrentUser } from '@girder/core/auth';
+import { restRequest } from '@girder/core/rest';
 
 import MenuBarViewTemplate from '../templates/journal_menu_bar.pug';
 import '../pages/register/RegisterView';
@@ -10,10 +10,10 @@ var MenuBarView = View.extend({
     events: {
         'click #logout': function (event) {
             restRequest({
-                type: 'DELETE',
-                path: 'user/authentication'
+                method: 'DELETE',
+                url: 'user/authentication'
             }).done((resp) => {
-                window.location.reload(true);
+                window.location = '/tech_journal';
             });
         },
         'mouseenter #profileLink': function (event) {
@@ -51,11 +51,18 @@ var MenuBarView = View.extend({
         }
     },
     initialize: function (options) {
-        this.options = options;
-        this.render(getCurrentUser());
+        this.searchBoxVal = options.searchBoxVal || '';
+        this.pendingSubNum = options.pendingSubNum || 0;
+
+        this.render();
     },
-    render: function (curUser) {
-        this.$('#headerBar').html(MenuBarViewTemplate({ user: curUser, searchVal: this.options.searchBoxVal, approvalNum: this.options.pendingSubNum }));
+    render: function () {
+        const curUser = getCurrentUser();
+        this.$el.html(MenuBarViewTemplate({
+            user: curUser,
+            searchVal: this.searchBoxVal,
+            approvalNum: this.pendingSubNum
+        }));
         return this;
     }
 });

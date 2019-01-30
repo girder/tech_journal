@@ -38,8 +38,8 @@ To set up the Technical Journal plugin, follow these steps.
 3. Activate the virtual environment: `. venv/bin/activate`.
 4. Install Girder from PyPI: `pip install girder`.
 5. Build the Girder web client: `girder-install web`.
-6. Install the plugin's NPM dependencies: `npm install`.
-7. Build the plugin bundle: `npm run build`.
+6. Install and build the standalone web application: `cd girder-tech-journal-gui && yarn install && yarn run build`
+7. Return to the main repo directory: `cd ..`
 8. Register the plugin to Girder: `girder-install plugin -s .`. (The `-s` is
    important: it installs the plugin via symlink, since the virtual environment
    is contained within the directory that will be installed as the plugin.)

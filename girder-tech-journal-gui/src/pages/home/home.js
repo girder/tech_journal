@@ -1,7 +1,7 @@
-import View from 'girder/views/View';
-import router from 'girder/router';
+import View from '@girder/core/views/View';
+import router from '@girder/core/router';
 import Accordion from 'accordion';
-import { restRequest, apiRoot } from 'girder/rest';
+import { restRequest, apiRoot } from '@girder/core/rest';
 
 import MenuBarView from '../../views/menuBar.js';
 import HomeTemplate from './home.pug';
@@ -44,7 +44,7 @@ const HomePage = View.extend({
     },
     initialize: function (query) {
         restRequest({
-            type: 'GET',
+            method: 'GET',
             url: 'journal/setting',
             data: {
                 list: JSON.stringify([
@@ -55,38 +55,38 @@ const HomePage = View.extend({
             this.defaultJournal = resp['tech_journal.default_journal'];
             this.collectionID = this.defaultJournal;
             this.querystring = '*';
-            this.render('', this.collectionID, 0);
+            this.render(this.collectionID, 0);
         }); // End getting of OTJ Collection value setting
     },
-    render: function (searchVal, collection, startIndex) {
+    render: function (collection, startIndex) {
         var pendingSubs = 0;
         restRequest({
-            type: 'GET',
+            method: 'GET',
             url: `journal/${collection}/issues`
         }).done((jrnResp) => {
             restRequest({
-                type: 'GET',
+                method: 'GET',
                 url: `journal/${this.defaultJournal}/pending?`
             }).done((pendRsp) => {
                 pendingSubs = pendRsp.length;
                 this.$el.html(HomeTemplate({info: { 'issues': jrnResp }}));
                 new MenuBarView({ // eslint-disable-line no-new
-                    el: this.$el,
+                    el: this.$('#headerBar'),
                     parentView: this,
-                    searchBoxVal: searchVal,
                     pendingSubNum: pendingSubs
                 });
                 if (this.$('#treeWrapper').find('.treeEntry').length < 3) {
                     restRequest({
-                        type: 'GET',
+                        method: 'GET',
                         url: 'journal/categories?tag=categories'
                     }).done((resp) => {
                         for (var key in resp) {
                             this.$('#treeWrapper').html(this.$('#treeWrapper').html() + CategoryTemplate({'catName': resp[key]['key'], 'values': resp[key]['value']}));
                         }
                         var issueVal = '*';
-                        var el = document.querySelector("#treeWrapper")
-                        new Accordion.Accordion(el, {"noTransforms": true});
+                        var el = document.querySelector('#treeWrapper');
+                        // eslint-disable-next-line no-new
+                        new Accordion.Accordion(el, {'noTransforms': true});
                         // Put URL hash additions into text box as "magic" terms
                         if (window.location.hash && !window.location.hash.includes('dialog')) {
                             var queryString = decodeURI(window.location.hash.substring(8));
@@ -147,7 +147,7 @@ const HomePage = View.extend({
     },
     querySubmissions: function (collection, queryString, startIndex) {
         restRequest({
-            type: 'GET',
+            method: 'GET',
             url: `journal/${collection}/search?query={` + encodeURIComponent(queryString) + '}'
         }).done((jrnResp) => {
             // Check to see if we blank the existing submissions or not
@@ -194,7 +194,6 @@ const HomePage = View.extend({
             terms.push(tmpStr);
             var collectionID = this.collectionID;
             terms.forEach(function (searchVal) {
-                console.log(searchVal);
                 if (searchVal.indexOf('collection') !== -1) {
                     collectionID = searchVal.split(':')[1];
                 } else {
@@ -211,6 +210,16 @@ const HomePage = View.extend({
                         queryString += searchVal;
                     } else {
                         searchVal = searchVal.replace(/"/g, '&quot;');
+
+                        // Escape all regex special characters to match
+                        // themselves. This will prevent the search term from
+                        // being used as a regex itself, which is not what we
+                        // want.
+                        searchVal = searchVal.replace('\\', '\\\\');
+                        ['[', '\\\\', '^', '$', '.', '|', '?', '*', '+', '(', ')'].forEach((ch) => {
+                            searchVal = searchVal.replace(ch, `\\\\${ch}`);
+                        });
+
                         queryString += `"text": "${searchVal}"`;
                     }
                 }

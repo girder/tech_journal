@@ -1,11 +1,14 @@
 const path = require('path');
 const process = require('process');
-const webpack = require('webpack');
+const webpack = require('webpack'); // eslint-disable-line import/no-extraneous-dependencies
+const autoprefixer = require('autoprefixer'); // eslint-disable-line import/no-extraneous-dependencies
+
+const girderVersion = require('@girder/core/package.json').version;
 
 module.exports = {
   lintOnSave: false,
 
-  baseUrl: '/tech_journal/',
+  publicPath: '/tech_journal/',
 
   devServer: {
     port: 8081,
@@ -31,12 +34,31 @@ module.exports = {
         'window.jQuery': 'jquery',
       }]);
 
+    // Define the GIRDER_VERSION global, which upstream Girder expects
+    config.plugin('define')
+      .tap(([definitions]) => [{
+        GIRDER_VERSION: JSON.stringify(girderVersion),
+        ...definitions,
+      }]);
+
     // Modify existing Pug loader
-    // We want to use the full 'pug-loader' instead of 'pug-plain-loader' (which just works with
-    // 'vue-loader')
+    // For separate Pug files, we want to use the full 'pug-loader'; for inlined Pug segments
+    // loaded with vue-loader, continue to use 'pug-plain-loader'
+    // See https://vue-loader.vuejs.org/guide/pre-processors.html#pug
     config.module
       .rule('pug')
+      .uses
+      .delete('pug-plain-loader');
+    config.module
+      .rule('pug')
+      .oneOf('pug-vue')
+      .resourceQuery(/^\?vue/)
       .use('pug-plain-loader')
+      .loader('pug-plain-loader');
+    config.module
+      .rule('pug')
+      .oneOf('pug-file')
+      .use('pug-loader')
       .loader('pug-loader');
 
     // postcss-loader is not picking up the config within 'package.json', causing errors
@@ -49,8 +71,8 @@ module.exports = {
       .tap(options => ({
         ...options,
         ident: 'postcss',
-        plugins: loader => [
-          require('autoprefixer')(),
+        plugins: () => [
+          autoprefixer(),
         ],
       }));
     config.module
@@ -60,8 +82,8 @@ module.exports = {
       .tap(options => ({
         ...options,
         ident: 'postcss',
-        plugins: loader => [
-          require('autoprefixer')(),
+        plugins: () => [
+          autoprefixer(),
         ],
       }));
   },

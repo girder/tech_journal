@@ -1,6 +1,6 @@
-import View from 'girder/views/View';
-import router from 'girder/router';
-import { restRequest } from 'girder/rest';
+import View from '@girder/core/views/View';
+import router from '@girder/core/router';
+import { restRequest } from '@girder/core/rest';
 
 import MenuBarView from './menuBar.js';
 import editIssueTemplate from '../templates/journal_edit_issue.pug';
@@ -48,12 +48,12 @@ var EditIssueView = View.extend({
     },
     render: function (parentId) {
         restRequest({
-            type: 'GET',
+            method: 'GET',
             url: 'journal/licenses'
         }).done((licenseInfo) => {
             this.$el.html(editIssueTemplate({info: parentId, licenses: licenseInfo}));
             new MenuBarView({ // eslint-disable-line no-new
-                el: this.$el,
+                el: this.$('#headerBar'),
                 parentView: this
             });
             return this;
@@ -61,7 +61,7 @@ var EditIssueView = View.extend({
     },
     _updateIssue: function (issueData) {
         restRequest({
-            type: 'PUT',
+            method: 'PUT',
             url: `folder/${this.parentId}`,
             data: {
                 name: issueData.issueName,
@@ -71,7 +71,7 @@ var EditIssueView = View.extend({
             var paperDue = new Date(issueData.paperDue);
             issueData.paperDue = paperDue;
             restRequest({
-                type: 'PUT',
+                method: 'PUT',
                 contentType: 'application/json',
                 url: `folder/${jrnResp._id}/metadata`,
                 data: JSON.stringify(issueData)
@@ -81,7 +81,7 @@ var EditIssueView = View.extend({
     },
     _createIssue: function (issueData) {
         restRequest({
-            type: 'POST',
+            method: 'POST',
             url: 'folder',
             data: {
                 parentId: this.parentId,
@@ -93,13 +93,13 @@ var EditIssueView = View.extend({
             var paperDue = new Date(issueData.paperDue);
             issueData.paperDue = paperDue;
             restRequest({
-                type: 'PUT',
+                method: 'PUT',
                 contentType: 'application/json',
                 url: `folder/${jrnResp._id}/metadata`,
                 data: JSON.stringify(issueData)
             }).done((metaResp) => {
                 restRequest({
-                    type: 'POST',
+                    method: 'POST',
                     url: `group/`,
                     data: {
                         'name': `${issueData.issueName}_editors`,
@@ -113,7 +113,7 @@ var EditIssueView = View.extend({
     },
     _getCurrentInfo: function (journalData) {
         restRequest({
-            type: 'GET',
+            method: 'GET',
             url: `folder/${journalData.id}`
         }).done((jrnInfo) => {
             var paperDueTmp = new Date(jrnInfo.meta.paperDue);
