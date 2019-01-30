@@ -14,12 +14,15 @@ import './routes';
 import '@/widgets/MenuBarWidget.vue';
 
 $(() => {
-    const gaKey = process.env.GA_KEY;
-    if (gaKey) {
+    let gaTrackingId;
+    try {
+        gaTrackingId = process.env.VUE_APP_GA_TRACKING_ID;
+    } catch (e) {}
+    if (gaTrackingId) {
         // Inject the Google Analytics framework.
         let s = document.createElement('script');
         s.type = 'text/javascript';
-        s.src = `https://www.googletagmanager.com/gtag/js?id=${gaKey}`;
+        s.src = `https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`;
         document.getElementsByTagName('head')[0].appendChild(s);
 
         // Launch tracking for this site.
@@ -29,7 +32,7 @@ $(() => {
             dataLayer.push(arguments);
         };
         gtag('js', new Date());
-        gtag('config', gaKey);
+        gtag('config', gaTrackingId);
     }
 
     events.trigger('g:appload.before');

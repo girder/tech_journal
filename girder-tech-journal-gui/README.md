@@ -43,6 +43,18 @@ plugin is enabled.
 Finally, visit <http://localhost:8080/tech_journal/> in a Web browser
 to use the application.
 
+### Enabling Google Analytics
+To enable Google Analytics for the web application, define the
+`VUE_APP_GA_KEY` environment variable with the value of the
+[tracking ID](https://support.google.com/analytics/answer/7372977)
+before running the build.
+
+For example:
+```bash
+export VUE_APP_GA_TRACKING_ID=UA-000000-2
+yarn run build
+```
+
 ## Development Setup
 When developing this web application directly, it will be much more
 efficient to have the app rebuild itself automatically when changes are
