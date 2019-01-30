@@ -1,5 +1,6 @@
 import events from '@girder/core/events';
 import App from '@girder/core/views/App';
+import Vue from 'vue';
 
 // Import all stylesheets
 import './stylesheets/main.styl';
@@ -10,8 +11,10 @@ import './stylesheets/view.index.styl';
 import './stylesheets/item.comments.styl';
 
 import './routes';
+
 // Register MenuBarWidget as a global component
-import '@/widgets/MenuBarWidget.vue';
+import MenuBarWidget from '@/widgets/MenuBarWidget.vue';
+Vue.component(MenuBarWidget.name, MenuBarWidget);
 
 $(() => {
     let gaTrackingId;
