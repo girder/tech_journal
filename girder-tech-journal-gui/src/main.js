@@ -10,6 +10,9 @@ import './stylesheets/submit.upload.styl';
 import './stylesheets/view.index.styl';
 import './stylesheets/item.comments.styl';
 
+// Import plugins
+import '@girder/oauth/main';
+
 import './routes';
 
 // Register MenuBarWidget as a global component
