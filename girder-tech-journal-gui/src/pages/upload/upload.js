@@ -155,7 +155,9 @@ var uploadView = View.extend({
             (
                 this.$('#otherLicenseInput').is(':visible') &&
                 !this.$('#otherLicenseInput').val()
-            );
+            ) ||
+            !this.$('#uploadTable tr').length;
+
         this.$('input[type=submit]').attr('disabled', isDisabled);
     },
     _uploadFiles: function (data) {
@@ -189,6 +191,7 @@ var uploadView = View.extend({
                 }).done((respMD) => {
                     this.$('#uploadTable').append(UploadEntryTemplate({info: respMD}));
                     this.$('#uploadQuestions').show();
+                    this.submitCheck();
                 });
             });
         }, this).render();
@@ -213,6 +216,7 @@ var uploadView = View.extend({
                 error: null
             }).done((respMD) => {
                 this.$(itemEntry).remove();
+                this.submitCheck();
             });
         }
     },
