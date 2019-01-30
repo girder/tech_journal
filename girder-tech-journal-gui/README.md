@@ -22,7 +22,7 @@ Alternatively,
 [Yarn's installation docs](https://yarnpkg.com/en/docs/install) may be
 consulted for a more native installation which does not depend on npm.
 
-## Project setup
+## Building
 To build this web application to be served in production or when doing
 server-side development, first change the working directory of your
 shell to this web application:
@@ -46,7 +46,8 @@ to use the application.
 ## Development Setup
 When developing this web application directly, it will be much more
 efficient to have the app rebuild itself automatically when changes are
-made. To start this:
+made. To start this, first ensure the Girder API server is running
+locally (with the `girder serve` command), then run:
 ```bash
 yarn install
 yarn run serve
