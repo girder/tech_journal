@@ -1,5 +1,5 @@
 mixin revisionOption(value,selectedRev,submission)
-  tr(class=selectedRev, data-href=value.meta.revisionNumber data-submission=submission.meta.submissionNumber)
+  tr(class=selectedRev, data-href=value.meta.revisionNumber, data-submission=submission.meta.submissionNumber)
     td.
       #{value.name}
     td.
