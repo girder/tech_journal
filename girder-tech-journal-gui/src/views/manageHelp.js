@@ -1,7 +1,7 @@
-import View from 'girder/views/View';
-import events from 'girder/events';
-import MarkdownWidget from 'girder/views/widgets/MarkdownWidget';
-import { restRequest } from 'girder/rest';
+import View from '@girder/core/views/View';
+import events from '@girder/core/events';
+import MarkdownWidget from '@girder/core/views/widgets/MarkdownWidget';
+import { restRequest } from '@girder/core/rest';
 
 import MenuBarView from './menuBar.js';
 import manageHelpViewTemplate from '../templates/journal_admin_help.pug';
@@ -21,8 +21,8 @@ var ManageHelpView = View.extend({
     },
     initialize: function () {
         restRequest({
-            type: 'GET',
-            path: 'journal/setting',
+            method: 'GET',
+            url: 'journal/setting',
             data: {
                 list: JSON.stringify(['main', 'about', 'faq'])
             }
@@ -33,9 +33,8 @@ var ManageHelpView = View.extend({
     render: function (existingPages) {
         this.$el.html(manageHelpViewTemplate());
         new MenuBarView({ // eslint-disable-line no-new
-            el: this.$el,
-            parentView: this,
-            searchBoxVal: 'Search...'
+            el: this.$('#headerBar'),
+            parentView: this
         });
         this.HelpEditor = new MarkdownWidget({
             prefix: 'homepage',
@@ -70,8 +69,8 @@ var ManageHelpView = View.extend({
     },
     _saveHelp: function (inData) {
         restRequest({
-            type: 'PUT',
-            path: 'journal/setting',
+            method: 'PUT',
+            url: 'journal/setting',
             data: {
                 list: JSON.stringify(inData)
             },

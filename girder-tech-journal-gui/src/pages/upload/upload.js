@@ -1,11 +1,11 @@
-import View from 'girder/views/View';
-import router from 'girder/router';
-import events from 'girder/events';
-import FolderModel from 'girder/models/FolderModel';
-import UploadWidget from 'girder/views/widgets/UploadWidget';
-import { getCurrentUser } from 'girder/auth';
-import { handleClose } from 'girder/dialog';
-import { restRequest } from 'girder/rest';
+import View from '@girder/core/views/View';
+import router from '@girder/core/router';
+import events from '@girder/core/events';
+import FolderModel from '@girder/core/models/FolderModel';
+import UploadWidget from '@girder/core/views/widgets/UploadWidget';
+import { getCurrentUser } from '@girder/core/auth';
+import { handleClose } from '@girder/core/dialog';
+import { restRequest } from '@girder/core/rest';
 
 import MenuBarView from '../../views/menuBar.js';
 import UploadViewTemplate from './journal_upload.pug';
@@ -50,8 +50,8 @@ var uploadView = View.extend({
             event.preventDefault();
             var subData = {'github': $('#github').val()};
             restRequest({
-                type: 'PUT',
-                path: `journal/${this.parentId}/metadata`,
+                method: 'PUT',
+                url: `journal/${this.parentId}/metadata`,
                 contentType: 'application/json',
                 data: JSON.stringify(subData),
                 error: null
@@ -112,15 +112,15 @@ var uploadView = View.extend({
         this.parentId = subId.id;
         this.newRevision = subId.NR;
         restRequest({
-            type: 'GET',
-            path: `journal/${this.parentId}/details`
+            method: 'GET',
+            url: `journal/${this.parentId}/details`
         }).done((resp) => {
             this.curRevision = resp[0];
-            var handleText = `${window.location.origin}${window.location.pathname}#view/${resp[1].meta.submissionNumber}/${resp[0].meta.revisionNumber}`
+            var handleText = `${window.location.origin}${window.location.pathname}#view/${resp[1].meta.submissionNumber}/${resp[0].meta.revisionNumber}`;
             this.render(handleText);
             restRequest({
-                type: 'GET',
-                path: `item?folderId=${this.parentId}`
+                method: 'GET',
+                url: `item?folderId=${this.parentId}`
             }).done((itemResp) => {
                 for (var index in itemResp) {
                     this.$('#uploadTable').append(UploadEntryTemplate({info: itemResp[index]}));
@@ -139,7 +139,7 @@ var uploadView = View.extend({
     render: function (handleText) {
         this.$el.html(UploadViewTemplate({handleText: handleText, user: getCurrentUser(), newRevision: this.newRevision}));
         new MenuBarView({ // eslint-disable-line no-new
-            el: this.$el,
+            el: this.$('#headerBar'),
             parentView: this
         });
         return this;
@@ -178,12 +178,12 @@ var uploadView = View.extend({
                 'type': this.$('#typeFile').val().trim()
             };
             restRequest({
-                type: 'GET',
-                path: `item?folderId=${this.parentId}&name=${retInfo.files[0].name}`
+                method: 'GET',
+                url: `item?folderId=${this.parentId}&name=${retInfo.files[0].name}`
             }).done((resp) => {
                 restRequest({
-                    type: 'PUT',
-                    path: `item/${resp[0]._id}/metadata`,
+                    method: 'PUT',
+                    url: `item/${resp[0]._id}/metadata`,
                     contentType: 'application/json',
                     data: JSON.stringify(subData),
                     error: null
@@ -199,8 +199,8 @@ var uploadView = View.extend({
         if (objectIdentifier === 'github') {
             var subData = {'github': ''};
             restRequest({
-                type: 'PUT',
-                path: `folder/${this.parentId}/metadata`,
+                method: 'PUT',
+                url: `folder/${this.parentId}/metadata`,
                 contentType: 'application/json',
                 data: JSON.stringify(subData),
                 error: null
@@ -209,8 +209,8 @@ var uploadView = View.extend({
             });
         } else {
             restRequest({
-                type: 'DELETE',
-                path: `item/${objectIdentifier}`,
+                method: 'DELETE',
+                url: `item/${objectIdentifier}`,
                 error: null
             }).done((respMD) => {
                 this.$(itemEntry).remove();
@@ -220,27 +220,27 @@ var uploadView = View.extend({
 
     _sendSubmission: function (subData, mode) {
         restRequest({
-            type: 'PUT',
-            path: `journal/${this.parentId}/metadata`,
+            method: 'PUT',
+            url: `journal/${this.parentId}/metadata`,
             contentType: 'application/json',
             data: mode === 'approve' ? JSON.stringify(subData) : undefined,
             error: null
         }).done((respMD) => {
             restRequest({
-                type: 'PUT',
+                method: 'PUT',
                 url: `journal/${this.parentId}/${mode}`,
                 contentType: 'application/json'
             }).done((respMD) => {
                 restRequest({
-                    type: 'GET',
+                    method: 'GET',
                     url: `folder/${this.parentId}`
                 }).done((folder) => {
-                  restRequest({
-                    type: 'GET',
-                    url: `folder/${folder.parentId}`
-                  }).done((parentFolder) => {
-                    router.navigate(`#view/${parentFolder.meta.submissionNumber}/${folder.meta.revisionNumber}`, {trigger: true});
-                  });
+                    restRequest({
+                        method: 'GET',
+                        url: `folder/${folder.parentId}`
+                    }).done((parentFolder) => {
+                        router.navigate(`#view/${parentFolder.meta.submissionNumber}/${folder.meta.revisionNumber}`, {trigger: true});
+                    });
                 });
             });
         });

@@ -1,5 +1,5 @@
-import View from 'girder/views/View';
-import { restRequest, apiRoot } from 'girder/rest';
+import View from '@girder/core/views/View';
+import { restRequest, apiRoot } from '@girder/core/rest';
 
 import MenuBarView from './menuBar.js';
 import DownloadViewTemplate from '../templates/journal_download.pug';
@@ -19,13 +19,13 @@ var downloadView = View.extend({
         this.submissionNumber = subId.submissionNumber;
         this.revisionNumber = subId.revisionNumber;
         restRequest({
-            type: 'GET',
-            path: `folder/${this.parentId}`
+            method: 'GET',
+            url: `folder/${this.parentId}`
         }).done((resp) => {
             this.parent = resp;
             restRequest({
-                type: 'GET',
-                path: `item?folderId=${this.parentId}`
+                method: 'GET',
+                url: `item?folderId=${this.parentId}`
             }).done((itemResp) => {
                 for (var index in itemResp) {
                     if (itemResp[index].meta.type === 'PAPER') {
@@ -38,8 +38,8 @@ var downloadView = View.extend({
     },
     render: function (paperItem) {
         restRequest({
-            type: 'GET',
-            path: 'journal/disclaimers?tag=disclaimer'
+            method: 'GET',
+            url: 'journal/disclaimers?tag=disclaimer'
         }).done((resp) => {
             var paperDownloadUrl =
                 paperItem && paperItem._id
@@ -52,14 +52,14 @@ var downloadView = View.extend({
                 parentDownloadUrl: parentDownloadUrl,
                 paperDownloadUrl: paperDownloadUrl,
                 submissionNumber: this.submissionNumber,
-                revisionNumber: this.revisionNumber,
+                revisionNumber: this.revisionNumber
             };
             if (Object.keys(resp).indexOf(this.parent.meta.disclaimer) !== -1) {
                 displayObj['disclaimer'] = resp[this.parent.meta.disclaimer]['value'];
             }
             this.$el.html(DownloadViewTemplate(displayObj));
             new MenuBarView({ // eslint-disable-line no-new
-                el: this.$el,
+                el: this.$('#headerBar'),
                 parentView: this
             });
             if (Object.keys(displayObj).indexOf('disclaimer') !== -1) {

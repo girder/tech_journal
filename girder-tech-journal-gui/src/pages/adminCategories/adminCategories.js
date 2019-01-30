@@ -1,5 +1,5 @@
-import View from 'girder/views/View';
-import { restRequest } from 'girder/rest';
+import View from '@girder/core/views/View';
+import { restRequest } from '@girder/core/rest';
 
 import MenuBarView from '../../views/menuBar.js';
 import adminCategoriesTemplate from './adminCategories.pug';
@@ -10,8 +10,8 @@ const adminCategoriesPage = View.extend({
         'click .DeleteRootLink': function (event) {
             var catName = $(event.currentTarget).siblings('h4').text();
             restRequest({
-                type: 'DELETE',
-                path: `journal/category?text=${catName}&tag=disclaimer`
+                method: 'DELETE',
+                url: `journal/category?text=${catName}&tag=disclaimer`
             }).done((resp) => {
                 $(event.currentTarget).closest('.TreeEntry').remove();
             });
@@ -28,8 +28,8 @@ const adminCategoriesPage = View.extend({
             var newCatName = this.$('#newTreeName').val();
             //  Call out to category API to save initial object
             restRequest({
-                type: 'POST',
-                path: `journal/category?text=${newCatName}&tag=disclaimer`
+                method: 'POST',
+                url: `journal/category?text=${newCatName}&tag=disclaimer`
             }).done((resp) => {
                 this.$('#treeWrapper').html(this.$('#treeWrapper').html() + adminCategoriesEntryTemplate({'name': newCatName, 'values': []}));
             });
@@ -45,8 +45,8 @@ const adminCategoriesPage = View.extend({
             });
 
             restRequest({
-                type: 'PUT',
-                path: 'journal/category?tag=categories',
+                method: 'PUT',
+                url: 'journal/category?tag=categories',
                 data: {
                     list: JSON.stringify([valueData])
                 }
@@ -60,8 +60,8 @@ const adminCategoriesPage = View.extend({
     },
     initialize: function (query) {
         restRequest({
-            type: 'GET',
-            path: 'journal/categories?tag=categories'
+            method: 'GET',
+            url: 'journal/categories?tag=categories'
         }).done((resp) => {
             this.render(resp);
         }); // End getting of OTJ Collection value setting
@@ -72,7 +72,7 @@ const adminCategoriesPage = View.extend({
             this.$('#treeWrapper').html(this.$('#treeWrapper').html() + adminCategoriesEntryTemplate({'name': subData[key]['key'], 'values': subData[key]['value']}));
         }
         new MenuBarView({ // eslint-disable-line no-new
-            el: this.$el,
+            el: this.$('#headerBar'),
             parentView: this
         });
         return this;

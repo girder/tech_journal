@@ -1,4 +1,4 @@
-import View from 'girder/views/View';
+import View from '@girder/core/views/View';
 
 import JournalLoginViewTemplate from './journal_login.pug';
 import JournalTermsTemplate from './journal_terms.pug';

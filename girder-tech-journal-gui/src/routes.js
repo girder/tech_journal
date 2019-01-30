@@ -2,13 +2,14 @@
 
 import Backbone from 'backbone';
 
-import router from 'girder/router';
-import events from 'girder/events';
-import { getCurrentUser } from 'girder/auth';
-import { Layout } from 'girder/constants';
-import { restRequest } from 'girder/rest';
+import router from '@girder/core/router';
+import events from '@girder/core/events';
+import { getCurrentUser } from '@girder/core/auth';
+import { Layout } from '@girder/core/constants';
+import { restRequest } from '@girder/core/rest';
 
 // Import views from plugin
+import vueComponentView from '@/vueComponentView';
 import submitView from './pages/submit/submit';
 import editView from './pages/submit/editSubmission';
 import ManageDisclaimerView from './pages/admin/manageDisclaimers';
@@ -19,10 +20,8 @@ import manageJournalView from './views/manageJournal';
 import EditIssueView from './views/editIssue';
 import EditJournalView from './views/editJournal';
 import manageHelpView from './views/manageHelp';
-import FeedBackView from './pages/feedback/feedback.js';
 import EditGroupUsersView from './views/groupUsers.js';
 import userView from './pages/user/user.js';
-import surveyView from './pages/survey/survey.js';
 
 // Clear all of the existing routes, which will always added by Girder
 Backbone.history.handlers = [];
@@ -66,9 +65,9 @@ router.route('plugins/journal/submission/:id/approve', 'submissionInfo', functio
     testUserAccess(editView, {id: id, NR: false, approve: true}, true, true);
 });
 // Listing page of Journal
-import JournalListPage from './pages/journalList/journalList';
-router.route('journals', 'journalList', function () {
-    testUserAccess(JournalListPage, {}, false, false);
+import JournalListPage from '@/pages/JournalListPage.vue';
+router.route('journals', 'JournalListPage', function () {
+    testUserAccess(vueComponentView, {component: JournalListPage}, false, false);
 });
 
 import uploadView from './pages/upload/upload';
@@ -83,24 +82,30 @@ router.route('plugins/journal/submission/:id/upload/revision', 'uploadFiles', fu
 router.route('plugins/journal/submission/:id/upload/edit', 'uploadFiles', function (id) {
     testUserAccess(uploadView, {id: id, newSub: false, NR: false}, true, false);
 });
-router.route('plugins/journal/submission/:id/survey', 'uploadFiles', function (id) {
-    testUserAccess(surveyView, {id: id}, true, true);
+import SurveyPage from './pages/SurveyPage.vue';
+router.route('plugins/journal/submission/:id/survey', 'SurveyPage', function (id) {
+    testUserAccess(vueComponentView, {
+        component: SurveyPage,
+        props: {
+            journalId: id
+        }
+    }, true, true);
 });
 
 // Page to view each individual submission
 router.route('view/:submission(/:revision)', 'submissionView', function (submission, revision) {
     restRequest({
-      type: 'GET',
-      url: 'journal/translate',
-      data: {
-        submission: submission,
-        revision: revision
-      }
+        method: 'GET',
+        url: 'journal/translate',
+        data: {
+            submission: submission,
+            revision: revision
+        }
     }).done((ids) => {
-      testUserAccess(submissionView, {
-        id: ids.submission,
-        revId: ids.revision
-      });
+        testUserAccess(submissionView, {
+            id: ids.submission,
+            revId: ids.revision
+        });
     });
 });
 
@@ -122,17 +127,17 @@ router.route('plugins/journal/admin/groupusers/:id/issue', 'approvalView', funct
 // Download page for each submission
 router.route('view/:id/download', 'submissionDownload', function (id) {
     restRequest({
-        type: 'GET',
+        method: 'GET',
         url: `folder/${id}`
     }).done((revision) => {
         restRequest({
-            type: 'GET',
+            method: 'GET',
             url: `folder/${revision.parentId}`
         }).done((submission) => {
             testUserAccess(downloadView, {
-              id: id,
-              submissionNumber: submission.meta.submissionNumber,
-              revisionNumber: revision.meta.revisionNumber
+                id: id,
+                submissionNumber: submission.meta.submissionNumber,
+                revisionNumber: revision.meta.revisionNumber
             }, true, false);
         });
     });
@@ -164,26 +169,44 @@ router.route('plugins/journal/admin/help', 'adminHelp', function () {
 });
 
 // Display page for the Help page of the Journal
-import HelpPage from './pages/help/help';
-router.route('help', 'help', function () {
-    testUserAccess(HelpPage, {title: 'Help', settingKey: 'main'}, false, false);
+import HelpPage from '@/pages/HelpPage.vue';
+router.route('help', 'HelpPage', function () {
+    testUserAccess(vueComponentView, {
+        component: HelpPage,
+        props: {
+            title: 'Help',
+            settingKey: 'main'
+        }
+    }, false, false);
 });
 
 // Display page for the F.A.Q. page of the Journal
-router.route('help/faq', 'helpFaq', function () {
-    testUserAccess(HelpPage, {title: 'Frequently Asked Questions', settingKey: 'faq'}, false, false);
+router.route('help/faq', 'HelpPageFaq', function () {
+    testUserAccess(vueComponentView, {
+        component: HelpPage,
+        props: {
+            title: 'Frequently Asked Questions',
+            settingKey: 'faq'
+        }
+    }, false, false);
 });
 
 // Display page of the About page of the Journal
-router.route('help/about', 'helpAbout', function () {
-    testUserAccess(HelpPage, {title: 'About', settingKey: 'about'}, false, false);
+router.route('help/about', 'HelpPageAbout', function () {
+    testUserAccess(vueComponentView, {
+        component: HelpPage,
+        props: {
+            title: 'About',
+            settingKey: 'about'
+        }
+    }, false, false);
 });
 
 // Display page for a user to submit feedback to Journal Admins
-router.route('plugins/journal/help/feedback', 'FeedBackView', function () {
-    testUserAccess(FeedBackView, {}, false, false);
+import FeedbackPage from '@/pages/FeedbackPage.vue';
+router.route('plugins/journal/help/feedback', 'FeedbackPage', function () {
+    testUserAccess(vueComponentView, {component: FeedbackPage}, false, false);
 });
-
 
 /*
  * Hack-tastic fix to force the login to not re-render the page
@@ -195,16 +218,15 @@ router.route('plugins/journal/help/feedback', 'FeedBackView', function () {
  */
 let target = null;
 events.on('g:login', function () {
-  if (target) {
-    const tmp = target;
-    target = null;
-    events.trigger('g:navigateTo', tmp[0], tmp[1], {layout: Layout.EMPTY});
-    window.history.back();
-    //window.history.pushState(null, '', tmp[2]);
-    return false;
-  }
+    if (target) {
+        const tmp = target;
+        target = null;
+        events.trigger('g:navigateTo', tmp[0], tmp[1], {layout: Layout.EMPTY});
+        window.history.back();
+        // window.history.pushState(null, '', tmp[2]);
+        return false;
+    }
 });
-
 
 function testUserAccess(view, args, needsUser, needsAdmin) {
     var userFlag  = true;
@@ -222,8 +244,8 @@ function testUserAccess(view, args, needsUser, needsAdmin) {
         events.trigger('g:navigateTo', view, args, {layout: Layout.EMPTY});
     } else {
         if (!user) {
-            target = [view,args,window.location.href]
-            //Route to non-rendering page to show log-in window
+            target = [view, args, window.location.href];
+            // Route to non-rendering page to show log-in window
             router.navigate('login?dialog=login', { trigger: true });
             return -1;
         }

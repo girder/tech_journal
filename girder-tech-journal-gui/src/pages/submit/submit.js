@@ -1,9 +1,9 @@
 import $ from 'jquery';
-import View from 'girder/views/View';
-import router from 'girder/router';
-import events from 'girder/events';
-import { getCurrentUser } from 'girder/auth';
-import { restRequest } from 'girder/rest';
+import View from '@girder/core/views/View';
+import router from '@girder/core/router';
+import events from '@girder/core/events';
+import { getCurrentUser } from '@girder/core/auth';
+import { restRequest } from '@girder/core/rest';
 
 import MenuBarView from '../../views/menuBar.js';
 import SubmitViewTemplate from './journal_submit.pug';
@@ -53,7 +53,7 @@ var SubmitView = View.extend({
         'click #showDetails': function (event) {
             this.targetIssueID = event.currentTarget.target;
             restRequest({
-                type: 'GET',
+                method: 'GET',
                 url: `folder/${this.targetIssueID}`
             }).done((resp) => {
                 this.$('#issueDetails').append(issueDetailsTemplate({info: resp}));
@@ -68,7 +68,7 @@ var SubmitView = View.extend({
         if (id.id === 'new') {
             this.newSub = true;
             restRequest({
-                type: 'GET',
+                method: 'GET',
                 url: 'journal/setting',
                 data: {
                     list: JSON.stringify([
@@ -77,11 +77,11 @@ var SubmitView = View.extend({
                 }
             }).done((resp) => {
                 restRequest({
-                    type: 'GET',
+                    method: 'GET',
                     url: `collection/${resp['tech_journal.default_journal']}`
                 }).done((parResp) => {
                     restRequest({
-                        type: 'GET',
+                        method: 'GET',
                         url: `journal/${resp['tech_journal.default_journal']}/openissues`
                     }).done((jrnResp) => {
                         jrnResp['parentName'] = parResp['name'];
@@ -107,7 +107,7 @@ var SubmitView = View.extend({
         this.$el.html(SelectIssueTemplate({info: subResp}));
         var issueInfo;
         new MenuBarView({ // eslint-disable-line no-new
-            el: this.$el,
+            el: this.$('#headerBar'),
             parentView: this
         });
         if (state === 1) {
@@ -115,7 +115,7 @@ var SubmitView = View.extend({
         } else {
             this.itemId = subResp;
             restRequest({
-                type: 'GET',
+                method: 'GET',
                 url: `folder/${this.itemId}`
             }).done((resp) => {
                 if (this.newSub) {
@@ -133,14 +133,14 @@ var SubmitView = View.extend({
                 }));
                 this.$('.viewMain').hide();
                 restRequest({
-                    type: 'GET',
+                    method: 'GET',
                     url: 'journal/categories?tag=categories'
                 }).done((resp) => {
                     for (var key in resp) {
                         this.$('#treeWrapper').html(this.$('#treeWrapper').html() + CategoryTemplate({'catName': resp[key]['key'], 'values': resp[key]['value']}));
                     }
                     restRequest({
-                        type: 'GET',
+                        method: 'GET',
                         url: `journal/disclaimers?tag=disclaimer`
                     }).done((disclaimerResp) => {
                         for (var disc in disclaimerResp) {
@@ -186,52 +186,51 @@ var SubmitView = View.extend({
 
         let newSubmissionNum;
         restRequest({
-          type: 'POST',
-          path: 'journal/submission/number'
+            method: 'POST',
+            url: 'journal/submission/number'
         }).done((num) => {
-          newSubmissionNum = num;
+            newSubmissionNum = num;
 
-          restRequest({
-            type: 'POST',
-            path: `journal/submission/${newSubmissionNum}/number`
-          }).done((newRevisionNum) => {
-              var subData = {
-                  'institution': this.$('#institutionEntry').val().trim(),
-                  'related': this.$('#relatedEntry').val().trim(),
-                  'type': this.$('#typeEntry').val().trim(),
-                  'copyright': this.$('#copyrightEntry').val().trim(),
-                  'grant': this.$('#grantEntry').val().trim(),
-                  'authors': authors,
-                  'tags': tags,
-                  'categories': categories,
-                  'comments': comments,
-                  'permission': hasPermission,
-                  'CorpCLA': corpCLAVal,
-                  'targetIssue': this.itemId,
-                  'disclaimer': this.$('#disclaimer').val().trim(),
-                  'submissionNumber': `${newSubmissionNum}`,
-                  'revisionNumber': `${newRevisionNum}`
-              };
-              if (this.newRevision) {
-                  subData.revisionNotes = this.$('#revisionEntry').val().trim();
-                  subData.previousRevision = this.itemId;
-              }
-              restRequest({
-                  type: 'POST',
-                  url: 'folder',
-                  data: {
-                      parentId: this.user.id,
-                      parentType: 'user',
-                      name: inData.subName,
-                      description: inData.subDescription
-                  },
-                  error: null
-              }).done((resp) => {
-                  this._findUploadTarget(resp._id, subData);
-              });
-          });
-        })
-
+            restRequest({
+                method: 'POST',
+                url: `journal/submission/${newSubmissionNum}/number`
+            }).done((newRevisionNum) => {
+                var subData = {
+                    'institution': this.$('#institutionEntry').val().trim(),
+                    'related': this.$('#relatedEntry').val().trim(),
+                    'type': this.$('#typeEntry').val().trim(),
+                    'copyright': this.$('#copyrightEntry').val().trim(),
+                    'grant': this.$('#grantEntry').val().trim(),
+                    'authors': authors,
+                    'tags': tags,
+                    'categories': categories,
+                    'comments': comments,
+                    'permission': hasPermission,
+                    'CorpCLA': corpCLAVal,
+                    'targetIssue': this.itemId,
+                    'disclaimer': this.$('#disclaimer').val().trim(),
+                    'submissionNumber': `${newSubmissionNum}`,
+                    'revisionNumber': `${newRevisionNum}`
+                };
+                if (this.newRevision) {
+                    subData.revisionNotes = this.$('#revisionEntry').val().trim();
+                    subData.previousRevision = this.itemId;
+                }
+                restRequest({
+                    method: 'POST',
+                    url: 'folder',
+                    data: {
+                        parentId: this.user.id,
+                        parentType: 'user',
+                        name: inData.subName,
+                        description: inData.subDescription
+                    },
+                    error: null
+                }).done((resp) => {
+                    this._findUploadTarget(resp._id, subData);
+                });
+            });
+        });
     },
     _checkCategories() {
         if (this.$('.filterOption:checked').length === 0) {
@@ -253,7 +252,7 @@ var SubmitView = View.extend({
         }
         // if new submission, generate first "revision" folder inside of generated folder
         restRequest({
-            type: 'POST',
+            method: 'POST',
             url: 'folder',
             data: {
                 parentId: parentId,
@@ -263,7 +262,7 @@ var SubmitView = View.extend({
             error: null
         }).done((resp) => {
             restRequest({
-                type: 'PUT',
+                method: 'PUT',
                 url: `journal/${resp._id}/metadata`,
                 contentType: 'application/json',
                 data: JSON.stringify(subData),

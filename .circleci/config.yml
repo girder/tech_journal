@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: girder/girder_test:latest-py2
+      - image: girder/tech_journal_test:latest
       - image: circleci/mongo:3.6-ram
         command: ["mongod", "--storageEngine", "ephemeralForTest", "--dbpath", "/dev/shm/mongo"]
 
@@ -50,20 +50,28 @@ jobs:
           key: npm-{{ arch }}-{{ checksum "girder/package.json" }}-{{ checksum "girder/plugins/tech_journal/plugin.json" }}
 
       - restore_cache:
-          key: npm-{{ arch }}-{{ checksum "girder/plugins/tech_journal/girder-tech-journal-gui/package.json" }}
+          name: Restore web application dependency cache
+          key: yarn-{{ arch }}-{{ checksum "girder/plugins/tech_journal/girder-tech-journal-gui/yarn.lock" }}
       - run:
-          name: Install tech journal web client dependencies
-          command: npm install
+          name: Install web application dependencies
+          command: yarn install --frozen-lockfile
           working_directory: girder/plugins/tech_journal/girder-tech-journal-gui
-          environment:
-            - npm_config_cache: /home/circleci/project/npm_cache_external
       - save_cache:
-          paths: npm_cache_external
-          key: npm-{{ arch }}-{{ checksum "girder/plugins/tech_journal/girder-tech-journal-gui/package.json" }}
-
+          name: Save web application dependency cache
+          key: yarn-{{ arch }}-{{ checksum "girder/plugins/tech_journal/girder-tech-journal-gui/yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
       - run:
-          name: Build tech journal web client
-          command: npm run build
+          name: Build web application
+          command: yarn run build
+          working_directory: girder/plugins/tech_journal/girder-tech-journal-gui
+      - run:
+          name: Lint web application
+          command: yarn run lint
+          working_directory: girder/plugins/tech_journal/girder-tech-journal-gui
+      - run:
+          name: Lint web application legacy files
+          command: yarn run lint-legacy
           working_directory: girder/plugins/tech_journal/girder-tech-journal-gui
 
       - run:
