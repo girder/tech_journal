@@ -81,7 +81,6 @@ var uploadView = View.extend({
         // Change function for updating the submissions licensing and submit status
         'change #acceptLicense': function (event) {
             var license = this.$('#licenseChoice').val();
-            this.$('#hiddenSourceLicense').attr('value', this.$('#licenseChoice').is(':checked') ? license : 'Not Defined');
             this._checkForm(license);
             var acceptAttributionPolicyIsSelected = $('#acceptAttributionPolicy').is(':visible') && $('#acceptAttributionPolicy').is(':checked');
             this.$('#hiddenAttributionPolicy').attr('value', acceptAttributionPolicyIsSelected ? 1 : 0);
@@ -90,7 +89,7 @@ var uploadView = View.extend({
 
         'change #licenseChoice': function (event) {
             var license = this.$('#licenseChoice').val();
-            this.$('#hiddenSourceLicense').attr('value', this.$('#acceptLicense').is(':checked') ? license : 0);
+            this.$('#hiddenSourceLicense').attr('value', license);
             this._checkForm(license);
             var acceptAttributionPolicyIsSelected = this.$('#acceptAttributionPolicy').is(':visible') && this.$('#acceptAttributionPolicy').is(':checked');
             this.$('#hiddenAttributionPolicy').attr('value', acceptAttributionPolicyIsSelected ? 1 : 0);
@@ -156,7 +155,9 @@ var uploadView = View.extend({
             (
                 this.$('#otherLicenseInput').is(':visible') &&
                 !this.$('#otherLicenseInput').val()
-            );
+            ) ||
+            !this.$('#uploadTable tr').length;
+
         this.$('input[type=submit]').attr('disabled', isDisabled);
     },
     _uploadFiles: function (data) {
@@ -190,6 +191,7 @@ var uploadView = View.extend({
                 }).done((respMD) => {
                     this.$('#uploadTable').append(UploadEntryTemplate({info: respMD}));
                     this.$('#uploadQuestions').show();
+                    this.submitCheck();
                 });
             });
         }, this).render();
@@ -214,6 +216,7 @@ var uploadView = View.extend({
                 error: null
             }).done((respMD) => {
                 this.$(itemEntry).remove();
+                this.submitCheck();
             });
         }
     },
