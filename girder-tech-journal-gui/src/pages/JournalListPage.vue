@@ -3,13 +3,11 @@ div
   MenuBarWidget
   .Wrapper
     .Content
-      div
-        br
-        div(align='center')
-          font(size='+1')
-            strong Journals
-        h3(v-for='journal in journals', :key='journal._id')
-          a(:href='`#?query="collection":${journal._id}`') {{ journal.name }}
+      .viewMain
+        h2 Journals
+        ul
+          li(v-for='journal in journals', :key='journal._id')
+            a(:href='`#?query="collection":${journal._id}`') {{ journal.name }}
 </template>
 
 <script>

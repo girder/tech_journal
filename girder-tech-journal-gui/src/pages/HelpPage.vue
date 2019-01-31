@@ -3,8 +3,8 @@ div
   MenuBarWidget
   .Wrapper
     .Content
-      div(align='center')
-        h4 {{ title }}
+      .viewMain
+        h2 {{ title }}
       p
         .g-help-description(v-html='renderedHelpText')
 </template>
