@@ -617,6 +617,7 @@ class TechJournal(Resource):
         .errorResponse('Read access was denied on the issue.', 403)
         )
     def approveSubmission(self, params, folder):
+        metadata = self.getBodyJson()
         DEFAULTS = {
             'enabled': False,
             'status': 'APPROVED'}
@@ -637,15 +638,15 @@ class TechJournal(Resource):
             subject = 'Updated Submission'
             data['rNotes'] = folder['description']
             emailTemplate = 'tech_journal_updated.mako'
-        html = mail_utils.renderTemplate(emailTemplate, data)
-        sendEmails(
-            User().find({
-                'notificationStatus.NewSubmissionEmail': {'$ne': False}
-            }),
-            subject,
-            html
-        )
-
+        if metadata['notification-email']:
+            html = mail_utils.renderTemplate(emailTemplate, data)
+            sendEmails(
+                User().find({
+                    'notificationStatus.NewSubmissionEmail': {'$ne': False}
+                }),
+                subject,
+                html
+            )
         folder['curation'] = DEFAULTS
         folder['public'] = True
         folder['downloadStatistics'] = {
