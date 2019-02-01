@@ -210,10 +210,10 @@ class TechJournal(Resource):
         .errorResponse('Read access was denied on the issue.', 403)
     )
     def updateUser(self, params):
-        user = self.getBodyJson()
-        existing = self.model('user').load(user['_id'], user=self.getCurrentUser())
-        existing['notificationStatus'] = user['notificationStatus']
-        return self.model('user').save(existing)
+        bodyJson = self.getBodyJson()
+        user = self.model('user').load(bodyJson['_id'], user=self.getCurrentUser())
+        user['notificationStatus'] = bodyJson['notificationStatus']
+        return self.model('user').save(user)
 
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)
@@ -596,9 +596,7 @@ class TechJournal(Resource):
                 'abstract': parentFolder['description'],
                 'id': folder['_id']}
         text = mail_utils.renderTemplate('tech_journal_approval.mako', data)
-        mail_utils.sendEmail(toAdmins=True,
-                             subject='New Submission - Pending Approval',
-                             text=text)
+        sendEmails(User().getAdmins(), 'New Submission - Pending Approval', text)
         movedFolder['curation'] = DEFAULTS
         parentFolder['public'] = False
         self.model('folder').save(movedFolder)
@@ -640,7 +638,14 @@ class TechJournal(Resource):
             data['rNotes'] = folder['description']
             emailTemplate = 'tech_journal_updated.mako'
         html = mail_utils.renderTemplate(emailTemplate, data)
-        mail_utils.sendEmail(toAdmins=True, subject=subject, text=html)
+        sendEmails(
+            User().find({
+                'notificationStatus.NewSubmissionEmail': {'$ne': False}
+            }),
+            subject,
+            html
+        )
+
         folder['curation'] = DEFAULTS
         folder['public'] = True
         folder['downloadStatistics'] = {
@@ -726,7 +731,13 @@ class TechJournal(Resource):
             subject = "Comment Added - Submission %s" % parentFolder['name']
             emailTemplate = 'tech_journal_new_comment.mako'
             html = mail_utils.renderTemplate(emailTemplate, data)
-            mail_utils.sendEmail(toAdmins=True, subject=subject, text=html)
+            sendEmails(
+                User().find({
+                    'notificationStatus.NewCommentEmail': {'$ne': False}
+                }),
+                subject,
+                html
+            )
         self.model('folder').setMetadata(parentFolder, metadata)
         return 'Success'
 
@@ -902,8 +913,33 @@ class TechJournal(Resource):
         subject = "Website Feedback from %s" % metadata['title']
         emailTemplate = 'tech_journal_feedback.mako'
         html = mail_utils.renderTemplate(emailTemplate, metadata)
-        mail_utils.sendEmail(toAdmins=True, subject=subject, text=html)
+        sendEmails(User().getAdmins(), subject, html)
         return 'Success'
+
+
+def sendEmails(users, subject, text):
+    to = (user['email'] for user in users)
+    # TODO: Eliminates duplicates; remove once database is fixed
+    to = list(set(to))
+
+    events.daemon.trigger('_queueEmails', info={
+        'to': to,
+        'subject': subject,
+        'text': text
+    })
+
+
+def _queueEmails(event):
+    to = event.info['to']
+    subject = event.info['subject']
+    text = event.info['text']
+
+    for userEmail in to:
+        mail_utils.sendEmail(
+            to=userEmail,
+            subject=subject,
+            text=text
+        )
 
 
 def load(info):
@@ -924,5 +960,7 @@ def load(info):
     events.bind('rest.get.journal/:id/details.after',
                 'tech_journal',
                 techJournal._onPageView)
+    events.bind('_queueEmails', 'tech_journal._queueEmails', _queueEmails)
+
     Folder().exposeFields(level=AccessType.READ, fields='downloadStatistics')
     User().exposeFields(level=AccessType.READ, fields='notificationStatus')
