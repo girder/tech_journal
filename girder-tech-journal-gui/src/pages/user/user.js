@@ -16,9 +16,9 @@ var userView = UserAccountView.extend({
         'submit #notificationForm': function (event) {
             event.preventDefault();
             var params = {
-                'NewSubmissionEmail': this.$('[name="NewSubmissionEmail"]').filter(function (indx, val) { return val.checked; }).val(),
-                'NewReviewsEmail': this.$('[name="NewReviewsEmail"]').filter(function (indx, val) { return val.checked; }).val(),
-                'NewCommentEmail': this.$('[name="NewCommentEmail"]').filter(function (indx, val) { return val.checked; }).val()
+                'NewSubmissionEmail': this.$('[name="NewSubmissionEmail"]:checked').val() === '1',
+                'NewReviewsEmail': this.$('[name="NewReviewsEmail"]:checked').val() === '1',
+                'NewCommentEmail': this.$('[name="NewCommentEmail"]:checked').val() === '1'
             };
             this.user.set({'notificationStatus': params});
             restRequest({
@@ -77,7 +77,9 @@ var userView = UserAccountView.extend({
         this.$('.tab-content').append(NotificationTabFormTemplate());
         var notifications = this.user.attributes.notificationStatus;
         Object.keys(this.user.attributes.notificationStatus).forEach(function (d) {
-            $(`[name=${d}][value=${notifications[d]}]`).prop('checked', true);
+            var value = '0';
+            if (notifications[d]) { value = '1'; }
+            $(`[name=${d}][value=${value}]`).prop('checked', true);
         });
         return this;
     }
