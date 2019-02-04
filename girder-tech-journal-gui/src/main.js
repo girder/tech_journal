@@ -5,6 +5,9 @@ import Vue from 'vue';
 // Import all stylesheets
 import './stylesheets/main.styl';
 
+// Import plugins
+import '@girder/oauth/main';
+
 import './routes';
 
 // Register MenuBarWidget as a global component

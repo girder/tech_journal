@@ -19,7 +19,7 @@ var uploadView = View.extend({
                 'source-license': this.$('#hiddenSourceLicense').val().trim(),
                 'source-license-text': this.$('#hiddenSourceLicenseText').val().trim(),
                 'attribution-policy': this.$('#hiddenAttributionPolicy').val().trim(),
-                'notification-email': this.$('#hiddenSendNotificationEmail').val().trim()
+                'notification-email': this.$('#hiddenSendNotificationEmail').val().trim() === '1'
             });
         },
         'submit #approvedUploadForm': function (event) {
@@ -28,7 +28,7 @@ var uploadView = View.extend({
                 'source-license': this.$('#hiddenSourceLicense').val().trim(),
                 'source-license-text': this.$('#hiddenSourceLicenseText').val().trim(),
                 'attribution-policy': this.$('#hiddenAttributionPolicy').val().trim(),
-                'notification-email': this.$('#hiddenSendNotificationEmail').val().trim()
+                'notification-email': this.$('#hiddenSendNotificationEmail').val().trim() === '1'
             });
         },
 
@@ -97,7 +97,7 @@ var uploadView = View.extend({
         },
 
         'change #sendNotificationEmail': function (event) {
-            var sendNotificationEmailIsSelected = $(this).is(':visible') && $(this).is(':checked');
+            var sendNotificationEmailIsSelected = $('#sendNotificationEmail').is(':visible') && $('#sendNotificationEmail').is(':checked');
             this.$('#hiddenSendNotificationEmail').attr('value', sendNotificationEmailIsSelected ? 1 : 0);
         },
 
@@ -232,7 +232,8 @@ var uploadView = View.extend({
             restRequest({
                 method: 'PUT',
                 url: `journal/${this.parentId}/${mode}`,
-                contentType: 'application/json'
+                contentType: 'application/json',
+                data: JSON.stringify(subData)
             }).done((respMD) => {
                 restRequest({
                     method: 'GET',

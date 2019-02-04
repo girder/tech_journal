@@ -31,10 +31,6 @@
           | Set GitHub URL (for example: https://github.com/Girder/Girder)
         input#github(type="text", name="github", style="width:400px;")
         input#addGithub(type="button", value="Add")
-      input#hiddenSourceLicense(type="hidden", value="0", name="source-license")
-      input#hiddenSourceLicenseText(type="hidden", value="No License Specified", name="source-license-text")
-      input#hiddenAttributionPolicy(type="hidden", value="0", name="attribution-policy")
-      input#hiddenSendNotificationEmail(type="hidden", value="0", name="send-email")
       b Uploaded files
       br
       | I have the right to distribute these files
@@ -73,6 +69,9 @@
           | I certify that I have read and followed the
           a(target="_blank", href="https://www.osehra.org/sites/default/files/TD-04-01_ContributedSoftwareAttributionPolicy.pdf") Contributed Software Attribution Policy
         br
+        input#sendNotificationEmail.checkbox(type="checkbox", value=1, checked)
+        label#sendNotificationEmailLabel(for="sendNotificationEmail")
+          | Send notification email
         br
         if (user.attributes.admin )|| (newRevision)
           form#approvedUploadForm(method="POST", action="")
@@ -80,13 +79,13 @@
             input#hiddenSourceLicense(type="hidden", value="0", name="source-license")
             input#hiddenSourceLicenseText(type="hidden", value="Other", name="source-license-text")
             input#hiddenAttributionPolicy(type="hidden", value="0", name="attribution-policy")
-            input#hiddenSendNotificationEmail(type="hidden", value="0", name="send-email")
+            input#hiddenSendNotificationEmail(type="hidden", value="1", name="send-email")
         unless (user.attributes.admin )|| (newRevision)
           form#curateduploadForm(method="POST", action="")
             input(type="submit", value='Submit for Approval >', name="finish", disabled="disabled")
             input#hiddenSourceLicense(type="hidden", value="0", name="source-license")
             input#hiddenSourceLicenseText(type="hidden", value="Other", name="source-license-text")
             input#hiddenAttributionPolicy(type="hidden", value="0", name="attribution-policy")
-            input#hiddenSendNotificationEmail(type="hidden", value="0", name="send-email")
+            input#hiddenSendNotificationEmail(type="hidden", value="1", name="send-email")
     .clear
     .Footer
