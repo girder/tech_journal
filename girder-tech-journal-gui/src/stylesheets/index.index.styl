@@ -18,17 +18,16 @@ ul.dynatree-container
   padding 0!important
 
 #treeWrapper
-  margin-bottom 30px
+  height auto !important
+  margin-bottom 20px
 
 div.treeEntry
   overflow hidden
-  transition margin .15s ease-in-out, height .15s ease-in-out
   h4
     margin 0
     outline none
     padding 7px 10px !important
     background lighten(#4a4a4a, 10%)
-    transition background .15s ease-in-out, color .15s ease-in-out
     &:after
       content '\25BC'
       display block
@@ -36,7 +35,7 @@ div.treeEntry
       font-size 9px
       margin-top 5px
   &.open
-    margin-bottom 10px
+    height auto !important
     h4
       background lighten(#4a4a4a, 90%)
       color darken(white, 70%)
@@ -227,4 +226,3 @@ div.SearchResultEntry
     width 896px
     border none
     height 97px
-
