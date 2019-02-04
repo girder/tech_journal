@@ -5,8 +5,8 @@ div
     .Content
       .viewMain
         h2 {{ title }}
-      p
-        .g-help-description(v-html='renderedHelpText')
+        p
+          .g-help-description(v-html='renderedHelpText')
 </template>
 
 <script>
