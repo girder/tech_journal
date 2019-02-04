@@ -25,9 +25,12 @@ mixin issueFilter(info)
             +issueFilter(item)
       .MainContent
         #infoElement
-          span(style="font-weight:bold")
-            The OSEHRA Technical Journal
-          |  is an Open Access, on-line publication covering technical topics related to open source software for management of electronic health records. The goal of the Journal is to foster innovation and to channel this innovation in the form of concrete working pieces of software that can later be integrated into the OSEHRA open source platform.
+          strong The OSEHRA Technical Journal
+          span.
+            &nbsp;is an Open Access, on-line publication covering technical topics related to open
+            source software for management of electronic health records. The goal of the Journal is
+            to foster innovation and to channel this innovation in the form of concrete working
+            pieces of software that can later be integrated into the OSEHRA open source platform.
           .hidable
         #noResultElement(style="display:none;")
           b.
