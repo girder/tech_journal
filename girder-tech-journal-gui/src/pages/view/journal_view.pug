@@ -1,19 +1,14 @@
 mixin revisionOption(value,selectedRev,submission)
   tr(class=selectedRev, data-href=value.meta.revisionNumber, data-submission=submission.meta.submissionNumber)
-    td
-      div.
+    td.
         #{value.name}
-    td
-      div.
+    td.
         #{value.submitter.firstName} #{value.submitter.lastName}
-    td
-      div.
+    td.
         #{value.created}
-    td
-      div.
+    td.
         #{value.meta.certification_level}
-    td
-      div.
+    td.
         #{value.description}
 
 mixin searchLink(value,type)
@@ -113,7 +108,7 @@ if 'downloadStatistics' in info.revision
               #{info.parent.name}
             .pubInfo
               .revision
-                  b #{info.revision.name}
+                b #{info.revision.name}
               span.authors
                 each item in info.revision.meta.authors
                   +searchLink(item,'authors')

@@ -65,20 +65,20 @@ div#newResourceForm
   border 1px solid grey
   width  697px
 
-detailsBG = #fffff8
+$detailsBG = #fffff8
 
 #issueDetails
   & > div
-    background detailsBG
-    border 1px solid darken(desaturate(detailsBG,15%),30%)
+    background $detailsBG
+    border 1px solid darken(desaturate($detailsBG, 15%), 30%)
     margin-top 20px
     padding 25px
     h3
       margin-top 0
     pre
-      background darken(desaturate(detailsBG,20%),10%)
-      border 1px solid darken(desaturate(detailsBG,20%),30%)
-      color darken(desaturate(detailsBG,20%),80%)
+      background darken(desaturate($detailsBG, 20%), 10%)
+      border 1px solid darken(desaturate($detailsBG, 20%), 30%)
+      color darken(desaturate($detailsBG, 20%), 80%)
     input[type=button]
       background #cc3d3d
       border none
@@ -88,8 +88,8 @@ detailsBG = #fffff8
       float right
       padding 3px 6px 4px
       &:hover
-        background lighten(#cc3d3d,10%)
+        background lighten(#cc3d3d, 10%)
     &:after
-      content ''
+      content ""
       display table
       clear both
