@@ -3,10 +3,10 @@ div
   menu-bar-widget
   .Wrapper
     .Content
-      div(align='center')
-        h4 {{ title }}
-      p
-        .g-help-description(v-html='renderedHelpText')
+      .viewMain
+        h2 {{ title }}
+        p
+          .g-help-description(v-html='renderedHelpText')
 </template>
 
 <script>

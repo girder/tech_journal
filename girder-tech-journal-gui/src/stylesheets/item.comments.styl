@@ -7,7 +7,7 @@ div.loginToComment
   padding-bottom 8px
 
 #registerToComment  #loginToComment
-  color #56758b
+  color lighten(desaturate($primaryColor, 10%), 20%)
   font-weight bold
   text-decoration none
 
@@ -16,10 +16,13 @@ div.loginToComment
     text-decoration underline
 
 #addCommentDiv
-  border 1px solid #bdc7d8
+  border 1px solid #808080
+  border-top none
   border-collapse separate
   border-spacing 0
   width 100%
+  textarea
+    padding 5px 0 0 10px
 
 #commentText
   border none
@@ -68,13 +71,13 @@ div.addCommentFooter
   width 100%
 
 a.commentUserName
-  color #56758b
+  color lighten(desaturate($primaryColor, 10%), 20%)
   font-weight bold !important
   margin-left 8px
   text-decoration none
 
   &:visited
-    color #56758b
+    color lighten(desaturate($primaryColor, 10%), 20%)
     font-weight bold !important
     margin-left 8px
     text-decoration none
@@ -110,14 +113,14 @@ div.commentPaginateWrapper
   margin-top 8px
 
 a.commentItrLink
-  color #56758b
+  color lighten(desaturate($primaryColor, 10%), 20%)
   font-family "Lucida Grande", Tahoma, Verdana, Arial, sans-serif
   font-size 13px
   font-weight bold
   text-decoration none
 
   &:visited
-    color #56758b
+    color lighten(desaturate($primaryColor, 10%), 20%)
     font-family "Lucida Grande", Tahoma, Verdana, Arial, sans-serif
     font-size 13px
     font-weight bold

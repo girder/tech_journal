@@ -24,7 +24,7 @@
         a(style='border:none;', href="#")
           img(style='border:none;', src="http://osehra.org/profiles/drupal_commons/themes/commons_osehra_earth/images/logo.png", alt="logo", height="50")
       #title.
-        OSEHRA Technical Journal
+        Technical Journal
       #toplogin
         #loginForm
           unless user
@@ -32,17 +32,15 @@
           if user
             |Welcome #{user.name()}!
             a#logout Log out
-      br
-      div(style="position:absolute;right:0px;")
-        div(style="position:relative;top:7px;left:-8px;font-size:11px;color:white;")
+      .secondaryNav
+        .navWrapper
           a(href="#help/about")
             | About
           unless user
-            a#forgotPasswordLink(style="margin-left: 7px;padding-left: 7px;border-left: 1px solid grey;", href='#?dialog=resetpassword')
+            a#forgotPasswordLink(href='#?dialog=resetpassword')
               | Forgot your password
-            a.register(style="margin-left: 7px;padding-left: 7px;border-left: 1px solid grey;", href="#?dialog=register")
+            a.register(href="#?dialog=register")
               | Register
-
     #topbar
       ul#Nav.nav.navbar-nav
         li#browseLink
@@ -57,47 +55,44 @@
         if user
           li#profileLink
             a.submm(href='#plugins/user/' + user.id + '/edit') My Profile
-            #userOptionsDiv
-              ul#userOptionsList
-                li
-                  a.submm(href='#?query="creatorId":["'+user.id+'"]') My Publications
-                li
-                  a.submm(href='#plugins/user/' + user.id + '/edit') Edit Profile
+            ul#userOptionsList
+              li
+                a.submm(href='#?query="creatorId":"'+user.id+'"') My Publications
+              li
+                a.submm(href='#plugins/user/' + user.id + '/edit') Edit Profile
           if user.attributes.admin
             li#adminLink
               a(href="") Admin
-              #adminOptionsDiv
-                ul#adminOptionsList
-                  li
-                    a.submm(href='#plugins/journal/admin') Journals
-                  li
-                    a.submm(href='/#users') Users
-                  li
-                    a.submm(href='#admin/categories').
-                      Categories
-                  li
-                    a.submm(href='#plugins/journal/admin/disclaimer') Disclaimers
-                  li
-                    a.submm(href='#plugins/journal/admin/help') Help & About
-                  li
-                    a.submm(href='/#plugins/tech_journal/config') Config
-                  li
-                    .submm.
-                      Review Questions
+              ul#adminOptionsList
+                li
+                  a.submm(href='#plugins/journal/admin') Journals
+                li
+                  a.submm(href='/#users') Users
+                li
+                  a.submm(href='#admin/categories').
+                    Categories
+                li
+                  a.submm(href='#plugins/journal/admin/disclaimer') Disclaimers
+                li
+                  a.submm(href='#plugins/journal/admin/help') Help & About
+                li
+                  a.submm(href='/#plugins/tech_journal/config') Config
+                li
+                  .submm.
+                    Review Questions
         li#helpLink
           a(href="#help")
             | Help
-          #helpOptions
-            ul#helpOptionsList
-              li
-                a.submm(style="width:160px;", href="#help")
-                  | Submission and Review
-              li
-                a.submm(style="width:160px;", href="#help/faq")
-                  | F.A.Q.
-              li
-                a.submm(style="width:160px;", href="#plugins/journal/help/feedback")
-                  | Feedback
+          ul#helpOptionsList
+            li
+              a.submm(href="#help")
+                | Submission and Review
+            li
+              a.submm(href="#help/faq")
+                | F.A.Q.
+            li
+              a.submm(href="#plugins/journal/help/feedback")
+                | Feedback
         if user
           if user.attributes.admin
             if (approvalNum > 0)

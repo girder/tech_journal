@@ -1,9 +1,8 @@
-div(style="border: 3px solid black;")
-  h2 #{info.name}
+div
+  h3 #{info.name}
   pre #{info.description}
   h3(style="margin-bottom:0;")
   p
-    b Issue End date:
+    b Issue End date:&nbsp;
     | #{info.meta.paperDue}
   input#closeDetails(type="button", value="Close")
-j

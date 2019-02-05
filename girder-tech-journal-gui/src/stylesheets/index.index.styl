@@ -17,15 +17,34 @@ ul.dynatree-container
   border none!important
   padding 0!important
 
+#treeWrapper
+  height auto !important
+  margin-bottom 20px
 
 div.treeEntry
+  overflow hidden
   h4
     margin 0
-    border 1px solid #ccc
-    padding-left 3px
-    background rgb(255, 255, 255) /* Old browsers */
-    :hover
-      background #eee
+    outline none
+    padding 7px 10px !important
+    background lighten(#4a4a4a, 10%)
+    &:after
+      content "\25BC"
+      display block
+      float right
+      font-size 9px
+      margin-top 5px
+  &.open
+    height auto !important
+    h4
+      background lighten(#4a4a4a, 90%)
+      color darken(white, 70%)
+      &:after
+        content "\25B2"
+.categoryTree
+  margin-bottom 15px
+  label
+    font-weight normal
 
   img.tooggleButton
     position absolute
@@ -34,12 +53,11 @@ div.treeEntry
     padding-left 170px
 
 div.issueButton
-  line-height 16px
-  margin 5px
+  background white
+  border-radius 3px
+  height auto
+  margin 7px 5px
   cursor pointer
-  border 1px solid #ccc
-  padding-left 3px
-  height 30px
   background rgb(255, 255, 255) /* Old browsers */
 
   &:hover
@@ -53,16 +71,17 @@ div.issueDetails
 
 
 div.issueSelected
-  border 1px solid black
-  height 65px
+  border-left 6px solid lighten($primaryColor, 50%)
 
 
 div.issueTitle
-  height 20px
-  width 185px
-  color #4E4E4E
+  height 100%
+  color black
+  font-size 12px
   position relative
-  top -2px
+  display flex
+  align-items center
+  padding 4px 15px
 
 div.issueSubTitle
   font-size 10px
@@ -180,7 +199,7 @@ div.SearchResultEntry
     font-weight bold
 
   div.ResultAuthors
-    color #374E9E
+    color lighten(desaturate($primaryColor, 10%), 20%)
     font-size 12px
     font-weight bold
 
@@ -207,4 +226,3 @@ div.SearchResultEntry
     width 896px
     border none
     height 97px
-

@@ -3,12 +3,8 @@ div
   menu-bar-widget
   .Wrapper
     .Content
-      div
-        br
-        div(align='center')
-          font(size='+1')
-            strong View Survey Results
-        br
+      .viewMain
+        h2 View Survey Results
         pre {{ surveyDetails }}
 
 </template>

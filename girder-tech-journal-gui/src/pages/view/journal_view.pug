@@ -1,15 +1,15 @@
 mixin revisionOption(value,selectedRev,submission)
   tr(class=selectedRev, data-href=value.meta.revisionNumber, data-submission=submission.meta.submissionNumber)
     td.
-      #{value.name}
+        #{value.name}
     td.
-      #{value.submitter.firstName} #{value.submitter.lastName}
+        #{value.submitter.firstName} #{value.submitter.lastName}
     td.
-      #{value.created}
+        #{value.created}
     td.
-      #{value.meta.certification_level}
+        #{value.meta.certification_level}
     td.
-      #{value.description}
+        #{value.description}
 
 mixin searchLink(value,type)
   a(href='#?query="'+type+'":["'+ value+ '"]') #{value}
@@ -102,70 +102,58 @@ if 'downloadStatistics' in info.revision
 
       .MainContent
         #publication
-          br
-          .title.
-            #{info.parent.name}
-          .revision
-            center
-              b #{info.revision.name}
-          .authors
-            each item in info.revision.meta.authors
-              +searchLink(item,'authors')
-              |,
-          .institution
-            +searchLink(info.revision.meta.institution,"institution")
-          center
-            span(style="background-color: #F2F3F3:")
-              | Please use this identifier to cite or link to this publication:
-              a(href=urlLink) #{urlLink}
-          center
-            br
+          .pubHeader
             img.ResultLogo(src=logo)
-            br
-            br
+            h1.title.
+              #{info.parent.name}
+            .pubInfo
+              .revision
+                b #{info.revision.name}
+              span.authors
+                each item in info.revision.meta.authors
+                  +searchLink(item,'authors')
+                  |,&nbsp;
+              span.institution
+                +searchLink(info.revision.meta.institution,"institution")
+              span.identifier
+                | Please use this identifier to cite or link to this publication:
+                a(href=urlLink)  #{urlLink}
           unless info.revision.curation.status === "APPROVED"
             span(style="font-weight:bold;color:red;")
               | This article is waiting for approval
           .journal
-            | Submitted to:
+            | Submitted to:&nbsp;
             a(href="#?issueId=" + info.parent.issue._id) #{info.parent.issue.name}
-          .submittedby.
-            Submitted by #{info.revision.submitter.firstName} #{info.revision.submitter.lastName} on #{info.parent.created}
-          if info.revision.description
-            h4 Revision Notes
-            .abstract(style="text-align: justify")
-              | #{info.revision.description}
+            span.submittedby.
+              &nbsp;by #{info.revision.submitter.firstName} #{info.revision.submitter.lastName} on #{info.parent.created}
           .abstract.
             #{info.parent.description}
+          if info.revision.description
+            .revision_notes
+              h4 Revision Notes
+              .abstract(style="text-align: justify")
+                | #{info.revision.description}
           div
             table#revisionTable(width="100%")
-              tr
-                td
-                  div(align="center")
-                    strong.
-                      Revision Version
-                td
-                  div(align="center")
-                    strong.
-                      Submitted By
-                td
-                  div(align="center")
-                    strong.
-                      Submission Date
-                td
-                  div(align="center")
-                    strong.
-                      Certified
-                td
-                  div(align="center")
-                    strong.
-                      Notes
-              if info.otherRevisions
-                for value in info.otherRevisions
-                  - selected="clickable-row"
-                  if value._id === info.revision._id
-                    - selected="selected"
-                  +revisionOption(value,selected,info.parent)
+              thead
+                tr
+                  th.
+                    Revision Version
+                  th.
+                    Submitted By
+                  th.
+                    Submission Date
+                  th.
+                    Certified
+                  th.
+                    Notes
+              tbody
+                if info.otherRevisions
+                  for value in info.otherRevisions
+                    - selected="clickable-row"
+                    if value._id === info.revision._id
+                      - selected="selected"
+                    +revisionOption(value,selected,info.parent)
           h4 Comments
           #commentsContainer
             #commentsDiv

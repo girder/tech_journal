@@ -3,11 +3,8 @@ div
   menu-bar-widget
   .Wrapper
     .Content
-      .Content
-        div(align='center')
-          font(size='+1')
-            strong Send Feedback
-        br
+      .viewMain
+        h2 Send Feedback
         form#form1(@submit.prevent='submit')
           table(width='70%', border='0')
             tbody

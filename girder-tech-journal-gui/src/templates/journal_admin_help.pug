@@ -2,13 +2,10 @@
 #headerBar
 .Wrapper
   .Content
-    .Content
-      div(align="center")
-        font(size="+1")
-          strong Edit Help
-      br
-      form#mainForm(data-validate="parsley", name="mainForm", method="POST", action="")
-        table(width="100%", border="1")
+    .viewMain
+      h1 Edit Help
+      form#mainForm(data-validate="parsley", name="mainForm", method="POST", action="", style="margin-top: 20px; display:block;")
+        table(width="100%", border="0")
           tbody
             tr
               td(valign="top", style="width: 100px;")
