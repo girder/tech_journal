@@ -52,6 +52,7 @@ var SubmitView = View.extend({
         },
         'click #showDetails': function (event) {
             this.targetIssueID = event.currentTarget.target;
+            this.$('#issueDetails').empty();
             restRequest({
                 method: 'GET',
                 url: `folder/${this.targetIssueID}`
