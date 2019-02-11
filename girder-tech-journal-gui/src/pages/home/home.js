@@ -8,6 +8,8 @@ import HomeTemplate from './home.pug';
 import IndexEntryViewTemplate from '../../templates/journal_index_entry.pug';
 import CategoryTemplate from './home_categoryTemplate.pug';
 
+import PlaceholderLogoURL from '@/assets/journal.gif';
+
 var magicTerms = ['authors', 'institution', 'creatorId', 'tags'];
 
 const HomePage = View.extend({
@@ -167,7 +169,11 @@ const HomePage = View.extend({
                 this.$('#noResultElement').show();
             } else {
                 this.$('#noResultElement').hide();
-                this.$('.searchResults').html(this.$('.searchResults').html() + IndexEntryViewTemplate({info: {'submissions': submissions}, root: apiRoot}));
+                this.$('.searchResults').html(this.$('.searchResults').html() + IndexEntryViewTemplate({
+                    info: {'submissions': submissions},
+                    root: apiRoot,
+                    defaultLogo: PlaceholderLogoURL
+                }));
             }
         });
     },
