@@ -6,8 +6,7 @@ mixin searchEntry(info,approveLink)
           if info.currentRevision.logo
             img.ResultLogo.thumbnail(src=root+"/"+info.currentRevision.logo)
           else
-            img.ResultLogo.thumbnail
-          //img(class="ResultLogo" src="/journal/privateModules/journal/public/images/journal.gif")
+            img.ResultLogo(src=defaultLogo)
           .CertifiedWrapper(style="display:none")
             //img(style='border:none;' src="/journal/privateModules/journal/public/images/check.gif")
             | Certified
