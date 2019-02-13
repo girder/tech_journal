@@ -5,6 +5,10 @@ import MenuBarView from './menuBar.js';
 import ApprovalViewTemplate from '../templates/journal_admin_approval.pug';
 import IndexEntryViewTemplate from '../templates/journal_index_entry.pug';
 
+import PlaceholderLogoURL from '@/assets/journal.gif';
+
+import CertificationLogoURL from '@/assets/check.gif';
+
 var manageApprovalView = View.extend({
 
     events: {
@@ -30,7 +34,16 @@ var manageApprovalView = View.extend({
     },
     render: function (subData) {
         this.$el.html(ApprovalViewTemplate({}));
-        this.$('.SearchResults').html(IndexEntryViewTemplate({ info: { 'submissions': subData, approveLink: true } }));
+        this.$('.SearchResults').html(IndexEntryViewTemplate({
+            info: {
+                'submissions': subData,
+                'approveLink': true,
+                'logos': {
+                    'default': PlaceholderLogoURL,
+                    'certified': CertificationLogoURL
+                }
+            }
+        }));
         new MenuBarView({ // eslint-disable-line no-new
             el: this.$('#headerBar'),
             parentView: this

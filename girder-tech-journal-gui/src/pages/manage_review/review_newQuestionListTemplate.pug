@@ -1,0 +1,29 @@
+#newQuestionList
+  h3 #{type} Question List
+  form#addQuestionListForm(action="", method="post")
+    input(type="hidden", name="oldList")
+    label(for="newname") Name:
+    textarea#listText(style="width:270px;", name="newname").
+      #{text}
+    label(for="newcategory") Category:
+    select#newCategory(name="newcategory")
+      option.catOption(val="Default") Default
+      for category in catList
+        option(disabled)
+          b #{category['key']}
+        for value in category['value']
+          option.catOption(val=value) #{value}
+    label(for="newtype") Type:
+    select#reviewType(name="newtype")
+      option(value="peer") Peer
+      option(value="final") Final
+    label(for="newdescription") Description:
+    textarea#reviewDescription(style="width:270px;", name="newdescription")
+    if type === "Edit"
+      input#updateList(type="button", value="Update")
+      input#cancelNewList(type="button", value="Cancel")
+      input#deleteList(type="button", value="Delete")
+    else
+      input(type="submit", value="Save")
+      input#cancelNewList(type="button", value="Cancel")
+      input#deleteList(type="button", value="Delete")

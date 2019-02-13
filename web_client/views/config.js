@@ -28,6 +28,11 @@ const ConfigView = View.extend({
             {
                 key: 'tech_journal.old_url',
                 value: this.$('#old_url').val().trim()
+            },
+            {
+                key: 'tech_journal.use_review',
+                value: this.$('#use_review:checked').length
+
             }]);
         }
     },
@@ -42,7 +47,8 @@ const ConfigView = View.extend({
                     'tech_journal.default_journal',
                     'tech_journal.default_layout',
                     'tech_journal.base_handle',
-                    'tech_journal.old_url'
+                    'tech_journal.old_url',
+                    'tech_journal.use_review'
                 ])
             }
         }).done((resp) => {
@@ -57,6 +63,7 @@ const ConfigView = View.extend({
                 resp['tech_journal.base_handle']);
             this.$('#old_url').val(
                 resp['tech_journal.old_url']);
+            this.$('#use_review').prop('checked', resp['tech_journal.use_review']);
         });
     },
     render: function () {

@@ -1,0 +1,44 @@
+mixin addListOption(name)
+  option.qListOption(value=name) #{name}
+
+mixin addTopic(index, value)
+  .topicElement
+    a.topicString(val=index) #{value.name}
+
+#headerBar
+.Wrapper
+  .Content
+    .viewMain
+      .editArea
+        hr
+        .questionArea
+        hr
+      h3 Manage Question lists
+      label Select a question list:
+      select#selectList
+        option.qListOption(value='-1', disabled, selected) Please select a list
+        for topic in topics
+          +addListOption(topic['key'])
+      a#newQuestionListLink New Question List
+      #qListDetail(style="display: none;")
+        h3 Selected Question List: #{qList}
+        a#editListLink Edit selected Question List
+        a#saveListLink Save selected Question List
+        #questionListWrapper
+          table
+            tbody
+              tr
+                td
+                  h4 Topics:
+                td
+                  h4 Questions:
+              tr
+                td#topicTD(style="width:250px; vertical-align: top;")
+                  for topic in Object.keys(qTopics)
+                    +addTopic(topic, qTopics[topic])
+                td#questionTD(style="width:865px; vertical-align: top;")
+              tr
+                td
+                  a#newTopicLink New Topic
+                td
+                  a#newQuestionLink New Question

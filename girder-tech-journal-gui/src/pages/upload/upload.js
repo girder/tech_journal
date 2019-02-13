@@ -28,7 +28,8 @@ var uploadView = View.extend({
                 'source-license': this.$('#hiddenSourceLicense').val().trim(),
                 'source-license-text': this.$('#hiddenSourceLicenseText').val().trim(),
                 'attribution-policy': this.$('#hiddenAttributionPolicy').val().trim(),
-                'notification-email': this.$('#hiddenSendNotificationEmail').val().trim() === '1'
+                'notification-email': this.$('#hiddenSendNotificationEmail').val().trim() === '1',
+                'revisionPhase': 'peer'
             });
         },
 
@@ -226,7 +227,7 @@ var uploadView = View.extend({
             method: 'PUT',
             url: `journal/${this.parentId}/metadata`,
             contentType: 'application/json',
-            data: mode === 'approve' ? JSON.stringify(subData) : undefined,
+            data: mode === 'approve' ? JSON.stringify(subData) : JSON.stringify({}),
             error: null
         }).done((respMD) => {
             restRequest({

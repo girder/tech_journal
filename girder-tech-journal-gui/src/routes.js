@@ -22,6 +22,11 @@ import EditJournalView from './views/editJournal';
 import manageHelpView from './views/manageHelp';
 import EditGroupUsersView from './views/groupUsers.js';
 import userView from './pages/user/user.js';
+import SubmissionManageReviewsView from './pages/submission_review/reviews.js';
+
+// Import views from review
+import reviewView from './pages/review/review';
+import manageQuestionView from './pages/manage_review/manage';
 
 // Clear all of the existing routes, which will always added by Girder
 Backbone.history.handlers = [];
@@ -226,6 +231,20 @@ events.on('g:login', function () {
         // window.history.pushState(null, '', tmp[2]);
         return false;
     }
+});
+
+// Display page for a user to perform reviews
+router.route('review/manage/:id', 'SubmissionManageReviewsView', function (id) {
+    testUserAccess(SubmissionManageReviewsView, {id: id}, true, true);
+});
+
+// Display page for a user to perform reviews
+router.route('review/:id/:type/:index', 'FeedBackView', function (id, type, index) {
+    testUserAccess(reviewView, {id: id, type: type, index: index}, false, false);
+});
+
+router.route('admin/questions', 'FeedBackView', function () {
+    testUserAccess(manageQuestionView, {}, true, true);
 });
 
 function testUserAccess(view, args, needsUser, needsAdmin) {
