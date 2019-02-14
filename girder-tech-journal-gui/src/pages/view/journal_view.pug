@@ -1,11 +1,12 @@
 mixin revisionOption(value,selectedRev,submission)
+  - var newDate = new Date(value.created).toLocaleDateString("en-US")
   tr(class=selectedRev, data-href=value.meta.revisionNumber, data-submission=submission.meta.submissionNumber)
     td.
         #{value.name}
     td.
         #{value.submitter.firstName} #{value.submitter.lastName}
     td.
-        #{value.created}
+        #{newDate}
     td.
         #{value.meta.certification_level}
     td.
@@ -164,11 +165,12 @@ if 'downloadStatistics' in info.revision
           unless info.revision.curation.status === "APPROVED"
             span(style="font-weight:bold;color:red;")
               | This article is waiting for approval
+          - var newDate = new Date(info.parent.created).toLocaleDateString("en-US")
           .journal
-            | Submitted to:&nbsp;
+            | Originally submitted to:&nbsp;
             a(href="#?issueId=" + info.parent.issue._id) #{info.parent.issue.name}
             span.submittedby.
-              &nbsp;by #{info.revision.submitter.firstName} #{info.revision.submitter.lastName} on #{info.parent.created}
+              &nbsp;by #{info.revision.submitter.firstName} #{info.revision.submitter.lastName} on #{newDate}
           .abstract.
             #{info.parent.description}
           if info.revision.description
