@@ -62,17 +62,20 @@ var userView = UserAccountView.extend({
             return;
         }
 
-        this.$el.html('<div id="headerBar"></div><div class="Wrapper"><div class="Content">' + UserAccountTemplate({
+        this.$el.html('<div id="headerBar"></div><div class="Wrapper"><div class="Content"><div class="viewMain">' + UserAccountTemplate({
             user: this.model,
             isCurrentUser: this.isCurrentUser,
             getCurrentUser: getCurrentUser,
             temporaryToken: this.temporary
-        }) + '</div></div>');
+        }) + '</div></div></div>');
         new MenuBarView({ // eslint-disable-line no-new
             el: this.$('#headerBar'),
             parentView: this
         });
+        // Remove unneeded pages from the Girder User page
         this.$('[name="apikeys"]').parent().remove();
+        this.$('[name="otp"]').parent().remove();
+        // Add in custom page for selecting notifications.
         this.$('.g-account-tabs').append(NotificationTabTemplate());
         this.$('.tab-content').append(NotificationTabFormTemplate());
         var notifications = this.user.attributes.notificationStatus;
