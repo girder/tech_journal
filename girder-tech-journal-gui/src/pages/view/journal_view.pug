@@ -213,9 +213,9 @@ if 'downloadStatistics' in info.revision
                 | There is no review at this time.
               unless user
                 | To submit one, please
-                a#loginToComment(href='#?dialog=login') Login
+                a#loginToComment(href=window.location.href+'?dialog=login') Login
                 |  or
-                a#registerToComment(href='#?dialog=register') register
+                a#registerToComment(href=window.location.href+'?dialog=register') register
                 |  to add a review
               else
                 unless isComplete
@@ -240,9 +240,9 @@ if 'downloadStatistics' in info.revision
               else
                 .loginToComment
                   span
-                    a#loginToComment(href='#?dialog=login') Login
+                    a#loginToComment(href=window.location.href+'?dialog=login') Login
                     |  or
-                    a#registerToComment(href='#?dialog=register') register
+                    a#registerToComment(href=window.location.href+'?dialog=register') register
                     |  to add a comment
               #existingCommentsList
                 for comment in info.parent.meta.comments
