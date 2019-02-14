@@ -147,9 +147,10 @@ if 'downloadStatistics' in info.revision
       .MainContent
         #publication
           .pubHeader
-            img.ResultLogo(src=logo)
             h1.title.
               #{info.parent.name}
+            if logo !== ''
+              img.ResultLogo(src=logo)
             .pubInfo
               .revision
                 b #{info.revision.name}
