@@ -8,9 +8,14 @@
         - var hash = md5('code' + 'has_test_code');
         label.dynatree-title(for=hash)
           input.filterOption(val="has_test_code", id=hash, type="checkbox")
-          | has_test_code
+          | With testing code
       li.filterEntry
         - var hash = md5('code' + 'has_code');
         label.dynatree-title(for=hash)
           input.filterOption(val="has_code", id=hash, type="checkbox")
-          | has_code
+          | With code
+      li.filterEntry
+        - var hash = md5('code' + 'is_cif');
+        label.dynatree-title(for=hash)
+          input.filterOption(val="is_cif", id=hash, type="checkbox")
+          | Code in Flight

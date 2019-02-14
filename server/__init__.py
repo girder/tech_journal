@@ -522,9 +522,18 @@ class TechJournal(Resource):
                                                             user=user
                                                             ))
         textArg = ""
+        # "AND" regex update taken from:
+        # https://stackoverflow.com/questions/3041320/regex-and-operator/37692545
         if "text" in filterParams:
-            textArg = {"name": {"$regex": filterParams['text'], "$options": "i"}}
+            textArg = {"name": {"$regex": "(?=.*"+filterParams['text']+")", "$options": "i"}}
             del filterParams['text']
+        if "Code" in filterParams:
+            if "is_cif" in filterParams['Code']:
+                if textArg:
+                    textArg["name"]["$regex"] += "(?=.*Code in Flight)"
+                else:
+                    textArg = {"name": {"$regex": "Code in Flight", "$options": "i"}}
+                filterParams['Code'].remove("is_cif")
         for issue in issues:
             testInfo = list(self.model('folder').childFolders(parentType='folder',
                                                               parent=issue,
