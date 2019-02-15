@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import Accordion from 'accordion';
 import View from '@girder/core/views/View';
 import router from '@girder/core/router';
 import events from '@girder/core/events';
@@ -125,6 +126,10 @@ var editView = View.extend({
                         }
                         this.$('#disclaimer').append('<option ' + selected + '>' + disc + '</option>');
                     }
+                    var el = document.querySelector('#treeWrapper');
+                    // eslint-disable-next-line no-new
+                    new Accordion.Accordion(el, {'noTransforms': true});
+                    this.$('.treeEntry').attr('style', 'height:34px;');
                     return this;
                 });
             });

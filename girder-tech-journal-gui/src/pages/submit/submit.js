@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import Accordion from 'accordion';
 import View from '@girder/core/views/View';
 import router from '@girder/core/router';
 import events from '@girder/core/events';
@@ -41,14 +42,32 @@ var SubmitView = View.extend({
             this.$('#authors').append(SubmitAuthorEntryTemplate({info: {info: '1'}}));
         },
         'click #removeAuthor': function (event) {
-            this.$(event.currentTarget.parentElement).remove();
+            if (this.$('#authors').find('.list-item').length > 1) {
+                this.$(event.currentTarget.parentElement).remove();
+            } else {
+                events.trigger('g:alert', {
+                    icon: 'fail',
+                    text: 'An author must be entered',
+                    type: 'warning',
+                    timeout: 4000
+                });
+            }
         },
         'click #tagAdd': function (event) {
             event.preventDefault();
             this.$('#tags').append(SubmitTagEntryTemplate({info: {info: '1'}}));
         },
         'click #removeTag': function (event) {
-            this.$(event.currentTarget.parentElement).remove();
+            if (this.$('#tags').find('.list-item').length > 1) {
+                this.$(event.currentTarget.parentElement).remove();
+            } else {
+                events.trigger('g:alert', {
+                    icon: 'fail',
+                    text: 'A tag must be entered',
+                    type: 'warning',
+                    timeout: 4000
+                });
+            }
         },
         'click #showDetails': function (event) {
             this.targetIssueID = event.currentTarget.target;
@@ -62,6 +81,24 @@ var SubmitView = View.extend({
         },
         'click #closeDetails': function (event) {
             this.$(event.currentTarget.parentElement).remove();
+        },
+        'change #titleEntry': function (event) {
+            this.$('#titleWarning').hide();
+            this.$('input[type=submit]').attr('disabled', false);
+            var newName = this.$('#titleEntry').val().trim();
+            var queryString = encodeURIComponent(JSON.stringify({'text': newName}));
+            restRequest({
+                method: 'GET',
+                url: `journal/${this.journalID}/search?query=${queryString}`
+            }).done((resp) => {
+                const dups = resp.filter((submission) => (submission.name === newName) &&
+                                         (submission.parentId === this.itemId)
+                );
+                if (dups.length) {
+                    this.$('#titleWarning').show();
+                    this.$('input[type=submit]').attr('disabled', true);
+                }
+            });
         }
     },
     initialize: function (id) {
@@ -77,13 +114,14 @@ var SubmitView = View.extend({
                     ])
                 }
             }).done((resp) => {
+                this.journalID = resp['tech_journal.default_journal'];
                 restRequest({
                     method: 'GET',
-                    url: `collection/${resp['tech_journal.default_journal']}`
+                    url: `collection/${this.journalID}`
                 }).done((parResp) => {
                     restRequest({
                         method: 'GET',
-                        url: `journal/${resp['tech_journal.default_journal']}/openissues`
+                        url: `journal/${this.journalID}/openissues`
                     }).done((jrnResp) => {
                         jrnResp['parentName'] = parResp['name'];
                         this.render(jrnResp, 1);
@@ -147,6 +185,10 @@ var SubmitView = View.extend({
                         for (var disc in disclaimerResp) {
                             this.$('#disclaimer').append('<option>' + disc + '</option>');
                         }
+                        var el = document.querySelector('#treeWrapper');
+                        // eslint-disable-next-line no-new
+                        new Accordion.Accordion(el, {'noTransforms': true});
+                        this.$('.treeEntry').attr('style', 'height:34px;');
                         return this;
                     });
                 }); // End getting of OTJ Collection value setting
