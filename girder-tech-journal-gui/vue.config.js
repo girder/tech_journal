@@ -1,9 +1,6 @@
-const path = require('path');
 const process = require('process');
 const webpack = require('webpack'); // eslint-disable-line import/no-extraneous-dependencies
 const autoprefixer = require('autoprefixer'); // eslint-disable-line import/no-extraneous-dependencies
-
-const girderVersion = require('@girder/core/package.json').version;
 
 module.exports = {
   lintOnSave: false,
@@ -22,23 +19,12 @@ module.exports = {
   },
 
   chainWebpack: (config) => {
-    // Alias "@" to the "./src" directory for imports
-    config.resolve.alias
-      .set('@$', path.resolve(__dirname, 'src'));
-
     // Required to make many Girder imports work
     config.plugin('provide')
       .use(webpack.ProvidePlugin, [{
         $: 'jquery',
         jQuery: 'jquery',
         'window.jQuery': 'jquery',
-      }]);
-
-    // Define the GIRDER_VERSION global, which upstream Girder expects
-    config.plugin('define')
-      .tap(([definitions]) => [{
-        GIRDER_VERSION: JSON.stringify(girderVersion),
-        ...definitions,
       }]);
 
     // Modify existing Pug loader
