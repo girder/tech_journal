@@ -179,13 +179,14 @@ var uploadView = View.extend({
             var subData = {
                 'type': this.$('#typeFile').val().trim()
             };
+            var fileID = retInfo.files[0].id;
             restRequest({
                 method: 'GET',
-                url: `item?folderId=${this.parentId}&name=${retInfo.files[0].name}`
-            }).done((resp) => {
+                url: `file/${fileID}`
+            }).done((fileInfo) => {
                 restRequest({
                     method: 'PUT',
-                    url: `item/${resp[0]._id}/metadata`,
+                    url: `item/${fileInfo['itemId']}/metadata`,
                     contentType: 'application/json',
                     data: JSON.stringify(subData),
                     error: null

@@ -656,7 +656,7 @@ class TechJournal(Resource):
             'status': 'REQUESTED'
         }
         folder['curation'] = DEFAULTS
-        folder['public'] = False
+        folder['public'] = True
         self.model('folder').save(folder)
         parentFolder = self.model('folder').load(folder['parentId'], force=True)
         targetFolder = self.model('folder').load(parentFolder['meta']['targetIssue'], force=True)
@@ -668,7 +668,7 @@ class TechJournal(Resource):
         text = mail_utils.renderTemplate('tech_journal_approval.mako', data)
         sendEmails(User().getAdmins(), 'New Submission - Pending Approval', text)
         movedFolder['curation'] = DEFAULTS
-        parentFolder['public'] = False
+        parentFolder['public'] = True
         self.model('folder').save(movedFolder)
         newItem = self.model("item").createItem(name="Survey Result",
                                                 creator=self.getCurrentUser(),
@@ -692,6 +692,8 @@ class TechJournal(Resource):
             'enabled': False,
             'status': 'APPROVED'}
         parentFolder = self.model('folder').load(folder['parentId'], force=True)
+        folder['public'] = True
+        parentFolder['public'] = True
         getFunc = getattr(ModelImporter.model('journal', 'tech_journal'), 'get')
         if getFunc("tech_journal.use_review", {}):
             # Use the folder's information to find review objects to
