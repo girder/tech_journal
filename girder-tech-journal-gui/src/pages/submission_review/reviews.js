@@ -75,6 +75,7 @@ var SubmissionManageReviewsView = View.extend({
                 searchBoxVal: '',
                 appCount: 0
             });
+            this.$('#revisionSelector').find(`option[name='${this.revData.name}']`).prop('selected', true);
             this._showReviews(this.revData);
         });
         return this;
@@ -83,15 +84,22 @@ var SubmissionManageReviewsView = View.extend({
         this.$('#reviewDisplay').empty();
         this.$('#reviewDisplay').append(RevisionPhaseTemplate({'revisionPhase': revision.meta.revisionPhase}));
         var review = {};
-        for (var index in revision.meta.reviews.peer.reviews) {
-            review = revision.meta.reviews.peer.reviews[index];
-            this.$('#reviewDisplay').append(`<a href='#review/${revision._id}/peer/${index}'> Peer Review by ${review.user.firstName} ${review.user.lastName}</a>`);
-            this.$('#reviewDisplay').append(PeerReviewSummary({'review': review}));
-        }
-        for (index in revision.meta.reviews.final.reviews) {
-            review = revision.meta.reviews.final.reviews[index];
-            this.$('#reviewDisplay').append(`<a href="#review/${revision._id}/final/${index}"> Final Review by ${review.user.firstName} ${review.user.lastName}</a>`);
-            this.$('#reviewDisplay').append(FinalReviewSummary({'review': review}));
+        if (Object.keys(revision.meta).indexOf('reviews') !== -1) {
+            for (var index in revision.meta.reviews.peer.reviews) {
+                review = revision.meta.reviews.peer.reviews[index];
+                this.$('#reviewDisplay').append(`<a href='#review/${revision._id}/peer/${index}'> Peer Review by ${review.user.firstName} ${review.user.lastName}</a>`);
+                this.$('#reviewDisplay').append(PeerReviewSummary({'review': review}));
+            }
+            for (index in revision.meta.reviews.final.reviews) {
+                review = revision.meta.reviews.final.reviews[index];
+                this.$('#reviewDisplay').append(`<a href="#review/${revision._id}/final/${index}"> Final Review by ${review.user.firstName} ${review.user.lastName}</a>`);
+                this.$('#reviewDisplay').append(FinalReviewSummary({'review': review}));
+            }
+            if (this.$('#reviewDisplay').find('a').length === 0) {
+                this.$('#reviewDisplay').append('<h3>No Reviews to display</h3>');
+            }
+        } else {
+            this.$('#reviewDisplay').append('<h3>Review has not been set up for this submission</h3>');
         }
     }
 });
