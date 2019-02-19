@@ -1,5 +1,5 @@
 import View from '@girder/core/views/View';
-import { restRequest } from '@girder/core/rest';
+import { restRequest, apiRoot } from '@girder/core/rest';
 
 import MenuBarView from './menuBar.js';
 import ApprovalViewTemplate from '../templates/journal_admin_approval.pug';
@@ -37,12 +37,14 @@ var manageApprovalView = View.extend({
         this.$('.SearchResults').html(IndexEntryViewTemplate({
             info: {
                 'submissions': subData,
-                'approveLink': true,
-                'logos': {
-                    'default': PlaceholderLogoURL,
-                    'certified': CertificationLogoURL
-                }
+                'approveLink': true
+            },
+            root: apiRoot,
+            'logos': {
+                'default': PlaceholderLogoURL,
+                'certified': CertificationLogoURL
             }
+
         }));
         new MenuBarView({ // eslint-disable-line no-new
             el: this.$('#headerBar'),
