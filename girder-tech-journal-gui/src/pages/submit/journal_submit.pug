@@ -2,10 +2,10 @@ mixin disclaimerEntry(text)
   #disclaimerList
   pre #{text}
   form#disclaimerForm(data-validate="parsley", name="mainForm", method="POST", action="")
-    input#PubClaYes.parsley-validated.disclaimerRad(type="radio", value="agree", name="cla", required)
-    label(for="PubClaYes") I grant the license
-    input#PubClaNo.parsley-validated.disclaimerRad(type="radio", value="no", name="cla", required)
-    label(for="PubClaNo") I do NOT grant the license
+    input#DisclaYes.parsley-validated.disclaimerRad(type="radio", value="agree", name="disc", required)
+    label(for="DisclaYes") I grant the license
+    input#DisclaNo.parsley-validated.disclaimerRad(type="radio", value="no", name="disc", required)
+    label(for="DisclaNo") I do NOT grant the license
 
 #headerBar
 #g-journal-settings-error-message
@@ -45,6 +45,12 @@ mixin disclaimerEntry(text)
                   textarea#titleEntry.smallInput.parsley-validated(name="title", data-rangelength="[1-200]", required)
                     if info.parInfo.name
                       | #{info.parInfo.name}
+                  br
+                  span#titleWarning(style="color:#A60000; display:none;", required).
+                    A submission with this title exists in the target Tech Journal issue.  Please double check the title.
+                    A new revision of a submission should be started from the "Manage" section of a submission page, not the
+                    new submission process.
+
               tr
                 td
                   .submission
@@ -65,9 +71,8 @@ mixin disclaimerEntry(text)
               tr
                 td
                   #authors
-                    .list-item
-                      include journal_author_entry.pug
-                  a#authorAdd.list-item Add an author
+                    include journal_author_entry.pug
+                  a#authorAdd Add an author
               tr
                 td
                   .submission
@@ -152,7 +157,7 @@ mixin disclaimerEntry(text)
                   input#PubPermissionsYes.parsley-validated.subPermission(type="radio", value="yes", name="permission", required)
                   label(for="PubPermissionsYes") Yes
                   input#PubPermissionsNo.parsley-validated.subPermission(type="radio", value="No", name="permission", required)
-                  label(for="PubPermissionsYes") No
+                  label(for="PubPermissionsNo") No
                   br
                   span If submitting on behalf of a corporation, Do you accept the
                   a(href="") Corporate Contributor Licensing Agreement
@@ -182,7 +187,7 @@ mixin disclaimerEntry(text)
               tr
                 td
                   br
-                  input(type="submit", value="Save and Continue>", style="width:150px;")
+                  input#submitData(type="submit", value="Save and Continue>", style="width:150px;")
   #licenseWrapper(style="display:none")
     .clear
     .Footer
