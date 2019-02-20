@@ -23,6 +23,6 @@
         h6 Revision Name:
         select#revisionSelector
           for value,index in revisions
-            option(value=index) #{value.name}
+            option(value=index, name=value.name) #{value.name}
       hr
       #reviewDisplay(width="100%")
