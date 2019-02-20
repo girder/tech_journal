@@ -598,6 +598,10 @@ class TechJournal(Resource):
                     # If not found already, add it to the returned information
                     if submission not in totalData:
                         totalData.append(submission)
+        # Prevent non-approved submissions from being shown to non-admin users
+        if (not user) or (not user['admin']):
+            totalData = filter(lambda submission: submission['curation']['status'] != 'REQUESTED',
+                               totalData)
         totalData = sorted(totalData, reverse=True,
                            key=lambda submission: submission['currentRevision']['updated'])
         return totalData
