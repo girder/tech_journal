@@ -491,6 +491,9 @@ class TechJournal(Resource):
                                                         ))
                 if len(submissionInfo):
                     submission['currentRevision'] = submissionInfo[-1]
+                submission['currentRevision']['logo'] = self.getLogo(
+                    id=submission['currentRevision']['_id'],
+                    params=params)
                 if "curation" in submission:
                     if submission['curation']['status'] == "REQUESTED":
                         totalData.append(submission)
