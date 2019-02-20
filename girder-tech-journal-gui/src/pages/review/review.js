@@ -108,6 +108,7 @@ var reviewView = View.extend({
         });
         review.done = ((totalQs - nonAnswered) / totalQs) * 100;
         review.questions.list.comment = this.$('#globalComment').val();
+        review.questions.list.certificationLevel = this.$('#certificationLevel option:selected').text();
         this.$('#summaryTable').empty();
         this.$('#summaryTable').html(PeerReviewSummary({'review': review}));
         return review;
