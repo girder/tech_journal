@@ -4,32 +4,37 @@ else
   - var reviewOptions = {'0':'Level 0','1':'Level 1','2':'Level 2','3':'Level 3','4':'Level 4',}
 
 - var questionSize = Object.keys(reviewOptions).length
-mixin topicQuestion(index, question)
-  .questionObject(value=index)
-    .selectMultipleWrapper
-      select.questionVal(size=questionSize)
-        for i in Object.keys(reviewOptions)
-          if question.value.indexOf(i) !== -1
-            option(value=i, selected) #{reviewOptions[i]}
-          else
-            option(value=i) #{reviewOptions[i]}
-    span.questionDescription #{question.description}
-    .commentWrapper
+.questionObject(value=index)
+  .selectMultipleWrapper
+    select.questionVal(size=questionSize)
+      for i in Object.keys(reviewOptions)
+        if question.value.indexOf(i) !== -1
+          option(value=i, selected) #{reviewOptions[i]}
+        else
+          option(value=i) #{reviewOptions[i]}
+  span.questionDescription #{question.description}
+  .commentWrapper
+    table
+      tr
+        td(style="width:100px") Comment
+        if question.comment
+          td
+            textarea.questionComment #{question.commentValue}
+  if question.attachfile === 1
+    .uploadWrapper
       table
-        tr
-          td(style="width:100px") Comment
-          if question.comment
-            td
-              textarea.questionComment #{question.commentValue}
-    if question.attachfile === "1"
-      .uploadWrapper
-        table
+        tbody
           tr
             td(style="vertical-align: top;width:100px;") Attachment:
-            td
-              label.downloadButton.fileinput-button
-                a.fileNameUploaded
-              input.fileItemId(type="hidden", value="")
+            if question.attachfileValue
+              td
+                span.fileItemId(style="display: hidden;", value=question.attachfileValue)
+                a(href=question.attachfileURL) #{question.attachfileName}
 
-for question in Object.keys(questionList)
-  +topicQuestion(question, questionList[question])
+            else
+              td
+                label.downloadButton
+                  a.fileNameUploaded
+                label.uploadButton
+                  span.inputUpload Attach a file...
+                span.fileItemId(style="display: hidden;", value="")

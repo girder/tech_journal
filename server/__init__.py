@@ -177,6 +177,7 @@ class TechJournal(Resource):
 
         self.route('GET', ('submission', ':id'), self.getSubmission)
         self.route('GET', ('submission', ':id', 'revision'), self.getRevisions)
+        self.route('GET', ('review', 'directory'), self.getUploadDirectory)
         self.route('POST', ('submission', 'number'), self.getNewSubmissionNumber)
         self.route('POST', ('submission', ':submission', 'number'), self.getNewRevisionNumber)
 
@@ -365,6 +366,18 @@ class TechJournal(Resource):
                 user=self.getCurrentUser(),
                 force=True)
         return list(revisions)
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @describeRoute(
+        Description('Get the ID of the folder where all evidence files for a review are placed')
+        .errorResponse('Test error.')
+        .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def getUploadDirectory(self, params):
+        s = Setting()
+        key = 'technical_journal.reviewUpload'
+        objID = s.get(key)
+        return objID
 
     @access.public(scope=TokenScope.DATA_READ)
     @describeRoute(
