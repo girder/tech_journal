@@ -1,4 +1,7 @@
 import $ from 'jquery';
+import socialLikes from 'social-likes-next';
+import 'social-likes-next/lib/social-likes_flat.css';
+
 import View from '@girder/core/views/View';
 import router from '@girder/core/router';
 import { getCurrentUser } from '@girder/core/auth';
@@ -149,6 +152,13 @@ var submissionView = View.extend({
                 },
                 logo: logoURL
             }));
+
+            // Import JS and CSS needed for share buttons after render
+            // ******************************************************
+            socialLikes(this.$('.social-likes')[0], {
+                url: urlLink
+            })
+            // ******************************************************
             this.$('#reviewDisplay').find('.peer').empty();
             this.$('#reviewDisplay').find('.final').empty();
             new MenuBarView({ // eslint-disable-line no-new
