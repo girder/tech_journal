@@ -26,6 +26,8 @@ const HomePage = View.extend({
             this.$('.filterOption:checked').each(function (index, filter) {
                 filter.checked = false;
             });
+            this.$('.issueSelected').removeClass('issueSelected');
+            this.$(`.issueButton[key='*']`).addClass('issueSelected');
             if (window.location.hash) {
                 router.navigate(``, {trigger: true});
             } else {
@@ -34,8 +36,8 @@ const HomePage = View.extend({
         },
         'click .issueTitle': function (event) {
             // search the available submissions for the text entered in the box
-            $('.issueSelected').removeClass('issueSelected');
-            $(event.currentTarget.parentNode).addClass('issueSelected');
+            this.$('.issueSelected').removeClass('issueSelected');
+            this.$(event.currentTarget.parentNode).addClass('issueSelected');
             // Use the journal API to filter by selected submission
             this.buildSearch(this.collectionID, 0);
         },
