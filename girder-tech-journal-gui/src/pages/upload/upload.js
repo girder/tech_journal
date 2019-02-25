@@ -228,7 +228,7 @@ var uploadView = View.extend({
             method: 'PUT',
             url: `journal/${this.parentId}/metadata`,
             contentType: 'application/json',
-            data: mode === 'approve' ? JSON.stringify(subData) : JSON.stringify({}),
+            data: JSON.stringify(subData),
             error: null
         }).done((respMD) => {
             restRequest({
