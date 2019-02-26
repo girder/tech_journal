@@ -233,9 +233,11 @@ class TechJournal(Resource):
         .errorResponse('Read access was denied on the issue.', 403)
     )
     def getAllIssues(self, collection, params):
+        issueFilter = {"meta.__issue__": True}
         issues = list(self.model('folder').childFolders(parentType='collection',
                                                         parent=collection,
-                                                        user=self.getCurrentUser()))
+                                                        user=self.getCurrentUser(),
+                                                        filters=issueFilter))
         issues.sort(key=sortByDate)
         return issues
 
@@ -276,9 +278,11 @@ class TechJournal(Resource):
         .errorResponse('Read access was denied on the issue.', 403)
     )
     def getFilteredIssues(self, collection, params):
+        issueFilter = {"meta.__issue__": True}
         issues = list(self.model('folder').childFolders(parentType='collection',
                                                         parent=collection,
-                                                        user=self.getCurrentUser()))
+                                                        user=self.getCurrentUser(),
+                                                        filters=issueFilter))
         activeIssues = []
         for issue in issues:
             try:
