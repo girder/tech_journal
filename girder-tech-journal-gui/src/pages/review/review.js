@@ -1,7 +1,10 @@
 import View from '@girder/core/views/View';
-import { restRequest } from '@girder/core/rest';
+import { restRequest, apiRoot } from '@girder/core/rest';
 import router from '@girder/core/router';
 import { getCurrentUser } from '@girder/core/auth';
+import { handleClose } from '@girder/core/dialog';
+import FolderModel from '@girder/core/models/FolderModel';
+import UploadWidget from '@girder/core/views/widgets/UploadWidget';
 
 import MenuBarView from '../../views/menuBar.js';
 import PeerReviewTemplate from './review_peer.pug';
@@ -26,9 +29,30 @@ var reviewView = View.extend({
                 }
             }, this);
             this.$('#templateQuestions').empty();
-            this.$('#templateQuestions').append(
-                QuestionTemplate({'questionList': questionList, 'type': this.type})
-            );
+            Object.keys(questionList).forEach(function (questionIndex) {
+                if (questionList[questionIndex].attachfileValue !== '') {
+                    restRequest({
+                        type: 'GET',
+                        url: `file/${questionList[questionIndex].attachfileValue}`
+                    }).done((attachFileDetails) => {
+                        questionList[questionIndex].attachfileName = attachFileDetails.name;
+                        questionList[questionIndex].attachfileURL = `${apiRoot}/file/${attachFileDetails._id}/download`;
+                        this.$('#templateQuestions').append(
+                            QuestionTemplate({'question': questionList[questionIndex],
+                                index: questionIndex,
+                                'type': this.type
+                            })
+                        );
+                    });
+                } else {
+                    this.$('#templateQuestions').append(
+                        QuestionTemplate({'question': questionList[questionIndex],
+                            index: questionIndex,
+                            'type': this.type
+                        })
+                    );
+                }
+            }, this);
         },
         'change .questionVal': function (event) {
             this._updateReview();
@@ -38,10 +62,23 @@ var reviewView = View.extend({
         },
         'click #saveReview': function (event) {
             this._saveReview();
+        },
+        'click .inputUpload': function (event) {
+            var parentObj = this.$(event.currentTarget).parents('.questionObject');
+            this._uploadAttachment(parentObj);
+        },
+        'click .fileItemId': function (event) {
+            this._downloadAttachment();
         }
     },
     initialize: function (options) {
-        this.render(options);
+        restRequest({
+            method: 'GET',
+            url: 'journal/review/directory'
+        }).done((resp) => {
+            this.reviewFilesDir = resp;
+            this.render(options);
+        });
     },
     render: function (options) {
         this.type = options['type'];
@@ -52,7 +89,7 @@ var reviewView = View.extend({
         }).done((totalDetails) => {
             this.revData = totalDetails[0];
             this.returnURL = `#view/${totalDetails[1].meta.submissionNumber}/${this.revData.meta.revisionNumber}`;
-
+            this.parentId = totalDetails[1]._id;
             var templateData = {
                 'name': totalDetails[1]['name'],
                 'user': getCurrentUser(),
@@ -151,8 +188,8 @@ var reviewView = View.extend({
             if ((selectedVal[0] === null) || (selectedVal[0] === undefined)) {
                 selectedVal = [];
             }
-            updatedQuestions[questionIndex] = {'attachfile': '0',
-                'attachfileValue': '',
+            updatedQuestions[questionIndex] = {'attachfile': selectedTopics[targetIndex].questions[questionIndex].attachfile,
+                'attachfileValue': $(data).find('.fileItemId').attr('value'),
                 'commentValue': $(data).find('textarea').val(),
                 'comment': '1',
                 'description': selectedTopics[targetIndex].questions[questionIndex].description,
@@ -161,6 +198,28 @@ var reviewView = View.extend({
         }, this);
         this.reviewData.questions.topics[targetIndex].questions = updatedQuestions;
         this.processReviewFunc(this.reviewData);
+    },
+    _uploadAttachment: function (parentObj) {
+        // taken from HierarchyWidget.js
+        var container = $('#g-dialog-container');
+        var model = new FolderModel();
+        model.set({_id: this.reviewFilesDir});
+
+        new UploadWidget({
+            el: container,
+            parent: model,
+            parentType: this.parentType,
+            parentView: this
+        }).on('g:uploadFinished', function (retInfo) {
+            handleClose('upload');
+            // upload the information to the submission value
+            // show the information in the table
+            this.$(parentObj).find('.inputUpload').hide();
+            this.$(parentObj).find('.fileItemId').append(retInfo.files[0].name);
+            this.$(parentObj).find('.fileItemId').attr('value', retInfo.files[0].id);
+            this.$(parentObj).find('.fileItemId').show();
+            this._updateReview();
+        }, this).render();
     },
     _saveReview: function () {
         if (this.type === 'peer') {
