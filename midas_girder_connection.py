@@ -47,6 +47,7 @@ filetypeDict = {
   "5": "MISC",
   "6": "GITHUB",
   "7": "TECHNICAL",
+  "None": "MISC",
   "": "MISC"
 }
 
@@ -176,6 +177,24 @@ def ReadAll(userId, prevAssetDir, baseParent=None, assetStore=None,):
                     }
       result = collectionDB.insert_one(inputCollection)
       baseParent = inputCollection["_id"]
+    #  Create top-level folder for review uploaded files
+    inputObject = {"creatorId" : ObjectId(userId),
+                   "baseParentType" : "collection",
+                   "baseParentId" : ObjectId(baseParent),
+                   "parentCollection":"collection",
+                   "parentId":ObjectId(baseParent),
+                   "public":True,
+                   "created" : datetime.now(),
+                   "access" : { "users" : [ { "flags" : [ ], "id" : ObjectId(userId), "level" : 2 } ], "groups" : [ ] }, "creatorId" : ObjectId(userId),
+                   "size" : 0,
+                   "meta" : {}
+                  }
+    inputObject["name"] = "Review Files"
+    inputObject["_id"] = ObjectId()
+    inputObject["description"] = "A Folder to contain uploaded files which are added during reviews"
+    result = foldersDB.insert_one(inputObject)
+    reviewDataFolder = inputObject;
+
     # ====================================================
     #Import users to allow authorship to be maintained when inserted later
     #+---------------------------------------+
@@ -435,15 +454,17 @@ def ReadAll(userId, prevAssetDir, baseParent=None, assetStore=None,):
                     }
       cur.execute("SELECT * FROM item2folder where item_id=" + str(row[0]))
       itemConnection = cur.fetchall()
-
-      inputObject["parentId"] = issueDictionary[itemConnection[0][1]]["_id"]
-      inputObject["name"] = row[1]
-      inputObject["_id"] = ObjectId()
-      inputObject["description"] = row[3]
-      inputObject["created"] = row[10]
-      inputObject["updated"] = row[2]
-      print inputObject["name"]
-      result = foldersDB.insert_one(inputObject)
+      if itemConnection[0][1] in issueDictionary:
+        inputObject["parentId"] = issueDictionary[itemConnection[0][1]]["_id"]
+        inputObject["name"] = row[1]
+        inputObject["_id"] = ObjectId()
+        inputObject["description"] = row[3]
+        inputObject["created"] = row[10]
+        inputObject["updated"] = row[2]
+        print inputObject["name"]
+        result = foldersDB.insert_one(inputObject)
+      else:
+        inputObject["_id"] = reviewDataFolder["_id"]
       submissionNumber += 1
       # ====================================================
       # Capture each revision that matches an object from above
@@ -494,22 +515,6 @@ def ReadAll(userId, prevAssetDir, baseParent=None, assetStore=None,):
               "revisionNumber":str(revisionNumber)
             }
           }
-          if revision[5] in userDictionary.keys():
-            inputRevision["creatorId"] = userDictionary[revision[5]]["_id"]
-            inputRevision["access"]["users"].append( {
-                  "flags" : [ ],
-                  "id" : userDictionary[revision[5]]["_id"],
-                  "level" : 2
-                })
-            #inputRevision["meta"]["authors"] = [userDictionary[revision[5]]["firstName"] + " " + userDictionary[revision[5]]["lastName"]]
-          else:
-            inputRevision["creatorId"] = row[9]
-            inputRevision["access"]["users"].append( {
-                  "flags" : [ ],
-                  "id" : row[9],
-                  "level" : 2
-                })
-            #inputRevision["meta"]["authors"] = ["OTJ User"]
           '''
           Metadata connections:
           +-------------+---------------------+
@@ -578,12 +583,17 @@ def ReadAll(userId, prevAssetDir, baseParent=None, assetStore=None,):
           inputRevision["meta"]["disclaimer"] = metaDataQuery(cur, revision[0],"20")
           inputRevision["meta"]["revisionPhase"] = metaDataQuery(cur, revision[0],"35")
           userVal = metaDataQuery(cur, revision[0],"15")
-          if userVal in userDictionary.keys():
+          if userVal in userDictionary:
               inputRevision["creatorId"] = ObjectId(userDictionary[userVal]["_id"])
-          elif revision[5] in userDictionary.keys():
+          elif revision[5] in userDictionary:
               inputRevision["creatorId"] = ObjectId(userDictionary[revision[5]]["_id"])
           else:
               inputRevision["creatorId"] = ObjectId()
+          inputRevision["access"]["users"].append( {
+                "flags" : [ ],
+                "id" : inputRevision["creatorId"],
+                "level" : 2
+              })
           inputRevision["name"] = "Revision " + str(revision[2])
           inputRevision["_id"] = ObjectId()
           inputRevision["description"] = revision[4]
@@ -675,7 +685,7 @@ def ReadAll(userId, prevAssetDir, baseParent=None, assetStore=None,):
                                      "baseParentType":"collection",
                                      "name":bitstream[2],
                                      "meta": {
-                                         "type":filetypeDict(bitstream[9])
+                                         "type":filetypeDict[str(bitstream[9])]
                                      },
                                      "baseParentId" : ObjectId(baseParent),
                                      "creatorId":inputRevision["creatorId"],
@@ -701,6 +711,10 @@ def ReadAll(userId, prevAssetDir, baseParent=None, assetStore=None,):
     settingDB.insert_one({"_id":ObjectId(),
                           "key":"technical_journal.submission",
                           "value":submissionNumber
+                        })
+    settingDB.insert_one({"_id":ObjectId(),
+                          "key":"technical_journal.reviewUpload",
+                          "value":reviewDataFolder['_id']
                         })
 
 
