@@ -88,7 +88,7 @@ router.route('plugins/journal/submission/:id/upload/edit', 'uploadFiles', functi
     testUserAccess(uploadView, {id: id, newSub: false, NR: false}, true, false);
 });
 import SurveyPage from './pages/SurveyPage.vue';
-router.route('plugins/journal/submission/:id/survey', 'SurveyPage', function (id) {
+router.route('submission/:id/survey', 'SurveyPage', function (id) {
     testUserAccess(vueComponentView, {
         component: SurveyPage,
         props: {

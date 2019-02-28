@@ -7,4 +7,7 @@ A new submission has been submitted to the OSEHRA Technical Journal
 <b>Abstract:</b>${abstract}</br>
 </div>
 
+
+Download and review this publication at <a target="_blank" href="${host}/tech_journal/#view/${subNo}/${revNo}"> here</a>.
+
 <%include file="tech_journal_footer.mako"/>
