@@ -7,4 +7,7 @@ A new comment has been added to a submission in the OSEHRA Technical Journal.
 <b>Comment:</b>${commentText}</br>
 </div>
 
+Review the results of the survey
+<a target="_blank" href="${host}/tech_journal/#view/${subNo}/${revNo}"> here</a>.
+
 <%include file="tech_journal_footer.mako"/>

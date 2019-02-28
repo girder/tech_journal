@@ -1,6 +1,6 @@
 <%include file="tech_journal_header.mako"/>
 
-A new submission has been added to the OSEHRA Technical Journal
+A new submission has been submitted for approval to the OSEHRA Technical Journal
 
 <div style="font-size: 13px; color: #000000; margin-bottom: 12px;">
 <b>Title:</b> ${name} </br>
@@ -10,6 +10,6 @@ A new submission has been added to the OSEHRA Technical Journal
 
 
 Review the results of the survey
-<a href="http://localhost:8080/tech_journal#plugins/journal/submission/${id}/survey"> here</a>.
+<a target="_blank" href="${host}/tech_journal/#submission/${id}/survey"> here</a>.
 
 <%include file="tech_journal_footer.mako"/>

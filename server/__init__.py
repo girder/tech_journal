@@ -743,7 +743,10 @@ class TechJournal(Resource):
             self.model('folder').move(parentFolder, targetFolder, 'folder')
         data = {'name': parentFolder['name'],
                 'authors': folder['meta']['authors'],
-                'abstract': parentFolder['description']}
+                'abstract': parentFolder['description'],
+                'subNo': parentFolder['meta']['submissionNumber'],
+                'revNo': folder['meta']['revisionNumber']
+                }
         subject = ''
         if self.model('folder').countFolders(parentFolder) == 1:
             subject = 'New Submission'
@@ -788,13 +791,22 @@ class TechJournal(Resource):
         .errorResponse('Read access was denied on the issue.', 403)
     )
     def updateReviews(self, params, folder):
-        metadata = self.getBodyJson()
+        metadataDict = self.getBodyJson()
+        metadata = metadataDict['meta']
+        reviewIndex = int(metadataDict['index'])
+        reviewType = metadataDict['type']
+        reviewUser = metadata['reviews'][reviewType]['reviews'][reviewIndex]['user']
+        reviewUserName = "%s %s" % (reviewUser['firstName'], reviewUser['lastName'])
         parentFolder = self.model('folder').load(folder['parentId'],
                                                  user=self.getCurrentUser(),
                                                  force=True)
         self.model('folder').setMetadata(folder, metadata)
         data = {'name': parentFolder['name'],
-                'reviewer': ""}
+                'id': folder['_id'],
+                'index': reviewIndex,
+                'type': reviewType,
+                'reviewer': reviewUserName
+                }
         subject = "New Review: %s" % parentFolder['name']
         emailTemplate = 'tech_journal_new_review.mako'
         html = mail_utils.renderTemplate(emailTemplate, data)
@@ -875,7 +887,10 @@ class TechJournal(Resource):
         if params['sendEmail'] == 'send':
             data = {'name': parentFolder['name'],
                     'commentText': metadata['comments'][-1]['text'],
-                    'commentAuthor':  metadata['comments'][-1]["name"]}
+                    'commentAuthor':  metadata['comments'][-1]["name"],
+                    'subNo': parentFolder['meta']['submissionNumber'],
+                    'revNo': folder['meta']['revisionNumber']
+                    }
             subject = "Comment Added - Submission %s" % parentFolder['name']
             emailTemplate = 'tech_journal_new_comment.mako'
             html = mail_utils.renderTemplate(emailTemplate, data)

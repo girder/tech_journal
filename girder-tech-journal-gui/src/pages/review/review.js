@@ -229,6 +229,7 @@ var reviewView = View.extend({
         }
         if (this.reviewIndex === 'new') {
             this.revData.meta.reviews[this.type].reviews.push(this.reviewData);
+            this.reviewIndex = 0;
         } else {
             this.revData.meta.reviews[this.type].reviews[this.reviewIndex] = this.reviewData;
         }
@@ -236,7 +237,10 @@ var reviewView = View.extend({
             type: 'PUT',
             contentType: 'application/json',
             url: `journal/${this.revData._id}/review`,
-            data: JSON.stringify(this.revData.meta)
+            data: JSON.stringify({'index': this.reviewIndex,
+                'meta': this.revData.meta,
+                'type': this.type
+            })
         }).done((resp) => {
             router.navigate(this.returnURL, {trigger: true});
         });
