@@ -1,0 +1,95 @@
+// Import the font you want to use or delete this
+@import url('https://fonts.googleapis.com/css?family=Rubik:400,400i,500,500i,700,700i')
+themeFont = Rubik
+
+/* NOTE: Pay attention to how light or dark you set these variables.
+ * If it is used as a background color, you want to make sure the text
+ * is legible. Change the color attributes in the styles below (look for
+ * comments that read, "change based on background color"). */
+
+primaryColor = #005dae
+sidebarBG = #4a4a4a
+menuBG    = #f1f1f1
+
+body
+    background-color menuBG
+    font-family themeFont
+
+#toplogin
+    #loginForm
+        #logout
+            background primaryColor
+            color #00FF00 // change based on background color
+            &:hover
+                background lighten(primaryColor,10%)
+
+.Header
+  .HeaderTopContent
+    #topbar
+      background-color menuBG
+    #menu
+      background lighten(primaryColor, 95%)
+
+      #topmenu
+        height 50px
+        padding-left 180
+        background url(http://osehra.org/profiles/drupal_commons/themes/commons_osehra_earth/images/logo.png)
+        height 75px
+        width 275px
+.nav
+  & > li
+    &:hover
+      & > a
+        border-bottom-color primaryColor
+    ul
+      li
+        background primaryColor
+        border-bottom 1px solid darken(primaryColor,3%)
+        color #333 // change based on background color
+
+
+table
+    &#revisionTable,
+    &#submissionTable
+        th
+            &:nth-of-type(even)
+                background darken(primaryColor, 6%)
+th
+    background primaryColor
+td
+    &.actions
+        a
+            background primaryColor
+            color lighten(menuBG,80%) // change based on background color
+            &:hover
+                background lighten(primaryColor,10%)
+tr.selected
+  td:first-of-type
+    div
+      &:before
+        border-left-color primaryColor
+
+.Content
+  .ContentWithLeftPanel,
+  .ContentWithRightPanel,
+    .Panel
+      background sidebarBG
+      color #333 // change based on background color
+      a
+        color lighten(primaryColor,40%)
+    .MainContent
+      background lighten(menuBG,80%)
+      #infoElement
+        color sidebarBG
+        &:before
+          content "The OSEHRA Technical Journal is an Open Access, on-line publication covering technical topics related to open source software for management of electronic health records. The goal of the Journal is to foster innovation and to channel this innovation in the form of concrete working pieces of software that can later be integrated into the OSEHRA open source platform."
+
+div.searchResults
+    background menuBG
+      
+div.SearchResultEntry
+    div.ResultAuthors
+        color lighten(desaturate(primaryColor,10%),20%)
+
+div.issueSelected
+  border-left 6px solid lighten(primaryColor,50%)
