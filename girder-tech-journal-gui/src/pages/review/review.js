@@ -30,7 +30,7 @@ var reviewView = View.extend({
             }, this);
             this.$('#templateQuestions').empty();
             Object.keys(questionList).forEach(function (questionIndex) {
-                if (questionList[questionIndex].attachfileValue !== '') {
+                if (questionList[questionIndex].hasOwnProperty('attachFileValue') && questionList[questionIndex].attachfileValue !== '') {
                     restRequest({
                         type: 'GET',
                         url: `file/${questionList[questionIndex].attachfileValue}`
