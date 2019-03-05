@@ -6,7 +6,7 @@ else
 - var questionSize = Object.keys(reviewOptions).length
 .questionObject(value=index)
   .selectMultipleWrapper
-    select.questionVal(size=questionSize)
+    select.questionVal(size=questionSize, disabled=isDisabled)
       for i in Object.keys(reviewOptions)
         if question.value.indexOf(i) !== -1
           option(value=i, selected) #{reviewOptions[i]}
@@ -19,8 +19,8 @@ else
         td(style="width:100px") Comment
         if question.comment
           td
-            textarea.questionComment #{question.commentValue}
-  if question.attachfile === 1
+            textarea.questionComment(disabled=isDisabled) #{question.commentValue}
+  if (question.attachfile === 1) && (!isDisabled)
     .uploadWrapper
       table
         tbody

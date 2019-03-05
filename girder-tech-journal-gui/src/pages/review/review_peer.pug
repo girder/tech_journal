@@ -23,17 +23,15 @@
                 h4 Summary
                 #summaryTable
                 h4 Comments
-                textarea#globalComment #{review.questions.list.comment}
+                textarea#globalComment(disabled=isDisabled) #{review.questions.list.comment}
                 h4 Recommended Certification Level
-                  select#certificationLevel
+                  select#certificationLevel(disabled=isDisabled)
                     for i in ['1','2','3','4']
                       if review.questions.list.certificationLevel === i
                         option(value=i, selected) #{i}
                       else
                         option(value=i) #{i}
-                if user
-                  if (review['user'] === user) || (user.attributes.admin)
-                    input#saveReview(type="button", value="Save")
+                    input#saveReview(type="button", value="Save", disabled=isDisabled)
             td#tdRightPanel
               #divRightPanel
                 h4 Topics

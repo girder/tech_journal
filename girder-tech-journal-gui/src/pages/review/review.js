@@ -39,8 +39,9 @@ var reviewView = View.extend({
                         questionList[questionIndex].attachfileURL = `${apiRoot}/file/${attachFileDetails._id}/download`;
                         this.$('#templateQuestions').append(
                             QuestionTemplate({'question': questionList[questionIndex],
-                                index: questionIndex,
-                                'type': this.type
+                                'index': questionIndex,
+                                'type': this.type,
+                                'isDisabled': this.disablePage
                             })
                         );
                     });
@@ -48,7 +49,8 @@ var reviewView = View.extend({
                     this.$('#templateQuestions').append(
                         QuestionTemplate({'question': questionList[questionIndex],
                             index: questionIndex,
-                            'type': this.type
+                            'type': this.type,
+                            'isDisabled': this.disablePage
                         })
                     );
                 }
@@ -83,6 +85,7 @@ var reviewView = View.extend({
     render: function (options) {
         this.type = options['type'];
         this.reviewIndex = options['index'];
+        var user = getCurrentUser();
         restRequest({
             type: 'GET',
             url: `journal/${options['id']}/details`
@@ -90,11 +93,10 @@ var reviewView = View.extend({
             this.revData = totalDetails[0];
             this.returnURL = `#view/${totalDetails[1].meta.submissionNumber}/${this.revData.meta.revisionNumber}`;
             this.parentId = totalDetails[1]._id;
+            this.disablePage = true;
             var templateData = {
                 'name': totalDetails[1]['name'],
-                'user': getCurrentUser(),
-                'description': totalDetails[1]['description'],
-                'currentUser': getCurrentUser()
+                'description': totalDetails[1]['description']
             };
             if (this.type === 'peer') {
                 if (this.reviewIndex === 'new') {
@@ -104,6 +106,10 @@ var reviewView = View.extend({
                     this.reviewData = this.revData.meta.reviews[this.type].reviews[this.reviewIndex];
                 }
                 templateData['review'] = this.reviewData;
+                if (user) {
+                    this.disablePage = !((templateData['review']['user'] === user) || (user.attributes.admin));
+                }
+                templateData['isDisabled'] = this.disablePage;
                 this.$el.html(PeerReviewTemplate(templateData));
                 this.processReviewFunc = this._processPeerReview;
             } else {
@@ -114,6 +120,11 @@ var reviewView = View.extend({
                     this.reviewData = this.revData.meta.reviews[this.type].reviews[this.reviewIndex];
                 }
                 templateData['review'] = this.reviewData;
+                if (user) {
+                    this.disablePage = !((templateData['review']['user'] === user) || (user.attributes.admin));
+                }
+                templateData['isDisabled'] = this.disablePage;
+                this.$el.html(PeerReviewTemplate(templateData));
                 this.$el.html(FinalReviewTemplate(templateData));
                 this.processReviewFunc = this._processFinalReview;
             }
