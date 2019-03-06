@@ -177,7 +177,7 @@ class TechJournal(Resource):
 
         self.route('GET', ('submission', ':id'), self.getSubmission)
         self.route('GET', ('submission', ':id', 'revision'), self.getRevisions)
-        self.route('GET', ('review', 'directory'), self.getUploadDirectory)
+        self.route('GET', ('review', ':id', 'directory'), self.getUploadDirectory)
         self.route('POST', ('submission', 'number'), self.getNewSubmissionNumber)
         self.route('POST', ('submission', ':submission', 'number'), self.getNewRevisionNumber)
 
@@ -368,16 +368,19 @@ class TechJournal(Resource):
         return list(revisions)
 
     @access.public(scope=TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
     @describeRoute(
         Description('Get the ID of the folder where all evidence files for a review are placed')
         .errorResponse('Test error.')
         .errorResponse('Read access was denied on the issue.', 403)
     )
-    def getUploadDirectory(self, params):
-        s = Setting()
-        key = 'technical_journal.reviewUpload'
-        objID = s.get(key)
-        return objID
+    def getUploadDirectory(self, folder, params):
+        info = self.model('folder').load(folder['parentId'],
+                                         user=self.getCurrentUser(),
+                                         level=AccessType.ADMIN,
+                                         force=True)
+        issue = self.model('folder').load(info['parentId'], force=True)
+        return issue['meta']['reviewUploadDir']
 
     @access.public(scope=TokenScope.DATA_READ)
     @describeRoute(
@@ -463,10 +466,12 @@ class TechJournal(Resource):
         totalData = list()
         issues = list(self.model('folder').childFolders(parentType='collection', parent=collection,
                                                         user=self.getCurrentUser()))
+        submissionFilter = {"meta": {'$exists': True}}
         for issue in issues:
             if (str(issue['_id']) == params['filterID']) or (params['filterID'] == '*'):
                 testInfo = list(self.model('folder').childFolders(parentType='folder', parent=issue,
-                                                                  user=self.getCurrentUser()))
+                                                                  user=self.getCurrentUser(),
+                                                                  filters=submissionFilter))
                 for submission in testInfo:
                     # Find all folders under each submission to capture all revisions
                     submissionInfo = list(self.model('folder')
@@ -494,11 +499,14 @@ class TechJournal(Resource):
                    )
     def getPendingSubmissions(self, collection, params):
         totalData = list()
-        issues = list(self.model('folder').childFolders(parentType='collection', parent=collection,
+        submissionFilter = {"meta": {'$exists': True}}
+        issues = list(self.model('folder').childFolders(parentType='collection',
+                                                        parent=collection,
                                                         user=self.getCurrentUser()))
         for issue in issues:
             testInfo = list(self.model('folder').childFolders(parentType='folder', parent=issue,
-                                                              user=self.getCurrentUser()))
+                                                              user=self.getCurrentUser(),
+                                                              filters=submissionFilter))
             for submission in testInfo:
                 # Find all folders under each submission to capture all revisions
                 submissionInfo = list(self.model('folder')
@@ -541,7 +549,7 @@ class TechJournal(Resource):
                                                             parent=collection,
                                                             user=user
                                                             ))
-        textArg = ""
+        textArg = {}
         # "AND" regex update taken from:
         # https://stackoverflow.com/questions/3041320/regex-and-operator/37692545
         if "text" in filterParams:
@@ -554,6 +562,7 @@ class TechJournal(Resource):
                 else:
                     textArg = {"name": {"$regex": "Code in Flight", "$options": "i"}}
                 filterParams['Code'].remove("is_cif")
+        textArg["meta"] = {'$exists': True}
         for issue in issues:
             testInfo = list(self.model('folder').childFolders(parentType='folder',
                                                               parent=issue,

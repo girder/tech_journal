@@ -396,7 +396,23 @@ def ReadAll(userId, prevAssetDir, baseParent=None, assetStore=None,):
       inputObject["meta"]["publisherLicense"] = str(row[11])
       inputObject["meta"]["__issue__"] = True
       result = foldersDB.insert_one(inputObject)
-
+      #  Create top-level folder for review uploaded files
+      reviewFolderObject = {"creatorId" : ObjectId(userId),
+                     "baseParentType" : "collection",
+                     "baseParentId" : ObjectId(baseParent),
+                     "parentCollection":"folder",
+                     "parentId":inputObject["_id"],
+                     "public":True,
+                     "created" : datetime.now(),
+                     "access" : { "users" : [ { "flags" : [ ], "id" : ObjectId(userId), "level" : 2 } ], "groups" : [ ] }, "creatorId" : ObjectId(userId),
+                     "size" : 0,
+                     "meta" : {}
+                    }
+      reviewFolderObject["name"] = "Review Files"
+      reviewFolderObject["_id"] = ObjectId()
+      reviewFolderObject["description"] = "A Folder to contain uploaded files which are added during reviews"
+      result = foldersDB.insert_one(reviewFolderObject)
+      reviewDataFolder = reviewFolderObject;
       # Create groups for each issue
       for val in ["editors", "members"]:
         inputGroup = {
