@@ -30,29 +30,25 @@ var reviewView = View.extend({
             }, this);
             this.$('#templateQuestions').empty();
             Object.keys(questionList).forEach(function (questionIndex) {
-                if (questionList[questionIndex].hasOwnProperty('attachFileValue') && questionList[questionIndex].attachfileValue !== '') {
+                this.$('#templateQuestions').append(
+                    QuestionTemplate({'question': questionList[questionIndex],
+                        'index': questionIndex,
+                        'type': this.type,
+                        'isDisabled': this.disablePage
+                    })
+                );
+                if (questionList[questionIndex].hasOwnProperty('attachfileValue') && questionList[questionIndex].attachfileValue !== '') {
+                    var value = questionList[questionIndex].attachfileValue;
                     restRequest({
                         type: 'GET',
-                        url: `file/${questionList[questionIndex].attachfileValue}`
+                        url: `file/${value}`
                     }).done((attachFileDetails) => {
-                        questionList[questionIndex].attachfileName = attachFileDetails.name;
-                        questionList[questionIndex].attachfileURL = `${apiRoot}/file/${attachFileDetails._id}/download`;
-                        this.$('#templateQuestions').append(
-                            QuestionTemplate({'question': questionList[questionIndex],
-                                'index': questionIndex,
-                                'type': this.type,
-                                'isDisabled': this.disablePage
-                            })
-                        );
+                        var name = attachFileDetails.name;
+                        var url = `${apiRoot}/file/${value}/download`;
+                        var questionEntry = this.$(`.questionObject[value=${questionIndex}]`);
+                        questionEntry.find('#attachFileRow').append(`<td><span class='fileItemId', value=${value}><a href=${url}>${name}</a></span></td>`);
+                        questionEntry.find('#UploadFile').hide();
                     });
-                } else {
-                    this.$('#templateQuestions').append(
-                        QuestionTemplate({'question': questionList[questionIndex],
-                            index: questionIndex,
-                            'type': this.type,
-                            'isDisabled': this.disablePage
-                        })
-                    );
                 }
             }, this);
         },
@@ -124,7 +120,6 @@ var reviewView = View.extend({
                     this.disablePage = !((templateData['review']['user'] === user) || (user.attributes.admin));
                 }
                 templateData['isDisabled'] = this.disablePage;
-                this.$el.html(PeerReviewTemplate(templateData));
                 this.$el.html(FinalReviewTemplate(templateData));
                 this.processReviewFunc = this._processFinalReview;
             }

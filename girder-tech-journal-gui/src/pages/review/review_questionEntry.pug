@@ -24,17 +24,11 @@ else
     .uploadWrapper
       table
         tbody
-          tr
+          tr#attachFileRow
             td(style="vertical-align: top;width:100px;") Attachment:
-            if question.attachfileValue
-              td
-                span.fileItemId(style="display: hidden;", value=question.attachfileValue)
-                a(href=question.attachfileURL) #{question.attachfileName}
-
-            else
-              td
-                label.downloadButton
-                  a.fileNameUploaded
-                label.uploadButton
-                  span.inputUpload Attach a file...
-                span.fileItemId(style="display: hidden;", value="")
+            td#UploadFile
+              label.downloadButton
+                a.fileNameUploaded
+              label.uploadButton
+                span.inputUpload Attach a file...
+              span.fileItemId(style="display: hidden;", value="")
