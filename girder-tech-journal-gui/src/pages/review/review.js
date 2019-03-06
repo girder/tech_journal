@@ -76,7 +76,7 @@ var reviewView = View.extend({
     initialize: function (options) {
         restRequest({
             method: 'GET',
-            url: 'journal/review/directory'
+            url: `journal/review/${options['id']}/directory`
         }).done((resp) => {
             this.reviewFilesDir = resp;
             this.render(options);

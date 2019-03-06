@@ -90,23 +90,36 @@ var EditIssueView = View.extend({
                 description: issueData.issueDescription
             }
         }).done((jrnResp) => {
-            var paperDue = new Date(issueData.paperDue);
-            issueData.paperDue = paperDue;
             restRequest({
-                method: 'PUT',
-                contentType: 'application/json',
-                url: `folder/${jrnResp._id}/metadata`,
-                data: JSON.stringify(issueData)
-            }).done((metaResp) => {
+                method: 'POST',
+                url: 'folder',
+                data: {
+                    parentId: jrnResp['_id'],
+                    parentType: 'folder',
+                    name: 'Review Files',
+                    description: 'A Folder to contain uploaded files which are added during reviews'
+                }
+            }).done((reviewUploadResp) => {
+                var paperDue = new Date(issueData.paperDue);
+                issueData.paperDue = paperDue;
+                issueData.reviewUploadDir = reviewUploadResp['_id'];
+                issueData['__issue__'] = true;
                 restRequest({
-                    method: 'POST',
-                    url: `group/`,
-                    data: {
-                        'name': `${issueData.issueName}_editors`,
-                        'description': `Editors for the issue with id of ${jrnResp._id}`,
-                        'public': false
-                    }
-                }).done((grpRep) => {
+                    method: 'PUT',
+                    contentType: 'application/json',
+                    url: `folder/${jrnResp._id}/metadata`,
+                    data: JSON.stringify(issueData)
+                }).done((metaResp) => {
+                    restRequest({
+                        method: 'POST',
+                        url: `group/`,
+                        data: {
+                            'name': `${issueData.issueName}_editors`,
+                            'description': `Editors for the issue with id of ${jrnResp._id}`,
+                            'public': false
+                        }
+                    }).done((grpRep) => {
+                    });
                 });
             });
         });
