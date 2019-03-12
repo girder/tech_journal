@@ -157,7 +157,7 @@ var submissionView = View.extend({
             // ******************************************************
             socialLikes(this.$('.social-likes')[0], {
                 url: urlLink
-            })
+            });
             // ******************************************************
             this.$('#reviewDisplay').find('.peer').empty();
             this.$('#reviewDisplay').find('.final').empty();
