@@ -15,6 +15,12 @@ mixin revisionOption(value,selectedRev,submission)
 mixin searchLink(value,type)
   a(href='#?query="'+type+'":["'+ value+ '"]') #{value}
 
+mixin addShareBubbles()
+  .social-likes
+    div(data-service="facebook", title="Share link on Facebook") Facebook
+    div(data-service="twitter", title="Share link on Twitter") Twitter
+    div(data-service="linkedin", title="Share link on LinkedIn") LinkedIn
+
 mixin existingComment(commentInfo)
   .aComment(style="")
     img.commentThumbnail
@@ -127,6 +133,9 @@ if 'downloadStatistics' in info.revision
             if info.parent.meta.grant
               li Grant: #{info.parent.meta.grant}
         h4 Share
+        ul
+          li
+            +addShareBubbles()
         if user
           if (user.attributes.admin) || (info.parent.creatorId===user.id)
             h4 Manage
