@@ -103,7 +103,7 @@ var reviewView = View.extend({
                 }
                 templateData['review'] = this.reviewData;
                 if (user) {
-                    this.disablePage = !((templateData['review']['user'] === user) || (user.attributes.admin));
+                    this.disablePage = !((templateData['review']['user']['_id'] === user.attributes._id) || (user.attributes.admin));
                 }
                 templateData['isDisabled'] = this.disablePage;
                 this.$el.html(PeerReviewTemplate(templateData));
@@ -117,7 +117,7 @@ var reviewView = View.extend({
                 }
                 templateData['review'] = this.reviewData;
                 if (user) {
-                    this.disablePage = !((templateData['review']['user'] === user) || (user.attributes.admin));
+                    this.disablePage = !((templateData['review']['user']['_id'] === user.attributes._id) || (user.attributes.admin));
                 }
                 templateData['isDisabled'] = this.disablePage;
                 this.$el.html(FinalReviewTemplate(templateData));
