@@ -97,7 +97,6 @@ var submissionView = View.extend({
             url: `journal/submission/${this.displayId}/revision`
         }).done((revisionsResp) => {
             revisions = revisionsResp;
-            console.log(revisions);
             restRequest({
                 method: 'GET',
                 url: `journal/submission/${this.displayId}`

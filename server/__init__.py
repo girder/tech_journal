@@ -178,6 +178,7 @@ class TechJournal(Resource):
         self.route('GET', ('submission', ':id'), self.getSubmission)
         self.route('GET', ('submission', ':id', 'revision'), self.getRevisions)
         self.route('GET', ('review', ':id', 'directory'), self.getUploadDirectory)
+        self.route('POST', ('review', ':id', 'upload'), self.uploadEvidence)
         self.route('POST', ('submission', 'number'), self.getNewSubmissionNumber)
         self.route('POST', ('submission', ':submission', 'number'), self.getNewRevisionNumber)
 
@@ -381,6 +382,24 @@ class TechJournal(Resource):
                                          force=True)
         issue = self.model('folder').load(info['parentId'], force=True)
         return issue['meta']['reviewUploadDir']
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.READ)
+    @describeRoute(
+        Description('Place the file information in')
+        .errorResponse('Test error.')
+        .errorResponse('Read access was denied on the issue.', 403)
+    )
+    def uploadEvidence(self, folder, params):
+        json = self.getBodyJson()
+        upload = self.model('upload').createUpload(self.getCurrentUser(),
+                                                   json['name'],
+                                                   'folder',
+                                                   folder,
+                                                   json['size'],
+                                                   json['type']
+                                                   )
+        return upload
 
     @access.public(scope=TokenScope.DATA_READ)
     @describeRoute(
