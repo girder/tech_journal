@@ -2,8 +2,8 @@ import View from '@girder/core/views/View';
 import { restRequest, apiRoot } from '@girder/core/rest';
 import router from '@girder/core/router';
 import { getCurrentUser } from '@girder/core/auth';
-import { handleClose } from '@girder/core/dialog';
 import FolderModel from '@girder/core/models/FolderModel';
+import FileModel from '@girder/core/models/FileModel';
 import UploadWidget from '@girder/core/views/widgets/UploadWidget';
 
 import MenuBarView from '../../views/menuBar.js';
@@ -215,17 +215,42 @@ var reviewView = View.extend({
             el: container,
             parent: model,
             parentType: this.parentType,
-            parentView: this
-        }).on('g:uploadFinished', function (retInfo) {
-            handleClose('upload');
-            // upload the information to the submission value
-            // show the information in the table
-            this.$(parentObj).find('.inputUpload').hide();
-            this.$(parentObj).find('.fileItemId').append(retInfo.files[0].name);
-            this.$(parentObj).find('.fileItemId').attr('value', retInfo.files[0].id);
-            this.$(parentObj).find('.fileItemId').show();
-            this._updateReview();
-        }, this).render();
+            parentView: this,
+            overrideStart: true
+        }).once('g:uploadStarted', function () {
+            for (var i = 0; i < this.files.length; i++) {
+                // Get name size and type from file info
+                var fileName = this.files[i].name;
+                var fileSize = this.files[i].size;
+                var fileType = this.files[i].type;
+                restRequest({
+                    type: 'POST',
+                    contentType: false,
+                    processData: false,
+                    url: `journal/review/${this.parentView.reviewFilesDir}/upload`,
+                    data: JSON.stringify({
+                        'name': fileName,
+                        'size': fileSize,
+                        'type': fileType
+                    })
+                }).done((resp) => {
+                    this.destroy();
+                    // Upload the chunks of data
+                    var model = new FileModel();
+                    model.once('g:upload.complete', () => {
+                        // Once the upload is complete,
+                        // show the information in the review table
+                        this.parentView.$(parentObj).find('.inputUpload').hide();
+                        this.parentView.$(parentObj).find('.fileItemId').append(resp.name);
+                        this.parentView.$(parentObj).find('.fileItemId').attr('value', model.id);
+                        this.parentView.$(parentObj).find('.fileItemId').show();
+                        this.parentView._updateReview();
+                    });
+                    model.startByte = 0;
+                    model._uploadChunk(this.files[0], resp._id);
+                }, this);
+            }
+        }).render();
     },
     _saveReview: function () {
         if (this.type === 'peer') {
