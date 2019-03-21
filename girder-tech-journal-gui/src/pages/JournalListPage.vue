@@ -8,6 +8,8 @@ div
         ul
           li(v-for='journal in journals', :key='journal._id')
             a(:href='`#?query="collection":${journal._id}`') {{ journal.name }}
+            ul
+              li {{journal.description}}
 </template>
 
 <script>

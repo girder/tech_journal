@@ -68,6 +68,12 @@ const HomePage = View.extend({
         var pendingSubs = 0;
         restRequest({
             method: 'GET',
+            url: `collection/${collection}`
+        }).done((collectionResp) => {
+            this.journalDesc = collectionResp.description;
+        });
+        restRequest({
+            method: 'GET',
             url: `journal/${collection}/issues`
         }).done((jrnResp) => {
             restRequest({
@@ -81,6 +87,7 @@ const HomePage = View.extend({
                     parentView: this,
                     pendingSubNum: pendingSubs
                 });
+                this.$('#infoElement').append(this.journalDesc);
                 if (this.$('#treeWrapper').find('.treeEntry').length < 5) {
                     restRequest({
                         method: 'GET',
