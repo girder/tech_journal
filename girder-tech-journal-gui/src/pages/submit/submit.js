@@ -103,31 +103,30 @@ var SubmitView = View.extend({
     },
     initialize: function (id) {
         this.user = getCurrentUser();
+        var openIssues = [];
         if (id.id === 'new') {
             this.newSub = true;
+            // Get all available Journals
             restRequest({
                 method: 'GET',
-                url: 'journal/setting',
-                data: {
-                    list: JSON.stringify([
-                        'tech_journal.default_journal'
-                    ])
-                }
+                url: 'journal'
             }).done((resp) => {
-                this.journalID = resp['tech_journal.default_journal'];
-                restRequest({
-                    method: 'GET',
-                    url: `collection/${this.journalID}`
-                }).done((parResp) => {
+                // Go through each journal to find open issues
+                resp.forEach(function (journalEntry) {
                     restRequest({
                         method: 'GET',
-                        url: `journal/${this.journalID}/openissues`
+                        url: `journal/${journalEntry['_id']}/openissues`
                     }).done((jrnResp) => {
-                        jrnResp['parentName'] = parResp['name'];
-                        this.render(jrnResp, 1);
-                    });
-                });
-            }); // End getting of OTJ Collection value setting
+                        jrnResp.forEach(function (issue) {
+                            // Append parent name to issue
+                            issue['parentName'] = journalEntry['name'];
+                        });
+                        // Keep track of all open issues
+                        openIssues = openIssues.concat(jrnResp);
+                        this.render(openIssues, 1);
+                    }, this);
+                }, this);
+            }, this); // End getting of OTJ Collection value setting
         } else {
             this.newRevision = id.NR;
             this.approval = id.approval;

@@ -1,8 +1,8 @@
 #headerBar
-mixin issueEntry(info, parName)
+mixin issueEntry(info)
   tr
     td
-      | #{parName}
+      | #{info.parentName}
     td
       a.issueGen(target=info._id) #{info.name}
     td
@@ -37,7 +37,7 @@ mixin issueEntry(info, parName)
             tbody
               tr
               each item in info
-                +issueEntry(item, info.parentName)
+                +issueEntry(item)
         #issueDetails
         .clear
         .Footer
