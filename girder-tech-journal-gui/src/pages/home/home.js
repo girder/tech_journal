@@ -49,20 +49,27 @@ const HomePage = View.extend({
         }
     },
     initialize: function (query) {
-        restRequest({
-            method: 'GET',
-            url: 'journal/setting',
-            data: {
-                list: JSON.stringify([
-                    'tech_journal.default_journal'
-                ])
-            }
-        }).done((resp) => {
-            this.defaultJournal = resp['tech_journal.default_journal'];
+        if (query['query'].indexOf('collection') !== -1) {
+            this.defaultJournal = query['query'].substr(13, query['query'].length - 1);
             this.collectionID = this.defaultJournal;
             this.querystring = '*';
             this.render(this.collectionID, 0);
-        }); // End getting of OTJ Collection value setting
+        } else {
+            restRequest({
+                method: 'GET',
+                url: 'journal/setting',
+                data: {
+                    list: JSON.stringify([
+                        'tech_journal.default_journal'
+                    ])
+                }
+            }).done((resp) => {
+                this.defaultJournal = resp['tech_journal.default_journal'];
+                this.collectionID = this.defaultJournal;
+                this.querystring = '*';
+                this.render(this.collectionID, 0);
+            }); // End getting of OTJ Collection value setting
+        }
     },
     render: function (collection, startIndex) {
         var pendingSubs = 0;
