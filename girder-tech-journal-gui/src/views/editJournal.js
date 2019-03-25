@@ -13,15 +13,23 @@ var EditJournalView = View.extend({
             var values = {issueName: this.$('#name')[0].value,
                 issueDescription: this.$('#description')[0].value
             };
-            this._createJournal(values);
+            if (this.restType === 'PUT') {
+                this._updateJournal(values);
+            } else {
+                this._createJournal(values);
+            }
             router.navigate('#plugins/journal/admin', {trigger: true});
         }
     },
     initialize: function (id) {
         var journalInfo = {info: {}};
         if (id.id !== 'new') {
+            this.restType = 'PUT';
+            this.restUrl = `collection/${id.id}`;
             journalInfo = this._getCurrentInfo(id);
         } else {
+            this.restType = 'POST';
+            this.restUrl = 'collection';
             this.render(journalInfo);
         }
     },
@@ -36,7 +44,7 @@ var EditJournalView = View.extend({
     _createJournal: function (journalData) {
         var publicJournal = true;
         // Privacy-1 radio button indicates that the Journal should be private
-        if ($('input[name=privacy]:checked').val() === 1) {
+        if ($('input[name=privacy]:checked').attr('value') === '1') {
             publicJournal = false;
         }
         // Adds the string which the API looks for when capturing all
@@ -45,8 +53,8 @@ var EditJournalView = View.extend({
             journalData.issueDescription = journalData.issueDescription + '\n\r__journal__';
         }
         restRequest({
-            method: 'POST',
-            url: 'collection',
+            method: this.restType,
+            url: this.restUrl,
             data: {
                 name: journalData.issueName,
                 description: journalData.issueDescription,
@@ -66,12 +74,43 @@ var EditJournalView = View.extend({
             });
         });
     },
+    _updateJournal: function (journalData) {
+        var publicJournal = true;
+        // Privacy-1 radio button indicates that the Journal should be private
+
+        if ($('input[name=privacy]:checked').attr('value') === '1') {
+            publicJournal = false;
+        }
+        restRequest({
+            method: this.restType,
+            url: this.restUrl,
+            data: {
+                name: journalData.issueName,
+                description: journalData.issueDescription
+            }
+        }).done((jrnResp) => {
+            restRequest({
+                method: this.restType,
+                url: `${this.restUrl}/access`,
+                data: {
+                    access: JSON.stringify(this.accessInfo),
+                    public: publicJournal
+                }
+            });
+        });
+    },
     _getCurrentInfo: function (journalData) {
         restRequest({
             method: 'GET',
             url: `collection/${journalData.id}`
         }).done((jrnInfo) => {
-            this.render({info: jrnInfo});
+            restRequest({
+                method: 'GET',
+                url: `collection/${journalData.id}/access`
+            }).done((jrnAccInfo) => {
+                this.accessInfo = jrnAccInfo;
+                this.render({info: jrnInfo});
+            });
         });
     }
 });
