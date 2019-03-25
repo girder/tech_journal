@@ -201,7 +201,7 @@ class TechJournal(Resource):
 
     @access.public(scope=TokenScope.DATA_READ)
     @describeRoute(
-        Description('get the total amount of review questions')
+        Description('Get the Review question lists. Supply a name to return only the one set')
         .param('qType', 'Name of review list to acquire', required=False)
         .errorResponse('Read access was denied on the issue.', 403)
         )
@@ -213,7 +213,7 @@ class TechJournal(Resource):
 
     @access.public(scope=TokenScope.DATA_READ)
     @describeRoute(
-        Description('create/update a set of review questions')
+        Description('Update or create a set of Review questions')
         .param('body', 'A JSON object containing the QuestionList object to update',
                paramType='body')
         .errorResponse('Test error.')
@@ -246,7 +246,7 @@ class TechJournal(Resource):
     @access.public(scope=TokenScope.DATA_WRITE)
     @loadmodel(model='folder', level=AccessType.WRITE)
     @describeRoute(
-        Description('Delete a given object')
+        Description('Delete a Submission by ID ')
         .responseClass('folder')
         .param('id', 'The ID of the object to delete', paramType='path')
         .errorResponse('Test error.')
@@ -273,7 +273,7 @@ class TechJournal(Resource):
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)
     @describeRoute(
-        Description('Get filtered Issues from a given Journal which are still active')
+        Description('Get Issues from a Journal that have not yet been closed')
         .responseClass('Collection')
         .param('id', 'The ID of the Journal (collection) to pull from', paramType='path')
         .errorResponse('Test error.')
@@ -386,7 +386,7 @@ class TechJournal(Resource):
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='folder', level=AccessType.READ)
     @describeRoute(
-        Description('Place the file information in')
+        Description('Create an upload object in the Review Files folder')
         .errorResponse('Test error.')
         .errorResponse('Read access was denied on the issue.', 403)
     )
@@ -810,8 +810,7 @@ class TechJournal(Resource):
     @access.user(scope=TokenScope.DATA_READ)
     @loadmodel(model='folder', level=AccessType.READ)
     @describeRoute(
-        Description('Set metadata for a submission. Most stays on each revision,\
-                    but others go to the parent folder')
+        Description('Update the Review information for a submission')
         .param('id', 'The ID of the folder.', paramType='path')
         .param('body', 'A JSON object containing the Review metadata to update',
                paramType='body')
@@ -897,8 +896,7 @@ class TechJournal(Resource):
     @access.user(scope=TokenScope.DATA_READ)
     @loadmodel(model='folder', level=AccessType.READ)
     @describeRoute(
-        Description('Set metadata for a submission. Most stays on each revision,\
-                    but others go to the parent folder')
+        Description('Add/Update the comments for a submission')
         .param('id', 'The ID of the folder.', paramType='path')
         .param('sendEmail', "Send an email about comment update")
         .param('body', 'A JSON object containing the comments to update',
@@ -934,7 +932,7 @@ class TechJournal(Resource):
 
     @access.admin(scope=TokenScope.DATA_READ)
     @describeRoute(
-        Description('Set a Journal category for filtering')
+        Description('Set the settings for the Tech Journal')
         .param('list', 'A JSON list of objects with key and value representing\
                         a list of settings to set.', required=True)
         .errorResponse()
@@ -961,7 +959,7 @@ class TechJournal(Resource):
 
     @access.public(scope=TokenScope.DATA_READ)
     @describeRoute(
-        Description('get the journal Settings')
+        Description('Get the settings for the Tech Journal')
         .param('list', 'A JSON list of objects with key and value representing\
                         a list of settings to set.', required=True)
         .errorResponse()
@@ -982,7 +980,7 @@ class TechJournal(Resource):
 
     @access.public(scope=TokenScope.DATA_READ)
     @describeRoute(
-        Description('get the journal licenses')
+        Description('Get the list of Tech Journal licenses')
         .errorResponse()
         .errorResponse('Read access was denied on the issue.', 403)
         )
@@ -992,7 +990,7 @@ class TechJournal(Resource):
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='folder', level=AccessType.READ)
     @describeRoute(
-        Description('get citation for an object')
+        Description('Get citation for an submission')
         .param('id', 'The ID of the folder.', paramType='path')
         .param('type', 'Type of citation to generate', paramType='path')
         .errorResponse()
@@ -1094,7 +1092,7 @@ class TechJournal(Resource):
     @describeRoute(
         Description('Send feedback email to admins')
         .param('body', 'A JSON object containing the feedback.  Am object \
-                        with three params: title, where, summary',
+                        with three params: title, location, summary',
                paramType='body')
         .errorResponse('Test error.')
         .errorResponse('Read access was denied on the issue.', 403)
