@@ -103,7 +103,8 @@ def metaDataQuery(cur, entryNo, fieldNo):
         return submissionTypeDict['0']
     if fieldNo == "35":
         return reviewData["1"]
-
+    if fieldNo in ['37','38','40']:
+        return False
     return ""
 
 def ReadAll(userId, prevAssetDir, baseParent=None, assetStore=None,):
