@@ -105,7 +105,7 @@ const HomePage = View.extend({
                             var queryString = decodeURI(window.location.hash.substring(8));
                             if (queryString.indexOf('category') !== -1) {
                                 var categoryVal = queryString.substring(13, queryString.length - 2);
-                                this.$(`.filterOption[val=${categoryVal}]`)[0].checked = true;
+                                this.$(`.filterOption[val="${categoryVal}"]`)[0].checked = true;
                             } else if (window.location.hash.indexOf('issueId') !== -1) {
                                 issueVal = window.location.hash.split('=')[1];
                             } else if ($('#live_search').val().indexOf(queryString) === -1) {
