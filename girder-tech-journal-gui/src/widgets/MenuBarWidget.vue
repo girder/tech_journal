@@ -1,5 +1,5 @@
 <template lang="pug">
-backbone-view#headerBar(:view='MenuBarView', :render='false')
+BackboneView#headerBar(:view='MenuBarView', :render='false')
 </template>
 
 <script>

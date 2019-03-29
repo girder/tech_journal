@@ -9,7 +9,7 @@
     "lint-legacy": "cd src; eslint --no-eslintrc --config .eslintrc-legacy.json ."
   },
   "dependencies": {
-    "@girder/core": "^3.0.0-alpha.0.1",
+    "@girder/core": "^3.0.0-alpha.0.2",
     "@girder/oauth": "^3.0.0-alpha.1",
     "accordion": "^3.0.2",
     "md5": "^2.2.1",
@@ -49,7 +49,16 @@
       "plugin:vue/recommended",
       "@vue/airbnb"
     ],
-    "rules": {},
+    "rules": {
+      "no-underscore-dangle": [
+        "error",
+        {
+          "allow": [
+            "_id"
+          ]
+        }
+      ]
+    },
     "parserOptions": {
       "parser": "babel-eslint"
     }

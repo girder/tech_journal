@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-  menu-bar-widget
+  MenuBarWidget
   .Wrapper
     .Content
       .viewMain
