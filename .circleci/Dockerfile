@@ -1,5 +1,4 @@
 FROM girder/girder_test:latest-py2
-MAINTAINER Kitware, Inc. <kitware@kitware.com>
 
 # Don't use "sudo"
 USER root
