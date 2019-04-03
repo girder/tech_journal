@@ -15,7 +15,11 @@ var uploadView = View.extend({
     events: {
         'submit #curateduploadForm': function (event) {
             event.preventDefault();
+            var testingCode = this.$('td:contains("TESTING_")').length;
+            var sourceCode = (this.$('td:contains("SOURCECODE")').length - testingCode) + this.$('td:contains("GITHUB")').length;
             this._appendData({
+                'has_test_code': testingCode > 0,
+                'has_code': sourceCode > 0,
                 'source-license': this.$('#hiddenSourceLicense').val().trim(),
                 'source-license-text': this.$('#hiddenSourceLicenseText').val().trim(),
                 'attribution-policy': this.$('#hiddenAttributionPolicy').val().trim(),
@@ -24,7 +28,11 @@ var uploadView = View.extend({
         },
         'submit #approvedUploadForm': function (event) {
             event.preventDefault();
+            var testingCode = this.$('td:contains("TESTING_")').length;
+            var sourceCode = (this.$('td:contains("SOURCECODE")').length - testingCode) + this.$('td:contains("GITHUB")').length;
             this._approveSubmission({
+                'has_test_code': testingCode > 0,
+                'has_code': sourceCode > 0,
                 'source-license': this.$('#hiddenSourceLicense').val().trim(),
                 'source-license-text': this.$('#hiddenSourceLicenseText').val().trim(),
                 'attribution-policy': this.$('#hiddenAttributionPolicy').val().trim(),
@@ -64,7 +72,7 @@ var uploadView = View.extend({
                     timeout: 4000
                 });
             }).done((respMD) => {
-                this.$('#uploadTable').append(UploadEntryTemplate({info: {'name': subData.github, '_id': 'github', 'meta': {'type': 6}}}));
+                this.$('#uploadTable').append(UploadEntryTemplate({info: {'name': subData.github, '_id': 'github', 'meta': {'type': 'GITHUB'}}}));
                 this.$('#uploadQuestions').show();
             });
         },
