@@ -51,10 +51,10 @@ const HomePage = View.extend({
     initialize: function (query) {
         if (query.length > 0) {
             if (query['query'].indexOf('collection') !== -1) {
-              this.defaultJournal = query['query'].substr(13, query['query'].length - 1);
-              this.collectionID = this.defaultJournal;
-              this.querystring = '*';
-              this.render(this.collectionID, 0);
+                this.defaultJournal = query['query'].substr(13, query['query'].length - 1);
+                this.collectionID = this.defaultJournal;
+                this.querystring = '*';
+                this.render(this.collectionID, 0);
             }
         } else {
             restRequest({
