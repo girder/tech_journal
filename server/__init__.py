@@ -40,6 +40,7 @@ from girder import events
 from girder_worker_utils.transforms.girder_io import GirderUploadToItem
 from tech_journal_tasks.tasks import processGithub, surveySubmission
 from . import constants
+from .models.journal import download_statistics, Journal
 
 
 def sortByDate(elem):
@@ -535,9 +536,10 @@ class TechJournal(Resource):
                                                         ))
                 if len(submissionInfo):
                     submission['currentRevision'] = submissionInfo[-1]
-                submission['currentRevision']['logo'] = self.getLogo(
-                    id=submission['currentRevision']['_id'],
-                    params=params)
+                    submission['currentRevision']['logo'] = self.getLogo(
+                        id=submission['currentRevision']['_id'],
+                        params=params
+                    )
                 if "curation" in submission:
                     if submission['curation']['status'] == "REQUESTED":
                         totalData.append(submission)
@@ -1075,11 +1077,10 @@ class TechJournal(Resource):
                                                                    value=value, tag=params['tag'])
 
     def _onDownloadFileComplete(self, event):
-        Folder().increment(
-            query={'_id': ObjectId(event.info['id'])},
-            field='downloadStatistics.completed',
-            amount=1
-        )
+        self.download_statistics.save({
+            'date': datetime.datetime.now(),
+            'item_id': event.info['id']
+        })
 
     def _onPageView(self, event):
         Folder().increment(
@@ -1133,6 +1134,8 @@ def _queueEmails(event):
 
 def load(info):
     techJournal = TechJournal()
+    techJournal.download_statistics = download_statistics()
+    techJournal.journal_collection = Journal()
     events.bind('model.setting.validate', 'journalMain', validateSettings)
     info['apiRoot'].journal = techJournal
     info['config']['/tech_journal'] = {
