@@ -30,7 +30,18 @@ type in parenthesis:
 Setup Instructions
 ------------------
 
+Install pre-requisite programs:
++++++++++++++++++++++++++++++++
+
+Follow the Girder Documentation to ensure that all necessary programs
+are available for the pip-installed version of Girder:
+
+https://girder.readthedocs.io/en/stable/prerequisites.html
+
+
+
 To set up the Technical Journal plugin, follow these steps.
+
 
 1. Clone this repository: `git clone https://github.com/girder/tech_journal`.
 2. In the git repo directory, create a Python virtual environment: `virtualenv
