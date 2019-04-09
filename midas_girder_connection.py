@@ -124,6 +124,7 @@ def ReadAll(userId, prevAssetDir, baseParent=None, assetStore=None,):
     settingDB = client.girder.setting
     collectionDB = client.girder.collection
     journalCollectionDB = client.girder.journal_collection;
+    journalDownloadsDB = client.girder.journal_downloads;
     # =============================================
     # Import and create all category lists
     # =============================================
@@ -516,7 +517,6 @@ def ReadAll(userId, prevAssetDir, baseParent=None, assetStore=None,):
             "creatorId" : ObjectId(userId),
             "parentId":inputObject["_id"],
             "downloadStatistics" : {
-                "completed" : 0,
                 "views" : row[5]
             },
             "public" : True,
@@ -618,9 +618,16 @@ def ReadAll(userId, prevAssetDir, baseParent=None, assetStore=None,):
             inputRevision["created"] = row[2]
           print inputRevision['name']
           # Capture the download and view information
+          #| download_id    | bigint(20)   | NO   | PRI | NULL              | auto_increment              |
+          #| item_  id        | bigint(20)   | NO   | MUL | NULL              |                             |
+          #| user_id        | bigint(20)   | YES  |     | NULL              |                             |
+          #| date           | timestamp    | NO   |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
+          #| ip_location_id | bigint(20)   | NO   |     | NULL              |                             |
+          #| user_agent     | varchar(255) | YES  |     |
           cur.execute("SELECT * FROM statistics_download WHERE item_id="+ str(revision[0]))
           allDownloads = cur.fetchall()
-          inputRevision['downloadStatistics']['completed'] = len(allDownloads)
+          for download in allDownloads:
+            journalDownloadsDB.insert_one({"_id": ObjectId(), 'date': download[3], "item_id": inputObject["_id"]})
           # Capture reviews for submissions
           #+---------------+
           #| Field         |
