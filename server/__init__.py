@@ -1077,9 +1077,13 @@ class TechJournal(Resource):
                                                                    value=value, tag=params['tag'])
 
     def _onDownloadFileComplete(self, event):
+        folder = self.model('folder').load(event.info['id'],
+                                           user=self.getCurrentUser(), force=True)
+        parentInfo = self.model('folder').load(folder['parentId'],
+                                               user=self.getCurrentUser(), force=True)
         self.download_statistics.save({
             'date': datetime.datetime.now(),
-            'item_id': event.info['id']
+            'item_id': ObjectId(parentInfo['_id'])
         })
 
     def _onPageView(self, event):
