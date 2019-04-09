@@ -581,7 +581,7 @@ class TechJournal(Resource):
                 else:
                     textArg = {"name": {"$regex": "Code in Flight", "$options": "i"}}
                 filterParams['Code'].remove("is_cif")
-        textArg["meta"] = {'$exists': True}
+        textArg["meta.submissionNumber"] = {'$gte': "0"}
         for issue in issues:
             testInfo = list(self.model('folder').childFolders(parentType='folder',
                                                               parent=issue,
