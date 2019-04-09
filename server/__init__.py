@@ -486,7 +486,7 @@ class TechJournal(Resource):
         totalData = list()
         issues = list(self.model('folder').childFolders(parentType='collection', parent=collection,
                                                         user=self.getCurrentUser()))
-        submissionFilter = {"meta": {'$exists': True}}
+        submissionFilter = {"meta.submissionNumber": {'$gte': "0"}}
         for issue in issues:
             if (str(issue['_id']) == params['filterID']) or (params['filterID'] == '*'):
                 testInfo = list(self.model('folder').childFolders(parentType='folder', parent=issue,
@@ -519,7 +519,7 @@ class TechJournal(Resource):
                    )
     def getPendingSubmissions(self, collection, params):
         totalData = list()
-        submissionFilter = {"meta": {'$exists': True}}
+        submissionFilter = {"meta.submissionNumber": {'$gte': "0"}}
         issues = list(self.model('folder').childFolders(parentType='collection',
                                                         parent=collection,
                                                         user=self.getCurrentUser()))
