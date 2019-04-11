@@ -321,6 +321,8 @@ class TechJournal(Resource):
         otherRevs = list(self.model('folder').childFolders(parentType='folder', parent=parentInfo,
                                                            user=self.getCurrentUser()))
         otherRevs.sort(key=sortByDate)
+        cursor = self.download_statistics.find({"item_id": ObjectId(parentInfo["_id"])})
+        parentInfo['downloads'] = len([x for x in cursor])
         for rev in otherRevs:
             rev['submitter'] = self.model('user').load(rev['creatorId'],
                                                        user=self.getCurrentUser(),
@@ -344,7 +346,8 @@ class TechJournal(Resource):
             info['parentId'],
             user=self.getCurrentUser(),
             force=True)
-
+        cursor = self.download_statistics.find({"item_id": ObjectId(info["_id"])})
+        info['downloads'] = len([x for x in cursor])
         return info
 
     @access.public(scope=TokenScope.DATA_READ)
