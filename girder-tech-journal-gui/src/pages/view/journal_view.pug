@@ -84,10 +84,8 @@ mixin deleteCommentConfirmation()
     input.globalButton.deleteCommentYes(type="button", value="Yes")
     input.globalButton.deleteCommentNo(type="button", value="Cancel")
 
--  var downloadCount=0
 -  var viewCount=0
 if 'downloadStatistics' in info.revision
-  - downloadCount = info.revision.downloadStatistics.completed
   - viewCount = info.revision.downloadStatistics.views
 
 #headerBar
@@ -117,7 +115,7 @@ if 'downloadStatistics' in info.revision
         h4 Statistics:
           ul
             li Views: #{viewCount}
-            li Downloads: #{downloadCount}
+            li Aggregate Downloads: #{info.parent.downloads}
         h4 Information
           ul
             li Type: #{info.revision.meta.type}
