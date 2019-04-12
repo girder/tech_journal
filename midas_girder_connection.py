@@ -12,6 +12,7 @@ import sys
 import os
 import json
 from server import constants
+from server import TechJournal
 
 licenseDict = {
  "0": "Public Domain",
@@ -58,6 +59,9 @@ reviewData = {
 
 }
 discDictionary = {'': {'name': ''}}
+questionLists = {}
+
+TechJournal = TechJournal()
 def processPeerReview(review):
         # determine what topics are "done"
         totalQs = 0
@@ -368,6 +372,7 @@ def ReadAll(userId, prevAssetDir, baseParent=None, assetStore=None,):
             'value': [],
         }
       qListDict = {"key": qList[3], "tag": "questionList", 'value':qListFormat}
+      questionLists[qListDict['key']] = qListDict
       journalCollectionDB.insert_one(qListDict)
     cur.execute("SELECT * from journal_folder")
     allIssues = cur.fetchall()
@@ -396,7 +401,7 @@ def ReadAll(userId, prevAssetDir, baseParent=None, assetStore=None,):
       inputObject["meta"]["authorLicense"] = str(row[10])
       inputObject["meta"]["publisherLicense"] = str(row[11])
       inputObject["meta"]["__issue__"] = True
-      result = foldersDB.insert_one(inputObject)
+
       #  Create top-level folder for review uploaded files
       reviewFolderObject = {"creatorId" : ObjectId(userId),
                      "baseParentType" : "collection",
@@ -412,6 +417,8 @@ def ReadAll(userId, prevAssetDir, baseParent=None, assetStore=None,):
       reviewFolderObject["name"] = "Review Files"
       reviewFolderObject["_id"] = ObjectId()
       reviewFolderObject["description"] = "A Folder to contain uploaded files which are added during reviews"
+      inputObject["meta"]["reviewUploadDir"] = reviewFolderObject["_id"]
+      result = foldersDB.insert_one(inputObject)
       result = foldersDB.insert_one(reviewFolderObject)
       reviewDataFolder = reviewFolderObject;
       # Create groups for each issue
@@ -660,6 +667,8 @@ def ReadAll(userId, prevAssetDir, baseParent=None, assetStore=None,):
               'done': review[6]
             }
             totalReview[incomingReview['type']]["reviews"].append(incomingReview);
+          totalReview['peer']['template'] = TechJournal.findReviews("peer", questionLists, inputRevision)
+          totalReview['final']['template'] = TechJournal.findReviews("final", questionLists, inputRevision)
           inputRevision["meta"]['reviews'] = totalReview
           result = foldersDB.insert_one(inputRevision)
           revisionNumber += 1
