@@ -97,6 +97,14 @@ class TechJournal(Resource):
                 reviewTemplate = review
         return reviewTemplate
 
+    def getDownloadCount(self, idVal, targetYear):
+        cur = self.download_statistics.find({'item_id': idVal})
+        downloads = 0
+        for download in cur:
+            if download['date'].year == targetYear:
+                downloads += 1
+        return downloads
+
     def checkSubmission(self, filterParams, submission, searchObj, targetVal, category):
         keyMatch = [False, -1]
         if searchObj in submission["meta"].keys():
@@ -171,6 +179,7 @@ class TechJournal(Resource):
         self.route('PUT', ('setting',), self.setJournalSettings)
         self.route('GET', ('setting',), self.getJournalSettings)
         self.route('GET', ('licenses',), self.getJournalLicenses)
+        self.route('GET', (':id', 'statistics',), self.getYearlyStatistics)
         self.route('POST', ('feedback',), self.sendFeedBack)
         self.route('DELETE', (':id',), self.deleteObject)
         self.route('PUT', ('user',), self.updateUser)
@@ -505,8 +514,6 @@ class TechJournal(Resource):
                     if len(submissionInfo):
                         submission['currentRevision'] = submissionInfo[0]
                     if "curation" in submission:
-                        print submission['curation']
-                        print submission['lowername']
                         if submission['curation']['status'] != "REQUESTED":
                             totalData.append(submission)
         totalData = sorted(totalData, reverse=True, key=lambda submission: submission['updated'])
@@ -548,6 +555,90 @@ class TechJournal(Resource):
                         totalData.append(submission)
         totalData = sorted(totalData, reverse=True, key=lambda submission: submission['updated'])
         return totalData
+
+    @access.public(scope=TokenScope.DATA_READ)  # noqa: C901
+    @loadmodel(model='collection', level=AccessType.READ)
+    @describeRoute(
+        Description('Get submissions which were submitted in a given calendar year')
+        .responseClass('Collection')
+        .param('id', "The ID of the Journal (collection) to pull from", paramType='path')
+        .param('year', "The calendar year to gather statistics over")
+        .errorResponse('Test error.')
+        .errorResponse('Read access was denied on the issue.', 403)
+        )
+    def getYearlyStatistics(self, collection, params):
+        targetYear = int(params['year'])
+        submissions = {'total': [], 'monthly': []}
+        # First gather all submissions from the target year
+        cursor = Folder().collection.aggregate([{
+            '$match': {
+                '$expr': {
+                    '$and': [
+                        {'$eq': [{'$year': "$created"}, targetYear]},
+                        {'$gte': ["$meta.revisionNumber", 0]}
+                    ]
+                }
+            }
+        }, ])
+
+        # Loop through the submissions calculating the total number of
+        # views and downloads across all revisions
+        for revision in cursor:
+            subs = self.model('folder').load(revision['parentId'],
+                                             user=self.getCurrentUser(), force=True)
+            subs['views'] = revision['downloadStatistics']['views']
+            subs['downloads'] = self.getDownloadCount(ObjectId(subs['_id']), targetYear)
+            subs['license'] = revision['meta']['source-license']
+            if subs not in submissions['total']:
+                submissions['total'].append(subs)
+        submissions['total'] = sorted(submissions['total'],
+                                      key=lambda x: x['downloads'],
+                                      reverse=True)
+
+        cursor = Folder().collection.aggregate([{
+            '$match': {
+                '$expr': {
+                    '$and': [
+                        {'$eq': [{'$year': "$created"}, targetYear]},
+                        {'$gte': ["$meta.revisionNumber", 0]}
+                    ]
+                }
+            }
+        }, {
+            '$bucket': {
+                'groupBy': {
+                    '$month': "$created"
+                },
+                'boundaries': range(14),
+                'default': -1,
+                'output': {
+                    'has_code': {
+                        '$sum': {
+                            '$switch': {
+                                'branches': [{
+                                    'case': {'$eq': ['$meta.has_code', 'true']},
+                                    'then': 1
+                                }],
+                                'default':0
+                            }
+                        }
+                    },
+                    'total': {'$sum': 1},
+                    'ids': {'$addToSet': '$parentId'},
+                    'idList': {'$addToSet': '$creatorId'},
+                }
+            }
+        }])
+        for bucket in cursor:
+            bucket['names'] = []
+            bucket['downloads'] = 0
+            for idVal in bucket['idList']:
+                usr = User().find({"_id": idVal})
+                bucket['names'].append(usr[0]['firstName'] + " " + usr[0]['lastName'])
+            for submission in bucket['ids']:
+                bucket['downloads'] += self.getDownloadCount(ObjectId(submission), targetYear)
+            submissions['monthly'].append(bucket)
+        return submissions
 
     @access.public(scope=TokenScope.DATA_READ)  # noqa: C901
     @loadmodel(model='collection', level=AccessType.READ)

@@ -17,6 +17,7 @@ var uploadView = View.extend({
             event.preventDefault();
             var testingCode = this.$('td:contains("TESTING_")').length;
             var sourceCode = (this.$('td:contains("SOURCECODE")').length - testingCode) + this.$('td:contains("GITHUB")').length;
+
             this._appendData({
                 'has_test_code': testingCode > 0,
                 'has_code': sourceCode > 0,

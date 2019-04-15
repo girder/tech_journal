@@ -75,6 +75,12 @@ router.route('journals', 'JournalListPage', function () {
     testUserAccess(vueComponentView, {component: JournalListPage}, false, false);
 });
 
+// Listing page of Journal
+import StatisticsPage from '@/pages/StatisticsPage.vue';
+router.route('statistics', 'JournalListPage', function () {
+    testUserAccess(vueComponentView, {component: StatisticsPage}, false, false);
+});
+
 import uploadView from './pages/upload/upload';
 // Upload files to a submission
 router.route('plugins/journal/submission/:id/upload/new', 'uploadFiles', function (id) {
