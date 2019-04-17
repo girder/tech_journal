@@ -122,6 +122,15 @@ const HomePage = View.extend({
                             }
                         }
                         this.$(`.issueButton[key='${issueVal}']`).addClass(' issueSelected');
+                        if (window.query !== undefined && window.query !== '') {
+                            // Set existing values:
+                            var lastSearch = JSON.parse('{' + window.query + '}');
+                            Object.keys(lastSearch).forEach(function (category) {
+                                lastSearch[category].forEach(function (value) {
+                                    this.$('.' + category + '[val="' + value + '"]').prop('checked', true);
+                                }, this);
+                            }, this);
+                        }
                         this.buildSearch(this.collectionID, 0);
                     }); // End getting of OTJ Collection value setting
                 }
@@ -168,6 +177,7 @@ const HomePage = View.extend({
         this.querySubmissions(this.collectionID, queryString, startIndex);
     },
     querySubmissions: function (collection, queryString, startIndex) {
+        window.query = queryString;
         restRequest({
             method: 'GET',
             url: `journal/${collection}/search?query={` + encodeURIComponent(queryString) + '}'

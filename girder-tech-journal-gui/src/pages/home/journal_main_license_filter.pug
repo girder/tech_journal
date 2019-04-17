@@ -8,5 +8,5 @@
         li.filterEntry
           - var hash = md5('license' + license);
           label.dynatree-title(for=hash)
-            input.filterOption(val=license, id=hash, type="checkbox")
+            input.License.filterOption(val=license, id=hash, type="checkbox")
             | #{license}

@@ -139,7 +139,7 @@ class TechJournal(Resource):
                         searchObj = "source-license"
                     elif category == "Certified":
                         searchObj = "certification_level"
-                    elif category == "OSEHRA VistA":
+                    elif category == "OSEHRA":
                         searchObj = "osehra_core"
                     if searchObj in revision["meta"].keys():
                         revisionMatch[0] = revisionMatch[0] or checkValue(
@@ -706,7 +706,7 @@ class TechJournal(Resource):
                             searchObj = "source-license"
                         elif category == "Certified":
                             searchObj = "certification_level"
-                        elif category == "OSEHRA VistA":
+                        elif category == "OSEHRA":
                             searchObj = "osehra_core"
                         foundMatch = self.checkSubmission(filterParams,
                                                           submission,
