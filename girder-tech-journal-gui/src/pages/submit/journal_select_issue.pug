@@ -4,11 +4,11 @@ mixin issueEntry(info)
     td
       | #{info.parentName}
     td
-      a.issueGen(target=info._id) #{info.name}
+      a.issueGen(target=info._id, journal=info.parentId) #{info.name}
     td
       | #{info.daysLeft}
     td.actions
-      a.issueGen(target=info._id) Select Issue
+      a.issueGen(target=info._id, journal=info.parentId) Select Issue
       a#showDetails(target=info._id) Show details
 
 #pageContent
