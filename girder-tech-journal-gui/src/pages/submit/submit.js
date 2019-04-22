@@ -24,7 +24,8 @@ var SubmitView = View.extend({
             }
         },
         'click .issueGen': function (event) {
-            this.parentID = event.currentTarget.target;
+            this.parentID = event.currentTarget.attributes['target'].value;
+            this.journalID = event.currentTarget.attributes['journal'].value;
             this.render(event.currentTarget.target, 2);
         },
         'submit #submitForm': function (event) {
@@ -120,6 +121,7 @@ var SubmitView = View.extend({
                         jrnResp.forEach(function (issue) {
                             // Append parent name to issue
                             issue['parentName'] = journalEntry['name'];
+                            issue['parentId'] = journalEntry['_id'];
                         });
                         // Keep track of all open issues
                         openIssues = openIssues.concat(jrnResp);
