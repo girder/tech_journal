@@ -51,7 +51,7 @@ const HomePage = View.extend({
         }
     },
     initialize: function (query) {
-        if (query['query'].length > 0) {
+        if (Object.keys(query).indexOf('query') !== -1) {
             if (query['query'].indexOf('collection') !== -1) {
                 this.defaultJournal = query['query'].substr(13, query['query'].length - 1);
                 this.collectionID = this.defaultJournal;
