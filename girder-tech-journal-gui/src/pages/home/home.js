@@ -10,6 +10,8 @@ import CategoryTemplate from './home_categoryTemplate.pug';
 
 import PlaceholderLogoURL from '@/assets/journal.gif';
 
+import loadingLogoURL from '@/assets/loading-small.gif';
+
 import CertificationLogoURL from '@/assets/check.gif';
 
 var magicTerms = ['authors', 'institution', 'creatorId', 'tags'];
@@ -90,7 +92,10 @@ const HomePage = View.extend({
                 url: `journal/${this.defaultJournal}/pending?`
             }).done((pendRsp) => {
                 pendingSubs = pendRsp.length;
-                this.$el.html(HomeTemplate({info: { 'issues': jrnResp }}));
+                this.$el.html(HomeTemplate({
+                    info: { 'issues': jrnResp },
+                    loadingImg: loadingLogoURL
+                }));
                 new MenuBarView({ // eslint-disable-line no-new
                     el: this.$('#headerBar'),
                     parentView: this,
@@ -147,6 +152,7 @@ const HomePage = View.extend({
         *  selected filters
         *
         */
+        this.$('#searchLoadingImg').show();
         var queryString = '';
         var searchText = $('#live_search').val();
         queryString += this.findSearchTerms(searchText, queryString);
@@ -208,6 +214,7 @@ const HomePage = View.extend({
                     }
                 }));
             }
+            this.$('#searchLoadingImg').hide();
         });
     },
     findSearchTerms: function (searchText, queryString) {
