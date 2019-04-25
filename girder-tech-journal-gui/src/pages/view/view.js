@@ -57,12 +57,11 @@ var submissionView = View.extend({
         'click .deleteCommentLink': function (event) {
             event.preventDefault();
             var targetIndex = this.$(event.target).attr('val');
-            this.currentComments.forEach(function (d) {
-                if (String(d.index) === targetIndex) {
-                    d.name = '';
-                    d.text = '';
+            this.currentComments.forEach(function (data, index) {
+                if (String(data.index) === targetIndex) {
+                    this.currentComments.splice(index, 1);
                 }
-            });
+            }, this);
             this.updateComments('no');
         },
         'click .clickable-row': function (event) {
