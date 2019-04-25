@@ -118,6 +118,10 @@ if 'downloadStatistics' in info.revision
             li Aggregate Downloads: #{info.parent.downloads}
         h4 Information
           ul
+            if info.revision.meta.certification_level
+              li
+                b Certified:
+                |  Level #{info.revision.meta.certification_level}
             li Type: #{info.revision.meta.type}
             li Categories:
               each item in info.revision.meta.categories
