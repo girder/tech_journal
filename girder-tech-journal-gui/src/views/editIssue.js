@@ -9,6 +9,7 @@ var EditIssueView = View.extend({
 
     events: {
         'click #dataFormSubmit': function (event) {
+            this.publicIssue = this.$('#privateIssue').is(':checked') !== true;
             var values = {issueName: this.$('#issueName')[0].value,
                 issueDescription: this.$('#issueDescription')[0].value,
                 'paperDue': $('.datepicker')[0].value,
@@ -56,6 +57,7 @@ var EditIssueView = View.extend({
                 el: this.$('#headerBar'),
                 parentView: this
             });
+            this.$('#privateIssue').prop('checked', !parentId.public);
             return this;
         });
     },
@@ -76,6 +78,7 @@ var EditIssueView = View.extend({
                 url: `folder/${jrnResp._id}/metadata`,
                 data: JSON.stringify(issueData)
             }).done((metaResp) => {
+                this.checkPrivacy();
             });
         });
     },
@@ -87,14 +90,16 @@ var EditIssueView = View.extend({
                 parentId: this.parentId,
                 parentType: this.parentType,
                 name: issueData.issueName,
-                description: issueData.issueDescription
+                description: issueData.issueDescription,
+                public: this.publicIssue
             }
         }).done((jrnResp) => {
+            this.parentId = jrnResp._id;
             restRequest({
                 method: 'POST',
                 url: 'folder',
                 data: {
-                    parentId: jrnResp['_id'],
+                    parentId: this.parentId,
                     parentType: 'folder',
                     name: 'Review Files',
                     description: 'A Folder to contain uploaded files which are added during reviews'
@@ -107,7 +112,7 @@ var EditIssueView = View.extend({
                 restRequest({
                     method: 'PUT',
                     contentType: 'application/json',
-                    url: `folder/${jrnResp._id}/metadata`,
+                    url: `folder/${this.parentId}/metadata`,
                     data: JSON.stringify(issueData)
                 }).done((metaResp) => {
                     restRequest({
@@ -118,10 +123,19 @@ var EditIssueView = View.extend({
                             'description': `Editors for the issue with id of ${jrnResp._id}`,
                             'public': false
                         }
-                    }).done((grpRep) => {
                     });
                 });
             });
+        });
+    },
+    checkPrivacy: function () {
+        restRequest({
+            method: 'PUT',
+            url: `folder/${this.parentId}/access`,
+            data: {
+                access: JSON.stringify(this.accessInfo),
+                public: this.publicIssue
+            }
         });
     },
     _getCurrentInfo: function (journalData) {
@@ -129,9 +143,15 @@ var EditIssueView = View.extend({
             method: 'GET',
             url: `folder/${journalData.id}`
         }).done((jrnInfo) => {
-            var paperDueTmp = new Date(jrnInfo.meta.paperDue);
-            jrnInfo.meta.paperDue = paperDueTmp.toJSON().slice(0, 10);
-            this.render(jrnInfo);
+            restRequest({
+                method: 'GET',
+                url: `folder/${journalData.id}/access`
+            }).done((jrnAccInfo) => {
+                this.accessInfo = jrnAccInfo;
+                var paperDueTmp = new Date(jrnInfo.meta.paperDue);
+                jrnInfo.meta.paperDue = paperDueTmp.toJSON().slice(0, 10);
+                this.render(jrnInfo);
+            });
         });
     }
 });
