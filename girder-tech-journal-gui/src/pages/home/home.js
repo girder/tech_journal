@@ -130,9 +130,13 @@ const HomePage = View.extend({
                             // Set existing values:
                             var lastSearch = JSON.parse('{' + window.query + '}');
                             Object.keys(lastSearch).forEach(function (category) {
-                                lastSearch[category].forEach(function (value) {
-                                    this.$('.' + category + '[val="' + value + '"]').prop('checked', true);
-                                }, this);
+                                if (category === 'text') {
+                                    this.$('#live_search').val($('#live_search').val() + lastSearch[category]);
+                                } else {
+                                    lastSearch[category].forEach(function (value) {
+                                        this.$('.' + category + '[val="' + value + '"]').prop('checked', true);
+                                    }, this);
+                                }
                             }, this);
                         }
                         this.buildSearch(this.collectionID, 0);
