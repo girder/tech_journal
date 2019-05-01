@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import _ from 'underscore';
 import UserAccountView from '@girder/core/views/body/UserAccountView';
 import { AccessType } from '@girder/core/constants';
 import router from '@girder/core/router';
@@ -12,33 +13,33 @@ import NotificationTabFormTemplate from './journal_notifications_tab.pug';
 import NotificationTabTemplate from './journal_notifications_tab_entry.pug';
 
 var userView = UserAccountView.extend({
-    events: {
-        'submit #notificationForm': function (event) {
-            event.preventDefault();
-            var params = {
-                'NewSubmissionEmail': this.$('[name="NewSubmissionEmail"]:checked').val() === '1',
-                'NewReviewsEmail': this.$('[name="NewReviewsEmail"]:checked').val() === '1',
-                'NewCommentEmail': this.$('[name="NewCommentEmail"]:checked').val() === '1'
-            };
-            this.user.set({'notificationStatus': params});
-            restRequest({
-                method: 'PUT',
-                url: 'journal/user',
-                contentType: 'application/json',
-                data: JSON.stringify(this.user),
-                error: null
-            }).done((resp) => {
-                events.trigger('g:alert', {
-                    icon: 'ok',
-                    text: 'Information Saved.',
-                    type: 'success',
-                    timeout: 4000
+    events: function () {
+        return _.extend({}, UserAccountView.prototype.events, {
+            'submit #notificationForm': function (event) {
+                event.preventDefault();
+                var params = {
+                    'NewSubmissionEmail': this.$('[name="NewSubmissionEmail"]:checked').val() === '1',
+                    'NewReviewsEmail': this.$('[name="NewReviewsEmail"]:checked').val() === '1',
+                    'NewCommentEmail': this.$('[name="NewCommentEmail"]:checked').val() === '1'
+                };
+                this.user.set({'notificationStatus': params});
+                restRequest({
+                    method: 'PUT',
+                    url: 'journal/user',
+                    contentType: 'application/json',
+                    data: JSON.stringify(this.user),
+                    error: null
+                }).done((resp) => {
+                    events.trigger('g:alert', {
+                        icon: 'ok',
+                        text: 'Information Saved.',
+                        type: 'success',
+                        timeout: 4000
+                    });
                 });
-            });
-        }
-
+            }
+        });
     },
-
     initialize: function (settings) {
         this.user = getCurrentUser();
         this.isCurrentUser = getCurrentUser();
@@ -49,11 +50,8 @@ var userView = UserAccountView.extend({
             router.navigate('users', {trigger: true});
             return;
         }
-
         cancelRestRequests('fetch');
-
         this.render();
-        // Remove the API keys tab from the user view
     },
 
     render: function () {
