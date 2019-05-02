@@ -205,19 +205,15 @@ table
     th
       &:nth-of-type(even)
         background darken($primaryColor, 6%)
-    td
-      &:nth-of-type(even)
-        background darken(white, 3%)
 
 th, td
   padding 10px
-
+  border 1px #DDD solid
 th
   background $primaryColor
   color white
 
 td
-  border none
   &.actions
     a
       background $primaryColor
@@ -235,7 +231,8 @@ tr.clickable-row
   cursor pointer
 
 tr.selected
-  font-weight bold
+  background-color #56758B!important
+  color #fff!important
   td:first-of-type
     div
       position relative
