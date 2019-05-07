@@ -208,6 +208,7 @@ class TechJournal(Resource):
         # APIs for getting of review question lists
         self.route('GET', ('questions',), self.getQuestions)
         self.route('PUT', ('questions',), self.setQuestions)
+        self.route('DELETE', ('questions',), self.deleteQuestions)
 
     @access.public(scope=TokenScope.DATA_READ)
     @describeRoute(
@@ -234,6 +235,16 @@ class TechJournal(Resource):
         ModelImporter.model('journal', 'tech_journal').set(key=questionJSON['key'],
                                                            value=questionJSON['value'],
                                                            tag='questionList')
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @describeRoute(
+        Description('Delete a journal''s filter Category')
+        .param('text', "A question list name", required=True)
+        .errorResponse()
+        .errorResponse('Read access was denied on the issue.', 403)
+        )
+    def deleteQuestions(self, params):
+        ModelImporter.model('journal', 'tech_journal').removeObj(params['text'])
 
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)

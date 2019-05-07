@@ -2,28 +2,36 @@
   h3 #{type} Question List
   form#addQuestionListForm(action="", method="post")
     input(type="hidden", name="oldList")
-    label(for="newname") Name:
-    textarea#listText(style="width:270px;", name="newname").
-      #{text}
-    label(for="newcategory") Category:
-    select#newCategory(name="newcategory")
-      option.catOption(val="Default") Default
-      for category in catList
-        option(disabled)
-          b #{category['key']}
-        for value in category['value']
-          option.catOption(val=value) #{value}
-    label(for="newtype") Type:
-    select#reviewType(name="newtype")
-      option(value="peer") Peer
-      option(value="final") Final
-    label(for="newdescription") Description:
-    textarea#reviewDescription(style="width:270px;", name="newdescription")
+    div
+      label(for="newname") Name:
+      textarea#listText(style="width:270px;", name="newname", required).
+        #{text}
+    div
+      label(for="newcategory") Category:
+      select#newCategory(name="newcategory", required)
+        option(disabled, selected) Select:
+        option.catOption(val="Default") Default
+        for category in catList
+          option(disabled) Select:
+            b #{category['key']}
+          for value in category['value']
+            option.catOption(val=value) #{value}
+    div
+      label(for="newtype") Type:
+      select#reviewType(name="newtype", required)
+        option(disabled, selected) Select:
+        option(value="peer") Peer
+        option(value="final") Final
+    div
+      label(for="newdescription") Description:
+      textarea#reviewDescription(style="width:270px;", name="newdescription", required)
     if type === "Edit"
-      input#updateList(type="button", value="Update")
-      input#cancelNewList(type="button", value="Cancel")
-      input#deleteList(type="button", value="Delete")
+      button#updateList
+        i.material-icons(title="Update List") save
+      button#cancelNewList
+        i.material-icons(title="Cancel Editing List") cancel
     else
-      input(type="submit", value="Save")
-      input#cancelNewList(type="button", value="Cancel")
-      input#deleteList(type="button", value="Delete")
+      button(type="submit", value="Save")
+        i.material-icons(title="Save List") save
+      button#cancelNewList
+        i.material-icons(title="Cancel Creating List") cancel

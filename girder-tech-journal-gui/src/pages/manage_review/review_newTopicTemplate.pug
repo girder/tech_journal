@@ -4,17 +4,18 @@
     input(type="hidden", name="oldtopic")
     input(type="hidden", name="selectedlist", value="")
     label(for="topicname") Name:
-    textarea#topicText(style="width:270px;", name="topicname").
+    textarea#topicText(style="width:270px;", name="topicname", required).
       #{text}
     label(for="topicdescription") Description:
     textarea(style="width:270px;", name="topicdescription").
       #{description}
     if type === "Edit"
-      input#updateTopic(type="button", value="Update")
-      input#cancelNewList(type="button", value="Cancel")
-      input#deleteList(type="button", value="Delete")
-
+      button#updateTopic
+        i.material-icons(title="Update Topic") save
+      button#cancelNewList
+        i.material-icons(title="Cancel Editing Topic") cancel
     else
-      input(type="submit", value="Save")
-      input#cancelNewList(type="button", value="Cancel")
-      input#deleteList(type="button", value="Delete")
+      button(type="submit", value="Save")
+        i.material-icons(title="Save Topic") save
+      button#cancelNewList
+        i.material-icons(title="Cancel Creating Topic") cancel
