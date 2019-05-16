@@ -374,6 +374,7 @@ class TechJournal(Resource):
                                          force=True)
         revisions = list(self.model('folder').childFolders(info, 'folder'))
         revisions.sort(key=sortByDate)
+        revisions.reverse()
         for rev in revisions:
             rev['submitter'] = self.model('user').load(
                 rev['creatorId'],
