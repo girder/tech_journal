@@ -8,16 +8,9 @@
         option(val="new") New Disclaimer
       .discEdit
         form#mainForm(data-validate="parsley", name="mainForm", method="POST", action="")
-          textarea#discName
-          table(width="100%", border="1")
-            tbody
-              tr
-                td(valign="top", style="width: 100px;")
-                  div(align="right")
-                    strong#disclaimerName Disclaimer Text:
-                td
-                  #mainPage(style="height:200px")
-              tr
-                td
-                td
-                  input(type="submit", value="Save >>>")
+          label(for="discName") Disclaimer Name:
+          textarea#discName.smallInput(name=discName)
+          div
+            label#disclaimerName Disclaimer Text:
+            #mainPage(style="height:auto;")
+          input(type="submit", value="Save >>>")
