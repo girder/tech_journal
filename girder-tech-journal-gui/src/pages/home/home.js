@@ -1,7 +1,7 @@
 import View from '@girder/core/views/View';
 import router from '@girder/core/router';
 import Accordion from 'accordion';
-import { restRequest, apiRoot } from '@girder/core/rest';
+import { cancelRestRequests, restRequest, apiRoot } from '@girder/core/rest';
 
 import MenuBarView from '../../views/menuBar.js';
 import HomeTemplate from './home.pug';
@@ -187,6 +187,7 @@ const HomePage = View.extend({
     },
     querySubmissions: function (collection, queryString, startIndex) {
         window.query = queryString;
+        cancelRestRequests();
         restRequest({
             method: 'GET',
             url: `journal/${collection}/search?query={` + encodeURIComponent(queryString) + '}'
