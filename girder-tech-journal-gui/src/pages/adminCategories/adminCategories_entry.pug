@@ -1,6 +1,8 @@
 mixin addVal(entryName)
-  li.categoryObj
-    |#{entryName}
+  .categoryEntry
+    li.categoryObj
+      |#{entryName}&nbsp
+    a.removeCategory Remove
 .TreeEntry
   h4 #{name}
   a.AddRootLink (Add root Category)
