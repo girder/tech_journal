@@ -11,6 +11,13 @@ mixin issueEntry(info)
       a.issueGen(target=info._id, journal=info.parentId) Select Issue
       a#showDetails(target=info._id) Show details
 
+mixin returnedEntry(info)
+  tr
+    td
+      a.resumeSub(target=info.revisionId) #{info.name}
+    td.actions
+      a.resumeSub(target=info.revisionId) Select Submission
+
 #pageContent
   .Wrapper
     .Content
@@ -38,6 +45,23 @@ mixin issueEntry(info)
               tr
               each item in info
                 +issueEntry(item)
+        h3 Or choose from a previously started submission
+        p#submission
+          | Don't know how to submit your paper? Visit the&nbsp;
+          a(href="#help") help page
+          table#returnedTable(width="100%", border="0")
+            thead
+              tr
+                th(width="50%")
+                  div(align="left")
+                    strong Title
+                th(width="20%")
+                  div(align="left")
+                    strong Actions
+            tbody
+              tr
+              each item in revisits
+                +returnedEntry(item)
         #issueDetails
         .clear
         .Footer
