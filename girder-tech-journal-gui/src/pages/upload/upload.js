@@ -51,6 +51,15 @@ var uploadView = View.extend({
                 this._uploadFiles(event);
             }
         },
+        'click #rejectSubmission': function (event) {
+            restRequest({
+                method: 'PUT',
+                url: `journal/${this.parentId}/reject`,
+                error: null
+            }).done((resp) => {
+                router.navigate(`#`, {trigger: true});
+            });
+        },
         'click .deleteLink': function (event) {
             event.preventDefault();
             var itemEntry = event.currentTarget.parentElement.parentElement;

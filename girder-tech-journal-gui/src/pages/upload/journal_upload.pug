@@ -73,6 +73,8 @@
         label#sendNotificationEmailLabel(for="sendNotificationEmail")
           | Send notification email
         br
+        if user.attributes.admin
+          input#rejectSubmission(type="submit", value="<Reject Submission", style="width:150px;")
         if (user.attributes.admin )|| (newRevision)
           form#approvedUploadForm(method="POST", action="")
             input(type="submit", value='Publish >', name="finish", disabled="disabled")

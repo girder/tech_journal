@@ -186,8 +186,10 @@ mixin disclaimerEntry(text)
                     option None
               tr
                 td
-                  br
+                  if user.attributes.admin
+                    input#rejectSubmission(type="submit", value="<Reject Submission", style="width:150px;")
                   input#submitData(type="submit", value="Save and Continue>", style="width:150px;")
+
   #licenseWrapper(style="display:none")
     .clear
     .Footer
