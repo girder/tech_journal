@@ -172,6 +172,8 @@ var editView = View.extend({
             'type': this.$('#typeEntry').val().trim(),
             'copyright': this.$('#copyrightEntry').val().trim(),
             'grant': this.$('#grantEntry').val().trim(),
+            'permission': this.$('.subPermission:checked').val(),
+            'CorpCLA': this.$('.CLAPermission:checked').val(),
             'authors': authors,
             'tags': tags,
             'categories': categories,
