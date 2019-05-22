@@ -1,5 +1,11 @@
 tr(key=info._id)
-  td #{info.name}
+  td
+    unless root
+      |  #{info.name}
+    if root
+      - filepath = root+ "/item/"+ info._id+ "/download"
+      a(href=filepath) #{info.name}
+
   td #{info.meta.type}
   td
     a.deleteLink Delete
