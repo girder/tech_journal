@@ -974,7 +974,7 @@ class TechJournal(Resource):
                                                         creator=self.getCurrentUser(),
                                                         folder=folder,
                                                         description=metadata['github'])
-                self.model("item").setMetadata(newItem, {'type': 6})
+                self.model("item").setMetadata(newItem, {'type': "GITHUB"})
                 processGithub.delay(metadata['github'],
                                     girder_result_hooks=[GirderUploadToItem(str(newItem['_id'])), ])
             else:
