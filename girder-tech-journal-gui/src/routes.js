@@ -77,8 +77,21 @@ router.route('journals', 'JournalListPage', function () {
 
 // Listing page of Journal
 import StatisticsPage from '@/pages/StatisticsPage.vue';
-router.route('statistics', 'JournalListPage', function () {
-    testUserAccess(vueComponentView, {component: StatisticsPage}, false, false);
+router.route('statistics/:id', 'JournalListPage', function (id) {
+    testUserAccess(vueComponentView, {
+        component: StatisticsPage,
+        props: {
+            'year': id
+        }
+    }, false, false);
+});
+router.route('statistics', 'JournalListPage', function (id) {
+    testUserAccess(vueComponentView, {
+        component: StatisticsPage,
+        props: {
+            'year': ''
+        }
+    }, false, false);
 });
 
 import uploadView from './pages/upload/upload';

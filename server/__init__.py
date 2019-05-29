@@ -569,7 +569,7 @@ class TechJournal(Resource):
         )
     def getYearlyStatistics(self, collection, params):
         targetYear = int(params['year'])
-        submissions = {'total': [], 'monthly': []}
+        submissions = {'total': {}, 'monthly': []}
         # First gather all submissions from the target year
         cursor = Folder().collection.aggregate([{
             '$match': {
@@ -585,14 +585,17 @@ class TechJournal(Resource):
         # Loop through the submissions calculating the total number of
         # views and downloads across all revisions
         for revision in cursor:
+            if not revision['baseParentId'] == collection['_id']:
+                continue
             subs = self.model('folder').load(revision['parentId'],
                                              user=self.getCurrentUser(), force=True)
+            if subs['name'] not in submissions['total']:
+                submissions['total'][subs['name']] = {}
             subs['views'] = revision['downloadStatistics']['views']
             subs['downloads'] = self.getDownloadCount(ObjectId(subs['_id']), targetYear)
             subs['license'] = revision['meta']['source-license']
-            if subs not in submissions['total']:
-                submissions['total'].append(subs)
-        submissions['total'] = sorted(submissions['total'],
+            submissions['total'][subs['name']] = subs
+        submissions['total'] = sorted(submissions['total'].values(),
                                       key=lambda x: x['downloads'],
                                       reverse=True)
 
@@ -635,7 +638,8 @@ class TechJournal(Resource):
             bucket['downloads'] = 0
             for idVal in bucket['idList']:
                 usr = User().find({"_id": idVal})
-                bucket['names'].append(usr[0]['firstName'] + " " + usr[0]['lastName'])
+                if usr.count():
+                    bucket['names'].append(usr[0]['firstName'] + " " + usr[0]['lastName'])
             for submission in bucket['ids']:
                 bucket['downloads'] += self.getDownloadCount(ObjectId(submission), targetYear)
             submissions['monthly'].append(bucket)

@@ -8,6 +8,7 @@ div
           a(@click="targetYear-=1") Previous Year
           |,
           a(@click="targetYear+=1") Next Year
+          img#loadingWheel(src='@/assets/loading-small.gif')
           h4 Overall Statistics
           table
             thead
@@ -89,7 +90,7 @@ div
                   a(:href="getHref(item.meta.submissionNumber)") {{item.name}}
                 td {{item.license}}
                 td {{item.meta.attributionPolicy}}
-                td {{item.created}}
+                td {{item.updated}}
                 td {{item.views}}
                 td {{item.downloads}}
 
@@ -123,19 +124,26 @@ export default {
         ]),
       },
     });
-    this.targetYear = new Date().getFullYear();
+    $('#loadingWheel').hide(); // eslint-disable-line no-undef
+    if (this.$options.propsData.year) {
+      this.targetYear = this.$options.propsData.year;
+    } else {
+      this.targetYear = new Date().getFullYear();
+    }
   },
   methods: {
     getHref(number) {
       return `#view/${number}`;
     },
     async findSubmissions(id) {
+      $('#loadingWheel').show(); // eslint-disable-line no-undef
       this.statisticsData = await restRequest({
         method: 'GET',
         url: `journal/${id}/statistics?year=${this.targetYear}`,
       });
       this.submissions = this.statisticsData.total;
       this.monthly = this.statisticsData.monthly;
+      $('#loadingWheel').hide(); // eslint-disable-line no-undef
     },
   },
 };
