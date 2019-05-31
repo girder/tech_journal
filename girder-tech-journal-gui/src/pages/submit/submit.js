@@ -201,10 +201,15 @@ var SubmitView = View.extend({
         var comments = [];
         var hasPermission = $('.subPermission:checked').val();
         var corpCLAVal = $('.CLAPermission:checked').val();
-        if (hasPermission === 'No') {
+        if (hasPermission === 'No' || corpCLAVal === 'No') {
+            var text = 'Please agree to the Corporate Contributor Licensing Agreement';
+            text += ' or select "Submit as an Individual"';
+            if (hasPermission === 'No') {
+                text = 'You must have permission to submit files in order to proceed';
+            }
             events.trigger('g:alert', {
                 icon: 'ok',
-                text: 'You must have permission to submit files in order to proceed',
+                text: text,
                 type: 'warning',
                 timeout: 4000
             });
