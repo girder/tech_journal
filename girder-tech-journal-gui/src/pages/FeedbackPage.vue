@@ -54,6 +54,7 @@ div
 <script>
 import { restRequest } from '@girder/core/rest';
 import events from '@girder/core/events';
+import router from '@girder/core/router';
 
 export default {
   name: 'FeedbackPage',
@@ -75,6 +76,7 @@ export default {
         data: JSON.stringify(this.feedback),
         error: null,
       });
+      router.navigate(`#`, {trigger: true});
       events.trigger('g:alert', {
         icon: 'ok',
         text: 'Email sent.',
