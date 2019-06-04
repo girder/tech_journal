@@ -41,6 +41,17 @@ documentation to enable the Node.js APT repository, use:
 
 ``curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -``
 
+**Note:** The Technical Journal plugin requires that MongoDB is at least 3.4+. When following the
+documentation to install MongoDB, replace '3.2' with '3.4'
+
+``echo "deb http://repo.mongodb.org/apt/debian jessie/mongodb-org/3.4 main" \
+    | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list``
+
+or
+
+``echo "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" \
+    | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list``
+
 
 Set up Technical Journal plugin
 +++++++++++++++++++++++++++++++
