@@ -15,7 +15,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-###############################################################################
+############include_package_data=True,###################################################################
 import os
 import six
 import json
@@ -36,11 +36,43 @@ from girder.models.setting import Setting
 from girder.models.user import User
 from girder.utility import mail_utils
 from girder.utility.model_importer import ModelImporter
+from girder.plugin import GirderPlugin
 from girder import events
 from girder_worker_utils.transforms.girder_io import GirderUploadToItem
 from tech_journal_tasks.tasks import processGithub, surveySubmission
 from . import constants
 from .models.journal import download_statistics, Journal
+
+
+class TechJournalPlugin(GirderPlugin):
+    DISPLAY_NAME = 'Tech Journal'
+    CLIENT_SOURCE_PATH = 'web_client'
+
+    def load(self, info):
+        techJournal = TechJournal()
+        techJournal.download_statistics = download_statistics()
+        techJournal.journal_collection = Journal()
+        events.bind('model.setting.validate', 'journalMain', validateSettings)
+        info['apiRoot'].journal = techJournal
+        info['config']['/tech_journal'] = {
+            'tools.staticdir.on': True,
+            'tools.staticdir.dir': os.path.join(
+                info['pluginRootDir'], 'girder-tech-journal-gui', 'dist'),
+            'tools.staticdir.index': 'index.html'
+
+        }
+        # Bind REST events
+        events.bind('rest.get.folder/:id/download.after',
+                    'tech_journal',
+                    techJournal._onDownloadFileComplete)
+        events.bind('rest.get.journal/:id/details.after',
+                    'tech_journal',
+                    techJournal._onPageView)
+        events.bind('_queueEmails', 'tech_journal._queueEmails', _queueEmails)
+
+        Folder().exposeFields(level=AccessType.READ, fields='downloadStatistics')
+        Folder().exposeFields(level=AccessType.READ, fields='certified')
+        User().exposeFields(level=AccessType.READ, fields='notificationStatus')
 
 
 def sortByDate(elem):
@@ -1233,30 +1265,3 @@ def _queueEmails(event):
             subject=subject,
             text=text
         )
-
-
-def load(info):
-    techJournal = TechJournal()
-    techJournal.download_statistics = download_statistics()
-    techJournal.journal_collection = Journal()
-    events.bind('model.setting.validate', 'journalMain', validateSettings)
-    info['apiRoot'].journal = techJournal
-    info['config']['/tech_journal'] = {
-        'tools.staticdir.on': True,
-        'tools.staticdir.dir': os.path.join(
-            info['pluginRootDir'], 'girder-tech-journal-gui', 'dist'),
-        'tools.staticdir.index': 'index.html'
-
-    }
-    # Bind REST events
-    events.bind('rest.get.folder/:id/download.after',
-                'tech_journal',
-                techJournal._onDownloadFileComplete)
-    events.bind('rest.get.journal/:id/details.after',
-                'tech_journal',
-                techJournal._onPageView)
-    events.bind('_queueEmails', 'tech_journal._queueEmails', _queueEmails)
-
-    Folder().exposeFields(level=AccessType.READ, fields='downloadStatistics')
-    Folder().exposeFields(level=AccessType.READ, fields='certified')
-    User().exposeFields(level=AccessType.READ, fields='notificationStatus')
