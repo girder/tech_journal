@@ -15,8 +15,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-############include_package_data=True,###################################################################
-import os
+###############################################################################
 import six
 import json
 import datetime
@@ -52,15 +51,11 @@ class TechJournalPlugin(GirderPlugin):
         techJournal = TechJournal()
         techJournal.download_statistics = download_statistics()
         techJournal.journal_collection = Journal()
+        ModelImporter.registerModel('journal', Journal, plugin='tech_journal')
+
         events.bind('model.setting.validate', 'journalMain', validateSettings)
         info['apiRoot'].journal = techJournal
-        info['config']['/tech_journal'] = {
-            'tools.staticdir.on': True,
-            'tools.staticdir.dir': os.path.join(
-                info['pluginRootDir'], 'girder-tech-journal-gui', 'dist'),
-            'tools.staticdir.index': 'index.html'
 
-        }
         # Bind REST events
         events.bind('rest.get.folder/:id/download.after',
                     'tech_journal',
@@ -70,7 +65,8 @@ class TechJournalPlugin(GirderPlugin):
                     techJournal._onPageView)
         events.bind('_queueEmails', 'tech_journal._queueEmails', _queueEmails)
 
-        Folder().exposeFields(level=AccessType.READ, fields='downloadStatistics')
+        Folder().exposeFields(level=AccessType.READ,
+                              fields='downloadStatistics')
         Folder().exposeFields(level=AccessType.READ, fields='certified')
         User().exposeFields(level=AccessType.READ, fields='notificationStatus')
 
@@ -114,7 +110,8 @@ def checkValue(infoList, filterParams, category, value):
 class TechJournal(Resource):
 
     def findReviews(self, reviewType, reviewTemplates, revisionData):
-        # First filter review types, i.e. a list of  only peer review templates\
+        # First filter review types,
+        # i.e. a list of  only peer review templates
         reviewTemplateList = []
         for template in reviewTemplates:
             if reviewTemplates[template]['value']["questions"]["list"]["type"] == reviewType:

@@ -2,13 +2,12 @@
     "name": "@girder/tech-journal",
     "version": "0.0.1",
     "peerDepencencies": {
-        "@girder/core": "*"
+        "@girder/core": "*",
+        "@girder/curation": "*",
+        "@girder/oauth": "*",
+        "@girder/worker": "*"
     },
-    "dependencies": {
-        "curation": "*",
-        "oauth": "*",
-        "worker": "*"
-    },
+    "dependencies": {},
     "girderPlugin": {
         "name": "tech_journal",
         "main": "./main.js"
