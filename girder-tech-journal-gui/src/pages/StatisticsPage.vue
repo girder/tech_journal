@@ -8,7 +8,7 @@ div
           a(@click="targetYear-=1") Previous Year
           |,
           a(@click="targetYear+=1") Next Year
-          img#loadingWheel(src='@/assets/loading-small.gif')
+          img(v-show="loading")#loadingWheel(src='@/assets/loading-small.gif')
           h4 Overall Statistics
           table
             thead
@@ -107,6 +107,7 @@ export default {
       submissions: [],
       targetYear: '',
       monthly: [],
+      loading: true,
     };
   },
   watch: {
@@ -124,7 +125,7 @@ export default {
         ]),
       },
     });
-    $('#loadingWheel').hide(); // eslint-disable-line no-undef
+    this.loading = false;
     if (this.$options.propsData.year) {
       this.targetYear = this.$options.propsData.year;
     } else {
@@ -136,14 +137,14 @@ export default {
       return `#view/${number}`;
     },
     async findSubmissions(id) {
-      $('#loadingWheel').show(); // eslint-disable-line no-undef
+      this.loading = true;
       this.statisticsData = await restRequest({
         method: 'GET',
         url: `journal/${id}/statistics?year=${this.targetYear}`,
       });
       this.submissions = this.statisticsData.total;
       this.monthly = this.statisticsData.monthly;
-      $('#loadingWheel').hide(); // eslint-disable-line no-undef
+      this.loading = false;
     },
   },
 };
