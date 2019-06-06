@@ -55,38 +55,32 @@ or
 
 Set up Technical Journal plugin
 +++++++++++++++++++++++++++++++
+The plugin can either be installed directly from pip:
 
-Clone this repository: ``git clone https://github.com/girder/tech_journal``
+.. parsed-literal::
+  pip install girder-tech-journal
+
+Or by cloning this repository
+
+.. parsed-literal::
+  git clone https://github.com/girder/tech_journal
+  cd tech_journal
+  pip install .
 
 In the git repo directory, follow the Installation_ documentation to create a
 virtual environment and install Girder from pypi. Do not install the web client
 libraries yet. The following instructions assume you have entered the virtual
 environment.
 
-Install celery
-
-.. parsed-literal::
-  pip install celery
-
 Install yarn
 
 .. parsed-literal::
-  npm install -g yum
+  npm install -g yarn
 
 Install and build the standalone web application:
 
 .. parsed-literal::
   cd girder-tech-journal-gui && yarn install && yarn run build
-
-Register the plugin to Girder:
-
-.. parsed-literal::
-  cd ..
-  girder-install plugin -s .
-
-The ``-s`` is important: it installs the plugin via symlink, since the virtual
-environment is contained within the directory that will be installed as the
-plugin.
 
 
 Install girder_worker
@@ -131,7 +125,7 @@ and executing the setup.py file with the ``install`` directive.
 .. parsed-literal::
 
   cd tech_journal_tasks
-  python setup.py install
+  pip install .
 
 Start girder_worker
 ___________________
@@ -186,9 +180,9 @@ Build the Girder web client and start the server:
 
 .. parsed-literal::
 
-  girder-install web
-  girder-server
-  
+  girder build
+  girder serve
+
 **Note:** although ordinarily Girder would want to rebuild the newly activated
 plugin, you do not need to do that now, since we are building this plugin in a
 "standalone" mode, outside the control of Girder's build system
@@ -263,6 +257,16 @@ valid locations within the plugin yet.  The ``Home`` and ``New Submission``
 links will take you to the correct pages.
 
 
+Releasing
+_________________________
+
+To update the PyPI release:
+
+- Increment the version is setup.py
+- run ``python setup.py sdist``
+- run ``tox -e release``
+
+
 .. |build-status| image:: https://circleci.com/gh/girder/tech_journal.png?style=shield
     :target: https://circleci.com/gh/girder/tech_journal
     :alt: Build Status
@@ -275,4 +279,3 @@ links will take you to the correct pages.
 .. _`Installation`: https://girder.readthedocs.io/en/stable/installation.html
 .. _Girder_Worker: https://github.com/girder/girder_worker
 .. _RabbitMQ: https://www.rabbitmq.com/download.html
-
