@@ -77,10 +77,20 @@ Install yarn
 .. parsed-literal::
   npm install -g yarn
 
-Install and build the standalone web application:
+Install web packages:
 
 .. parsed-literal::
-  cd girder-tech-journal-gui && yarn install && yarn run build
+  cd girder-tech-journal-gui;
+  yarn install
+
+To run the development server:
+.. parsed-literal::
+  yarn run serve
+
+To build the standalone web application for production:
+
+.. parsed-literal::
+  yarn run build
 
 
 Install girder_worker
@@ -89,15 +99,8 @@ Install girder_worker
 The submission upload page has the capability to submit a GitHub URL and
 have the Tech Journal download the ``master`` branch of the repository
 to be made available as the download of the submission.  To do this,
-it utilizes the girder_worker_ tool.  This requires some additional setup
-and installation.
-
-The girder-worker code can be installed via the Python PIP package system in
-the virtual environment created above.
-
-.. parsed-literal::
-
-  pip install girder_worker
+it utilizes the girder_worker_ tool. This is automatically installed when
+installing the Tech Journal plugin.
 
 
 Install RabbitMQ
@@ -262,9 +265,14 @@ _________________________
 
 To update the PyPI release:
 
-- Increment the version is setup.py
-- run ``python setup.py sdist``
-- run ``tox -e release``
+First increment the version is setup.py. Then run:
+
+.. parsed-literal::
+  cd girder-tech-journal-gui;
+  yarn run build;
+  cd ..;
+  python setup.py sdist;
+  tox -e release
 
 
 .. |build-status| image:: https://circleci.com/gh/girder/tech_journal.png?style=shield

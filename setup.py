@@ -16,7 +16,8 @@ setup(
     packages=['girder_tech_journal'],
     install_requires=[
         'girder',
-        'celery'
+        'celery',
+        'girder-worker'
     ],
     entry_points={
       'girder.plugin': [

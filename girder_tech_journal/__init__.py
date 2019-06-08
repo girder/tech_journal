@@ -60,6 +60,12 @@ class TechJournalPlugin(GirderPlugin):
 
         events.bind('model.setting.validate', 'journalMain', validateSettings)
         info['apiRoot'].journal = techJournal
+        info['config']['/tech_journal'] = {
+            'tools.staticdir.on': True,
+            'tools.staticdir.dir': os.path.join(
+                os.path.abspath('girder-tech-journal-gui'), 'dist'),
+            'tools.staticdir.index': 'index.html'
+        }
 
         # Bind REST events
         events.bind('rest.get.folder/:id/download.after',
