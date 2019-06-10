@@ -2,9 +2,10 @@ mixin addQuestion(value)
   .questionElement
     textarea(style="width: 100%;").
       #{value.description}
-    a.mvUp Move Upwards
-    a.mvDn Move Downwards
-    a.EditQes Edit Question
+    i.mvUp.material-icons(title="Move Upward") arrow_upward
+    i.mvDn.material-icons(title="Move Downward") arrow_downward
+    i.EditQes.material-icons(title="Edit") edit
+    i#deleteQuestion.material-icons(title="Delete Question") delete
     br
 
 for object in questions

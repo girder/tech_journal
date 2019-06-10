@@ -8,36 +8,61 @@ import manageReviewQuestionEntry from './review_manageQuestionEntry.pug';
 import addQuestionTemplate from './review_newQuestionTemplate.pug';
 import addTopicTemplate from './review_newTopicTemplate.pug';
 import addQListTemplate from './review_newQuestionListTemplate.pug';
-var editLinks = '<br><a class="mvUp">Move Up</a><a class="mvDn">Move Down</a><a id="editTopicLink">Edit Topic Details</a>';
+
+var editLinks =  '<i class="mvUp material-icons" title="Move Upward">arrow_upward</i>';
+editLinks += '<i class="mvDn material-icons", title="Move Downward">arrow_downward</i>';
+editLinks += '<i class="material-icons" title="Edit" id="editTopicLink">edit</i>';
+editLinks += '<i class="material-icons" title="Delete Topic" id="deleteTopic">delete</i>';
+
 var manageQuestionView = View.extend({
     events: {
         'change #selectList': function (event) {
             this.qListName = this.$('.qListOption:selected').val();
+            if (!this.topicsList[this.qListName].value) {
+                this.topicsList[this.qListName].value = {'questions': {'topics': {}}};
+            }
+            this.render(manageReviewQuestions({'qList': this.qListName, 'topics': this.topicsList, 'qTopics': this.topicsList[this.qListName].value.questions.topics}));
+            this.$('#qListDetail').show();
+        },
+        'click #cancelNewList': function (event) {
+            this.$('.questionArea').empty();
+        },
+        'click #deleteList': function (event) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
             restRequest({
-                type: 'GET',
-                url: `journal/questions?qType=${this.qListName}`
+                type: 'DELETE',
+                url: `journal/questions?text=${this.qListName}`
             }).done((resp) => {
-                this.questionList = resp[this.$('.qListOption:selected').val()].value;
-                if (!this.questionList) {
-                    this.questionList = {};
-                }
-                this.render(manageReviewQuestions({'qList': this.qListName, 'topics': this.topicsList, 'qTopics': this.questionList.questions.topics}));
-                this.$('#qListDetail').show();
+                window.location.reload();
             });
+        },
+        'click #deleteTopic': function (event) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            this.$('.topicElement.active').remove();
+            this.$('.questionArea').empty();
+            this.$('.questionTD').empty();
+            delete this.topicsList[this.qListName].value.questions.topics[this.topicIndex];
+            this._saveList();
+        },
+        'click #deleteQuestion': function (event) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            this.$('.questionArea').empty();
+            this._saveList();
         },
         'click .topicElement': function (event) {
             event.preventDefault();
             this.topicIndex = event.target.attributes['val'].value;
             this.$('.topicElement.active').toggleClass('active');
-            this.$('#editTopicLink').remove();
-            this.$('.mvUp').remove();
-            this.$('.mvDn').remove();
+            this.$('#topicTD').find('.material-icons').remove();
             this.$(event.currentTarget).toggleClass('active');
             this.$(event.currentTarget).append(editLinks);
             this.$('#questionTD').empty();
             var questions = {};
-            if (Object.keys(this.questionList.questions.topics).indexOf(this.topicIndex) !== -1) {
-                questions = this.questionList.questions.topics[this.topicIndex].questions;
+            if (Object.keys(this.topicsList[this.qListName].value.questions.topics).indexOf(this.topicIndex) !== -1) {
+                questions = this.topicsList[this.qListName].value.questions.topics[this.topicIndex].questions;
             }
             this.$('#questionTD').append(
                 manageReviewQuestionEntry({'questions': questions})
@@ -106,8 +131,10 @@ var manageQuestionView = View.extend({
         },
         'submit #addTopicForm': function (event) {
             event.preventDefault();
+            this.$('#topicTD').find('.material-icons').remove();
+            this.$('.active').toggleClass('active');
             this.$('#topicTD').append(`<div class="topicElement active"><a class="topicString" val=${this.$('.topicElement').length + 1}>${this.$('#topicText').val()}</a></div>`);
-            this.$('#topicTD').append('<br><a class="mvUp">Move Up</a><a class="mvDn">Move Down</a><a id="editTopicLink">Edit Topic Details</a>');
+            this.$('.topicElement.active').append(editLinks);
             this._saveList();
         },
         'submit #addQuestionForm': function (event) {
@@ -128,46 +155,70 @@ var manageQuestionView = View.extend({
                 }
             }, this);
             this.$('.questionArea').empty();
+            this._saveList();
         },
         'click #updateTopic': function (event) {
             event.preventDefault();
             var children = this.$('#topicTD').children('.topicElement');
             var targetText = this.preEdit;
             children.each(function (child) {
-                if ($(children[child]).find('a').val() === targetText) {
+                if ($(children[child]).find('a').text() === targetText) {
+                    var originalVal = $(children[child]).find('a').attr('val');
                     $(children[child]).remove();
-                    $('#questionTD').append(manageReviewQuestionEntry({questions: [{'description': $('#questionText').val()}]}));
+                    $('#topicTD').append(`<div class="topicElement active"><a class="topicString" val="${originalVal}">${$('#topicText').val()}</a></div>`);
+                    $('.topicElement.active').append(editLinks);
                 }
-            });
+            }, this);
             this.$('.questionArea').empty();
+            this._saveList();
         },
         'click #updateList': function (event) {
             event.preventDefault();
-            var children = this.$('#questionTD').children('.questionElement');
-            var targetText = this.preEdit;
-            children.each(function (child) {
-                if ($(children[child]).find('textarea').val() === targetText) {
-                    $(children[child]).remove();
-                    $('#questionTD').append(manageReviewQuestionEntry({questions: [{'description': $('#questionText').val()}]}));
+            var valueData = {'tag': 'questionList',
+                'key': this.$('#listText').val(),
+                'value': {
+                    'done': 0,
+                    'questions': {
+                        'list': {
+                            'category_id': this.$('.catOption:selected').val(),
+                            'comment': '',
+                            'description': this.$('#reviewDescription').val(),
+                            'name': this.$('#listText').val(),
+                            'type': this.$('#reviewType').val()
+                        },
+                        'review_id': '',
+                        'revision_id': '',
+                        'topics': this.topicsList[this.qListName].value.questions.topics
+                    },
+                    'type': this.$('#reviewType').val(),
+                    'user': ''
                 }
+            };
+            restRequest({
+                type: 'DELETE',
+                url: `journal/questions?text=${this.qListName}`
+            }).done((resp) => {
+                restRequest({
+                    type: 'PUT',
+                    url: `journal/questions`,
+                    contentType: 'application/json',
+                    data: JSON.stringify(valueData)
+                }).done((resp) => {
+                    window.location.reload();
+                });
             });
-            this.$('.questionArea').empty();
         },
         'click .delQuestion': function (event) {
             event.preventDefault();
             this.$(event.currentTarget.parentElement).empty();
         },
         'click #editListLink': function (event) {
-            event.preventDefault();
-            event.stopImmediatePropagation();
             var listText = this.qListName;
             this.preEdit = listText;
             this.$('.questionArea').empty();
-            this.$('.questionArea').append(addTopicTemplate({'type': 'Edit', 'text': listText}));
+            this.$('.questionArea').append(addQListTemplate({'type': 'Edit', 'text': listText, 'catList': this.categoryList}));
         },
         'click #saveListLink': function (event) {
-            event.preventDefault();
-            event.stopImmediatePropagation();
             this._saveList();
         },
         'click #editTopicLink': function (event) {
@@ -203,39 +254,50 @@ var manageQuestionView = View.extend({
         }); // End getting of quuestions
     },
     _saveList: function () {
-        var topicName = this.$('.topicElement.active .topicString').text();
         if (Object.keys(this.topicsList[this.qListName]).indexOf('value') === -1) {
             this.topicsList[this.qListName]['value'] = {};
         }
-        var selectedTopics = this.topicsList[this.qListName].value.questions.topics;
+        var topicName = this.$('.topicElement.active .topicString').text();
+        var existingTopics = this.topicsList[this.qListName].value.questions.topics;
         var targetIndex = '-1';
-        Object.keys(selectedTopics).forEach(function (d) {
-            if (selectedTopics[d].name === topicName) {
-                targetIndex = d;
+        var tmpTopicList = {};
+        // first bring over all topics from existing
+        this.$('.topicString').each(function (index, element) {
+            // Check each name for the active topic
+            if (Object.keys(existingTopics).indexOf($(element).attr('val')) !== -1) {
+                tmpTopicList[index] = existingTopics[$(element).attr('val')];
+            } else {
+                // New topic, could be targeted one, could not be
+                tmpTopicList[index] = {
+                    'comment': '',
+                    'attachfile': '',
+                    'description': '',
+                    'questions': {},
+                    'name': $(element).text()
+                };
             }
+            $(element).attr('val', index);
         });
-        if (targetIndex === '-1') {
-            targetIndex = Object.keys(selectedTopics).length;
-            selectedTopics[JSON.stringify(Object.keys(selectedTopics).length)] = {
-                'comment': '',
-                'attachfile': '',
-                'description': '',
-                'questions': {},
-                'name': topicName
-            };
+        if (topicName !== '') {
+            Object.keys(tmpTopicList).forEach(function (key, index) {
+                if (tmpTopicList[key].name === topicName) {
+                    targetIndex = key;
+                }
+            });
+            var newQuestions = {};
+            this.$('.questionElement textarea').each(function (index, data) {
+                newQuestions[index] = {'value': [],
+                    'attachfile': '0',
+                    'attachfileValue': '',
+                    'commentValue': '',
+                    'comment': '1',
+                    'description': $(data).text()
+                };
+            });
+            tmpTopicList[targetIndex].questions = newQuestions;
+            delete this.topicsList[this.qListName].value.questions.topics;
+            this.topicsList[this.qListName].value.questions.topics = Object.assign({}, tmpTopicList);
         }
-        this.topicsList[this.qListName].value.questions.topics = selectedTopics;
-        var newQuestions = {};
-        this.$('.questionElement textarea').each(function (index, data) {
-            newQuestions[index] = {'value': [],
-                'attachfile': '0',
-                'attachfileValue': '',
-                'commentValue': '',
-                'comment': '1',
-                'description': $(data).text()
-            };
-        });
-        this.topicsList[this.qListName].value.questions.topics[targetIndex].questions = newQuestions;
         restRequest({
             type: 'PUT',
             contentType: 'application/json',
