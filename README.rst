@@ -39,30 +39,38 @@ necessary programs are available for the pip-installed version of Girder.
 **Note:** The Technical Journal plugin requires Node.js 8+. When following the
 documentation to enable the Node.js APT repository, use:
 
-``curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -``
+.. code:: bash
+
+  curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 
 **Note:** The Technical Journal plugin requires that MongoDB is at least 3.4+. When following the
 documentation to install MongoDB, replace '3.2' with '3.4'
 
-``echo "deb http://repo.mongodb.org/apt/debian jessie/mongodb-org/3.4 main" \
-    | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list``
+.. code:: bash
+
+  echo "deb http://repo.mongodb.org/apt/debian jessie/mongodb-org/3.4 main" \
+    | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
 
 or
 
-``echo "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" \
-    | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list``
+.. code:: bash
+
+  echo "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" \
+    | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
 
 
 Set up Technical Journal plugin
 +++++++++++++++++++++++++++++++
 The plugin can either be installed directly from pip:
 
-.. parsed-literal::
+.. code:: bash
+
   pip install girder-tech-journal
 
 Or by cloning this repository
 
-.. parsed-literal::
+.. code:: bash
+
   git clone https://github.com/girder/tech_journal
   cd tech_journal
   pip install .
@@ -74,22 +82,27 @@ environment.
 
 Install yarn
 
-.. parsed-literal::
+.. code:: bash
+
   npm install -g yarn
 
 Install web packages:
 
-.. parsed-literal::
-  cd girder-tech-journal-gui;
+.. code:: bash
+
+  cd girder-tech-journal-gui
   yarn install
 
 To run the development server:
-.. parsed-literal::
+
+.. code:: bash
+
   yarn run serve
 
 To build the standalone web application for production:
 
-.. parsed-literal::
+.. code:: bash
+
   yarn run build
 
 
@@ -125,7 +138,7 @@ program.
 This is accomplished by entering the ``tech_journal_tasks`` directory
 and executing the setup.py file with the ``install`` directive.
 
-.. parsed-literal::
+.. code:: bash
 
   cd tech_journal_tasks
   pip install .
@@ -138,7 +151,7 @@ one has accepted the default installation for RabbitMQ, there will be no
 changes necessary to the girder_worker configuration to allow it to connect
 to RabbitMQ.  Start girder_worker with the following command:
 
-.. parsed-literal::
+.. code:: bash
 
   girder-worker -l info
 
@@ -174,14 +187,14 @@ Configure the plugin
 
 Open a new terminal and activate the virtual environment.
 
-.. parsed-literal::
+.. code:: bash
 
   cd tech_journal
   . ~/girder_env/bin/activate
 
 Build the Girder web client and start the server:
 
-.. parsed-literal::
+.. code:: bash
 
   girder build
   girder serve
@@ -267,7 +280,8 @@ To update the PyPI release:
 
 First increment the version is setup.py. Then run:
 
-.. parsed-literal::
+.. code:: bash
+
   cd girder-tech-journal-gui;
   yarn run build;
   cd ..;
