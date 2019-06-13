@@ -11,8 +11,8 @@ import MySQLdb
 import sys
 import os
 import json
-from server import constants
-from server import TechJournal
+from girder_tech_journal import constants
+from girder_tech_journal import TechJournal
 
 licenseDict = {
  "0": "Public Domain",
@@ -111,7 +111,7 @@ def metaDataQuery(cur, entryNo, fieldNo):
         return False
     return ""
 
-def ReadAll(userId, prevAssetDir, baseParent=None, assetStore=None,):
+def ReadAll(userId, prevAssetDir, dbName, baseParent=None, assetStore=None):
     # Query items from MySQL
     db = MySQLdb.connect(user="root", passwd="root",db="otj")
     cur = db.cursor()
@@ -120,16 +120,16 @@ def ReadAll(userId, prevAssetDir, baseParent=None, assetStore=None,):
     userDictionary = {}
     # Prep Mongo client for insertion
     client = MongoClient('localhost', 27017)
-    foldersDB = client.girder.folder
-    assetStoreDB = client.girder.assetstore
-    usersDB = client.girder.user
-    itemDB = client.girder.item
-    fileDB = client.girder.file
-    groupDB = client.girder.group
-    settingDB = client.girder.setting
-    collectionDB = client.girder.collection
-    journalCollectionDB = client.girder.journal_collection;
-    journalDownloadsDB = client.girder.journal_downloads;
+    foldersDB = client[dbName].folder
+    assetStoreDB = client[dbName].assetstore
+    usersDB = client[dbName].user
+    itemDB = client[dbName].item
+    fileDB = client[dbName].file
+    groupDB = client[dbName].group
+    settingDB = client[dbName].setting
+    collectionDB = client[dbName].collection
+    journalCollectionDB = client[dbName].journal_collection;
+    journalDownloadsDB = client[dbName].journal_downloads;
     # =============================================
     # Import and create all category lists
     # =============================================
@@ -758,5 +758,6 @@ if __name__ == '__main__':
     parser.add_argument('-ar','--assetRoot', required=False, default=None)
     parser.add_argument('-pa','--prevAsset', required=True, default=None)
     parser.add_argument('-u','--user', required=True, default=None)
+    parser.add_argument('-db','--dbname', required=False, default="girder")
     result = parser.parse_args()
-    ReadAll(result.user, result.prevAsset, result.collID,result.assetRoot)
+    ReadAll(result.user, result.prevAsset, result.dbname, result.collID,result.assetRoot)
