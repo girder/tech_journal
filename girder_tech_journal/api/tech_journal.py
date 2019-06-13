@@ -5,8 +5,8 @@ import six
 import urllib
 from bson.objectid import ObjectId
 
-from girder.api import access
 from girder import events
+from girder.api import access
 from girder.api.describe import Description, describeRoute
 from girder.api.rest import Resource, RestException, filtermodel, loadmodel
 from girder.constants import AccessType, TokenScope
@@ -19,12 +19,14 @@ from girder.models.setting import Setting
 from girder.models.upload import Upload
 from girder.models.user import User
 from girder.utility import mail_utils
-from girder.utility.model_importer import ModelImporter
+
+from girder_worker_utils.transforms.girder_io import GirderUploadToItem
+from tech_journal_tasks.tasks import processGithub, surveySubmission
+
 from girder_tech_journal import constants
 from girder_tech_journal.utils.mail import sendEmails
 from girder_tech_journal.models.download_statistics import DownloadStatistics
-from girder_worker_utils.transforms.girder_io import GirderUploadToItem
-from tech_journal_tasks.tasks import processGithub, surveySubmission
+from girder_tech_journal.models.journal import Journal
 
 
 def sortByDate(elem):
@@ -180,10 +182,10 @@ class TechJournal(Resource):
 
         # Bind REST events
         events.bind('rest.get.folder/:id/download.after',
-                    'tech_journal',
+                    'tech_journal.onDownloadFileComplete',
                     self._onDownloadFileComplete)
         events.bind('rest.get.journal/:id/details.after',
-                    'tech_journal',
+                    'tech_journal.onPageView',
                     self._onPageView)
 
     @access.public(scope=TokenScope.DATA_READ)
@@ -193,7 +195,7 @@ class TechJournal(Resource):
         .errorResponse('Read access was denied on the issue.', 403)
         )
     def getQuestions(self, params):
-        qLists = ModelImporter.model('journal', 'tech_journal').getAllByTag('questionList')
+        qLists = Journal().getAllByTag('questionList')
         if 'qType' in params:
             qLists = {k: v for (k, v) in qLists.iteritems() if k == params['qType']}
         return qLists
@@ -208,9 +210,9 @@ class TechJournal(Resource):
     )
     def setQuestions(self, params):
         questionJSON = self.getBodyJson()
-        ModelImporter.model('journal', 'tech_journal').set(key=questionJSON['key'],
-                                                           value=questionJSON['value'],
-                                                           tag='questionList')
+        Journal().set(key=questionJSON['key'],
+                      value=questionJSON['value'],
+                      tag='questionList')
 
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)
@@ -824,11 +826,10 @@ class TechJournal(Resource):
         parentFolder = Folder().load(folder['parentId'], force=True)
         folder['public'] = True
         parentFolder['public'] = True
-        getFunc = getattr(ModelImporter.model('journal', 'tech_journal'), 'get')
+        getFunc = getattr(Journal(), 'get')
         if getFunc("tech_journal.use_review", {}):
             # Use the folder's information to find review objects to
-            reviewObjects = ModelImporter.model('journal',
-                                                'tech_journal').getAllByTag("questionList")
+            reviewObjects = Journal().getAllByTag("questionList")
             folder['meta']['reviews'] = {
                 'peer': {"template": {},
                          "reviews": []},
@@ -1030,9 +1031,9 @@ class TechJournal(Resource):
                 except ValueError:
                     value = setting['value']
             if value is None:
-                ModelImporter.model('journal', 'tech_journal').unset(key=setting['key'])
+                Journal().unset(key=setting['key'])
             else:
-                ModelImporter.model('journal', 'tech_journal').set(key=setting['key'],
+                Journal().set(key=setting['key'],
                                                                    value=value)
 
     @access.public(scope=TokenScope.DATA_READ)
@@ -1045,7 +1046,7 @@ class TechJournal(Resource):
         )
     def getJournalSettings(self, params):
 
-        getFunc = getattr(ModelImporter.model('journal', 'tech_journal'), 'get')
+        getFunc = getattr(Journal(), 'get')
         funcParams = {}
         if 'list' in params:
             try:
@@ -1101,8 +1102,8 @@ class TechJournal(Resource):
         .errorResponse('Read access was denied on the issue.', 403)
         )
     def addJournalObj(self, params):
-        ModelImporter.model('journal', 'tech_journal').set(key=params['text'],
-                                                           value=[], tag=params['tag'])
+        Journal().set(key=params['text'],
+                      value=[], tag=params['tag'])
 
     @access.public(scope=TokenScope.DATA_READ)
     @describeRoute(
@@ -1112,7 +1113,7 @@ class TechJournal(Resource):
         .errorResponse('Read access was denied on the issue.', 403)
         )
     def getJournalObjs(self, params):
-        return ModelImporter.model('journal', 'tech_journal').getAllByTag(params['tag'])
+        return Journal().getAllByTag(params['tag'])
 
     @access.public(scope=TokenScope.DATA_READ)
     @describeRoute(
@@ -1122,7 +1123,7 @@ class TechJournal(Resource):
         .errorResponse('Read access was denied on the issue.', 403)
         )
     def rmJournalObj(self, params):
-        ModelImporter.model('journal', 'tech_journal').removeObj(params['text'])
+        Journal().removeObj(params['text'])
 
     @access.admin(scope=TokenScope.DATA_READ)
     @describeRoute(
@@ -1147,10 +1148,10 @@ class TechJournal(Resource):
                 except ValueError:
                     value = setting['value']
             if value is None:
-                ModelImporter.model('journal', 'tech_journal').unset(key=setting['key'])
+                Journal().unset(key=setting['key'])
             else:
-                ModelImporter.model('journal', 'tech_journal').set(key=setting['key'],
-                                                                   value=value, tag=params['tag'])
+                Journal().set(key=setting['key'],
+                              value=value, tag=params['tag'])
 
     def _onDownloadFileComplete(self, event):
         folder = Folder().load(event.info['id'],
