@@ -1,6 +1,6 @@
 from girder.models.model_base import AccessControlledModel
 
-from girder_tech_journal.constants import TechJournalSettingsDefault
+# from girder_tech_journal.constants import TechJournalSettingsDefault
 
 
 class Journal(AccessControlledModel):

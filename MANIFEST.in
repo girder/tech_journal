@@ -1,0 +1,8 @@
+prune .circleci
+graft girder_tech_journal/external_web_client
+prune girder-tech-journal-gui
+exclude .*
+exclude *.cmake
+prune .tox
+exclude tox.ini
+global-exclude *.pyc __pycache__

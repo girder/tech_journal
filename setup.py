@@ -1,4 +1,32 @@
-from setuptools import setup
+from setuptools import setup, Command
+from subprocess import check_call
+import os
+
+
+class BuildUICommand(Command):
+    description = 'Build the standalone front end and include it in the sdist'
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        dest = os.path.join(
+                os.path.abspath('girder_tech_journal'),
+                'external_web_client')
+
+        install = ['yarn', 'install']
+        build = ['yarn', 'build']
+        copy = ['cp', '-r', 'dist', dest]
+        commands = [install, build, copy]
+
+        os.chdir(os.path.abspath('girder-tech-journal-gui'))
+        for cmd in commands:
+            check_call(cmd)
+
 
 with open('README.rst') as readme:
     long_description = readme.read()
@@ -23,5 +51,8 @@ setup(
       'girder.plugin': [
           'tech_journal = girder_tech_journal:TechJournalPlugin'
       ]
+    },
+    cmdclass={
+        'build_ui': BuildUICommand
     }
 )
