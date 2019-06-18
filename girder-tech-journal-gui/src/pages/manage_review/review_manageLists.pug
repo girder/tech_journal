@@ -22,8 +22,12 @@ mixin addTopic(index, value)
       a#newQuestionListLink New Question List
       #qListDetail(style="display: none;")
         h3 Selected Question List: #{qList}
-        a#editListLink Edit selected Question List
-        a#saveListLink Save selected Question List
+        button#editListLink
+          i.material-icons(title="Edit Question List") edit
+        button#saveListLink
+          i.material-icons(title="Save Question List") save
+        button#deleteList
+          i.material-icons(title="Delete List") delete
         #questionListWrapper
           table
             tbody

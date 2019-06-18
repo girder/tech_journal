@@ -65,6 +65,7 @@ var ManageDisclaimerView = View.extend({
             },
             error: null
         }).done((resp) => {
+            window.location.reload();
             events.trigger('g:alert', {
                 icon: 'ok',
                 text: 'Disclaimer saved.',
