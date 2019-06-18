@@ -113,7 +113,7 @@ To use this, run: ``python setup.py build_ui``.
 **WARNING**
 
 If you run ``girder serve`` in development mode, the standalone frontend **will not** be served at ``/tech_journal``.
-This is because it is expected that the frontend will be served on its own using (E.g. ``yarn run serve``) in order
+This is because it is expected that the frontend will be served on its own (E.g. ``yarn run serve``) in order
 to see the changes being made. If for some reason you need to serve the frontend at ``/tech_journal``, you will need
 to run ``girder serve`` in production mode. However be aware that in this case it is serving the pre-built files,
 and thus no changes will take affect until you rebuild the frontend (E.g. by running ``python setup.py build_ui``).
