@@ -106,6 +106,19 @@ To build the standalone web application for production:
   yarn run build
 
 
+If you've cloned the repo and are developing for the plugin, there is a custom command in ``setup.py`` that will
+automate installing yarn packages, building the frontend for production, and copying the dist folder to the proper location.
+To use this, run: ``python setup.py build_ui``.
+
+**WARNING**
+
+If you run ``girder serve`` in development mode, the standalone frontend **will not** be served at ``/tech_journal``.
+This is because it is expected that the frontend will be served on its own using (E.g. ``yarn run serve``) in order
+to see the changes being made. If for some reason you need to serve the frontend at ``/tech_journal``, you will need
+to run ``girder serve`` in production mode. However be aware that in this case it is serving the pre-built files,
+and thus no changes will take affect until you rebuild the frontend (E.g. by running ``python setup.py build_ui``).
+
+
 Install girder_worker
 ++++++++++++++++++++++
 
