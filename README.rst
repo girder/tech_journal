@@ -39,54 +39,84 @@ necessary programs are available for the pip-installed version of Girder.
 **Note:** The Technical Journal plugin requires Node.js 8+. When following the
 documentation to enable the Node.js APT repository, use:
 
-``curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -``
+.. code:: bash
+
+  curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 
 **Note:** The Technical Journal plugin requires that MongoDB is at least 3.4+. When following the
 documentation to install MongoDB, replace '3.2' with '3.4'
 
-``echo "deb http://repo.mongodb.org/apt/debian jessie/mongodb-org/3.4 main" \
-    | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list``
+.. code:: bash
+
+  echo "deb http://repo.mongodb.org/apt/debian jessie/mongodb-org/3.4 main" \
+    | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
 
 or
 
-``echo "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" \
-    | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list``
+.. code:: bash
+
+  echo "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" \
+    | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
 
 
 Set up Technical Journal plugin
 +++++++++++++++++++++++++++++++
+The plugin can either be installed directly from pip:
 
-Clone this repository: ``git clone https://github.com/girder/tech_journal``
+.. code:: bash
+
+  pip install girder-tech-journal
+
+Or by cloning this repository
+
+.. code:: bash
+
+  git clone https://github.com/girder/tech_journal
+  cd tech_journal
+  pip install .
 
 In the git repo directory, follow the Installation_ documentation to create a
 virtual environment and install Girder from pypi. Do not install the web client
 libraries yet. The following instructions assume you have entered the virtual
 environment.
 
-Install celery
-
-.. parsed-literal::
-  pip install celery
-
 Install yarn
 
-.. parsed-literal::
-  npm install -g yum
+.. code:: bash
 
-Install and build the standalone web application:
+  npm install -g yarn
 
-.. parsed-literal::
-  cd girder-tech-journal-gui && yarn install && yarn run build
+Install web packages:
 
-Register the plugin to Girder:
+.. code:: bash
 
-.. parsed-literal::
-  cd ..
-  girder-install plugin -s .
+  cd girder-tech-journal-gui
+  yarn install
 
-The ``-s`` is important: it installs the plugin via symlink, since the virtual
-environment is contained within the directory that will be installed as the
-plugin.
+To run the development server:
+
+.. code:: bash
+
+  yarn run serve
+
+To build the standalone web application for production:
+
+.. code:: bash
+
+  yarn run build
+
+
+If you've cloned the repo and are developing for the plugin, there is a custom command in ``setup.py`` that will
+automate installing yarn packages, building the frontend for production, and copying the dist folder to the proper location.
+To use this, run: ``python setup.py build_ui``.
+
+**WARNING**
+
+If you run ``girder serve`` in development mode, the standalone frontend **will not** be served at ``/tech_journal``.
+This is because it is expected that the frontend will be served on its own (E.g. ``yarn run serve``) in order
+to see the changes being made. If for some reason you need to serve the frontend at ``/tech_journal``, you will need
+to run ``girder serve`` in production mode. However be aware that in this case it is serving the pre-built files,
+and thus no changes will take affect until you rebuild the frontend (E.g. by running ``python setup.py build_ui``).
 
 
 Install girder_worker
@@ -95,15 +125,8 @@ Install girder_worker
 The submission upload page has the capability to submit a GitHub URL and
 have the Tech Journal download the ``master`` branch of the repository
 to be made available as the download of the submission.  To do this,
-it utilizes the girder_worker_ tool.  This requires some additional setup
-and installation.
-
-The girder-worker code can be installed via the Python PIP package system in
-the virtual environment created above.
-
-.. parsed-literal::
-
-  pip install girder_worker
+it utilizes the girder_worker_ tool. This is automatically installed when
+installing the Tech Journal plugin.
 
 
 Install RabbitMQ
@@ -128,10 +151,10 @@ program.
 This is accomplished by entering the ``tech_journal_tasks`` directory
 and executing the setup.py file with the ``install`` directive.
 
-.. parsed-literal::
+.. code:: bash
 
   cd tech_journal_tasks
-  python setup.py install
+  pip install .
 
 Start girder_worker
 ___________________
@@ -141,7 +164,7 @@ one has accepted the default installation for RabbitMQ, there will be no
 changes necessary to the girder_worker configuration to allow it to connect
 to RabbitMQ.  Start girder_worker with the following command:
 
-.. parsed-literal::
+.. code:: bash
 
   girder-worker -l info
 
@@ -177,18 +200,18 @@ Configure the plugin
 
 Open a new terminal and activate the virtual environment.
 
-.. parsed-literal::
+.. code:: bash
 
   cd tech_journal
   . ~/girder_env/bin/activate
 
 Build the Girder web client and start the server:
 
-.. parsed-literal::
+.. code:: bash
 
-  girder-install web
-  girder-server
-  
+  girder build
+  girder serve
+
 **Note:** although ordinarily Girder would want to rebuild the newly activated
 plugin, you do not need to do that now, since we are building this plugin in a
 "standalone" mode, outside the control of Girder's build system
@@ -263,6 +286,22 @@ valid locations within the plugin yet.  The ``Home`` and ``New Submission``
 links will take you to the correct pages.
 
 
+Releasing
+_________________________
+
+To update the PyPI release:
+
+First increment the version is setup.py. Then run:
+
+.. code:: bash
+
+  cd girder-tech-journal-gui;
+  yarn run build;
+  cd ..;
+  python setup.py sdist;
+  tox -e release
+
+
 .. |build-status| image:: https://circleci.com/gh/girder/tech_journal.png?style=shield
     :target: https://circleci.com/gh/girder/tech_journal
     :alt: Build Status
@@ -275,4 +314,3 @@ links will take you to the correct pages.
 .. _`Installation`: https://girder.readthedocs.io/en/stable/installation.html
 .. _Girder_Worker: https://github.com/girder/girder_worker
 .. _RabbitMQ: https://www.rabbitmq.com/download.html
-
