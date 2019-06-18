@@ -4,18 +4,19 @@
     input(type="hidden", name="oldquestion")
     input(type="hidden", name="selectedtopic", value="")
     label(for="questiondescription") Question:
-    textarea#questionText(style="width:270px;", name="questiondescription").
+    textarea#questionText(style="width:270px;", name="questiondescription", required).
       #{text}
     label(for="questioncomment") Allow comments:
     input(type="checkbox", checked="checked", name="questioncomment", value="1")
     label(for="questionattachfile") Allow file attachments:
     input(type="checkbox", checked="checked", name="questionattachfile", value="1")
     if type === "Edit"
-      input#updateQuestion(type="button", value="Update")
-      input#cancelNewList(type="button", value="Cancel")
-      input#deleteList(type="button", value="Delete")
-
+      button#updateList
+        i.material-icons(title="Update Question") save
+      button#cancelNewList
+        i.material-icons(title="Cancel Editing Question") cancel
     else
-      input(type="submit", value="Save")
-      input#cancelNewList(type="button", value="Cancel")
-      input#deleteList(type="button", value="Delete")
+      button(type="submit", value="Save")
+        i.material-icons(title="Save Question") save
+      button#cancelNewList
+        i.material-icons(title="Cancel Creating Question") cancel
