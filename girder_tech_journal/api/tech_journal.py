@@ -798,11 +798,11 @@ class TechJournal(Resource):
             'status': 'REJECTED'
         }
         folder['curation'] = DEFAULTS
-        self.model('folder').save(folder)
-        parentFolder = self.model('folder').load(folder['parentId'], force=True)
-        user = self.model('user').load(folder['creatorId'], user=self.getCurrentUser())
-        movedFolder = self.model('folder').move(parentFolder, user, 'user')
-        self.model('folder').save(movedFolder)
+        Folder().save(folder)
+        parentFolder = Folder().load(folder['parentId'], force=True)
+        user = User().load(folder['creatorId'], user=self.getCurrentUser())
+        movedFolder = Folder().move(parentFolder, user, 'user')
+        Folder().save(movedFolder)
         return movedFolder
 
     @access.user(scope=TokenScope.DATA_READ)
