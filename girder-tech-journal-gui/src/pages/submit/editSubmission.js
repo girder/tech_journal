@@ -19,6 +19,7 @@ var editView = View.extend({
             this.render(event.currentTarget.target);
         },
         'click #rejectSubmission': function (event) {
+            event.preventDefault();
             restRequest({
                 method: 'PUT',
                 url: `journal/${this.itemId}/reject`,
