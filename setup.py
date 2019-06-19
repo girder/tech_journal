@@ -45,7 +45,8 @@ setup(
     install_requires=[
         'girder',
         'celery',
-        'girder-worker'
+        'girder-worker',
+        'girder-oauth'
     ],
     entry_points={
       'girder.plugin': [
