@@ -174,26 +174,13 @@ When viewing the first set of output, ensure that the ``processGitHub`` and
 .. parsed-literal::
 
   snyder@midas-vm:~$ girder-worker -l info
-   -------------- celery@midas-vm v4.1.0 (latentcall)
-  ---- **** -----
-  --- * ***  * -- Linux-4.4.0-121-generic-x86_64-with-Ubuntu-16.04-xenial 2018-05-03 10:57:26
-  -- * - **** ---
-  - ** ---------- [config]
-  - ** ---------- .> app:         girder_worker:0x7ff88d82a610
-  - ** ---------- .> transport:   amqp://guest:**@localhost:5672//
-  - ** ---------- .> results:     amqp://
-  - *** --- * --- .> concurrency: 4 (prefork)
-  -- ******* ---- .> task events: OFF (enable -E to monitor tasks in this worker)
-  --- ***** -----
-   -------------- [queues]
-                  .> celery           exchange=celery(direct) key=celery
-
+  <....>
 
   [tasks]
     . girder_worker.docker.tasks.docker_run
     . girder_worker.run
-    **. tech_journal_tasks.tasks.processGithub**
-    **. tech_journal_tasks.tasks.surveySubmission**
+    . **tech_journal_tasks.tasks.processGithub**
+    . **tech_journal_tasks.tasks.surveySubmission**
 
 Configure the plugin
 ++++++++++++++++++++
