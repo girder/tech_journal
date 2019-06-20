@@ -21,12 +21,12 @@ from girder.models.user import User
 from girder.utility import mail_utils
 
 from girder_worker_utils.transforms.girder_io import GirderUploadToItem
-from tech_journal_tasks.tasks import processGithub, surveySubmission
 
 from girder_tech_journal import constants
 from girder_tech_journal.utils.mail import sendEmails
 from girder_tech_journal.models.download_statistics import DownloadStatistics
 from girder_tech_journal.models.journal import Journal
+from girder_tech_journal.tasks.tasks import processGithub, surveySubmission
 
 
 def sortByDate(elem):
