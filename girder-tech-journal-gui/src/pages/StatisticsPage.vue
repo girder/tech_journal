@@ -8,7 +8,7 @@ div
           a(@click="targetYear-=1") Previous Year
           |,
           a(@click="targetYear+=1") Next Year
-          img(v-show="loading")#loadingWheel(src='@/assets/loading-small.gif')
+          img#loadingWheel(src='@/assets/loading-small.gif', v-show="loading")
           h4 Overall Statistics
           table
             thead
