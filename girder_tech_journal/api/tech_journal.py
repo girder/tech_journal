@@ -98,6 +98,7 @@ class TechJournal(Resource):
                                           user=self.getCurrentUser()))
         # If not found in the top level data, search through each revision
         if not keyMatch[0]:
+            revisionInfo = sorted(revisionInfo, key=lambda revision: revision['updated'])
             for revision in revisionInfo:
                 revisionMatch = [False, -1]
                 for key in filterParams[category]:
