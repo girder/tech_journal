@@ -1,4 +1,4 @@
-FROM girder/girder_test:latest-py2
+FROM girder/girder_test:latest-py3
 
 # Don't use "sudo"
 USER root
