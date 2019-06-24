@@ -23,10 +23,7 @@ jobs:
           key: venv-{{ arch }}-{{ checksum "girder/setup.py" }}-{{ checksum "girder/requirements-dev.txt" }}
       - run:
           name: Install tech_journal
-          command: pip3 install -Ue girder
-      - run:
-          name: Install tech_journal
-          command: pip3 install -Ue girder/plugins/tech_journal
+          command: pip3 install --pre -Ue girder/plugins/tech_journal
       - run:
           name: Install coverage client
           command: pip3 install --upgrade codecov

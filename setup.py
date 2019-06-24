@@ -1,4 +1,4 @@
-from setuptools import setup, Command
+from setuptools import setup, Command, find_packages
 from subprocess import check_call
 import os
 
@@ -41,16 +41,20 @@ setup(
     maintainer='Kitware, Inc.',
     maintainer_email='kitware@kitware.com',
     include_package_data=True,
-    packages=['girder_tech_journal'],
+    packages=find_packages(),
     install_requires=[
         'girder',
         'celery',
-        'girder-worker',
-        'girder-oauth'
+        'girder-oauth',
+        'girder-worker[girder]',
+        'girder-worker-utils'
     ],
     entry_points={
       'girder.plugin': [
           'tech_journal = girder_tech_journal:TechJournalPlugin'
+      ],
+      'girder_worker_plugins': [
+          'tech_journal_tasks = girder_tech_journal.tasks:TechJournalTasks',
       ]
     },
     cmdclass={
