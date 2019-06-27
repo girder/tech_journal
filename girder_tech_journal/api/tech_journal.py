@@ -1097,6 +1097,11 @@ class TechJournal(Resource):
             'date_year': folder['created'].year,
             'date_mon': folder['created'].month,
         }
+        lastName=[]
+        for name in folder['meta']['authors']:
+            lastName.append(name.split(" ")[-1])
+        templateInfo['authorList'] = '+'.join(lastName)
+
         return constants.TechJournalCitations.templates[type].substitute(templateInfo)
 
     # -----------------------------------------------
