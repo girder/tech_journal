@@ -133,7 +133,7 @@ var manageQuestionView = View.extend({
             event.preventDefault();
             this.$('#topicTD').find('.material-icons').remove();
             this.$('.active').toggleClass('active');
-            this.$('#topicTD').append(`<div class="topicElement active"><a class="topicString" val=${this.$('.topicElement').length + 1}>${this.$('#topicText').val()}</a></div>`);
+            this.$('#topicTD').append(`<div class='topicElement active'><a class='topicString' val=${this.$('.topicElement').length + 1}>${this.$('#topicText').val()}</a></div>`);
             this.$('.topicElement.active').append(editLinks);
             this._saveList();
         },
@@ -165,7 +165,7 @@ var manageQuestionView = View.extend({
                 if ($(children[child]).find('a').text() === targetText) {
                     var originalVal = $(children[child]).find('a').attr('val');
                     $(children[child]).remove();
-                    $('#topicTD').append(`<div class="topicElement active"><a class="topicString" val="${originalVal}">${$('#topicText').val()}</a></div>`);
+                    $('#topicTD').append(`<div class='topicElement active'><a class='topicString' val='${originalVal}'>${$('#topicText').val()}</a></div>`);
                     $('.topicElement.active').append(editLinks);
                 }
             }, this);
@@ -216,7 +216,12 @@ var manageQuestionView = View.extend({
             var listText = this.qListName;
             this.preEdit = listText;
             this.$('.questionArea').empty();
+            // Bring original information in addition to the category lists
             this.$('.questionArea').append(addQListTemplate({'type': 'Edit', 'text': listText, 'catList': this.categoryList}));
+            // Now pre-enter the data from the review into the template.
+            this.$('#newCategory').find('option[val=' + this.topicsList[this.qListName]['value']['questions']['list']['category_id'] + ']').attr('selected', true);
+            this.$('#reviewType').find('option[value=' + this.topicsList[this.qListName]['value']['questions']['list']['type'] + ']').attr('selected', true);
+            this.$('#reviewDescription').val(this.topicsList[this.qListName]['value']['questions']['list']['description']);
         },
         'click #saveListLink': function (event) {
             this._saveList();
@@ -251,7 +256,7 @@ var manageQuestionView = View.extend({
                 this.topicsList = resp;
                 this.render(manageReviewQuestions({'topics': this.topicsList, 'qTopics': []}));
             }); // End getting of categories for new questions
-        }); // End getting of quuestions
+        }); // End getting of questions
     },
     _saveList: function () {
         if (Object.keys(this.topicsList[this.qListName]).indexOf('value') === -1) {
