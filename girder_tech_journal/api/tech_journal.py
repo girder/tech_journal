@@ -223,7 +223,7 @@ class TechJournal(Resource):
         .errorResponse('Read access was denied on the issue.', 403)
         )
     def deleteQuestions(self, params):
-        ModelImporter.model('journal', 'tech_journal').removeObj(params['text'])
+        Journal().removeObj(params['text'])
 
     @access.public(scope=TokenScope.DATA_READ)
     @loadmodel(model='collection', level=AccessType.READ)
