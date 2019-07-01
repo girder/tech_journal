@@ -76,7 +76,7 @@ export default {
         data: JSON.stringify(this.feedback),
         error: null,
       });
-      router.navigate(`#`, {trigger: true});
+      router.navigate('#', { trigger: true });
       events.trigger('g:alert', {
         icon: 'ok',
         text: 'Email sent.',
