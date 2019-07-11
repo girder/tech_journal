@@ -18,7 +18,7 @@ var EditJournalView = View.extend({
             } else {
                 this._createJournal(values);
             }
-            router.navigate('#plugins/journal/admin', {trigger: true});
+            router.navigate('#admin', {trigger: true});
         }
     },
     initialize: function (id) {

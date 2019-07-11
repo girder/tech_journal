@@ -294,7 +294,7 @@ var SubmitView = View.extend({
         return true;
     },
     _findUploadTarget: function (parentId, subData) {
-        var targetUrl = '#plugins/journal/submission/';
+        var targetUrl = '#submission/';
         var revisionName = $('#revisionTitle').val().trim();
         if (revisionName === '') {
             revisionName = 'Revision 1';

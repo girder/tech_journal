@@ -51,22 +51,22 @@ router.route('submission/new', 'submissionInfo', function () {
 });
 
 // user profile page
-router.route('plugins/user/:id/edit', 'submissionInfo', function (id) {
+router.route('user/:id/edit', 'submissionInfo', function (id) {
     testUserAccess(userView, {id: id}, true, false);
 });
 
-router.route('plugins/journal/submission/:id/new', 'submissionInfo', function (id) {
+router.route('submission/:id/new', 'submissionInfo', function (id) {
     testUserAccess(submitView, {id: id}, true, false);
 });
 // Pass through the revision view to eliminate the need to pick an issue
-router.route('plugins/journal/submission/:id/edit', 'submissionInfo', function (id) {
+router.route('submission/:id/edit', 'submissionInfo', function (id) {
     testUserAccess(editView, {id: id, NR: false, approve: false}, true, false);
 });
-router.route('plugins/journal/submission/:id/revision', 'submissionInfo', function (id) {
+router.route('submission/:id/revision', 'submissionInfo', function (id) {
     testUserAccess(editView, {id: id, NR: true, approve: false}, true, false);
 });
 
-router.route('plugins/journal/submission/:id/approve', 'submissionInfo', function (id) {
+router.route('submission/:id/approve', 'submissionInfo', function (id) {
     testUserAccess(editView, {id: id, NR: false, approve: true}, true, true);
 });
 // Listing page of Journal
@@ -96,14 +96,14 @@ router.route('statistics', 'JournalListPage', function (id) {
 
 import uploadView from './pages/upload/upload';
 // Upload files to a submission
-router.route('plugins/journal/submission/:id/upload/new', 'uploadFiles', function (id) {
+router.route('submission/:id/upload/new', 'uploadFiles', function (id) {
     testUserAccess(uploadView, {id: id, newSub: true, NR: false}, true, false);
 });
 
-router.route('plugins/journal/submission/:id/upload/revision', 'uploadFiles', function (id) {
+router.route('submission/:id/upload/revision', 'uploadFiles', function (id) {
     testUserAccess(uploadView, {id: id, newSub: true, NR: true}, true, false);
 });
-router.route('plugins/journal/submission/:id/upload/edit', 'uploadFiles', function (id) {
+router.route('submission/:id/upload/edit', 'uploadFiles', function (id) {
     testUserAccess(uploadView, {id: id, newSub: false, NR: false}, true, false);
 });
 import SurveyPage from './pages/SurveyPage.vue';
@@ -134,17 +134,17 @@ router.route('view/:submission(/:revision)', 'submissionView', function (submiss
 });
 
 // Page for admin to see submissions for approval
-router.route('plugins/journal/approval', 'approvalView', function () {
+router.route('approval', 'approvalView', function () {
     testUserAccess(approvalView, {}, true, true);
 });
 
 // Page for admin to see users for elevation (editors and managers)
-router.route('plugins/journal/admin/groupusers/:id/journal', 'approvalView', function (id) {
+router.route('admin/groupusers/:id/journal', 'approvalView', function (id) {
     testUserAccess(EditGroupUsersView, {id: id, type: 'collection'}, true, true);
 });
 
 // Page for admin to see users for elevation (editors and managers)
-router.route('plugins/journal/admin/groupusers/:id/issue', 'approvalView', function (id) {
+router.route('admin/groupusers/:id/issue', 'approvalView', function (id) {
     testUserAccess(EditGroupUsersView, {id: id, type: 'folder'}, true, true);
 });
 
@@ -167,28 +167,28 @@ router.route('view/:id/download', 'submissionDownload', function (id) {
     });
 });
 // View to manage (or create) a Journal
-router.route('plugins/journal/admin', 'manageJournalView', function () {
+router.route('admin', 'manageJournalView', function () {
     testUserAccess(manageJournalView, {}, true, true);
 });
 
 // View to manage(or create) an Issue to submit to
-router.route('plugins/journal/admin/issue/:id/:type', 'editIssue', function (id, type) {
+router.route('admin/issue/:id/:type', 'editIssue', function (id, type) {
     testUserAccess(EditIssueView, {id: id, type: type}, true, true);
 });
 
 // View to manage a Journal entry
 // Existing journal route
-router.route('plugins/journal/admin/journal/:id', 'editJournal', function (id) {
+router.route('admin/journal/:id', 'editJournal', function (id) {
     testUserAccess(EditJournalView, {id: id}, true, true);
 });
 // Help pages
 
 // Admin page to set the content of each disclaimer
-router.route('plugins/journal/admin/disclaimer', '', function () {
+router.route('admin/disclaimer', '', function () {
     testUserAccess(ManageDisclaimerView, {}, true, true);
 });
 // Admin page to set the content of each help page
-router.route('plugins/journal/admin/help', 'adminHelp', function () {
+router.route('admin/help', 'adminHelp', function () {
     testUserAccess(manageHelpView, {}, true, true);
 });
 
@@ -228,7 +228,7 @@ router.route('help/about', 'HelpPageAbout', function () {
 
 // Display page for a user to submit feedback to Journal Admins
 import FeedbackPage from '@/pages/FeedbackPage.vue';
-router.route('plugins/journal/help/feedback', 'FeedbackPage', function () {
+router.route('help/feedback', 'FeedbackPage', function () {
     testUserAccess(vueComponentView, {component: FeedbackPage}, false, false);
 });
 

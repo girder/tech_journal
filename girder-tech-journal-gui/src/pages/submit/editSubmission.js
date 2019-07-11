@@ -53,7 +53,7 @@ var editView = View.extend({
                             error: null
                         }).done((resp) => {
                             this._updateSubmission(this.itemId);
-                            router.navigate(`#plugins/journal/submission/${this.itemId}/upload/edit`,
+                            router.navigate(`#submission/${this.itemId}/upload/edit`,
                                 {trigger: true});
                         });
                     }
@@ -183,7 +183,7 @@ var editView = View.extend({
     },
     _generateNewRevision: function () {
         var revisionName = this.$('#revisionTitle').val().trim();
-        var targetUrl = '#plugins/journal/submission/';
+        var targetUrl = '#submission/';
         restRequest({
             method: 'GET',
             url: `folder/${this.parent._id}/details`
