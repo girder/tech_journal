@@ -21,10 +21,10 @@ var EditIssueView = View.extend({
             } else {
                 this._createIssue(values);
             }
-            router.navigate('#plugins/journal/admin', {trigger: true});
+            router.navigate('#admin', {trigger: true});
         },
         'click #dataFormCancel': function (event) {
-            router.navigate('#plugins/journal/admin', {trigger: true});
+            router.navigate('#admin', {trigger: true});
         },
         'change #licensemenu': function (event) {
             this.$('#publishLicense').val(event.currentTarget[event.currentTarget.selectedIndex].value);

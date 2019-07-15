@@ -54,27 +54,27 @@
             | New Publication
         if user
           li#profileLink
-            a.submm(href='#plugins/user/' + user.id + '/edit') My Profile
+            a.submm(href='#user/' + user.id + '/edit') My Profile
             ul#userOptionsList
               li
                 a.submm(href='#?query="creatorId":"'+user.id+'"') My Publications
               li
-                a.submm(href='#plugins/user/' + user.id + '/edit') Edit Profile
+                a.submm(href='#user/' + user.id + '/edit') Edit Profile
           if user.attributes.admin
             li#adminLink
-              a(href='#plugins/journal/admin') Admin
+              a(href='#admin') Admin
               ul#adminOptionsList
                 li
-                  a.submm(href='#plugins/journal/admin') Journals
+                  a.submm(href='#admin') Journals
                 li
                   a.submm(href='/#users') Users
                 li
                   a.submm(href='#admin/categories').
                     Categories
                 li
-                  a.submm(href='#plugins/journal/admin/disclaimer') Disclaimers
+                  a.submm(href='#admin/disclaimer') Disclaimers
                 li
-                  a.submm(href='#plugins/journal/admin/help') Help & About
+                  a.submm(href='#admin/help') Help & About
                 li
                   a.submm(href='/#plugins/tech_journal/config') Config
                 li
@@ -90,13 +90,13 @@
               a.submm(href="#help/faq")
                 | F.A.Q.
             li
-              a.submm(href="#plugins/journal/help/feedback")
+              a.submm(href="#help/feedback")
                 | Feedback
         if user
           if user.attributes.admin
             if (approvalNum > 0)
               li
-                a(href="#plugins/journal/approval", style="color:orange;")
+                a(href="#approval", style="color:orange;")
                   | Waiting Approval : #{approvalNum}
 
       .HeaderSearch.nav.navbar-nav.navbar-right

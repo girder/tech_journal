@@ -143,10 +143,10 @@ if 'downloadStatistics' in info.revision
             h4 Manage
             ul
               li
-                a(href="#plugins/journal/submission/"+info.revision._id+"/revision") New Revision
+                a(href="#submission/"+info.revision._id+"/revision") New Revision
               if (user.attributes.admin)
                 li
-                  a(href="#plugins/journal/submission/"+info.revision._id+"/edit") Edit current revision
+                  a(href="#submission/"+info.revision._id+"/edit") Edit current revision
                 if info.otherRevisions.length > 1
                   li
                     a#deleteRevision Delete Current revision

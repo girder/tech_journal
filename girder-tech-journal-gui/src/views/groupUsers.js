@@ -32,7 +32,7 @@ var EditGroupUsersView = View.extend({
                 issueDescription: this.$('#description')[0].value
             };
             this._createJournal(values);
-            router.navigate('#plugins/journal/admin', {trigger: true});
+            router.navigate('#admin', {trigger: true});
         }
 
     },
