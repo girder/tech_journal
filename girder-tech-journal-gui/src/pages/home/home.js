@@ -132,6 +132,9 @@ const HomePage = View.extend({
                             Object.keys(lastSearch).forEach(function (category) {
                                 if (category === 'text') {
                                     this.$('#live_search').val($('#live_search').val() + lastSearch[category]);
+                                } else if (category === 'issueId') {
+                                    this.$('.issueSelected').removeClass('issueSelected');
+                                    this.$(`.issueButton[key='${lastSearch[category]}']`).addClass(' issueSelected');
                                 } else {
                                     lastSearch[category].forEach(function (value) {
                                         this.$('.' + category + '[val="' + value + '"]').prop('checked', true);
