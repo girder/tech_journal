@@ -22,7 +22,6 @@ from girder.utility import mail_utils
 from girder_worker_utils.transforms.girder_io import GirderUploadToItem
 
 from girder_tech_journal import constants
-from girder_tech_journal.utils.mail import sendEmails
 from girder_tech_journal.models.download_statistics import DownloadStatistics
 from girder_tech_journal.models.journal import Journal
 from girder_tech_journal.tasks.tasks import processGithub, surveySubmission
@@ -809,7 +808,9 @@ class TechJournal(Resource):
                 'abstract': parentFolder['description'],
                 'id': folder['_id']}
         text = mail_utils.renderTemplate('tech_journal_approval.mako', data)
-        sendEmails(User().getAdmins(), 'New Submission - Pending Approval', text)
+        mail_utils.sendMailIndividually(
+            'New Submission - Pending Approval', text,
+            [user['email'] for user in User().getAdmins()])
         movedFolder['curation'] = DEFAULTS
         parentFolder['public'] = True
         Folder().save(movedFolder)
@@ -876,12 +877,12 @@ class TechJournal(Resource):
             emailTemplate = 'tech_journal_updated.mako'
         if metadata['notification-email']:
             html = mail_utils.renderTemplate(emailTemplate, data)
-            sendEmails(
-                User().find({
-                    'notificationStatus.NewSubmissionEmail': {'$ne': False}
-                }),
-                subject,
-                html
+            mail_utils.sendMailIndividually(
+                subject, html,
+                [
+                    user['email'] for user in
+                    User().find({'notificationStatus.NewSubmissionEmail': {'$ne': False}})
+                ]
             )
         folder['curation'] = DEFAULTS
         folder['public'] = True
@@ -927,12 +928,12 @@ class TechJournal(Resource):
         subject = "New Review: %s" % parentFolder['name']
         emailTemplate = 'tech_journal_new_review.mako'
         html = mail_utils.renderTemplate(emailTemplate, data)
-        sendEmails(
-            User().find({
-                'notificationStatus.NewReviewsEmail': {'$ne': False}
-            }),
-            subject,
-            html
+        mail_utils.sendMailIndividually(
+            subject, html,
+            [
+                user['email'] for user in
+                User().find({'notificationStatus.NewReviewsEmail': {'$ne': False}})
+            ]
         )
 
     @access.user(scope=TokenScope.DATA_READ)
@@ -1010,12 +1011,12 @@ class TechJournal(Resource):
             subject = "Comment Added - Submission %s" % parentFolder['name']
             emailTemplate = 'tech_journal_new_comment.mako'
             html = mail_utils.renderTemplate(emailTemplate, data)
-            sendEmails(
-                User().find({
-                    'notificationStatus.NewCommentEmail': {'$ne': False}
-                }),
-                subject,
-                html
+            mail_utils.sendMailIndividually(
+                subject, html,
+                [
+                    user['email'] for user in
+                    User().find({'notificationStatus.NewCommentEmail': {'$ne': False}})
+                ]
             )
         Folder().setMetadata(parentFolder, metadata)
         return 'Success'
@@ -1200,5 +1201,7 @@ class TechJournal(Resource):
         subject = "Website Feedback from %s" % metadata['title']
         emailTemplate = 'tech_journal_feedback.mako'
         html = mail_utils.renderTemplate(emailTemplate, metadata)
-        sendEmails(User().getAdmins(), subject, html)
+        mail_utils.sendMailIndividually(
+            subject, html,
+            [user['email'] for user in User().getAdmins()])
         return 'Success'
