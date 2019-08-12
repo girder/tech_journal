@@ -671,12 +671,12 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
-"@girder/core@^3.0.0-alpha.0.2":
-  version "3.0.0-alpha.0.2"
-  resolved "https://registry.yarnpkg.com/@girder/core/-/core-3.0.0-alpha.0.2.tgz#21f958fbae4e8bc75dff59e1eb7ffbb2ac9234ea"
-  integrity sha512-+YGUm/koz16f+wCG7HAezmVd1CuqklrAH1SgrcVH7Dn8MplhvDZC0SzHepwO7kzS6F3ktJEyt2jjD+R/GDTBCQ==
+"@girder/core@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@girder/core/-/core-3.0.1.tgz#0566c4dea6a122c43174420013bc54a4c63a75a3"
+  integrity sha512-QxpCFCtGcinfoeLH3U950OZXW73UD8BJqYmit79Y90gAB0Ja0QsWXlXOoku9hEMjYcpaxtQFak3/elwj+y7qLQ==
   dependencies:
-    "@girder/fontello" "~3.0.0-alpha.1"
+    "@girder/fontello" "*"
     as-jqplot "~1.0.8"
     backbone "~1.3.3"
     bootstrap "~3.3.7"
@@ -694,15 +694,15 @@
     underscore "~1.8.3"
     url-otpauth "~2.0.0"
 
-"@girder/fontello@~3.0.0-alpha.1":
-  version "3.0.0-alpha.1"
-  resolved "https://registry.yarnpkg.com/@girder/fontello/-/fontello-3.0.0-alpha.1.tgz#420df38f07e9b57d48ac7ff98a76c5d08aeeeba6"
-  integrity sha512-KCxVQn+9ic2z7PDAbAvFWafedJgUZAj4SwNVtAV6v1jAlWaDr5V5g8NR28W/O4nKKfegu1dFnlqsR6TlvbzhVQ==
+"@girder/fontello@*":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@girder/fontello/-/fontello-3.0.2.tgz#598d67597f5cb59fbfdfd0fb3b324a447a08014d"
+  integrity sha512-Tus6GsLiVyvoq3OJDCJVS6/yp42dHjDYZ/GFtdosWxKVJtng5OTl5ViFMIbmLcHayLKEP3e2DAMB5mG58Bcg6A==
 
-"@girder/oauth@^3.0.0-alpha.1":
-  version "3.0.0-alpha.1"
-  resolved "https://registry.yarnpkg.com/@girder/oauth/-/oauth-3.0.0-alpha.1.tgz#3ec01c73b9cd6a29ce1d44057af1e216f7733ffb"
-  integrity sha512-M5c54KAertRwDO8Ey1nVUOxie4iZqM0CpUDUFxPpp8ny+UQIuLrk1hdFGcRWZ+6dFuKd7/Xw/pugPlVWWKUM6A==
+"@girder/oauth@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@girder/oauth/-/oauth-3.0.1.tgz#7bef62d1781edc518f03ed8fc0cec41f7095eb7c"
+  integrity sha512-zOhFLjl6aH62OsyqVe0vV1KhnyNuuomvVfVWqD4OpD9ntWWO6Nqm2VpeosXkmgQ668YcDNaGOZGh8XOh6psVyQ==
 
 "@intervolga/optimize-cssnano-plugin@^1.0.5":
   version "1.0.6"

@@ -1,5 +1,5 @@
 import View from '@girder/core/views/View';
-import { restRequest, apiRoot } from '@girder/core/rest';
+import { restRequest, getApiRoot } from '@girder/core/rest';
 import router from '@girder/core/router';
 import { getCurrentUser } from '@girder/core/auth';
 import FolderModel from '@girder/core/models/FolderModel';
@@ -44,7 +44,7 @@ var reviewView = View.extend({
                         url: `file/${value}`
                     }).done((attachFileDetails) => {
                         var name = attachFileDetails.name;
-                        var url = `${apiRoot}/file/${value}/download`;
+                        var url = `${getApiRoot()}/file/${value}/download`;
                         var questionEntry = this.$(`.questionObject[value=${questionIndex}]`);
                         questionEntry.find('#attachFileRow').append(`<td><span class='fileItemId', value=${value}><a href=${url}>${name}</a></span></td>`);
                         questionEntry.find('#UploadFile').hide();

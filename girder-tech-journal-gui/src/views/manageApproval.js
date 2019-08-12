@@ -1,5 +1,5 @@
 import View from '@girder/core/views/View';
-import { restRequest, apiRoot } from '@girder/core/rest';
+import { restRequest, getApiRoot } from '@girder/core/rest';
 
 import MenuBarView from './menuBar.js';
 import ApprovalViewTemplate from '../templates/journal_admin_approval.pug';
@@ -39,7 +39,7 @@ var manageApprovalView = View.extend({
                 'submissions': subData,
                 'approveLink': true
             },
-            root: apiRoot,
+            root: getApiRoot(),
             'logos': {
                 'default': PlaceholderLogoURL,
                 'certified': CertificationLogoURL

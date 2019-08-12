@@ -43,7 +43,7 @@ setup(
     include_package_data=True,
     packages=find_packages(),
     install_requires=[
-        'girder',
+        'girder>=3',
         'celery',
         'girder-oauth',
         'girder-worker[girder]',
