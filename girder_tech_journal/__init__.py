@@ -13,7 +13,6 @@ import girder_tech_journal.settings  # noqa: F401
 from girder_tech_journal.models.journal import Journal
 from girder_tech_journal.models.download_statistics import DownloadStatistics
 from girder_tech_journal.api.tech_journal import TechJournal
-from girder_tech_journal.utils.mail import _queueEmails
 
 
 class TechJournalPlugin(GirderPlugin):
@@ -41,8 +40,6 @@ class TechJournalPlugin(GirderPlugin):
                 ),
                 'tools.staticdir.index': 'index.html'
             }
-
-        events.bind('_queueEmails', 'tech_journal.queueEmails', _queueEmails)
 
         Folder().exposeFields(level=AccessType.READ,
                               fields='downloadStatistics')
