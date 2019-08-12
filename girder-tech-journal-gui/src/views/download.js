@@ -1,5 +1,5 @@
 import View from '@girder/core/views/View';
-import { restRequest, apiRoot } from '@girder/core/rest';
+import { restRequest, getApiRoot } from '@girder/core/rest';
 
 import MenuBarView from './menuBar.js';
 import DownloadViewTemplate from '../templates/journal_download.pug';
@@ -43,10 +43,10 @@ var downloadView = View.extend({
         }).done((resp) => {
             var paperDownloadUrl =
                 paperItem && paperItem._id
-                    ? `${apiRoot}/item/${paperItem._id}/download`
+                    ? `${getApiRoot()}/item/${paperItem._id}/download`
                     : null;
             var parentDownloadUrl =
-                 `${apiRoot}/folder/${this.parentId}/download`;
+                 `${getApiRoot()}/folder/${this.parentId}/download`;
             var displayObj = {
                 parent: this.parentId,
                 parentDownloadUrl: parentDownloadUrl,

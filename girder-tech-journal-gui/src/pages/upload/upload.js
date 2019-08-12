@@ -5,7 +5,7 @@ import FolderModel from '@girder/core/models/FolderModel';
 import UploadWidget from '@girder/core/views/widgets/UploadWidget';
 import { getCurrentUser } from '@girder/core/auth';
 import { handleClose } from '@girder/core/dialog';
-import { restRequest, apiRoot } from '@girder/core/rest';
+import { restRequest, getApiRoot } from '@girder/core/rest';
 
 import MenuBarView from '../../views/menuBar.js';
 import UploadViewTemplate from './journal_upload.pug';
@@ -132,7 +132,7 @@ var uploadView = View.extend({
                 url: `item?folderId=${this.parentId}`
             }).done((itemResp) => {
                 for (var index in itemResp) {
-                    this.$('#uploadTable').append(UploadEntryTemplate({info: itemResp[index], 'root': apiRoot}));
+                    this.$('#uploadTable').append(UploadEntryTemplate({info: itemResp[index], 'root': getApiRoot()}));
                     this.$('#uploadQuestions').show();
                     this.$('#acceptRights').prop('checked', 'checked');
                     this.$('#acceptLicense').prop('checked', 'checked');
@@ -200,7 +200,7 @@ var uploadView = View.extend({
                     data: JSON.stringify(subData),
                     error: null
                 }).done((respMD) => {
-                    this.$('#uploadTable').append(UploadEntryTemplate({info: respMD, 'root': apiRoot}));
+                    this.$('#uploadTable').append(UploadEntryTemplate({info: respMD, 'root': getApiRoot()}));
                     this.$('#uploadQuestions').show();
                     this.submitCheck();
                 });

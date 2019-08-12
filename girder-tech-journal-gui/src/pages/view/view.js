@@ -5,7 +5,7 @@ import 'social-likes-next/lib/social-likes_flat.css';
 import View from '@girder/core/views/View';
 import router from '@girder/core/router';
 import { getCurrentUser } from '@girder/core/auth';
-import { restRequest, apiRoot } from '@girder/core/rest';
+import { restRequest, getApiRoot } from '@girder/core/rest';
 
 import MenuBarView from '../../views/menuBar.js';
 import SubmissionViewTemplate from './journal_view.pug';
@@ -138,7 +138,7 @@ var submissionView = View.extend({
         }).done((resp) => {
             var logoURL = '';
             if (resp.length > 0) {
-                logoURL = `${apiRoot}/${resp}`;
+                logoURL = `${getApiRoot()}/${resp}`;
             }
             this.$el.html(SubmissionViewTemplate({
                 'urlLink': urlLink,

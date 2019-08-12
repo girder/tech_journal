@@ -1,7 +1,7 @@
 import View from '@girder/core/views/View';
 import router from '@girder/core/router';
 import Accordion from 'accordion';
-import { cancelRestRequests, restRequest, apiRoot } from '@girder/core/rest';
+import { cancelRestRequests, restRequest, getApiRoot } from '@girder/core/rest';
 
 import MenuBarView from '../../views/menuBar.js';
 import HomeTemplate from './home.pug';
@@ -214,7 +214,7 @@ const HomePage = View.extend({
                 this.$('#noResultElement').hide();
                 this.$('.searchResults').html(this.$('.searchResults').html() + IndexEntryViewTemplate({
                     info: {'submissions': submissions},
-                    root: apiRoot,
+                    root: getApiRoot(),
                     logos: {
                         'default': PlaceholderLogoURL,
                         'certified': CertificationLogoURL
