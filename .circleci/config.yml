@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: girder/tech_journal_test:latest
+      - image: girder/girder_test:latest-py3
       - image: circleci/mongo:3.6-ram
         command: ["mongod", "--storageEngine", "ephemeralForTest", "--dbpath", "/dev/shm/mongo"]
 
