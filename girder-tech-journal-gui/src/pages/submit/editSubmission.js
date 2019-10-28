@@ -63,9 +63,9 @@ var editView = View.extend({
                             },
                             error: null
                         }).done((resp) => {
-                            this._updateSubmission(this.itemId);
-                            router.navigate(`#submission/${this.itemId}/upload/edit`,
-                                {trigger: true});
+                            let submissionInfo = this._captureSubmissionInformation();
+                            this._updateSubmission(this.itemId, submissionInfo);
+                            router.navigate(`#submission/${this.itemId}/upload/edit`, trigger: true});
                         });
                     }
                 });

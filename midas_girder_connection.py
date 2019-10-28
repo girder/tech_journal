@@ -1,3 +1,7 @@
+from __future__ import division
+from __future__ import print_function
+from builtins import str
+from past.utils import old_div
 from pymongo import MongoClient
 import pymongo
 import argparse
@@ -74,7 +78,7 @@ def processPeerReview(review):
                 if not len(questions[question]['value']):
                     nonAnswered += 1
                     review["topics"][topic]['done'] = False;
-        review["done"] = ((totalQs - nonAnswered) / totalQs)  * 100
+        review["done"] = (old_div((totalQs - nonAnswered), totalQs))  * 100
         return review
 def metaDataQuery(cur, entryNo, fieldNo):
     cur.execute("SELECT * FROM metadatavalue WHERE itemrevision_id="+ str(entryNo)+" and metadata_id=" + str(fieldNo))
@@ -113,7 +117,7 @@ def metaDataQuery(cur, entryNo, fieldNo):
 
 def ReadAll(userId, prevAssetDir, dbName, baseParent=None, assetStore=None):
     # Query items from MySQL
-    db = MySQLdb.connect(user="root", passwd="root",db="otj")
+    db = MySQLdb.connect(user="root", passwd="root",db="OTJ")
     cur = db.cursor()
 
     issueDictionary = {}
@@ -170,7 +174,7 @@ def ReadAll(userId, prevAssetDir, dbName, baseParent=None, assetStore=None):
       assetStoreDB.insert_one(inputAssetStore)
     else:
       inputAssetStoreQuery = assetStoreDB.find({"root":assetStore})
-      inputAssetStore = inputAssetStoreQuery.next()
+      inputAssetStore = next(inputAssetStoreQuery)
     if not baseParent:
       inputCollection = {"creatorId" : ObjectId(userId),
                      "public":True,
@@ -435,7 +439,7 @@ def ReadAll(userId, prevAssetDir, dbName, baseParent=None, assetStore=None):
           "description" : "Group %s for issue %s " % (val, inputObject["name"])
         }
         result = groupDB.insert_one(inputGroup)
-      print inputObject["name"]
+      print(inputObject["name"])
       issueDictionary[folder_id] = inputObject
     # ====================================================
     # Bring over all Folders and all revisions within those folders for
@@ -486,7 +490,7 @@ def ReadAll(userId, prevAssetDir, dbName, baseParent=None, assetStore=None):
         inputObject["description"] = row[3]
         inputObject["created"] = row[10]
         inputObject["updated"] = row[2]
-        print inputObject["name"]
+        print(inputObject["name"].encode("UTF-8"))
         result = foldersDB.insert_one(inputObject)
       else:
         inputObject["_id"] = reviewDataFolder["_id"]
@@ -589,7 +593,7 @@ def ReadAll(userId, prevAssetDir, dbName, baseParent=None, assetStore=None):
           |          43 | revision_notes      |
           +-------------+---------------------+
           '''
-          inputRevision["meta"]["authors"] = metaDataQuery(cur, revision[0],"17").replace(" --- ",' ').split(" ;;; ")
+          inputRevision["meta"]["authors"] = metaDataQuery(cur, revision[0],"17").replace(" --- ", ' ').split(" ;;; ")
           inputRevision["meta"]["institution"] = metaDataQuery(cur, revision[0],"16")
           inputRevision["meta"]["keyword"] = metaDataQuery(cur, revision[0],"13")
           inputRevision["meta"]["tags"] = metaDataQuery(cur, revision[0],"21").split(" --- ")
@@ -624,7 +628,7 @@ def ReadAll(userId, prevAssetDir, dbName, baseParent=None, assetStore=None):
           inputRevision["created"] = revision[3]
           if inputRevision["created"] == None:
             inputRevision["created"] = row[2]
-          print inputRevision['name']
+          print(inputRevision['name'])
           # Capture the download and view information
           #| download_id    | bigint(20)   | NO   | PRI | NULL              | auto_increment              |
           #| item_  id        | bigint(20)   | NO   | MUL | NULL              |                             |
@@ -739,7 +743,7 @@ def ReadAll(userId, prevAssetDir, dbName, baseParent=None, assetStore=None):
                                 "path" : newAssetPath,
                                 "sha512" : newChecksum,
                                 "size":bitstream[4]}
-                  print inputFile['name']
+                  print(inputFile['name'])
                   result = fileDB.insert_one(inputFile)
     settingDB.insert_one({"_id":ObjectId(),
                           "key":"technical_journal.submission",
