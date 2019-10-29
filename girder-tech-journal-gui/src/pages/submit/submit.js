@@ -28,6 +28,10 @@ var SubmitView = View.extend({
             this.journalID = event.currentTarget.attributes['journal'].value;
             this.render(event.currentTarget.target, 2);
         },
+        'click .resumeSub': function (event) {
+            var targetUrl = '#plugins/journal/submission/';
+            router.navigate(`${targetUrl}${event.currentTarget.attributes['target'].value}/edit`, {trigger: true});
+        },
         'submit #submitForm': function (event) {
             event.preventDefault();
             var catCheck = this._checkCategories();
@@ -105,8 +109,33 @@ var SubmitView = View.extend({
     initialize: function (id) {
         this.user = getCurrentUser();
         var openIssues = [];
+        var returnedSubmissions = [];
         if (id.id === 'new') {
             this.newSub = true;
+            // Check user's folder for returned submissions
+            restRequest({
+                method: 'GET',
+                url: 'folder',
+                data: {
+                    parentId: this.user.id,
+                    parentType: 'user'
+                },
+                error: null
+            }).done((userResp) => {
+                userResp.forEach(function (submission) {
+                    restRequest({
+                        method: 'GET',
+                        url: `journal/submission/${submission._id}/revision`,
+                        error: null
+                    }).done((revisionList) => {
+                        if (revisionList.length) {
+                            submission['revisionId'] = revisionList[0]['_id'];
+                            returnedSubmissions = returnedSubmissions.concat(submission);
+                        }
+                        this.render(openIssues, returnedSubmissions, 1);
+                    }, this);
+                }, this);
+            }, this);
             // Get all available Journals
             restRequest({
                 method: 'GET',
@@ -125,7 +154,7 @@ var SubmitView = View.extend({
                         });
                         // Keep track of all open issues
                         openIssues = openIssues.concat(jrnResp);
-                        this.render(openIssues, 1);
+                        this.render(openIssues, returnedSubmissions, 1);
                     }, this);
                 }, this);
             }, this); // End getting of OTJ Collection value setting
@@ -134,17 +163,17 @@ var SubmitView = View.extend({
             this.approval = id.approval;
             this.id = id.id;
             this.newSub = false;
-            this.render(id.id, 2);
+            this.render(id.id, {}, 2);
         }
     },
-    render: function (subResp, state) {
+    render: function (subResp, revisits, state) {
         if (Array.isArray(subResp)) {
             subResp.forEach(function (obj) {
                 obj.daysLeft = Math.round((new Date(obj.meta.paperDue).valueOf() -
                     Date.now()) / 1000 / 60 / 60 / 24);
             });
         }
-        this.$el.html(SelectIssueTemplate({info: subResp}));
+        this.$el.html(SelectIssueTemplate({'info': subResp, 'revisits': revisits}));
         var issueInfo;
         new MenuBarView({ // eslint-disable-line no-new
             el: this.$('#headerBar'),
@@ -169,7 +198,8 @@ var SubmitView = View.extend({
                 }
                 this.$('#pageContent').html(SubmitViewTemplate({ 'info': { info: {}, parInfo: {} },
                     'disclaimer': 'You are licensing your work to OSEHRA Inc. under the Creative Commons Attribution License Version 3.0.',
-                    'titleText': 'Create Publication'
+                    'titleText': 'Create Publication',
+                    'user': this.user
                 }));
                 this.$('.viewMain').hide();
                 restRequest({
@@ -272,7 +302,8 @@ var SubmitView = View.extend({
                         parentId: this.user.id,
                         parentType: 'user',
                         name: inData.subName,
-                        description: inData.subDescription
+                        description: inData.subDescription,
+                        public: true
                     },
                     error: null
                 }).done((resp) => {

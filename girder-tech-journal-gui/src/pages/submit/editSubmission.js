@@ -3,6 +3,7 @@ import Accordion from 'accordion';
 import View from '@girder/core/views/View';
 import router from '@girder/core/router';
 import events from '@girder/core/events';
+import { getCurrentUser } from '@girder/core/auth';
 import { restRequest } from '@girder/core/rest';
 
 import MenuBarView from '../../views/menuBar.js';
@@ -16,6 +17,16 @@ var editView = View.extend({
         'click .issueGen': function (event) {
             this.parentID = event.currentTarget.target;
             this.render(event.currentTarget.target);
+        },
+        'click #rejectSubmission': function (event) {
+            event.preventDefault();
+            restRequest({
+                method: 'PUT',
+                url: `journal/${this.itemId}/reject`,
+                error: null
+            }).done((resp) => {
+                router.navigate(`#`, {trigger: true});
+            });
         },
         'submit #submitForm': function (event) {
             event.preventDefault();
@@ -52,9 +63,9 @@ var editView = View.extend({
                             },
                             error: null
                         }).done((resp) => {
-                            this._updateSubmission(this.itemId);
-                            router.navigate(`#submission/${this.itemId}/upload/edit`,
-                                {trigger: true});
+                            let submissionInfo = this._captureSubmissionInformation();
+                            this._updateSubmission(this.itemId, submissionInfo);
+                            router.navigate(`#submission/${this.itemId}/upload/edit`, trigger: true});
                         });
                     }
                 });
@@ -87,7 +98,8 @@ var editView = View.extend({
             method: 'GET',
             url: `journal/${this.itemId}/details`
         }).done((resp) => {
-            this.parent = resp[1];
+            this.submissionInfo = resp;
+            this.parent = this.submissionInfo[1];
             var titleText = 'Edit current revision';
             if (this.newRevision) {
                 titleText = 'Create revision';
@@ -95,7 +107,15 @@ var editView = View.extend({
             if (this.approve) {
                 titleText = 'Approve Submission';
             }
-            this.$el.html(SubmitViewTemplate({info: {info: resp[0], 'parInfo': resp[1], 'NR': this.newRevision}, 'titleText': titleText}));
+            this.$el.html(SubmitViewTemplate({
+                info: {
+                    info: this.submissionInfo[0],
+                    'parInfo': this.submissionInfo[1],
+                    'NR': this.newRevision
+                },
+                'titleText': titleText,
+                'user': getCurrentUser()
+            }));
             new MenuBarView({ // eslint-disable-line no-new
                 el: this.$('#headerBar'),
                 parentView: this

@@ -144,6 +144,7 @@ class TechJournal(Resource):
         self.route('PUT', (':id', 'review'), self.updateReviews)
         self.route('PUT', (':id', 'finalize'), self.finalizeSubmission)
         self.route('PUT', (':id', 'approve'), self.approveSubmission)
+        self.route('PUT', (':id', 'reject'), self.rejectSubmission)
         self.route('PUT', (':id', 'comments'), self.updateComments)
         self.route('GET', (':id', 'survey'), self.getSurvey)
         self.route('PUT', ('setting',), self.setJournalSettings)
@@ -782,6 +783,27 @@ class TechJournal(Resource):
                 downLoadObj = Item().fileList(fileObj).next()[1]()
                 foundText = downLoadObj.next()
         return unicode(foundText, errors='ignore')
+
+    @access.user(scope=TokenScope.DATA_READ)
+    @loadmodel(model='folder', level=AccessType.WRITE)
+    @describeRoute(
+        Description('Move folder from issue back to user\'s folder')
+        .param('id', 'The ID of the folder.', paramType='path')
+        .errorResponse('Test error.')
+        .errorResponse('Read access was denied on the issue.', 403)
+        )
+    def rejectSubmission(self, params, folder):
+        DEFAULTS = {
+            'enabled': True,
+            'status': 'REJECTED'
+        }
+        folder['curation'] = DEFAULTS
+        Folder().save(folder)
+        parentFolder = Folder().load(folder['parentId'], force=True)
+        user = User().load(folder['creatorId'], user=self.getCurrentUser())
+        movedFolder = Folder().move(parentFolder, user, 'user')
+        Folder().save(movedFolder)
+        return movedFolder
 
     @access.user(scope=TokenScope.DATA_READ)
     @loadmodel(model='folder', level=AccessType.WRITE)

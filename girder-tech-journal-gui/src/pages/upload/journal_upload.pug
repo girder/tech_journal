@@ -73,19 +73,13 @@
         label#sendNotificationEmailLabel(for="sendNotificationEmail")
           | Send notification email
         br
+        if user.attributes.admin
+          input#rejectSubmission(type="submit", value="<Reject Submission", style="width:150px;")
         if (user.attributes.admin )|| (newRevision)
           form#approvedUploadForm(method="POST", action="")
             input(type="submit", value='Publish >', name="finish", disabled="disabled")
-            input#hiddenSourceLicense(type="hidden", value="0", name="source-license")
-            input#hiddenSourceLicenseText(type="hidden", value="Other", name="source-license-text")
-            input#hiddenAttributionPolicy(type="hidden", value="0", name="attribution-policy")
-            input#hiddenSendNotificationEmail(type="hidden", value="1", name="send-email")
         unless (user.attributes.admin )|| (newRevision)
           form#curateduploadForm(method="POST", action="")
             input(type="submit", value='Submit for Approval >', name="finish", disabled="disabled")
-            input#hiddenSourceLicense(type="hidden", value="0", name="source-license")
-            input#hiddenSourceLicenseText(type="hidden", value="Other", name="source-license-text")
-            input#hiddenAttributionPolicy(type="hidden", value="0", name="attribution-policy")
-            input#hiddenSendNotificationEmail(type="hidden", value="1", name="send-email")
     .clear
     .Footer

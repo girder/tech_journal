@@ -21,10 +21,10 @@ var uploadView = View.extend({
             this._appendData({
                 'has_test_code': testingCode > 0,
                 'has_code': sourceCode > 0,
-                'source-license': this.$('#hiddenSourceLicense').val().trim(),
-                'source-license-text': this.$('#hiddenSourceLicenseText').val().trim(),
-                'attribution-policy': this.$('#hiddenAttributionPolicy').val().trim(),
-                'notification-email': this.$('#hiddenSendNotificationEmail').val().trim() === '1'
+                'source-license': this.$('#licenseChoice').val().trim(),
+                'source-license-text': this.$('#otherLicenseInput').val().trim(),
+                'attribution-policy': this.$('#acceptAttributionPolicy').is(':visible') && this.$('#acceptAttributionPolicy').is(':checked'),
+                'notification-email': $('#sendNotificationEmail').is(':checked')
             });
         },
         'submit #approvedUploadForm': function (event) {
@@ -34,10 +34,10 @@ var uploadView = View.extend({
             this._approveSubmission({
                 'has_test_code': testingCode > 0,
                 'has_code': sourceCode > 0,
-                'source-license': this.$('#hiddenSourceLicense').val().trim(),
-                'source-license-text': this.$('#hiddenSourceLicenseText').val().trim(),
-                'attribution-policy': this.$('#hiddenAttributionPolicy').val().trim(),
-                'notification-email': this.$('#hiddenSendNotificationEmail').val().trim() === '1',
+                'source-license': this.$('#licenseChoice').val().trim(),
+                'source-license-text': this.$('#otherLicenseInput').val().trim(),
+                'attribution-policy': this.$('#acceptAttributionPolicy').is(':visible') && this.$('#acceptAttributionPolicy').is(':checked'),
+                'notification-email': $('#sendNotificationEmail').is(':checked'),
                 'revisionPhase': 'peer'
             });
         },
@@ -50,6 +50,15 @@ var uploadView = View.extend({
                 $('#githubContentBlock').hide();
                 this._uploadFiles(event);
             }
+        },
+        'click #rejectSubmission': function (event) {
+            restRequest({
+                method: 'PUT',
+                url: `journal/${this.parentId}/reject`,
+                error: null
+            }).done((resp) => {
+                router.navigate(`#`, {trigger: true});
+            });
         },
         'click .deleteLink': function (event) {
             event.preventDefault();
@@ -80,8 +89,6 @@ var uploadView = View.extend({
 
         // Change function for updating the attribution policy value and submit status
         'change #acceptAttributionPolicy': function (event) {
-            var acceptAttributionPolicyIsSelected = this.$('#acceptAttributionPolicy').is(':visible') && this.$('#acceptAttributionPolicy').is(':checked');
-            this.$('#hiddenAttributionPolicy').attr('value', acceptAttributionPolicyIsSelected ? 1 : 0);
             this.submitCheck();
         },
         // Change function for updating the 'Right to distribute' and submit status
@@ -92,28 +99,15 @@ var uploadView = View.extend({
         'change #acceptLicense': function (event) {
             var license = this.$('#licenseChoice').val();
             this._checkForm(license);
-            var acceptAttributionPolicyIsSelected = $('#acceptAttributionPolicy').is(':visible') && $('#acceptAttributionPolicy').is(':checked');
-            this.$('#hiddenAttributionPolicy').attr('value', acceptAttributionPolicyIsSelected ? 1 : 0);
             this.submitCheck();
         },
 
         'change #licenseChoice': function (event) {
             var license = this.$('#licenseChoice').val();
-            this.$('#hiddenSourceLicense').attr('value', license);
             this._checkForm(license);
-            var acceptAttributionPolicyIsSelected = this.$('#acceptAttributionPolicy').is(':visible') && this.$('#acceptAttributionPolicy').is(':checked');
-            this.$('#hiddenAttributionPolicy').attr('value', acceptAttributionPolicyIsSelected ? 1 : 0);
             this.submitCheck();
         },
-
-        'change #sendNotificationEmail': function (event) {
-            var sendNotificationEmailIsSelected = $('#sendNotificationEmail').is(':visible') && $('#sendNotificationEmail').is(':checked');
-            this.$('#hiddenSendNotificationEmail').attr('value', sendNotificationEmailIsSelected ? 1 : 0);
-        },
-
         'change #otherLicenseInput': function (event) {
-            var otherLicenseIsFilled = this.$('#otherLicenseInput').is(':visible') && this.$('#otherLicenseInput').val();
-            this.$('#hiddenSourceLicenseText').attr('value', otherLicenseIsFilled ? this.$('#otherLicenseInput').val() : 'Other');
             this.submitCheck();
         }
     },
