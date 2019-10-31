@@ -50,6 +50,7 @@ var manageQuestionView = View.extend({
             event.preventDefault();
             event.stopImmediatePropagation();
             this.$('.questionArea').empty();
+            event.currentTarget.parentElement.remove();
             this._saveList();
         },
         'click .topicElement': function (event) {
@@ -80,8 +81,17 @@ var manageQuestionView = View.extend({
         },
         'click #newQuestionLink': function (event) {
             event.preventDefault();
-            this.$('.questionArea').empty();
-            this.$('.questionArea').append(addQuestionTemplate({'type': 'New', 'text': ''}));
+            if (this.$('.topicElement.active').length > 0) {
+                this.$('.questionArea').empty();
+                this.$('.questionArea').append(addQuestionTemplate({'type': 'New', 'text': ''}));
+            } else {
+                events.trigger('g:alert', {
+                    icon: 'fail',
+                    text: 'Cannot add questions before selecting a topic',
+                    type: 'warning',
+                    timeout: 4000
+                });
+            }
         },
         // Adapted from https://stackoverflow.com/questions/3050830/reorder-list-elements-jquery
         'click .mvUp': function (event) {

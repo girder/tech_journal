@@ -1,5 +1,5 @@
 from girder.models.model_base import AccessControlledModel
-
+from girder.utility.model_importer import ModelImporter
 from girder_tech_journal.settings import TechJournalSettingsDefault
 
 
