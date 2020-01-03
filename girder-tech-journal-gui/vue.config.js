@@ -28,22 +28,15 @@ module.exports = {
       }]);
 
     // Modify existing Pug loader
-    // For separate Pug files, we want to use the full 'pug-loader'; for inlined Pug segments
-    // loaded with vue-loader, continue to use 'pug-plain-loader'
-    // See https://vue-loader.vuejs.org/guide/pre-processors.html#pug
+    // For separate Pug files, we want to use the full 'pug-loader'
     config.module
       .rule('pug')
+      .oneOf('pug-template')
       .uses
-      .delete('pug-plain-loader');
+      .clear();
     config.module
       .rule('pug')
-      .oneOf('pug-vue')
-      .resourceQuery(/^\?vue/)
-      .use('pug-plain-loader')
-      .loader('pug-plain-loader');
-    config.module
-      .rule('pug')
-      .oneOf('pug-file')
+      .oneOf('pug-template')
       .use('pug-loader')
       .loader('pug-loader');
 
