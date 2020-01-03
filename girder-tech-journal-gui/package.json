@@ -12,14 +12,15 @@
     "@girder/core": "^3.0.1",
     "@girder/oauth": "^3.0.1",
     "accordion": "^3.0.2",
+    "core-js": "^3.4.4",
     "md5": "^2.2.1",
     "social-likes-next": "^1.1.0",
     "vue": "^2.5.17"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.3.0",
-    "@vue/cli-plugin-eslint": "^3.3.0",
-    "@vue/cli-service": "^3.3.1",
+    "@vue/cli-plugin-babel": "^4.1.2",
+    "@vue/cli-plugin-eslint": "^4.1.2",
+    "@vue/cli-service": "^4.1.2",
     "@vue/eslint-config-airbnb": "^4.0.0",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.8.0",
@@ -68,12 +69,12 @@
       "autoprefixer": {}
     }
   },
-  "eslintIgnore": [
-    "src/**/*.js"
-  ],
   "browserslist": [
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
+  ],
+  "eslintIgnore": [
+    "src/**/*.js"
   ]
 }
