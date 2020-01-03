@@ -29,8 +29,7 @@ var SubmitView = View.extend({
             this.render(event.currentTarget.target, 2);
         },
         'click .resumeSub': function (event) {
-            var targetUrl = '#plugins/journal/submission/';
-            router.navigate(`${targetUrl}${event.currentTarget.attributes['target'].value}/edit`, {trigger: true});
+            router.navigate(`#submission/${event.currentTarget.attributes['target'].value}/edit`, {trigger: true});
         },
         'submit #submitForm': function (event) {
             event.preventDefault();
