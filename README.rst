@@ -33,41 +33,28 @@ Setup Instructions
 Install pre-requisite programs
 ++++++++++++++++++++++++++++++
 
-Follow the Girder `System Prerequisites`_ documentation to ensure that all
-necessary programs are available for the pip-installed version of Girder.
-
-**Note:** The Technical Journal plugin requires Node.js 8+. When following the
-documentation to enable the Node.js APT repository, use:
-
-.. code:: bash
-
-  curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-
-**Note:** The Technical Journal plugin requires that MongoDB is at least 3.4+. When following the
-documentation to install MongoDB, replace '3.2' with '3.4'
-
-.. code:: bash
-
-  echo "deb http://repo.mongodb.org/apt/debian jessie/mongodb-org/3.4 main" \
-    | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
-
-or
-
-.. code:: bash
-
-  echo "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" \
-    | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
-
+Follow the Girder `Installation Quickstart`_ documentation to ensure that all
+necessary programs are available for the pip-installed version of Girder. Stop
+before the Girder section and do *NOT* install Girder yet. It is recommended,
+and this document will assume, that a Python virtual environment has been
+created.
 
 Set up Technical Journal plugin
 +++++++++++++++++++++++++++++++
+
+First, remember to activate the virtual environment for Girder with:
+
+.. code:: bash
+
+  source girder_env/bin/activate
+
 The plugin can either be installed directly from pip:
 
 .. code:: bash
 
   pip install girder-tech-journal
 
-Or by cloning this repository
+Or by cloning this repository:
 
 .. code:: bash
 
@@ -75,10 +62,13 @@ Or by cloning this repository
   cd tech_journal
   pip install .
 
-In the git repo directory, follow the Installation_ documentation to create a
-virtual environment and install Girder from pypi. Do not install the web client
-libraries yet. The following instructions assume you have entered the virtual
-environment.
+Developers should intall the technical journal in "editable" mode:
+
+.. code:: bash
+
+  git clone https://github.com/girder/tech_journal
+  cd tech_journal
+  pip install -e .
 
 Install yarn
 
@@ -90,7 +80,7 @@ Install web packages:
 
 .. code:: bash
 
-  cd girder-tech-journal-gui
+  cd tech_journal/girder-tech-journal-gui
   yarn install
 
 To run the development server:
@@ -106,8 +96,9 @@ To build the standalone web application for production:
   yarn run build
 
 
-If you've cloned the repo and are developing for the plugin, there is a custom command in ``setup.py`` that will
-automate installing yarn packages, building the frontend for production, and copying the dist folder to the proper location.
+If you've cloned the repo and are developing for the plugin, there is a custom
+command in ``setup.py`` that will automate installing yarn packages, building
+the frontend for production, and copying the dist folder to the proper location.
 To use this, run: ``python setup.py build_ui``.
 
 **WARNING**
@@ -141,20 +132,6 @@ After installation, ensure that the service is running
     [ + ]  rabbitmq-server
 
 
-Install Tech Journal Tasks
-__________________________
-
-The package found in the ``tech_journal_tasks`` directory will also need
-to be installed into the environment prior to starting the ``girder_worker``
-program.
-
-This is accomplished by entering the ``tech_journal_tasks`` directory
-and executing the setup.py file with the ``install`` directive.
-
-.. code:: bash
-
-  cd tech_journal_tasks
-  pip install .
 
 Start girder_worker
 ___________________
@@ -162,7 +139,8 @@ ___________________
 Executing the ``girder_worker`` program will start the task listener. If
 one has accepted the default installation for RabbitMQ, there will be no
 changes necessary to the girder_worker configuration to allow it to connect
-to RabbitMQ.  Start girder_worker with the following command:
+to RabbitMQ. Open a new terminal and activate the virtual environment.
+Then start girder_worker with the following command:
 
 .. code:: bash
 
@@ -222,21 +200,12 @@ This can be accomplished by clicking on ``Collections`` in the left menu and
 then clicking on the ``Create Collection`` button. Enter a name and a
 description, then click ``Create``.
 
-This creation of the collection can also be done by utilizing the
-``plugins/admin/journal`` page of the OTJ.
-
 **Note**  The description of the collection must contain the string
 ``__journal__`` to be picked up by certain OTJ pages.
 
 The "Unique ID" of this folder, which can be found by clicking on the blue
 button with  an ``i`` on it, will be used later to configure the Tech Journal
 plugin.
-
-Then, generate a folder within that collection to be the first "Issue" that will
-be submitted to. This is accomplished by clicking on the ``Collection Actions``
-menu and selecting ``Create folder here``.  The ``Collection Actions`` button
-can be found to the right of the blue button from above. Enter a name and
-description for the first folder and then click "Create" again.
 
 
 Enable the Technical Journal plugin
@@ -245,10 +214,6 @@ ___________________________________
 
 To enable the plugin, head to the ``Admin Console`` and click on the
 ``Plugins`` link.
-
-A list of the current plugins will be shown, scroll down to the
-``Technical Journal Plugin`` and enable it by switching the ``OFF`` slider
-to the on position.
 
 Click on the ``Configure Plugin`` icon, which looks like a small gear.
 
@@ -265,12 +230,6 @@ Visit the entry point of the plugin by visiting::
 Or something like this for a localhost instance::
 
   http://localhost:8080/tech_journal
-
-**WARNING**
-
-Some of the links, ``Journal`` and ``Help``, in the menu bar do not point to
-valid locations within the plugin yet.  The ``Home`` and ``New Submission``
-links will take you to the correct pages.
 
 
 Releasing
@@ -297,7 +256,7 @@ First increment the version is setup.py. Then run:
     :target: https://raw.githubusercontent.com/girder/tech_journal/master/LICENSE
     :alt: License
 
-.. _`System Prerequisites`: https://girder.readthedocs.io/en/stable/prerequisites.html
+.. _`Installation Quickstart`: https://girder.readthedocs.io/en/stable/installation-quickstart.html
 .. _`Installation`: https://girder.readthedocs.io/en/stable/installation.html
 .. _Girder_Worker: https://github.com/girder/girder_worker
 .. _RabbitMQ: https://www.rabbitmq.com/download.html
