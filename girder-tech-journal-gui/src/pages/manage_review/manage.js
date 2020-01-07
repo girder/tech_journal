@@ -150,7 +150,15 @@ var manageQuestionView = View.extend({
         'submit #addQuestionForm': function (event) {
             event.preventDefault();
             this.$('#questionTD').append(
-                manageReviewQuestionEntry({questions: [{'description': this.$('#questionText').val()}]})
+                manageReviewQuestionEntry({
+                    questions: [
+                        {
+                            'description': this.$('#questionText').val(),
+                            'upload': this.$('[name="questioncomment"]').is(':checked') ? 1 : 0,
+                            'comment': this.$('[name="questionattachfile"]').is(':checked') ? 1 : 0
+                        }
+                    ]
+                })
             );
             this._saveList();
         },
@@ -302,10 +310,10 @@ var manageQuestionView = View.extend({
             var newQuestions = {};
             this.$('.questionElement textarea').each(function (index, data) {
                 newQuestions[index] = {'value': [],
-                    'attachfile': '0',
+                    'attachfile': $(data).attr('upload'),
                     'attachfileValue': '',
                     'commentValue': '',
-                    'comment': '1',
+                    'comment': $(data).attr('comment'),
                     'description': $(data).text()
                 };
             });

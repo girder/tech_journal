@@ -20,7 +20,7 @@ else
         if question.comment
           td
             textarea.questionComment(disabled=isDisabled) #{question.commentValue}
-  if (question.attachfile === 1) && (!isDisabled)
+  if (question.attachfile === "1") && (!isDisabled)
     .uploadWrapper
       table
         tbody

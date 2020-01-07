@@ -46,8 +46,8 @@ var reviewView = View.extend({
                         var name = attachFileDetails.name;
                         var url = `${getApiRoot()}/file/${value}/download`;
                         var questionEntry = this.$(`.questionObject[value=${questionIndex}]`);
-                        questionEntry.find('#attachFileRow').append(`<td><span class='fileItemId', value=${value}><a href=${url}>${name}</a></span></td>`);
-                        questionEntry.find('#UploadFile').hide();
+                        questionEntry.find('#attachFileRow').append(`<td><span class='fileItemId' value=${value}><a href=${url}>${name}</a></span></td>`);
+                        questionEntry.find('#UploadFile').remove();
                     });
                 }
             }, this);
@@ -197,7 +197,7 @@ var reviewView = View.extend({
             updatedQuestions[questionIndex] = {'attachfile': selectedTopics[targetIndex].questions[questionIndex].attachfile,
                 'attachfileValue': $(data).find('.fileItemId').attr('value'),
                 'commentValue': $(data).find('textarea').val(),
-                'comment': '1',
+                'comment': selectedTopics[targetIndex].questions[questionIndex].comment,
                 'description': selectedTopics[targetIndex].questions[questionIndex].description,
                 'value': selectedVal
             };
