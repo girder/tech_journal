@@ -42,27 +42,32 @@ created.
 Set up Technical Journal plugin
 +++++++++++++++++++++++++++++++
 
+
 First, remember to activate the virtual environment for Girder with:
 
 .. code:: bash
 
   source girder_env/bin/activate
 
-The plugin can either be installed directly from pip:
+Depending on the desired usage, the plugin should be set up in different
+ways:
+
+Install from PyPI via PIP
+__________________________
+
+
+The plugin can either be installed using the PIP tool, which
+will provide pre-built and non-editable versions of the Tech Journal pages.
 
 .. code:: bash
 
   pip install girder-tech-journal
 
-Or by cloning this repository:
+Local Development Environment
+_____________________________
 
-.. code:: bash
-
-  git clone https://github.com/girder/tech_journal
-  cd tech_journal
-  pip install .
-
-Developers should intall the technical journal in "editable" mode:
+For production instances with modifications or development environments, we
+recommend that the Tech Journal be installed in "editable", ``-e``,  mode:
 
 .. code:: bash
 
@@ -70,7 +75,10 @@ Developers should intall the technical journal in "editable" mode:
   cd tech_journal
   pip install -e .
 
-Install yarn
+Build Tech Journal pages
+************************
+
+To build the Tech Journal pages, first install the ``yarn`` program
 
 .. code:: bash
 
@@ -83,23 +91,28 @@ Install web packages:
   cd tech_journal/girder-tech-journal-gui
   yarn install
 
-To run the development server:
+Serve Tech Journal pages
+************************
+To build the standalone web application for production:
+
+If you've cloned the repo and are developing for the plugin, there is a custom
+command in ``setup.py`` that will automate installing yarn packages, building
+the frontend for production, and copying the dist folder to the proper location.
+To use this, run:
+
+.. code:: bash
+
+  python setup.py build_ui
+
+
+To run the development server, which will compile and  reload the web pages as
+changes are detected within the repository, use the command:
 
 .. code:: bash
 
   yarn run serve
 
-To build the standalone web application for production:
-
-.. code:: bash
-
-  yarn run build
-
-
-If you've cloned the repo and are developing for the plugin, there is a custom
-command in ``setup.py`` that will automate installing yarn packages, building
-the frontend for production, and copying the dist folder to the proper location.
-To use this, run: ``python setup.py build_ui``.
+This "serve" command will use port ``8081`` by default.
 
 **WARNING**
 
@@ -190,7 +203,8 @@ Girder welcome page.
 The first user to be created in the system is automatically given admin
 permission over the instance, so the first thing you should do after starting
 your instance for the first time is to register a user. After that succeeds,
-you should see a link appear in the navigation bar that says Admin console.
+you should see a link appear in the navigation bar on the right that
+says ``Admin Console``, indicating that the user is an administrator.
 
 Generate Folder Structure
 _________________________
@@ -208,20 +222,37 @@ button with  an ``i`` on it, will be used later to configure the Tech Journal
 plugin.
 
 
-Enable the Technical Journal plugin
-___________________________________
+Configure the Technical Journal plugin
+______________________________________
 
+To set some local information for the the plugin, head to the ``Admin Console``
+and click on the ``Plugins`` link and look for the ``Tech Journal`` option.
 
-To enable the plugin, head to the ``Admin Console`` and click on the
-``Plugins`` link.
+Click on the ``Configure Plugin`` icon, which looks like a small gear, for the
+``Tech Journal`` selection.
 
-Click on the ``Configure Plugin`` icon, which looks like a small gear.
+This will show the fields that are used to configure an instance of
+the Technical Journal. Only two entries have an effect on the current code.
 
-This will show the 5 fields that are used to configure a Midas instance of
-the Technical Journal.  Only the ``Default Journal`` entry will need to be
-filled out at this point.  Enter the ``Unique ID`` of the collection that was
-generated above and click ``Save Configuration``.
+Default Journal
+***************
 
+Enter the ``Unique ID`` of the collection that was generated above.
+
+Use Review Infrastructure
+*************************
+
+Check the box of this option to allow users to submit reviews on each
+submission within the Tech Journal.  Question Lists can be created from the
+``Review Questions`` options in the ``Admin`` menu of the Tech Journal pages.
+
+Save
+****
+
+Finally, click ``Save Configuration`` to apply the settings.
+
+View Pages
+__________
 Once that has been saved, the plugin should be configured and ready to be used.
 Visit the entry point of the plugin by visiting::
 
@@ -231,9 +262,14 @@ Or something like this for a localhost instance::
 
   http://localhost:8080/tech_journal
 
+For an instance which used the ``yarn run serve`` command, the pages should
+be found at::
+
+  http://localhost:8081/tech_journal
+
 
 Releasing
-_________________________
+_________
 
 To update the PyPI release:
 
