@@ -209,7 +209,6 @@ var editView = View.extend({
                 }).done((resp) => {
                     let submissionInfo = this._captureSubmissionInformation();
                     submissionInfo.revisionNumber = JSON.stringify(newRevisionNum);
-
                     this._updateSubmission(resp._id, submissionInfo);
                     router.navigate(`${targetUrl}${resp._id}/upload/revision`, {trigger: true});
                 });

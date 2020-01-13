@@ -17,8 +17,8 @@ var uploadView = View.extend({
             event.preventDefault();
             var testingCode = this.$('td:contains("TESTING_")').length;
             var sourceCode = (this.$('td:contains("SOURCECODE")').length - testingCode) + this.$('td:contains("GITHUB")').length;
-
             this._appendData({
+                'is_edit': false,
                 'has_test_code': testingCode > 0,
                 'has_code': sourceCode > 0,
                 'source-license': this.$('#hiddenSourceLicense').val().trim(),
@@ -32,6 +32,7 @@ var uploadView = View.extend({
             var testingCode = this.$('td:contains("TESTING_")').length;
             var sourceCode = (this.$('td:contains("SOURCECODE")').length - testingCode) + this.$('td:contains("GITHUB")').length;
             this._approveSubmission({
+                'is_edit': this.isEdit,
                 'has_test_code': testingCode > 0,
                 'has_code': sourceCode > 0,
                 'source-license': this.$('#hiddenSourceLicense').val().trim(),
@@ -120,6 +121,8 @@ var uploadView = View.extend({
     initialize: function (subId) {
         this.parentId = subId.id;
         this.newRevision = subId.NR;
+        // isEdit used to prevent the blanking of downloads and reviews when submission occurs.
+        this.isEdit = !(this.newRevision || subId.newSub);
         restRequest({
             method: 'GET',
             url: `journal/${this.parentId}/details`

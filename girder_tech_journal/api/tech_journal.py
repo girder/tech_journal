@@ -842,20 +842,16 @@ class TechJournal(Resource):
         if getFunc("tech_journal.use_review", {}):
             # Use the folder's information to find review objects to
             reviewObjects = Journal().getAllByTag("questionList")
-            folder['meta']['reviews'] = {
-                'peer': {"template": {},
-                         "reviews": []},
-                'final': {"template": {},
-                          "reviews": []}
-            }
             folder['meta']['revisionPhase'] = "peer"
-
-            folder['meta']['reviews']['peer']['template'] = self.findReviews('peer',
-                                                                             reviewObjects,
-                                                                             folder)
-            folder['meta']['reviews']['final']['template'] = self.findReviews('final',
-                                                                              reviewObjects,
-                                                                              folder)
+            newReviewData = {}
+            for reviewType in ['peer', 'final']:
+                newReviewData[reviewType] = {
+                    "template": self.findReviews('peer', reviewObjects, folder),
+                    "reviews": []
+                }
+                if metadata['is_edit'] and len(folder['meta']['reviews'][reviewType]['reviews']):
+                    newReviewData[reviewType]['reviews'] = folder['meta']['reviews'][reviewType]['reviews']
+            folder['meta']['reviews'] = newReviewData
         if not (parentFolder['parentId'] == parentFolder['meta']['targetIssue']):
             targetFolder = Folder().load(parentFolder['meta']['targetIssue'],
                                          force=True)
@@ -886,10 +882,11 @@ class TechJournal(Resource):
             )
         folder['curation'] = DEFAULTS
         folder['public'] = True
-        folder['downloadStatistics'] = {
-            'views': 0,
-            'completed': 0
-        }
+        if not metadata['is_edit']:
+            folder['downloadStatistics'] = {
+                'views': 0,
+                'completed': 0
+            }
         parentFolder['curation'] = DEFAULTS
         parentFolder['public'] = True
 
