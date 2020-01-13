@@ -141,6 +141,8 @@ var manageQuestionView = View.extend({
         },
         'submit #addTopicForm': function (event) {
             event.preventDefault();
+            // be sure to remove old questions first!
+            this.$('#questionTD').empty();
             this.$('#topicTD').find('.material-icons').remove();
             this.$('.active').toggleClass('active');
             this.$('#topicTD').append(`<div class='topicElement active'><a class='topicString' val=${this.$('.topicElement').length + 1}>${this.$('#topicText').val()}</a></div>`);
