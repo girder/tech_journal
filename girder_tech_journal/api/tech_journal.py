@@ -102,8 +102,8 @@ class TechJournal(Resource):
                 for key in filterParams[category]:
                     searchObj = category
                     targetVal = key
-                    if re.match("has.*code", key):
-                        searchObj = key
+                    if re.match("With.*code", key):
+                        searchObj = key.replace(' ','_').lower()
                         targetVal = "true"
                     if category == "License":
                         searchObj = "source-license"
@@ -605,11 +605,11 @@ class TechJournal(Resource):
                 'boundaries': range(14),
                 'default': -1,
                 'output': {
-                    'has_code': {
+                    'with_code': {
                         '$sum': {
                             '$switch': {
                                 'branches': [{
-                                    'case': {'$eq': ['$meta.has_code', 'true']},
+                                    'case': {'$eq': ['$meta.with_code', 'true']},
                                     'then': 1
                                 }],
                                 'default':0
@@ -665,12 +665,12 @@ class TechJournal(Resource):
             textArg = {"name": {"$regex": "(?=.*"+filterParams['text']+")", "$options": "i"}}
             del filterParams['text']
         if "Code" in filterParams:
-            if "is_cif" in filterParams['Code']:
+            if "Code in Flight" in filterParams['Code']:
                 if textArg:
                     textArg["name"]["$regex"] += "(?=.*Code in Flight)"
                 else:
                     textArg = {"name": {"$regex": "Code in Flight", "$options": "i"}}
-                filterParams['Code'].remove("is_cif")
+                filterParams['Code'].remove("Code in Flight")
         textArg["meta.submissionNumber"] = {'$gte': "0"}
         for issue in issues:
             testInfo = list(Folder().childFolders(parentType='folder',
@@ -693,8 +693,8 @@ class TechJournal(Resource):
                     for key in filterParams[category]:
                         searchObj = category
                         targetVal = key
-                        if re.match("has.*code", key):
-                            searchObj = key
+                        if re.match("With.*code", key):
+                            searchObj = key.replace(' ','_').lower()
                             targetVal = "true"
                         if category == "License":
                             searchObj = "source-license"
