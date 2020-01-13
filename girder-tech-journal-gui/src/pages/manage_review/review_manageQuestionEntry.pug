@@ -1,7 +1,7 @@
-mixin addQuestion(value)
+mixin addQuestion(description, canComment, canUpload)
   .questionElement
-    textarea(style="width: 100%;").
-      #{value.description}
+    textarea(comment=canComment, upload=canUpload, style="width: 100%;").
+      #{description}
     i.mvUp.material-icons(title="Move Upward") arrow_upward
     i.mvDn.material-icons(title="Move Downward") arrow_downward
     i.EditQes.material-icons(title="Edit") edit
@@ -9,4 +9,4 @@ mixin addQuestion(value)
     br
 
 for object in questions
-  +addQuestion(object)
+  +addQuestion(object.description, object.comment, object.upload)

@@ -370,9 +370,9 @@ def ReadAll(userId, prevAssetDir, dbName, baseParent=None, assetStore=None):
         for question in allQuestions:
          qListFormat["questions"]["topics"][str(qTopic[2])]['questions'][str(question[0])] = {
             "description": question[3],
-            'comment':question[4],
+            'comment':str(question[4]),
             'commentValue':'',
-            'attachfile':question[5],
+            'attachfile':str(question[5]),
             'attachfileValue':'',
             'value': [],
         }
