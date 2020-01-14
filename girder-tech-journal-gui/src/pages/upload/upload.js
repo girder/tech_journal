@@ -19,8 +19,8 @@ var uploadView = View.extend({
             var sourceCode = (this.$('td:contains("SOURCECODE")').length - testingCode) + this.$('td:contains("GITHUB")').length;
 
             this._appendData({
-                'has_test_code': testingCode > 0,
-                'has_code': sourceCode > 0,
+                'with_testing_code': testingCode > 0,
+                'with_code': sourceCode > 0,
                 'source-license': this.$('#hiddenSourceLicense').val().trim(),
                 'source-license-text': this.$('#hiddenSourceLicenseText').val().trim(),
                 'attribution-policy': this.$('#hiddenAttributionPolicy').val().trim(),
@@ -32,8 +32,8 @@ var uploadView = View.extend({
             var testingCode = this.$('td:contains("TESTING_")').length;
             var sourceCode = (this.$('td:contains("SOURCECODE")').length - testingCode) + this.$('td:contains("GITHUB")').length;
             this._approveSubmission({
-                'has_test_code': testingCode > 0,
-                'has_code': sourceCode > 0,
+                'with_testing_code': testingCode > 0,
+                'with_code': sourceCode > 0,
                 'source-license': this.$('#hiddenSourceLicense').val().trim(),
                 'source-license-text': this.$('#hiddenSourceLicenseText').val().trim(),
                 'attribution-policy': this.$('#hiddenAttributionPolicy').val().trim(),

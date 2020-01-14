@@ -146,7 +146,13 @@ def ReadAll(userId, prevAssetDir, dbName, baseParent=None, assetStore=None):
     # +-------------+--------------+
     cur.execute("SELECT * FROM journal_category")
     allcats = cur.fetchall()
-    catValueDict = {}  # Dictionary of name -> values
+    catValueDict = {
+      "OSEHRA": ["Core", "Certified Component"],
+      "Code": ["With testing code", "With code", "Code in Flight"],
+      "License": ["Apache 2.0", "Public Domain", "GPL", "LGPL", "BSD", "Other"],
+      "Certified": ["Level 1","Level 2","Level 3","Level 4"]
+    }
+    # Dictionary of name -> values
     catNumDict = {}    # Dictionary of num -> name
     for catObj in allcats:
       if catObj[1] == -1:  # Those marked with -1 are category topics
@@ -602,8 +608,8 @@ def ReadAll(userId, prevAssetDir, dbName, baseParent=None, assetStore=None):
           inputRevision["meta"]["type"] = typeDict[str(row[4])]
           inputRevision["meta"]["osehra_core"] = metaDataQuery(cur, revision[0],"41")
           inputRevision["meta"]["github"] = metaDataQuery(cur, revision[0],"36")
-          inputRevision["meta"]["has_code"] = metaDataQuery(cur, revision[0],"37")
-          inputRevision["meta"]["has_test_code"] = metaDataQuery(cur, revision[0],"40")
+          inputRevision["meta"]["with_code"] = metaDataQuery(cur, revision[0],"37")
+          inputRevision["meta"]["with_testing_code"] = metaDataQuery(cur, revision[0],"40")
           inputRevision["meta"]["source-license"] = metaDataQuery(cur, revision[0],"34")
           inputRevision["meta"]["certification_level"] = metaDataQuery(cur, revision[0],"32")
           inputRevision["meta"]["has_reviews"] = metaDataQuery(cur, revision[0],"38")
