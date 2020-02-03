@@ -15,7 +15,7 @@ mixin searchEntry(info,approveLink)
         td(style="vertical-align: top;")
           if (info.currentRevision.downloadStatistics)
             .ResultSubDescription.
-                Downloaded #{info.currentRevision.downloadStatistics["completed"]} times, viewed #{info.currentRevision.downloadStatistics["views"]} times
+                Viewed #{info.currentRevision.downloadStatistics["views"]} times
           .ResultTop
             if approveLink
               a.resourceLink(href="#submission/"+ info.currentRevision._id+"/approve")
